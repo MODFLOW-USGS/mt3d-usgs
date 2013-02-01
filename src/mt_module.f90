@@ -223,6 +223,47 @@
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: SP2
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC1
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC2
+!--RCT-Vivek
+        INTEGER,          SAVE,                       POINTER :: CTSOUT                !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: MXCTS                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: MXEXT                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: MXINJ                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: KEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: JEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: KINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: JINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IOPTINJ               !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IOPTEXT               !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: CMCHGEXT              !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: CMCHGINJ              !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: CINCTS                !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: CNTE                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: ITRTEXT               !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: ITRTINJ               !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: QINCTS                !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: QOUTCTS               !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: NEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: NINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: QCTS                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: CCTS                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: NCTS                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IWEXT                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IWINJ                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: MXWEL                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IWCTS                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: IFORCE                !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: NCTSOLD               !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CEXT2CTS              !# LINE 97-98 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CGW2CTS               !# LINE 97-98 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CADDM                 !# LINE 97-98 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CCTS2EXT              !# LINE 97-98 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CCTS2GW               !# LINE 97-98 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CREMM                 !# LINE 97-98 MAIN
+!--SFR/LAK, from Vivek's code
+        INTEGER,          SAVE,                       POINTER :: INLKT                 !# LINE 96 MAIN
+        INTEGER,          SAVE,                       POINTER :: INSFT                 !# LINE 96 MAIN
 !--TOB
         INTEGER,          SAVE,                       POINTER :: MaxConcObs
         INTEGER,          SAVE,                       POINTER :: MaxFluxObs
