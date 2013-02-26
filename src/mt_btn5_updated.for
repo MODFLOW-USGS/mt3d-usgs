@@ -11,8 +11,10 @@ C
      &                         INTOB,INHSS,INFTL,FPRT,MXTRNOP,
      &                         iUnitTRNOP,NameTRNOP,ICNF,IUCN,IUCN2,
      &                         IOBS,IMAS,ICBM,IFTLFMT,
-     &                         INUZF                                !edm
+     &                         INUZF,                               !edm
+     &                         INRTR,INLKT,INSFT,INCTS,INTSO,MINVOL !# LINES 3-4 BTN
 C
+      USE MIN_SAT                                                   !# LINE 12 BTN
       IMPLICIT NONE
       INTEGER       INUNIT,IBTN,IFTL,IFLEN,I,ILIST,LLOC,
      &              ITYP1,ITYP2,N,ISTART,ISTOP,IU,INAM1,INAM2,
@@ -30,6 +32,10 @@ C--ALLOCATE
      &         INFTL,ICNF,IUCN,IUCN2,IOBS,IMAS,ICBM,IFTLFMT,FPRT,
      &         iUnitTRNOP(MXTRNOP),
      &         INUZF)                                               !edm
+C--ALLOCATE SCALAR VARIABLES
+      ALLOCATE(DOMINSAT)                                       !# NEEDED
+      ALLOCATE(IATS)                                           !# NEEDED
+      ALLOCATE(DRYON)                                          !# NEEDED
 C
 C--SET DEFAULT UNIT NUMBERS
       INBTN=1
@@ -38,12 +44,17 @@ C--SET DEFAULT UNIT NUMBERS
       INADV=2
       INDSP=3
       INSSM=4
-      INUZF=6                                                       !edm
+      INCTS=6                                                       !# Not set in Vivek's Main as expected, setting it here
+      INUZF=7                                                       !edm
       INRCT=8
       INGCG=9  
       INTOB=12
       INHSS=13
+      INTSO=14                                                      !# Not set in Vivek's Main as expected, setting it here
+      INRTR=15                                                      !# LINE 144 MAIN
       ICNF=17
+      INLKT=18                                                      !# LINE 145 MAIN
+      INSFT=19                                                      !# LINE 145 MAIN
       IUCN=200
       IUCN2=300
       IOBS=400
@@ -107,6 +118,37 @@ C--CHECK FOR "BTN" FILE TYPE.
           INBTN=IU
         ENDIF         
 C
+        MUTDRY=0                                               !# LINE 83 BTN
+        IC2DRY=0                                               !# LINE 84 BTN
+        MINVOL=0                                               !# LINE 85 BTN
+        IDRYBUD=0                                              !# LINE 86 BTN
+        CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,N,R,IOUT,INUNIT)  !# LINE 87 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MUTDRY') MUTDRY=1            !# LINE 88 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'C2DRY') IC2DRY=1             !# LINE 89 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MINVOL') MINVOL=1            !# LINE 90 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'DRYBUD') IDRYBUD=1           !# LINE 91 BTN
+        CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,N,R,IOUT,INUNIT)  !# LINE 92 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MUTDRY') MUTDRY=1            !# LINE 93 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'C2DRY') IC2DRY=1             !# LINE 94 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MINVOL') MINVOL=1            !# LINE 95 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'DRYBUD') IDRYBUD=1           !# LINE 96 BTN
+        CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,N,R,IOUT,INUNIT)  !# LINE 97 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MUTDRY') MUTDRY=1            !# LINE 98 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'C2DRY') IC2DRY=1             !# LINE 99 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MINVOL') MINVOL=1            !# LINE 100 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'DRYBUD') IDRYBUD=1           !# LINE 101 BTN
+        CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,N,R,IOUT,INUNIT)  !# LINE 102 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MUTDRY') MUTDRY=1            !# LINE 103 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'C2DRY') IC2DRY=1             !# LINE 104 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'MINVOL') MINVOL=1            !# LINE 105 BTN
+        IF(LINE(ISTART:ISTOP).EQ.'DRYBUD') IDRYBUD=1           !# LINE 106 BTN
+C
+C.......IF MST IS TRUE AND DRYON IS FALSE THEN IDRYBUD MUST BE 1; THIS TERM MUST BE TREATED AS SINK
+        IF(DOMINSAT.EQ..TRUE. .AND. DRYON.EQ..FALSE.) THEN
+          IDRYBUD=1
+        ENDIF
+        IF(DOMINSAT.EQ..FALSE.) IDRYBUD=0
+C
 C--CHECK FOR "FTL" FILE TYPE.
       ELSEIF(LINE(ITYP1:ITYP2).EQ.'FTL') THEN
 C
@@ -166,6 +208,12 @@ C--CHECK FOR MAJOR OPTIONS.
                 IU=INTOB
               elseif(NameTRNOP(i).EQ.'HSS') THEN
                 IU=INHSS
+              elseif(NameTRNOP(i).EQ.'RTR') THEN              !# LINE 171 BTN
+                IU=INRTR                                      !# LINE 172 BTN
+              elseif(NameTRNOP(i).EQ.'LKT') THEN              !# LINE 173 BTN
+                IU=INLKT                                      !# LINE 174 BTN
+              elseif(NameTRNOP(i).EQ.'SFT') THEN              !# LINE 175 BTN
+                IU=INSFT                                      !# LINE 176 BTN
               else
                 WRITE(*,20) LINE(ITYP1:ITYP2)
    20           FORMAT(1X,'UNDEFINED UNIT # FOR FILE TYPE: ',A)  
@@ -229,7 +277,9 @@ C SIMULATION.
 C***********************************************************************
 C last modified: 02-15-2005
 C
-	USE MT3DMS_MODULE 
+	USE MT3DMS_MODULE
+      USE MIN_SAT                                              !# LINE 241 BTN
+      USE RCTMOD, ONLY: IREACTION                              !# LINE 439 BTN
       IMPLICIT  NONE
       INTEGER   IN,N,J,I,K,IP1,IERR,INDEX
       REAL      ZZ,TMP,CDRY
@@ -316,8 +366,9 @@ C--READ AND PRINT HEADING
 C
 C--READ AND PRINT NO. OF LAYERS, ROWS, COLUMNS, AND STRESS PERIODS,
 C--COMPONENTS
-      READ(IN,'(6I10)',ERR=25,IOSTAT=IERR)
-     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
+      IATS=0                                                   !# LINE 261 BTN
+      READ(IN,'(7I10)',ERR=25,IOSTAT=IERR)                     !# LINE 262 BTN
+     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP,IATS !# LINE 263 BTN
       IF(NCOMP.LT.1) NCOMP=1
       IF(MCOMP.LT.1) MCOMP=1
    25 IF(IERR.NE.0) THEN
@@ -332,6 +383,20 @@ C--COMPONENTS
      & /1X,'NUMBER OF STRESS PERIOD(S) FOR TRANSPORT SIMULATION =',I5,
      & /1X,'NUMBER OF ALL COMPONENTS INCLUDED IN SIMULATION =',I5,
      & /1X,'NUMBER OF MOBILE COMPONENTS INCLUDED IN SIMULATION =',I5)
+C
+C-----WRITE MESSAGE IF ATS OPTION IS SELECTED                     !# LINE 285 BTN
+      IF(IATS.GE.1.AND.iUnitTRNOP(14).GT.0) THEN                  !# LINE 286 BTN
+        WRITE(IOUT,1001) iUnitTRNOP(14)                           !# LINE 287 BTN
+        READ(iUnitTRNOP(14),*)                                    !# LINE 288 BTN
+      ENDIF                                                       !# LINE 289 BTN
+      IF(IATS.GE.1.AND.iUnitTRNOP(14).LE.0) THEN                  !# LINE 290 BTN
+        IATS=0                                                    !# LINE 291 BTN
+        WRITE(IOUT,1002) iUnitTRNOP(14)                           !# LINE 292 BTN
+      ENDIF                                                       !# LINE 293 BTN
+ 1001 FORMAT(1X,'AUTO-TIME-STEPPING(IATS) INFORMATION READ FROM', !# LINE 294 BTN
+     & ' EXTERNAL FILE ON UNIT ',I5)                              !# LINE 295 BTN
+ 1002 FORMAT(1X,'***AUTO-TIME-STEPPING(IATS) FLAG DEACTIVATED***',!# LINE 296 BTN
+     & ' ENTER A VALID UNIT NUMBER IN NAM FILE',I5)               !# LINE 297 BTN
 C
 C--READ AND PRINT UNITS FOR TIME, LENGTH AND MASS TO BE USED
       READ(IN,'(3A4)') TUNIT,LUNIT,MUNIT
@@ -351,6 +416,12 @@ C--IGNORE TRANSPORT OPTIONS INPUT WHICH ARE DEFINED THROUGH NameFile
   770 FORMAT(1X,' o ',A, '  ON UNIT',I3)
  1024 FORMAT(1X)
 C
+C--WRITE STATUS OF MST AND DRY FLAGS                              !# LINE 313 BTN
+      IF(DOMINSAT)                                                !# LINE 314 BTN
+     1  WRITE(IOUT,*) 'MST OPTION - TO LET MASS ENTER DRY CELLS'  !# LINE 315 BTN
+      IF(DRYON)                                                   !# LINE 316 BTN
+     1  WRITE(IOUT,*) 'DRY OPTION - TO LET MASS ENTER FROM DRY CELLS' !# LINE 317 BTN
+C
 C--GET TOTAL NUMBER OF MODEL NODES
       NODES=NCOL*NROW*NLAY
 C
@@ -361,7 +432,7 @@ C--ALLOCATE AND INITIALIZE
       ALLOCATE(DELC(NROW))
       ALLOCATE(DZ(NCOL,NROW,NLAY))
       ALLOCATE(PRSITY(NCOL,NROW,NLAY))
-      IF(iUnitTRNOP(6).GT.0) THEN                                   !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
         ALLOCATE(SATOLD(NCOL,NROW,NLAY))                            !edm
         ALLOCATE(SATNEW(NCOL,NROW,NLAY))                            !edm
         ALLOCATE(WC(NCOL,NROW,NLAY))                                !edm
@@ -491,7 +562,7 @@ C--IMMEDIATELY POINT PRSITYSAV TO PRSITY SO THAT THE ORIGINAL       !edm
 C--BTN PRSITY IS RETAINED FOR THE REMAINDER OF CODE EXECUTION       !edm
       PRSITYSAV=>PRSITY                                             !edm
 C                                                                   !edm
-      IF(iUnitTRNOP(6).GT.0) THEN                                   !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
 C--CALL RARRAY TO READ IN STARTING WATER CONTENT                    !edm
         ANAME='WATER CONTENT'                                       !edm
         DO K=1,NLAY                                                 !edm
@@ -531,22 +602,45 @@ C--CALL RARRAY TO READ IN INITIAL CONCENTRATION
         ENDDO
       ENDDO
 C
+C--ALLOCATE SPACE FOR REACTION VARIABLES                       !# LINE 521 BTN
+!      IF(IREACTION.EQ.2) THEN                                 !# LINE 522 BTN
+!        ALLOCATE(INIC(NCOL,NROW,NLAY,NCOMP))                  !# LINE 523 BTN
+!        INIC=COLD                                             !# LINE 524 BTN
+!      ENDIF                                                   !# LINE 525 BTN
+C                                                              !# LINE 526 BTN
 C--READ AND ECHO CINACT,THKMIN
       READ(IN,'(2F10.0)',ERR=50,IOSTAT=IERR) CINACT,THKMIN
-      IF(THKMIN.LT.0) THKMIN=0.
+CVSB      IF(THKMIN.LT.0) THKMIN=0.                            
+C.....READ NEGATIVE THKMIN AS ABSOLUTE VALUE OF MINTHK         !# LINE 530 BTN
+      IABSMIN=0                                                !# LINE 531 BTN
+      IF(THKMIN.LT.0) THEN                                     !# LINE 532 BTN
+        IABSMIN=1                                              !# LINE 533 BTN
+        THKMIN=ABS(THKMIN)                                     !# LINE 534 BTN
+      ENDIF                                                    !# LINE 535 BTN
+C
    50 IF(IERR.NE.0) THEN
         BACKSPACE (IN)
         READ(IN,'(F10.0)') CINACT
         THKMIN=0.
       ENDIF
-      WRITE(IOUT,1020) CINACT,THKMIN
-      IF(THKMIN.GT.0.05) THEN
-        WRITE(IOUT,1022)
-        THKMIN=0.01
-      ENDIF
+C                                                              !# LINE 541 BTN
+      IF(IABSMIN.EQ.1) THEN                                    !# LINE 542 BTN
+        WRITE(IOUT,1021) CINACT,THKMIN                         !# LINE 543 BTN
+      ELSE                                                     !# LINE 544 BTN
+        WRITE(IOUT,1020) CINACT,THKMIN
+      ENDIF                                                    !# LINE 546 BTN
+      IF(IABSMIN.EQ.0) THEN                                    !# LINE 548 BTN
+        IF(THKMIN.GT.0.05) THEN
+          WRITE(IOUT,1022)
+          THKMIN=0.01
+        ENDIF
+      ENDIF                                                    !# LINE 552 BTN
  1020 FORMAT(/1X,'VALUE INDICATING INACTIVE CONCENTRATION CELLS = ',
      & G15.7/1X,'MINIMUM SATURATED THICKNESS [THKMIN] ',
      & 'ALLOWED =',F8.4,' OF TOTAL CELL THICKNESS')
+ 1021 FORMAT(/1X,'VALUE INDICATING INACTIVE CONCENTRATION CELLS = ', !# LINE 557
+     & G15.7/1X,'ABSOLUTE MINIMUM SATURATED THICKNESS [THKMIN] ',    !# LINE 558
+     & 'ALLOWED =',F8.4)                                             !# LINE 559
  1022 FORMAT(1X,'WARNING: [THKMIN] MUST BE < OR = 0.05;',
      & /10X,'RESET TO DEFAULT OF 0.01 OR 1% OF TOTAL CELL THICKNESS')
 C
@@ -695,6 +789,17 @@ C--READ AND ECHO LOGICAL FLAG CHKMAS
           WRITE(IMAS+INDEX,1066)
           WRITE(IMAS+INDEX,1068) TUNIT,MUNIT,MUNIT,MUNIT,MUNIT
         ENDDO
+        IF(DOMINSAT) THEN                                      !# LINE 710 BTN
+C.......CREATE ANOTHER FILE SIMILAR TO MAS - BUT TO STORE CELL-BY-CELL AND MASS-TO-DRY  !# LINE 711 BTN
+          WRITE(IOUT,2064) IMAS+1,NPRMAS                       !# LINE 712 BTN
+          FLNAME='MT3Dnnn.DRY'                                 !# LINE 713 BTN
+          DO INDEX=1,NCOMP                                     !# LINE 714 BTN
+            WRITE(FLNAME(5:7),'(I3.3)') INDEX                  !# LINE 715 BTN
+            CALL OPENFL(IMAS+NCOMP+INDEX,0,FLNAME,1,FINDEX)    !# LINE 716 BTN
+            WRITE(IMAS+NCOMP+INDEX,2066)                       !# LINE 717 BTN
+            WRITE(IMAS+NCOMP+INDEX,2068)                       !# LINE 718 BTN
+          ENDDO                                                !# LINE 719 BTN
+        ENDIF                                                  !# LINE 720 BTN
       ELSE
         WRITE(IOUT,1065)
       ENDIF
@@ -707,6 +812,15 @@ C--READ AND ECHO LOGICAL FLAG CHKMAS
      & '        DISCREPANCY(%)')
  1068 FORMAT(1X,5(4X,'(',A4,')',4X),
      & ' FLUID-STORAGE  IN AQUIFER  (TOTAL IN-OUT)  (ALTERNATIVE)')
+ 2064 FORMAT(/1X,'SAVE ONE-LINE SUMMARY OF CELL-BY-CELL MASS IN  ',      !# LINE 733 BTN
+     & '[MT3Dnnn.DRY]'/1X,' FOR EACH SPECIES ',                          !# LINE 734 BTN
+     & 'ON UNITS ',I3,' AND ABOVE, EVERY',I3,' TRANSPORT STEPS')         !# LINE 735 BTN
+ 2066 FORMAT(1X,'     TIME       MASS INTO     MASS FROM     MASS INT',  !# LINE 736 BTN
+     & 'O     MASS FROM     MASS INTO     MASS FROM ',                   !# LINE 737 BTN
+     & '    TOTAL MASS        ')                                         !# LINE 738 BTN
+ 2068 FORMAT(1X,'                DRY CELLS     DRY CELLS    ACTIVE CE',  !# LINE 739 BTN
+     & 'LLS  ACTIVE CELLS  CONSTANT HD   CONSTANT HD',                   !# LINE 740 BTN
+     & '    IN AQUIFER        ')                                         !# LINE 741 BTN
 C
 C--SAVE MODEL GRID CONFIGURATION IN FILE [MT3D.CNF]
 C--FOR USE WITH UNFORMATTED CONCENTRATION FILE BY POST-PROCESSOR
@@ -814,26 +928,52 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE BTN5ST()
+      SUBROUTINE BTN5ST(KPER)
 C *****************************************************************
 C THIS SUBROUTINE GETS TIMING INFORMATION FOR EACH STRESS PERIOD.
 C *****************************************************************
 C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INBTN,IOUT,NSTP,MXSTP,TSLNGH,DT0,
-     &                         MXSTRN,TTSMULT,TTSMAX,TUNIT,iSSTrans
+     &                         MXSTRN,TTSMULT,TTSMAX,TUNIT,iSSTrans,
+     &                         INTSO                           !# LINE 850 BTN
+      USE MIN_SAT, ONLY: IATS                                  !# LINE 856 BTN
 C
       IMPLICIT  NONE
       INTEGER   IN,N,LLOC,inam1,inam2,itmp
+      INTEGER   KPERF,KSTPF,KPER                               !# LINE 859 BTN
       REAL      PERLEN,TSMULT,EPSILON,R
+      REAL      DELTF,PERTIMF,TOTIMF                           !# LINE 860-861 BTN
       CHARACTER Line*200
       PARAMETER (EPSILON=0.5E-6)
 C
       IN=INBTN
 C
 C--READ AND PRINT OUT TIMING INFORMATION
-      READ(IN,'(F10.0,I10,F10.0)') PERLEN,NSTP,TSMULT
-      WRITE(IOUT,22) PERLEN,NSTP,TSMULT
+      IF(IATS.GE.1) THEN                                         !# LINE 867 BTN
+        NSTP=0                                                   !# LINE 868 BTN
+        DO                                                       !# LINE 869 BTN
+          READ(INTSO,'(2I10,3E20.10)',END=10) KPERF,KSTPF,DELTF, !# LINE 870 BTN
+     1      PERTIMF,TOTIMF                                       !# LINE 871 BTN
+          IF(KPERF.EQ.KPER) THEN                                 !# LINE 872 BTN
+            NSTP=NSTP+1                                          !# LINE 873 BTN
+            PERLEN=PERTIMF                                       !# LINE 874 BTN
+            TSLNGH(NSTP)=DELTF                                   !# LINE 875 BTN
+          ELSEIF(KPERF.GT.KPER) THEN                             !# LINE 876 BTN
+            BACKSPACE(INTSO)                                     !# LINE 877 BTN
+            EXIT                                                 !# LINE 878 BTN
+          ELSE                                                   !# LINE 879 BTN
+10          CONTINUE                                             !# LINE 880 BTN
+            WRITE(IOUT,*) 'END OF TSO FILE'                      !# LINE 881 BTN
+            EXIT                                                 !# LINE 882 BTN
+          ENDIF                                                  !# LINE 883 BTN
+        ENDDO                                                    !# LINE 884 BTN
+        READ(IN,*)                                               !# LINE 885 BTN
+        WRITE(IOUT,122) PERLEN,NSTP                              !# LINE 886 BTN
+      ELSE                                                       !# LINE 887 BTN
+        READ(IN,'(F10.0,I10,F10.0)') PERLEN,NSTP,TSMULT
+        WRITE(IOUT,22) PERLEN,NSTP,TSMULT
+      ENDIF                                                      !# LINE 890 BTN
 C
 C--Read an optional flag for steady-state transport simulation
       backspace (in)
@@ -851,6 +991,8 @@ C
    22 FORMAT(/1X,'LENGTH OF CURRENT STRESS PERIOD =',G15.7,
      & /1X,'NUMBER OF TIME STEPS FOR CURRENT STRESS PERIOD =',I5,
      & /1X,'TIME STEP MULTIPLIER USED IN FLOW SOLUTION =',G15.7)
+  122 FORMAT(/1X,'LENGTH OF CURRENT STRESS PERIOD =',G15.7,       !# LINE 908 BTN
+     & /1X,'NUMBER OF TIME STEPS FOR CURRENT STRESS PERIOD =',I5) !# LINE 909 BTN
    23 FORMAT(/1X,'***Type of Transport Simulation is STEADY-STATE'/)
    24 FORMAT(/1X,'***Type of Transport Simulation is TRANSIENT'/)    
 C   
@@ -866,19 +1008,21 @@ C--EACH TIME STEP FOR CURRENT STRESS PERIOD IS CALCULATED BY
 C--PROGRAM USING THE GEOMETRIC PROGRESSION.
 C--IF TSMULT IS A NUMBER LESS THAN OR EQUAL TO ZERO,
 C--READ IN SPECIFIED LENGTH OF EACH TIME STEP.
-      IF(TSMULT.LE.0) THEN
-        READ(IN,'(8F10.0)') (TSLNGH(N),N=1,NSTP)
-        WRITE(IOUT,30) (TSLNGH(N),N=1,NSTP)
-   30   FORMAT(1X,'SPECIFIED LENGTH OF EACH TIME STEP:',/1X,8G15.7)
-        GOTO 50
-      ELSEIF(ABS(TSMULT-1.).LT.ABS(TSMULT+1.)*EPSILON) THEN
-        TSLNGH(1)=PERLEN/FLOAT(NSTP)
-      ELSE
-        TSLNGH(1)=PERLEN*(1.-TSMULT)/(1.-TSMULT**NSTP)
-      ENDIF
-      DO N=2,NSTP
-        TSLNGH(N)=TSLNGH(N-1)*TSMULT
-      ENDDO
+      IF(IATS.EQ.0) THEN                                       !# LINE 925 BTN
+        IF(TSMULT.LE.0) THEN
+          READ(IN,'(8F10.0)') (TSLNGH(N),N=1,NSTP)
+          WRITE(IOUT,30) (TSLNGH(N),N=1,NSTP)
+   30     FORMAT(1X,'SPECIFIED LENGTH OF EACH TIME STEP:',/1X,8G15.7)
+          GOTO 50
+        ELSEIF(ABS(TSMULT-1.).LT.ABS(TSMULT+1.)*EPSILON) THEN
+          TSLNGH(1)=PERLEN/FLOAT(NSTP)
+        ELSE
+          TSLNGH(1)=PERLEN*(1.-TSMULT)/(1.-TSMULT**NSTP)
+        ENDIF
+        DO N=2,NSTP
+          TSLNGH(N)=TSLNGH(N-1)*TSMULT
+        ENDDO
+      ENDIF                                                    !# LINE 939 BTN
 C
    50 CONTINUE
 C
@@ -1159,6 +1303,8 @@ C
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
      &                         ISS,
      &                         PRSITYSAV,SATOLD,FUZF                !edm
+      USE MIN_SAT, ONLY: IDRYBUD                                    !# LINE 1227 BTN
+      USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG                   !# LINE 1228 BTN
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,K,I,J,IQ
@@ -1175,6 +1321,13 @@ C--FOR THE CURRENT TRANSPORT STEP
               IF(.NOT.FUZF) THEN
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+C                                                                   !# LINE 1254 BTN
+                IF(IREACTION.EQ.2) THEN                             !# LINE 1255 BTN
+                  IF(ICOMP==NCOMP.AND.IFESLD>0)THEN                 !# LINE 1256 BTN
+                    DMSTRG=DMSTRG/PRSITY(J,I,K)*RHOB(J,I,K)         !# LINE 1257 BTN
+                  ENDIF                                             !# LINE 1258 BTN
+                ENDIF                                               !# LINE 1259 BTN
+C                                                                   !# LINE 1260 BTN
               ELSE
                 DMSTRG=((CNEW(J,I,K,ICOMP)*PRSITY(J,I,K))-          !edm
      &          (COLD(J,I,K,ICOMP)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)))*!edm
@@ -1206,6 +1359,8 @@ C--DETERMINE TOTAL MASS IN AND OUT
       TMASIN(ICOMP)=0.
       TMASOT(ICOMP)=0.
       DO IQ=1,122
+        IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY  !# LINE 1287 BTN
+        IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS               !# LINE 1288 BTN
         TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
         TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
       ENDDO
@@ -1213,8 +1368,13 @@ C
 C--COMPUTE ACCUMULATIVE DISCREPANCY BETWEEN MASS IN AND OUT
       ERROR(ICOMP)=0.
       IF(ABS(TMASIN(ICOMP))+ABS(TMASOT(ICOMP)).NE.0) THEN
-        ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP))
-     &   /(0.5*(ABS(TMASIN(ICOMP))+ABS(TMASOT(ICOMP))))
+        IF(IREACTION.EQ.2) THEN                                          !# LINE 1296 BTN
+         ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP)+MASS_NEG(ICOMP)) !# LINE 1297 BTN
+     &    /(0.5*(ABS(TMASIN(ICOMP)-MASS_NEG(ICOMP)))+ABS(TMASOT(ICOMP))) !# LINE 1298 BTN
+        ELSE                                                             !# LINE 1299 BTN
+          ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP))
+     &     /(0.5*(ABS(TMASIN(ICOMP))+ABS(TMASOT(ICOMP))))
+        ENDIF                                                            !# LINE 1302 BTN
       ENDIF
 C
 C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
@@ -1253,6 +1413,8 @@ C--FROM OR INTO FLUID-STORAGE IN TRANSIENT FLOW FIELD
       SOURCE=0.
       SINK=0.
       DO IQ=1,117
+        IF(IQ.EQ.12) CYCLE ! SKIP MASS-TO-DRY                 !# LINE 1341 BTN
+        IF(IQ.EQ.14) CYCLE ! SKIP CELL-BY-CELL MASS           !# LINE 1342 BTN
         SOURCE=SOURCE+TMASIO(IQ,1,ICOMP)
         SINK=SINK+TMASIO(IQ,2,ICOMP)
       ENDDO
@@ -1304,6 +1466,8 @@ C
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
      &                         FETS,FSWT,FSFR,FUZF,
      &                         NCOUNT,NPCHEK
+      USE RCTMOD                                               !# LINE 1386 BTN
+      USE MIN_SAT                                              !# LINE 1387 BTN
 C
       IMPLICIT  NONE
       INTEGER   KPER,KSTP,NTRANS,K,I,J,N,ICOMP,IGRID
@@ -1330,6 +1494,10 @@ C--TO FILE [MT3Dnnn.MAS] IF REQUESTED
         SOURCE=0.
         SINK=0.
         DO N=1,117
+          IF(DOMINSAT) THEN                                    !# LINE 1430
+            IF(N.EQ.12) CYCLE !SKIP MASS-TO-DRY                !# LINE 1431
+            IF(N.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS          !# LINE 1432
+          ENDIF                                                !# LINE 1433
           SOURCE=SOURCE+TMASIO(N,1,ICOMP)
           SINK=SINK+TMASIO(N,2,ICOMP)
         ENDDO
@@ -1341,8 +1509,14 @@ C--TO FILE [MT3Dnnn.MAS] IF REQUESTED
         WRITE(IMAS+ICOMP,1012) TIME2,TMASIN(ICOMP),TMASOT(ICOMP),
      &   SOURCE,SINK,STRMAS,TOTMAS,
      &   ERROR(ICOMP),ERROR2(ICOMP)
-      ENDIF
- 1012 FORMAT(1X,1P,7(G13.5,1X),4X,G10.3,5X,G10.3)
+C.......WRITE TO DRY FILE                                            !# LINE 1445 BTN
+        IF(DOMINSAT)                                                 !# LINE 1446 BTN
+     &    WRITE(IMAS+NCOMP+ICOMP,2012) TIME2,TMASIO(12,2,ICOMP),     !# LINE 1447 BTN
+     &     TMASIO(12,1,ICOMP),TMASIO(14,2,ICOMP),TMASIO(14,1,ICOMP), !# LINE 1448 BTN
+     &     TMASIO(1,2,ICOMP),TMASIO(1,1,ICOMP),TOTMAS                !# LINE 1449 BTN
+        ENDIF
+ 1012   FORMAT(1X,1P,7(G13.5,1X),4X,G10.3,5X,G10.3)
+ 2012   FORMAT(1X,1P,8(G13.5,1X),4X,G10.3,5X,G10.3)                  !# LINE 1452 BTN
 C
 C--SAVE CELL CONCENTRATIONS TO UNFORMATTED FILES IF REQUESTED
       IF(SAVUCN .AND. PRTOUT) THEN
@@ -1361,6 +1535,18 @@ C--SORBED/IMMOBILE PHASE CONCENTRATIONS TO FILE [MT3DnnnS.UCN]
             WRITE(IUCN2+ICOMP) ((SRCONC(J,I,K,ICOMP),J=1,NCOL),I=1,NROW)
           ENDDO
         ENDIF
+C                                                                      !# LINE 1473
+C--MASS FOR METHANE FOR KINETIC REACTION                               !# LINE 1474
+        IF(IREACTION.EQ.2) THEN                                        !# LINE 1475
+          IF(NSTORE.GT.0.AND.ICOMP<=NED+NEA)THEN                       !# LINE 1476
+            IF(SPECIAL(ICOMP)=='STORE')THEN                            !# LINE 1477
+              DO K=1,NLAY                                              !# LINE 1478
+                WRITE(IUMETH) NTRANS,KSTP,KPER,TIME2,TEXT,NCOL,NROW,K  !# LINE 1479
+                WRITE(IUMETH) ((MASSSTOR(J,I,K),J=1,NCOL),I=1,NROW)    !# LINE 1480
+              ENDDO                                                    !# LINE 1481
+            ENDIF                                                      !# LINE 1482
+          ENDIF                                                        !# LINE 1483
+        ENDIF                                                          !# LINE 1484
       ENDIF
 C
 C--WRITE SIMULATION RESULTS AND MASS BUDGET TERMS
@@ -1444,17 +1630,40 @@ C
       IF(FLAK) WRITE(IOUT,2110) TMASIO(26,1,ICOMP),TMASIO(26,2,ICOMP)
       IF(FMNW) WRITE(IOUT,2112) TMASIO(27,1,ICOMP),TMASIO(27,2,ICOMP)
       IF(FDRT) WRITE(IOUT,2114) TMASIO(28,1,ICOMP),TMASIO(28,2,ICOMP)
-      IF(FETS) WRITE(IOUT,2116) TMASIO( 8,1,ICOMP),TMASIO( 8,2,ICOMP)    
+      IF(FETS) WRITE(IOUT,2116) TMASIO( 8,1,ICOMP),TMASIO( 8,2,ICOMP)
       IF(iUnitTRNOP(13).GT.0) 
      &   WRITE(IOUT,2118) TMASIO(50,1,ICOMP),TMASIO(50,2,ICOMP)      
       IF(FSWT) WRITE(IOUT,2200) TMASIO(51,1,ICOMP),TMASIO(51,2,ICOMP)
       IF(FSFR) WRITE(IOUT,2202) TMASIO(52,1,ICOMP),TMASIO(52,2,ICOMP)
       IF(FUZF) WRITE(IOUT,2204) TMASIO(53,1,ICOMP),TMASIO(53,2,ICOMP)
 C
+      IF(iUnitTRNOP(6).GT.0)                                     !# LINE 1567 BTN
+     &  WRITE(IOUT,1190) TMASIO(11,1,ICOMP),TMASIO(11,2,ICOMP)   !# LINE 1568 BTN
+C                                                                !# LINE 1569 BTN
+      IF(DOMINSAT.EQ..TRUE.) THEN                                !# LINE 1570 BTN
+        IF(IDRYBUD.EQ.1)                                         !# LINE 1571 BTN
+     &    WRITE(IOUT,1192) TMASIO(12,1,ICOMP),TMASIO(12,2,ICOMP) !# LINE 1572 BTN
+      ENDIF                                                      !# LINE 1573 BTN
+C                                                                !# LINE 1574 BTN
+      IF(IREACTION.EQ.1) THEN                                    !# LINE 1575 BTN
+        WRITE(IOUT,1194) TMASIO(13,1,ICOMP),TMASIO(13,2,ICOMP)   !# LINE 1576 BTN
+      ELSEIF(IREACTION.EQ.2) THEN                                !# LINE 1577 BTN
+        WRITE(IOUT,1195) TMASIO(13,1,ICOMP),TMASIO(13,2,ICOMP)   !# LINE 1578 BTN
+      ENDIF                                                      !# LINE 1579 BTN
+C                                                                !# LINE 1580 BTN
       IF(iUnitTRNOP(4).GT.0) 
-     & WRITE(IOUT,1166) TMASIO(9,1,ICOMP),TMASIO(9,2,ICOMP)
-      WRITE(IOUT,1169) TMASIO(118,1,ICOMP),TMASIO(118,2,ICOMP)      !edm
-      WRITE(IOUT,1170) TMASIO(119,1,ICOMP),TMASIO(119,2,ICOMP)
+     &  WRITE(IOUT,1166) TMASIO(9,1,ICOMP),TMASIO(9,2,ICOMP)
+      WRITE(IOUT,1169) TMASIO(118,1,ICOMP),TMASIO(118,2,ICOMP)   !edm
+C                                                                !# LINE 1585 BTN
+      IF(IREACTION.EQ.2) THEN                                    !# LINE 1586 BTN
+        WRITE(IOUT,1170) TMASIO(119,1,ICOMP)+MASS_NEG(ICOMP),    !# LINE 1587 BTN
+     &   TMASIO(119,2,ICOMP)                                     !# LINE 1588 BTN
+    ! & +                                                        !# LINE 1589 BTN
+    ! & mass_neg(icomp)                                          !# LINE 1590 BTN
+      ELSE                                                       !# LINE 1591 BTN
+        WRITE(IOUT,1170) TMASIO(119,1,ICOMP),TMASIO(119,2,ICOMP)
+      ENDIF                                                      !# LINE 1593 BTN
+C                                                                !# LINE 1594 BTN
       IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.0)
      &   WRITE(IOUT,1172) TMASIO(120,1,ICOMP),TMASIO(120,2,ICOMP)
       IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.4) THEN
@@ -1463,8 +1672,16 @@ C
         WRITE(IOUT,1175) TMASIO(121,1,ICOMP),TMASIO(121,2,ICOMP)
         WRITE(IOUT,1176) TMASIO(122,1,ICOMP),TMASIO(122,2,ICOMP)
       ENDIF
-      WRITE(IOUT,1180) TMASIN(ICOMP),MUNIT,TMASOT(ICOMP),MUNIT,
+      IF(IREACTION.EQ.2) THEN                                    !# LINE 1603 BTN
+        WRITE(IOUT,1180) TMASIN(ICOMP)- MASS_NEG(ICOMP),         !# LINE 1604 BTN
+     &   MUNIT,TMASOT(ICOMP),MUNIT,                              !# LINE 1605 BTN
+     &   TMASIN(ICOMP)+TMASOT(ICOMP)+MASS_NEG(ICOMP),ERROR(ICOMP) !+mass_neg(icomp) !# LINE 1606 BTN
+        WRITE(IOUT,*) MASS_NEG(ICOMP),"MASS_NEG", ICOMP          !# LINE 1607 BTN
+        WRITE(IOUT,*) CON_NEG(ICOMP),"CON_NEG", ICOMP            !# LINE 1608 BTN
+      ELSE                                                       !# LINE 1609 BTN
+        WRITE(IOUT,1180) TMASIN(ICOMP),MUNIT,TMASOT(ICOMP),MUNIT,
      &   TMASIN(ICOMP)+TMASOT(ICOMP),ERROR(ICOMP)
+      ENDIF                                                      !# LINE 1612 BTN
 C
  1110 FORMAT(/21X,'CUMMULATIVE MASS BUDGETS AT END OF TRANSPORT STEP',
      & I5,', TIME STEP',I5,', STRESS PERIOD',I5/21X,90('-'))
@@ -1479,6 +1696,10 @@ C
  1162 FORMAT(30X,'               RECHARGE: ',G15.7,13X,G15.7)
  1164 FORMAT(30X,'     EVAPOTRANSPIRATION: ',G15.7,13X,G15.7)
  1165 FORMAT(30X,'           MASS LOADING: ',G15.7,13X,G15.7)
+ 1190 FORMAT(30X,'       TREATMENT SYSTEM: ',G15.7,13X,G15.7)    !# LINE 1627 BTN
+ 1192 FORMAT(30X,'INACTIVE CELLS(ICBND=0): ',G15.7,13X,G15.7)    !# LINE 1628 BTN
+ 1194 FORMAT(30X,'         EA-ED REACTION: ',G15.7,13X,G15.7)    !# LINE 1629 BTN
+ 1195 FORMAT(30X,'DECAY OR BIODEGRADATION: ',G15.7,13X,G15.7)    !# LINE 1630 BTN
 C
  2100 FORMAT(30X,'     STREAMFLOW ROUTING: ',G15.7,13X,G15.7)
  2102 FORMAT(30X,'              RESERVOIR: ',G15.7,13X,G15.7)

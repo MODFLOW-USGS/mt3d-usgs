@@ -1,10 +1,282 @@
-      MODULE MT3DMS_MODULE
+    MODULE MIN_SAT             !# This module comes from mt_mst.for of Vivek's code
+        LOGICAL,          SAVE,                      POINTER :: DOMINSAT
+        LOGICAL,          SAVE,                      POINTER :: DRYON
+        INTEGER,          SAVE, DIMENSION(:,:,:),    POINTER :: ICBND2 
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ID2D
+        REAL,             SAVE, DIMENSION(:,:,:,:,:),POINTER :: QC7
+        REAL,             SAVE, DIMENSION(:),        POINTER :: C7
+        INTEGER,          SAVE,                      POINTER :: ICNTDRY
+        INTEGER,          SAVE,                      POINTER :: NCNTDRY
+        INTEGER,          SAVE,                      POINTER :: NICBND2
+        INTEGER,          SAVE,                      POINTER :: MUTDRY
+        INTEGER,          SAVE,                      POINTER :: IC2DRY
+        INTEGER,          SAVE,                      POINTER :: IABSMIN
+        INTEGER,          SAVE,                      POINTER :: IDRYBUD
+        INTEGER,          SAVE,                      POINTER :: IATS
+    END MODULE MIN_SAT
+    MODULE SFRVARS
+        INTEGER,          SAVE,                      POINTER :: NSTRM
+        INTEGER,          SAVE,                      POINTER :: MXSFBC
+        INTEGER,          SAVE,                      POINTER :: NSSSF
+        INTEGER,          SAVE,                      POINTER :: NSFINIT
+        INTEGER,          SAVE,                      POINTER :: ICBCSF
+        INTEGER,          SAVE,                      POINTER :: IETSFR
+        INTEGER,          SAVE,                      POINTER :: ISFSOLV
+        INTEGER,          SAVE,                      POINTER :: MXITERSF
+        REAL,             SAVE,                      POINTER :: WIMP
+        REAL,             SAVE,                      POINTER :: CCLOSESF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFL
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFR
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEG
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCH
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: NIN
+        REAL,             SAVE, DIMENSION(:),        POINTER :: SFLEN
+        REAL,             SAVE, DIMENSION(:),        POINTER :: SFNAREA
+        REAL,             SAVE, DIMENSION(:),        POINTER :: SFOAREA
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QPRECSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QRUNOFSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QPRECSFO
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QRUNOFSFO
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QSFGW
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QETSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSFO
+!
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF2
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CNEWSFTMP
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CBCSF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEGBC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCHBC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFBCTYP
+        REAL,             SAVE, DIMENSION(:),        POINTER :: RMASSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOUTSF
+!
+        INTEGER,          SAVE,                      POINTER :: MXSGMT
+        INTEGER,          SAVE,                      POINTER :: MXRCH
+        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: ISTRM
+!
+!.......OBSERVATION VARIABLES
+        INTEGER,          SAVE,                      POINTER :: NOBSSF
+        INTEGER,          SAVE,                      POINTER :: IOUTOBS
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISOBS
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IROBS
+!
+!.......SIZE NINTOT
+        INTEGER,          SAVE,                      POINTER :: NINTOT
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDXNIN
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSFO
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INSEG
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INRCH
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSPFLG
+!
+!.......SOLVER VARIABLES
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IASF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: JASF
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: AMATSF
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: RHSSF
+        INTEGER,          SAVE,                      POINTER :: NJASF
+        REAL,             SAVE,                      POINTER :: CRNTSF
+CONTAINS
+      SUBROUTINE MEMDEALLOCATE3()
+        IF(ASSOCIATED(IASF)) DEALLOCATE(IASF)         !# LINE 496 SFR
+        IF(ASSOCIATED(RHSSF)) DEALLOCATE(RHSSF)       !# LINE 497 SFR
+        IF(ASSOCIATED(JASF)) DEALLOCATE(JASF)         !# LINE 498 SFR
+        IF(ASSOCIATED(AMATSF)) DEALLOCATE(AMATSF)     !# LINE 499 SFR
+      END SUBROUTINE MEMDEALLOCATE3
+!--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
+      SUBROUTINE MEMDEALLOCATE5()
+        IF(ASSOCIATED(ISFL)) DEALLOCATE(ISFL)         !# LINE 1440 FMI
+        IF(ASSOCIATED(ISFR)) DEALLOCATE(ISFR)         !# LINE 1441 FMI
+        IF(ASSOCIATED(ISFC)) DEALLOCATE(ISFC)         !# LINE 1442 FMI
+        IF(ASSOCIATED(ISEG)) DEALLOCATE(ISEG)         !# LINE 1443 FMI
+        IF(ASSOCIATED(IRCH)) DEALLOCATE(IRCH)         !# LINE 1444 FMI
+        IF(ASSOCIATED(SFLEN)) DEALLOCATE(SFLEN)       !# LINE 1445 FMI
+        IF(ASSOCIATED(SFNAREA)) DEALLOCATE(SFNAREA)   !# LINE 1446 FMI
+        IF(ASSOCIATED(SFOAREA)) DEALLOCATE(SFOAREA)   !# LINE 1447 FMI
+        IF(ASSOCIATED(QPRECSF)) DEALLOCATE(QPRECSF)   !# LINE 1448 FMI
+        IF(ASSOCIATED(QRUNOFSF)) DEALLOCATE(QRUNOFSF) !# LINE 1449 FMI
+        IF(ASSOCIATED(QPRECSFO)) DEALLOCATE(QPRECSFO) !# LINE 1450 FMI
+        IF(ASSOCIATED(QRUNOFSFO)) DEALLOCATE(QRUNOFSFO) !# LINE 1451 FMI
+        IF(ASSOCIATED(QSFGW)) DEALLOCATE(QSFGW)       !# LINE 1452 FMI
+        IF(ASSOCIATED(QOUTSF)) DEALLOCATE(QOUTSF)     !# LINE 1453 FMI
+        IF(ASSOCIATED(QOUTSFO)) DEALLOCATE(QOUTSFO)   !# LINE 1454 FMI
+        IF(ASSOCIATED(QETSF)) DEALLOCATE(QETSF)       !# LINE 1455 FMI
+        IF(ASSOCIATED(NIN)) DEALLOCATE(NIN)           !# LINE 1456 FMI
+!.......NINTOT SIZED ARRAYS                           !# LINE 1457 FMI
+        IF(ASSOCIATED(QINSF)) DEALLOCATE(QINSF)       !# LINE 1458 FMI
+        IF(ASSOCIATED(QINSFO)) DEALLOCATE(QINSFO)     !# LINE 1459 FMI
+        IF(ASSOCIATED(INSEG)) DEALLOCATE(INSEG)       !# LINE 1460 FMI
+        IF(ASSOCIATED(INRCH)) DEALLOCATE(INRCH)       !# LINE 1461 FMI
+        IF(ASSOCIATED(IDSPFLG)) DEALLOCATE(IDSPFLG)   !# LINE 1462 FMI
+        IF(ASSOCIATED(IDXNIN)) DEALLOCATE(IDXNIN)     !# LINE 1463 FMI
+!.......INDEXING TO GET ISTRM FROM SEG AND RCH NUMBERS !# LINE 1464 FMI
+        IF(ASSOCIATED(ISTRM)) DEALLOCATE(ISTRM)       !# LINE 1465 FMI
+      END SUBROUTINE MEMDEALLOCATE5                   !# LINE 1466 FMI
+    END MODULE SFRVARS
+    MODULE LAKVARS
+        INTEGER,          SAVE,                      POINTER :: NLAKES
+        INTEGER,          SAVE,                      POINTER :: LKNODE
+        INTEGER,          SAVE,                      POINTER :: NSFRLAK
+        INTEGER,          SAVE,                      POINTER :: MXLKBC
+        INTEGER,          SAVE,                      POINTER :: NSSLK
+        INTEGER,          SAVE,                      POINTER :: NLKINIT
+        INTEGER,          SAVE,                      POINTER :: ICBCLK
+        INTEGER,          SAVE,                      POINTER :: IETLAK
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKL
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKR
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKNUMGW
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKRCH
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKSEG
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKNUMSFR
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CNEWLAK
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDLAK
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CBCLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QPRECLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QRUNOFLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QWDRLLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QLAKGW
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QLAKSFR
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QETLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLNLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLOLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: DELVOLLAK
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ILKBC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ILKBCTYP
+        REAL,             SAVE, DIMENSION(:),        POINTER :: RMASLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOUTLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CGW2LAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CGWFROMLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CSFR2LAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CSFRFROMLAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CPRECLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CRUNOFLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CWDRLLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CETLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CSTORINLK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CSTOROTLK
+CONTAINS
+      SUBROUTINE MEMDEALLOCATE4()
+        IF(ASSOCIATED(LAKL)) DEALLOCATE(LAKL)
+        IF(ASSOCIATED(LAKR)) DEALLOCATE(LAKR)
+        IF(ASSOCIATED(LAKC)) DEALLOCATE(LAKC)
+        IF(ASSOCIATED(LAKNUMGW)) DEALLOCATE(LAKNUMGW)
+        IF(ASSOCIATED(LAKRCH)) DEALLOCATE(LAKRCH)
+        IF(ASSOCIATED(LAKSEG)) DEALLOCATE(LAKSEG)
+        IF(ASSOCIATED(LAKNUMSFR)) DEALLOCATE(LAKNUMSFR)
+        IF(ASSOCIATED(CNEWLAK)) DEALLOCATE(CNEWLAK)
+        IF(ASSOCIATED(COLDLAK)) DEALLOCATE(COLDLAK)
+        IF(ASSOCIATED(CBCLK)) DEALLOCATE(CBCLK)
+        IF(ASSOCIATED(QPRECLAK)) DEALLOCATE(QPRECLAK)
+        IF(ASSOCIATED(QRUNOFLAK)) DEALLOCATE(QRUNOFLAK)
+        IF(ASSOCIATED(QWDRLLAK)) DEALLOCATE(QWDRLLAK)
+        IF(ASSOCIATED(QLAKGW)) DEALLOCATE(QLAKGW)
+        IF(ASSOCIATED(QLAKSFR)) DEALLOCATE(QLAKSFR)
+        IF(ASSOCIATED(QETLAK)) DEALLOCATE(QETLAK)
+        IF(ASSOCIATED(VOLNLAK)) DEALLOCATE(VOLNLAK)
+        IF(ASSOCIATED(VOLOLAK)) DEALLOCATE(VOLOLAK)
+        IF(ASSOCIATED(DELVOLLAK)) DEALLOCATE(DELVOLLAK)
+        IF(ASSOCIATED(ILKBC)) DEALLOCATE(ILKBC)
+        IF(ASSOCIATED(ILKBCTYP)) DEALLOCATE(ILKBCTYP)
+        IF(ASSOCIATED(RMASLAK)) DEALLOCATE(RMASLAK)
+        IF(ASSOCIATED(VOUTLAK)) DEALLOCATE(VOUTLAK)
+        IF(ASSOCIATED(CGW2LAK)) DEALLOCATE(CGW2LAK)
+        IF(ASSOCIATED(CGWFROMLAK)) DEALLOCATE(CGWFROMLAK)
+        IF(ASSOCIATED(CSFR2LAK)) DEALLOCATE(CSFR2LAK)
+        IF(ASSOCIATED(CSFRFROMLAK)) DEALLOCATE(CSFRFROMLAK)
+        IF(ASSOCIATED(CPRECLK)) DEALLOCATE(CPRECLK)
+        IF(ASSOCIATED(CRUNOFLK)) DEALLOCATE(CRUNOFLK)
+        IF(ASSOCIATED(CWDRLLK)) DEALLOCATE(CWDRLLK)
+        IF(ASSOCIATED(CETLK)) DEALLOCATE(CETLK)
+      END SUBROUTINE MEMDEALLOCATE4
+      SUBROUTINE MEMDEALLOCATE6()
+        IF(ASSOCIATED(LAKL)) DEALLOCATE(LAKL)            !# LINE 1620 FMI
+        IF(ASSOCIATED(LAKR)) DEALLOCATE(LAKR)            !# LINE 1621 FMI
+        IF(ASSOCIATED(LAKC)) DEALLOCATE(LAKC)            !# LINE 1622 FMI
+        IF(ASSOCIATED(LAKRCH)) DEALLOCATE(LAKRCH)        !# LINE 1623 FMI
+        IF(ASSOCIATED(LAKSEG)) DEALLOCATE(LAKSEG)        !# LINE 1624 FMI
+        IF(ASSOCIATED(QPRECLAK)) DEALLOCATE(QPRECLAK)    !# LINE 1625 FMI
+        IF(ASSOCIATED(QRUNOFLAK)) DEALLOCATE(QRUNOFLAK)  !# LINE 1626 FMI
+        IF(ASSOCIATED(QWDRLLAK)) DEALLOCATE(QWDRLLAK)    !# LINE 1627 FMI
+        IF(ASSOCIATED(QLAKGW)) DEALLOCATE(QLAKGW)        !# LINE 1628 FMI
+        IF(ASSOCIATED(QLAKSFR)) DEALLOCATE(QLAKSFR)      !# LINE 1629 FMI
+        IF(ASSOCIATED(QETLAK)) DEALLOCATE(QETLAK)        !# LINE 1630 FMI
+        IF(ASSOCIATED(VOLNLAK)) DEALLOCATE(VOLNLAK)      !# LINE 1631 FMI
+        IF(ASSOCIATED(VOLOLAK)) DEALLOCATE(VOLOLAK)      !# LINE 1632 FMI
+        IF(ASSOCIATED(DELVOLLAK)) DEALLOCATE(DELVOLLAK)  !# LINE 1633 FMI
+        IF(ASSOCIATED(LAKNUMGW)) DEALLOCATE(LAKNUMGW)    !# LINE 1634 FMI
+        IF(ASSOCIATED(LAKNUMSFR)) DEALLOCATE(LAKNUMSFR)  !# LINE 1635 FMI
+      END SUBROUTINE MEMDEALLOCATE6
+    END MODULE LAKVARS
+    MODULE RCTMOD              !# This module come from mt_rct.for in Vivek's code
+        LOGICAL,            SAVE,                      POINTER :: ISORBIMONLY
+        INTEGER,            SAVE,                      POINTER :: IREACTION
+        INTEGER,            SAVE,                      POINTER :: IED
+        INTEGER,            SAVE,                      POINTER :: IEA
+        REAL,               SAVE,                      POINTER :: FEDEA
+        REAL,               SAVE, DIMENSION(:,:,:,:),  POINTER :: CRCT
+        REAL,               SAVE, DIMENSION(:,:,:,:),  POINTER :: RC3
+        REAL,               SAVE, DIMENSION(:),        POINTER :: YLD
+        INTEGER,            SAVE,                      POINTER :: IFESLD
+        INTEGER,            SAVE,                      POINTER :: NED
+        INTEGER,            SAVE,                      POINTER :: NEA
+        INTEGER,            SAVE,                      POINTER :: NSPECIAL
+        INTEGER,            SAVE,                      POINTER :: NSTORE
+        INTEGER,            SAVE,                      POINTER :: IUMETH
+        CHARACTER(LEN=500), SAVE,                      POINTER :: rec_FileName
+        CHARACTER(LEN=50),  SAVE,                      POINTER :: Ad_methane_name
+        REAL,               SAVE, DIMENSION(:,:,:),    POINTER :: MASSSTOR
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: RCNEW 
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: RCOLD
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: MAXEC
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: INHIB
+        REAL*8,             SAVE, DIMENSION(:,:),      POINTER :: DECAY
+        REAL*8,             SAVE, DIMENSION(:,:),      POINTER :: YIELDC
+        REAL*8,             SAVE, DIMENSION(:,:,:),    POINTER :: DCDT_FE
+        REAL*8,             SAVE, DIMENSION(:,:),      POINTER :: DCDT_S 
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: DEA_ED_DT
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: DCDT
+        REAL*8,             SAVE, DIMENSION(:),        POINTER :: SWITCH
+        CHARACTER(LEN=5),   SAVE, DIMENSION(:),        POINTER :: SPECIAL
+        REAL*8,             SAVE,                      POINTER :: RVAL
+        REAL,               SAVE, DIMENSION(:),        POINTER :: MASS_NEG
+        REAL,               SAVE, DIMENSION(:),        POINTER :: CON_NEG
+        REAL,               SAVE, DIMENSION(:,:,:,:),  POINTER :: SP1IM
+        INTEGER,            SAVE,                      POINTER :: ISP1IM
+CONTAINS
+      SUBROUTINE MEMDEALLOCATE2()
+      
+      IF(ASSOCIATED(CRCT)) DEALLOCATE(CRCT)               !# LINE 1923 RCT
+      IF(ASSOCIATED(MASSSTOR)) DEALLOCATE(MASSSTOR)       !# LINE 1924 RCT
+      IF(ASSOCIATED(RCNEW)) DEALLOCATE(RCNEW)             !# LINE 1925 RCT
+      IF(ASSOCIATED(RCOLD)) DEALLOCATE(RCOLD)             !# LINE 1926 RCT
+      IF(ASSOCIATED(MAXEC)) DEALLOCATE(MAXEC)             !# LINE 1927 RCT
+      IF(ASSOCIATED(INHIB)) DEALLOCATE(INHIB)             !# LINE 1928 RCT
+      IF(ASSOCIATED(DECAY)) DEALLOCATE(DECAY)             !# LINE 1929 RCT
+      IF(ASSOCIATED(YIELDC)) DEALLOCATE(YIELDC)           !# LINE 1930 RCT
+      IF(ASSOCIATED(DCDT_FE)) DEALLOCATE(DCDT_FE)         !# LINE 1931 RCT
+      IF(ASSOCIATED(DCDT_S)) DEALLOCATE(DCDT_S)           !# LINE 1932 RCT
+      IF(ASSOCIATED(DEA_ED_DT)) DEALLOCATE(DEA_ED_DT)     !# LINE 1933 RCT
+      IF(ASSOCIATED(DCDT)) DEALLOCATE(DCDT)               !# LINE 1934 RCT
+      IF(ASSOCIATED(SWITCH)) DEALLOCATE(SWITCH)           !# LINE 1935 RCT
+      IF(ASSOCIATED(SPECIAL)) DEALLOCATE(SPECIAL)         !# LINE 1936 RCT
+!      IF(ASSOCIATED(INIC)) DEALLOCATE(INIC)              !# LINE 1936 RCT
+      IF(ASSOCIATED(MASS_NEG)) DEALLOCATE(MASS_NEG)       !# LINE 1938 RCT
+      IF(ASSOCIATED(CON_NEG)) DEALLOCATE(CON_NEG)         !# LINE 1939 RCT
+      END SUBROUTINE MEMDEALLOCATE2  
+      
+    END MODULE RCTMOD
+    MODULE MT3DMS_MODULE
         INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=9000
         CHARACTER(LEN=4), SAVE, DIMENSION(MXTRNOP) :: NameTRNOP=        &
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
-     &    'UZF ', '    ', '    ', '    ', '    ',                       &      !edm
-     &    'TOB ', '    ', 'HSS ', '    ', '    ',                       &
-     &    '    ', '    ', '    ', '    ', '    '/)
+     &    'CTS ', 'UZF ', '    ', '    ', '    ',                       &      !edm
+     &    'TOB ', '    ', 'HSS ', 'TSO ', 'RTR ',                       &
+     &    '    ', '    ', '    ', 'LKT ', 'SFT '/)
         INTEGER,          SAVE,                       POINTER :: NCOL      
         INTEGER,          SAVE,                       POINTER :: NROW      
         INTEGER,          SAVE,                       POINTER :: NLAY      
@@ -20,12 +292,14 @@
         INTEGER,          SAVE,                       POINTER :: INBTN     
         INTEGER,          SAVE,                       POINTER :: INADV     
         INTEGER,          SAVE,                       POINTER :: INDSP     
-        INTEGER,          SAVE,                       POINTER :: INSSM     
+        INTEGER,          SAVE,                       POINTER :: INSSM
+        INTEGER,          SAVE,                       POINTER :: INCTS         !# Not set as expected in Vivek's, but setting here
+        INTEGER,          SAVE,                       POINTER :: INTSO         !# Not set as expected in Vivek's, but setting here
         INTEGER,          SAVE,                       POINTER :: INRCT     
         INTEGER,          SAVE,                       POINTER :: INGCG     
         INTEGER,          SAVE,                       POINTER :: INTOB
         INTEGER,          SAVE,                       POINTER :: INUZF         !edm     
-        INTEGER,          SAVE,                       POINTER :: INHSS     
+        INTEGER,          SAVE,                       POINTER :: INHSS
         INTEGER,          SAVE,                       POINTER :: INFTL     
         INTEGER,          SAVE,                       POINTER :: IFTLFMT   
         INTEGER,          SAVE,                       POINTER :: ICNF      
@@ -129,6 +403,9 @@
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: TMASIO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: RMASIO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: TMASS
+!--BTN-Vivek
+        INTEGER,          SAVE,                       POINTER :: INRTR         !# LINE 118 MAIN
+        INTEGER,          SAVE,                       POINTER :: MINVOL        !# NOT SET IN VIVEK'S CODE, DOING SO HERE
 !--ADV
         INTEGER,          SAVE,                       POINTER :: NADVFD
         INTEGER,          SAVE,                       POINTER :: ITRACK
@@ -154,6 +431,8 @@
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: YP
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: ZP
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CNPT
+!--ADV-VIVEK
+        REAL,             SAVE, DIMENSION(:,:,:,:,:), POINTER :: QC7
 !--DSP                                                
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: ALPHAL
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: DMCOEF
@@ -190,6 +469,8 @@
         LOGICAL,          SAVE,                       POINTER :: FSWT
         LOGICAL,          SAVE,                       POINTER :: FSFR
         LOGICAL,          SAVE,                       POINTER :: FUZF
+!--FMI-Vivek
+        INTEGER,          SAVE,                       POINTER :: NOCREWET              !# LINE 99 MAIN
 !--SSM                    
         INTEGER,          SAVE,                       POINTER :: ISSGOUT
         INTEGER,          SAVE,                       POINTER :: MXSS
@@ -214,6 +495,9 @@
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SS
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SSMC
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SSG
+!--SSM-Vivek
+        INTEGER,          SAVE,                       POINTER :: IALTFM                !# LINE 99 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: KSSZERO               !# LINE 2 SSM
 !--RCT
         INTEGER,          SAVE,                       POINTER :: IREACT
         INTEGER,          SAVE,                       POINTER :: IRCTOP
@@ -224,35 +508,35 @@
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC1
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC2
 !--RCT-Vivek
-        INTEGER,          SAVE,                       POINTER :: CTSOUT                !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: ICTSOUT               !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXCTS                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXEXT                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXINJ                 !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: KEXT                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IEXT                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: JEXT                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: KINJ                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IINJ                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: JINJ                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IOPTINJ               !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IOPTEXT               !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: CMCHGEXT              !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: CMCHGINJ              !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: CINCTS                !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: CNTE                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: ITRTEXT               !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: ITRTINJ               !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: QINCTS                !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: QOUTCTS               !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: NEXT                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: NINJ                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: QCTS                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: CCTS                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: KEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: JEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: KINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: JINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: IOPTINJ               !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: IOPTEXT               !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGEXT              !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGINJ              !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CINCTS                !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CNTE                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: ITRTEXT               !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: ITRTINJ               !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QINCTS                !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QOUTCTS               !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: NEXT                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: NINJ                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QCTS                  !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CCTS                  !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: NCTS                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IWEXT                 !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IWINJ                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IWEXT                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IWINJ                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXWEL                 !# LINE 91-95 MAIN
-        INTEGER,          SAVE,                       POINTER :: IWCTS                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: IWCTS                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: IFORCE                !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: NCTSOLD               !# LINE 91-95 MAIN
         REAL,             SAVE, DIMENSION(:),         POINTER :: CEXT2CTS              !# LINE 97-98 MAIN
@@ -261,6 +545,7 @@
         REAL,             SAVE, DIMENSION(:),         POINTER :: CCTS2EXT              !# LINE 97-98 MAIN
         REAL,             SAVE, DIMENSION(:),         POINTER :: CCTS2GW               !# LINE 97-98 MAIN
         REAL,             SAVE, DIMENSION(:),         POINTER :: CREMM                 !# LINE 97-98 MAIN
+!        INTEGER,          SAVE, 
 !--SFR/LAK, from Vivek's code
         INTEGER,          SAVE,                       POINTER :: INLKT                 !# LINE 96 MAIN
         INTEGER,          SAVE,                       POINTER :: INSFT                 !# LINE 96 MAIN
@@ -303,6 +588,8 @@
         REAL,             SAVE, DIMENSION(:),         POINTER :: CNCG
         REAL,             SAVE, DIMENSION(:),         POINTER :: RHS
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: L
+!--GCG-Vivek
+        INTEGER,          SAVE,                       POINTER :: INOCROSS              !# LINE 99 MAIN
 !--HSS                                                
         INTEGER,          SAVE,                       POINTER :: MaxHSSSource
         INTEGER,          SAVE,                       POINTER :: MaxHSSCells
@@ -315,6 +602,9 @@
         INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: iHSSLoc       
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: HSSData       
         CHARACTER(LEN=12),SAVE, DIMENSION(:),         POINTER :: HSSNAM
+!--HSS-Vivek
+        INTEGER,          SAVE,                       POINTER :: IHSSGEN              !# LINE 99 MAIN
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: P                    !# NEW
 !        
 CONTAINS
       SUBROUTINE MEMDEALLOCATE()

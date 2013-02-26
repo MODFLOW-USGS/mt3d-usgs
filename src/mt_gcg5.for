@@ -7,7 +7,8 @@ C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INGCG,IOUT,NCOL,NROW,NLAY,NODES,
      &                         MXITER,ITER1,ISOLVE,NCRS,IPRGCG,ACCL,
-     &                         CCLOSE,LRCH,A,Q,WK,CNCG,RHS,L
+     &                         CCLOSE,LRCH,A,Q,WK,CNCG,RHS,L,
+     &                         INOCROSS                        !# LINE 3 GCG
 C
       IMPLICIT NONE
       INTEGER  IN
@@ -51,6 +52,12 @@ C--READ AND PRINT MXITER AND ISOLVE
    33 FORMAT(1X,'THE PRECONDITIONING TYPE SELECTED IS ',
      &          'MODIFIED INCOMPLETE CHOLESKY (MIC).')
    43 FORMAT(1X,'ERROR: INVALID PRECONDITIONING TYPE.')
+C                                                              !# LINE 48 GCG
+      INOCROSS=0                                               !# LINE 49 GCG
+      IF(NCRS.GE.10) THEN                                      !# LINE 50 GCG
+        INOCROSS=1                                             !# LINE 51 GCG
+        NCRS=NCRS-10                                           !# LINE 52 GCG
+      ENDIF                                                    !# LINE 53 GCG
 C
       IF(NCRS.GT.0) THEN
         WRITE(IOUT,50)
@@ -60,6 +67,9 @@ C
    50 FORMAT(1X,'FULL DISPERSION TENSOR INCLUDED IN IMPLICIT SOLUTION')
    52 FORMAT(1X,'DISPERSION CROSS TERMS LUMPED INTO RIGHT-HAND-SIDE')
 C
+      IF(INOCROSS.EQ.1) WRITE(IOUT,54)                         !# LINE 63 GCG
+   54 FORMAT(1X,'CROSS DISPERSION WILL NOT BE SIMULATED (INOCROSS=1)') !# LINE 64 GCG
+C                                                              !# LINE 65 GCG
 C--SET NCRS TO 0 FOR 1D PROBLEMS
       IF(NCOL*NROW.EQ.1 .OR. NCOL*NLAY.EQ.1 .OR. NROW*NLAY.EQ.1) NCRS=0
 C

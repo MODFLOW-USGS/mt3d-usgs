@@ -146,7 +146,8 @@ C
      &                         DELR,DELC,DZ,QX,QY,QZ,IFMTDP,DTDISP,ISS,
      &                         NPERFL,
      &                         ALPHAL,TRPT,TRPV,DMCOEF,DXX,DXY,DXZ,DYX,
-     &                         DYY,DYZ,DZX,DZY,DZZ
+     &                         DYY,DYZ,DZX,DZY,DZZ,
+     &                         INOCROSS                        !# LINE 164 DSP
 C
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,K,I,J,KM1,IM1,JM1,
@@ -209,8 +210,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DXX(J,I,K,ICOMP)=
      &         AL*VX*VX/V/PF+AT*VY*VY/V/PF+AV*VZ*VZ/V/PF+DM
-              IF(NROW.GT.1) DXY(J,I,K)=(AL-AT)*VX*VY/V/PF
-              IF(NLAY.GT.1) DXZ(J,I,K)=(AL-AV)*VX*VZ/V/PF
+              IF(INOCROSS.EQ.1) THEN                        !# LINE 248 DSP
+                IF(NROW.GT.1) DXY(J,I,K)=0.                 !# LINE 249 DSP
+                IF(NLAY.GT.1) DXZ(J,I,K)=0.                 !# LINE 250 DSP
+              ELSE                                          !# LINE 251 DSP
+                IF(NROW.GT.1) DXY(J,I,K)=(AL-AT)*VX*VY/V/PF
+                IF(NLAY.GT.1) DXZ(J,I,K)=(AL-AV)*VX*VZ/V/PF
+              ENDIF                                         !# LINE 254 DSP
             ENDIF            
           ENDDO
         ENDDO
@@ -262,8 +268,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DYY(J,I,K,ICOMP)=
      &         AL*VY*VY/V/PF+AT*VX*VX/V/PF+AV*VZ*VZ/V/PF+DM
-              IF(NCOL.GT.1) DYX(J,I,K)=(AL-AT)*VY*VX/V/PF
-              IF(NLAY.GT.1) DYZ(J,I,K)=(AL-AV)*VY*VZ/V/PF
+              IF(INOCROSS.EQ.1) THEN                        !# LINE 306 DSP
+                IF(NCOL.GT.1) DYX(J,I,K)=0.                 !# LINE 307 DSP
+                IF(NLAY.GT.1) DYZ(J,I,K)=0.                 !# LINE 308 DSP
+              ELSE                                          !# LINE 309 DSP
+                IF(NCOL.GT.1) DYX(J,I,K)=(AL-AT)*VY*VX/V/PF
+                IF(NLAY.GT.1) DYZ(J,I,K)=(AL-AV)*VY*VZ/V/PF
+              ENDIF                                         !# LINE 310 DSP
             ENDIF
           ENDDO
         ENDDO
@@ -317,8 +328,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DZZ(J,I,K,ICOMP)=
      &         AL*VZ*VZ/V/PF+AV*VX*VX/V/PF+AV*VY*VY/V/PF+DM
-              IF(NCOL.GT.1) DZX(J,I,K)=(AL-AV)*VZ*VX/V/PF
-              IF(NROW.GT.1) DZY(J,I,K)=(AL-AV)*VZ*VY/V/PF
+              IF(INOCROSS.EQ.1) THEN                           !# LINE 366 DSP
+                IF(NCOL.GT.1) DZX(J,I,K)=0.                    !# LINE 367 DSP
+                IF(NROW.GT.1) DZY(J,I,K)=0.                    !# LINE 368 DSP
+              ELSE                                             !# LINE 369 DSP
+                IF(NCOL.GT.1) DZX(J,I,K)=(AL-AV)*VZ*VX/V/PF
+                IF(NROW.GT.1) DZY(J,I,K)=(AL-AV)*VZ*VY/V/PF
+              ENDIF                                            !# LINE 372 DSP
             ENDIF
           ENDDO
         ENDDO
@@ -648,10 +664,21 @@ C--CALCULATE CELL INTERFACE WEIGHTING FACTORS
             WYP=DELC(IP1)/(DELC(I)+DELC(IP1))
             WYM=DELC(I)/(DELC(IM1)+DELC(I))
             IF(I.EQ.1) WYM=1.
-            IF(DZ(J,I,K).EQ.0.AND.DZ(J,I,KP1).EQ.0) GOTO 10         !edm
-            WZP=DZ(J,I,KP1)/(DZ(J,I,K)+DZ(J,I,KP1))
-  10        IF(DZ(J,I,KM1).EQ.0.AND.DZ(J,I,K).EQ.0) GOTO 20         !edm
-            WZM=DZ(J,I,K)/(DZ(J,I,KM1)+DZ(J,I,K))
+C
+C...........TAKE CARE OF DRY CELLS                              !# LINE 705
+            IF(DZ(J,I,KP1).LE.0.) THEN                          !# LINE 706
+              WZP=0                                             !# LINE 707
+            ELSE                                                !# LINE 708
+              IF(DZ(J,I,K).EQ.0.AND.DZ(J,I,KP1).EQ.0) GOTO 10   !edm
+                WZP=DZ(J,I,KP1)/(DZ(J,I,K)+DZ(J,I,KP1))
+            ENDIF                                               !# LINE 710
+C...........TAKE CARE OF DRY CELLS                              !# LINE 711
+  10        IF(DZ(J,I,KM1).LE.0.) THEN                          !# LINE 712
+              WZM=1                                             !# LINE 713
+            ELSE                                                !# LINE 714
+              IF(DZ(J,I,KM1).EQ.0.AND.DZ(J,I,K).EQ.0) GOTO 20   !edm
+                WZM=DZ(J,I,K)/(DZ(J,I,KM1)+DZ(J,I,K))
+            ENDIF                                               !# LINE 716
   20        IF(K.EQ.1) WZM=1.
 C      
 C--COEF. FOR (J,I,K)

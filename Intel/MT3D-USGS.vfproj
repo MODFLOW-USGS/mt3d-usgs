@@ -30,14 +30,18 @@
 		<File RelativePath="..\src\mt3dms5_updated.for"/>
 		<File RelativePath="..\src\mt_adv5_updated.for"/>
 		<File RelativePath="..\src\mt_btn5_updated.for"/>
+		<File RelativePath="..\src\mt_cts.f"/>
 		<File RelativePath="..\src\mt_dsp5_updated.for"/>
 		<File RelativePath="..\src\mt_fmi5_updated.for"/>
 		<File RelativePath="..\src\mt_gcg5.for"/>
 		<File RelativePath="..\src\mt_hss5.for"/>
+		<File RelativePath="..\src\mt_lak.for"/>
 		<File RelativePath="..\src\mt_module.f90"/>
 		<File RelativePath="..\src\mt_rct5_updated.for"/>
+		<File RelativePath="..\src\mt_sfr.for"/>
 		<File RelativePath="..\src\mt_ssm5_updated.for"/>
 		<File RelativePath="..\src\mt_tob5.for"/>
-		<File RelativePath="..\src\mt_utl5.for"/>
+		<File RelativePath="..\src\NWT1_xmd.f"/>
+		<File RelativePath="..\src\NWT1_xmdlib.f"/>
 		<File RelativePath="..\src\utl7.f"/></Filter></Files>
 	<Globals/></VisualStudioProject>

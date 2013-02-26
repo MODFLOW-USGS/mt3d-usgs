@@ -15,7 +15,8 @@ C
      &                         CUZINF,UZET,CUZET,GWET,CGWET,IETFLG, !edm
      &                         FINFIL,UZFLX,UZQSTO,SURFLK,CSURFLK,  !edm
      &                         IETFLG,iUnitTRNOP,IUZFOPT,IUZFBND,   !edm
-     &                         IUZFOPTG                             !edm
+     &                         IUZFOPTG,                            !edm
+     &                         KSSZERO                              !# LINE 14 SSM
 C
       IMPLICIT  NONE
       INTEGER   ISTART, ISTOP, LLOC,I,J                             !edm
@@ -146,9 +147,11 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(GWET(1,1,1))                                       !edm
         ALLOCATE(CGWET(1,1,1,1))                                    !edm
       ENDIF                                                         !edm
-      ALLOCATE(SS(7,MXSS))
+      ALLOCATE(SS(8,MXSS))                                          !# Amended (LINE 154 SSM)
       ALLOCATE(SSMC(NCOMP,MXSS))
       ALLOCATE(SSG(5,MXSS))
+      ALLOCATE(KSSZERO(MXSS))                                       !# LINE 96 SSM
+      KSSZERO=0                                                     !# LINE 97 SSM
       RECH=0.
       IRCH=0
       CRCH=0.
@@ -163,7 +166,7 @@ C--DETERMINE IF UZF PACKAGE IS SIMULATING ET                        !edm
 C--This approach starts at the beginning of the UZF header line and !edm
 C--goes one-by-one                                                  !edm
       IF(FUZF) THEN                                                 !edm
-    9   READ(iUnitTRNOP(6),'(A)',ERR=100,IOSTAT=IERR) LINE          !edm
+    9   READ(iUnitTRNOP(7),'(A)',ERR=100,IOSTAT=IERR) LINE          !edm
         IF(LINE(1:1).EQ.'#' .OR. LINE(1:1).EQ.'S') THEN !READ NEXT  !edm
           GOTO 9                                                    !edm
         ELSE                                                        !edm
@@ -185,7 +188,7 @@ C--'logical' in the next step.
           ENDIF                                                     !edm
 C--Read the IUZFBND array                                           !edm
           BNAME=' AREAL EXTENT OF UZ FLOW'                          !edm
-          CALL U2DINT(IUZFBND,BNAME,NROW,NCOL,0,iUnitTRNOP(6),IOUT) !edm
+          CALL U2DINT(IUZFBND,BNAME,NROW,NCOL,0,iUnitTRNOP(7),IOUT) !edm
         ENDIF                                                       !edm
 C--Adjust IUZFOPTG (IUZFOPT-Global) according to what is stored in  !edm
 C--the IUZFBND array                                                !edm
@@ -226,7 +229,8 @@ C
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                         FSFR,FUZF,
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
-     &                         CUZINF,CUZET,CGWET,CSURFLK,IETFLG    !edm
+     &                         CUZINF,CUZET,CGWET,CSURFLK,IETFLG,   !edm
+     &                         KSSZERO                              !# LINE 146 SSM
 C
       IMPLICIT  NONE
       INTEGER   IN,KPER,JJ,II,KK,NUM,IQ,INCRCH,INCEVT,NTMP,INDEX,
@@ -468,6 +472,7 @@ C--RESET OLD CONCENTRATIONS IF REUSE OPTION NOT IN EFFECT
           DO INDEX=1,NCOMP
             SSMC(INDEX,NUM)=0.
           ENDDO
+          KSSZERO=0                                                 !# LINE 249 SSM
         ENDDO
       ENDIF
 C
@@ -497,12 +502,21 @@ C
         ENDIF
 C
         IF(IQ.EQ.-1) THEN
-          DO INDEX=1,NCOMP
-            IF(SSMC(INDEX,NUM).GE.0) THEN
-              CNEW(JJ,II,KK,INDEX)=SSMC(INDEX,NUM)
-              ICBUND(JJ,II,KK,INDEX)=-ABS(ICBUND(JJ,II,KK,INDEX))
+          IF(KK.EQ.0) THEN                                              !# LINE 279 SSM
+            KSSZERO(NUM)=1                                              !# LINE 280 SSM
+            IF(.NOT.FRCH) THEN                                          !# LINE 281 SSM
+              WRITE(*,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0'    !# LINE 282 SSM
+              WRITE(IOUT,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0' !# LINE 283 SSM
+              CALL USTOP(' ')                                           !# LINE 284 SSM
             ENDIF
-          ENDDO
+          ELSE                                                          !# LINE 286 SSM
+            DO INDEX=1,NCOMP                                            !# LINE 287 SSM
+              IF(SSMC(INDEX,NUM).GE.0) THEN                             !# LINE 288 SSM
+                CNEW(JJ,II,KK,INDEX)=SSMC(INDEX,NUM)                    !# LINE 289 SSM
+                ICBUND(JJ,II,KK,INDEX)=-ABS(ICBUND(JJ,II,KK,INDEX))     !# LINE 290 SSM
+              ENDIF                                                     !# LINE 291 SSM
+            ENDDO                                                       !# LINE 292 SSM
+          ENDIF                                                         !# LINE 293 SSM
         ELSEIF(IQ.EQ.15) THEN
           SS(5,NUM)=0.
         ELSEIF(IQ.EQ.2.AND.CSS.LT.0) THEN
@@ -523,9 +537,13 @@ C
 C
         DO INDEX=1,NCOMP
           CSS=SSMC(INDEX,NUM)
-          IF(CSS.NE.0 .OR. ICBUND(JJ,II,KK,INDEX).LT.0)
-     &     WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
-          IF(CSS.LT.0 .AND. IQ.EQ.2) 
+          IF(IQ.EQ.-1.AND.KK.EQ.0) THEN                        !# LINE 314 SSM
+            WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX   !# LINE 315 SSM
+          ELSE                                                 !# LINE 316 SSM
+            IF(CSS.NE.0 .OR. ICBUND(JJ,II,KK,INDEX).LT.0)
+     &       WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
+          ENDIF                                                !# LINE 319 SSM
+          IF(CSS.LT.0 .AND. IQ.EQ.2)
      &     WRITE(IOUT,71) -INT(CSS)                
         ENDDO
 C
@@ -566,7 +584,8 @@ C
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
      &                         FSWT,FSFR,FUZF,
      &                         FINFIL,IETFLG,UZET,CUZET,GWET,CGWET, !edm
-     &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND !edm
+     &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND,!edm
+     &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS   !# LINE 348-349 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
@@ -589,6 +608,8 @@ C--TRANSIENT FLUID STORAGE TERM
                 N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
 !                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)     
 !CDL--SEAWAT: This seems to fix the problem with storage
+CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD  !# LINE 390-396 SSM
+CEDM--IS WRONG                                                      !# LINE 390-396 SSM
                 IF(.NOT.FUZF .OR. IUZFBND(J,I).LE.0) THEN           !edm
                   RHS(N)=RHS(N)-COLD(J,I,K,ICOMP)*
      &                     QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
@@ -646,7 +667,7 @@ C--(SURFACE LEAKANCE)                                               !edm
       K=1                                                           !edm
       DO I=1,NROW                                                   !edm
         DO J=1,NCOL                                                 !edm
-          IF(SURFLK(J,I,K).EQ.0) CYCLE                              !edm*
+          IF(SURFLK(J,I,K).EQ.0) CYCLE                              !edm
           IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                         !edm
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
             IF(SURFLK(J,I,K).LT.0) THEN                             !edm
@@ -731,6 +752,14 @@ C--POINT SINK/SOURCE TERMS
         IQ=SS(6,NUM)
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
 C
+C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 450 SSM
+        IF(INCTS.GT.0) THEN                                    !# LINE 451 SSM
+          IF(SS(8,NUM).GT.0) THEN                              !# LINE 452 SSM
+            CONTINUE                                           !# LINE 453 SSM
+CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                 !# LINE 454 SSM
+          ENDIF                                                !# LINE 455 SSM
+        ENDIF                                                  !# LINE 456 SSM
+C                                                              !# LINE 457 SSM
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
           QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
@@ -793,13 +822,17 @@ C--(INFILTRATED) -WILL NEED TO MODIFIY CODE IF IUZFBND.NE.1         !edm
       K=1                                                           !edm
       DO I=1,NROW                                                   !edm
         DO J=1,NCOL                                                 !edm
-          IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0                  !edm
-     &              .AND. FINFIL(J,I).GT.0) THEN                    !edm
-            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
-            IF(UPDLHS) A(N)=A(N)-FINFIL(J,I)*                       !edm
-     &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*            !edm
-     &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
+          IF(K.GT.0) THEN                                           !edm
+            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
+              IF(SURFLK(J,I,K).LT.0) THEN                           !edm
+                IF(UPDLHS) A(N)=A(N)+SURFLK(J,I,K)*                 !edm
+     &                          DELR(J)*DELC(I)*DH(J,I,K)           !edm
+              ELSE                                                  !edm
+                RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*        !edm
+     &                          DELR(J)*DELC(I)*DH(J,I,K)           !edm
+              ENDIF                                                 !edm
+            ENDIF                                                   !edm
           ENDIF                                                     !edm
         ENDDO                                                       !edm
       ENDDO                                                         !edm
@@ -961,7 +994,8 @@ C
      &                        IETFLG,SATNEW,SURFLK,CSURFLK,         !edm
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                        FSFR,FUZF
+     &                        FSFR,FUZF,
+     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM         !# LINE 607 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
@@ -979,7 +1013,9 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
         DO I=1,NROW
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            CTMP=CNEW(J,I,K,ICOMP)
+CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
+CEDM--WAS WRONG.
+            CTMP=COLD(J,I,K,ICOMP)                                  !# LINE 646 SSM
             IF(QSTO(J,I,K).GT.0) THEN
               RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)+QSTO(J,I,K)*  !edm
      &         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)                !edm
@@ -1129,6 +1165,13 @@ C--POINT SINK/SOURCE TERMS
         CTMP=SS(4,NUM)
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
 C
+C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 729 SSM
+        IF(INCTS.GT.0) THEN                                    !# LINE 730 SSM
+          IF(SS(8,NUM).GT.0) THEN                              !# LINE 731 SSM
+            IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                    !# LINE 732 SSM
+          ENDIF                                                !# LINE 733 SSM
+        ENDIF                                                  !# LINE 734 SSM
+C
 C--SKIP IF NOT ACTIVE CELL
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
 C
@@ -1266,7 +1309,7 @@ c
         i=ss(2,num)
         j=ss(3,num)
         ctmp=ss(4,num)
-        if(icomp.gt.1) ctmp=ssmc(icomp,num)
+        if(ncomp.gt.1) ctmp=ssmc(icomp,num)                    !# LINE 875 SSM
         qss=ss(5,num)
         IQ=ss(6,num)
         iGroup=ss(7,num)
