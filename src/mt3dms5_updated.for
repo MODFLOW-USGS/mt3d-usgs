@@ -57,6 +57,7 @@ C
       USE RCTMOD                                                    !# LINE 57 MAIN
       USE MIN_SAT                                                   !# LINE 58 MAIN
       USE SFRVARS, ONLY:       ISFSOLV
+      USE LAKVARS
       USE MT3DMS_MODULE, ONLY: MXTRNOP,MXSTP,
      &                         FPRT,INBTN,ICBUND,CADV,COLD,RETA,PRSITY,
      &                         DZ,DH,QX,QY,QZ,A,RHOB,SP1,SP2,SRCONC,
@@ -239,9 +240,9 @@ C
 C
           IF(DRYON) CALL ADVQC7RP(KPER,KSTP)                   !# LINE 467 MAIN
 C                                                              !# LINE 467 MAIN
-          IF(iUnitTRNOP(19).GT.0.AND.ISFSOLV.GT.1) THEN        !# LINE 468 MAIN
+          IF(iUnitTRNOP(19).GT.0.AND.ISFSOLV.GT.0) THEN        !# LINE 468 MAIN
             CALL FILLIASFJASF()                                !# LINE 469 MAIN
-            CALL XMD7AR()                                      !# LINE 470 MAIN
+            IF(KPER*KSTP.EQ.1) CALL XMD7AR()                                      !# LINE 470 MAIN
           ENDIF                                                !# LINE 471 MAIN
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
@@ -528,6 +529,8 @@ C--CLOSE FILES                                                 !# LINE 858 MAIN
       ENDIF                                                    !# LINE 863 MAIN
 C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE()
+      CALL MEMDEALLOCATE2()
+      CALL MEMDEALLOCATE4()
 C
 C--Get CPU time at the end of simulation
 C--and print out total elapsed time in seconds

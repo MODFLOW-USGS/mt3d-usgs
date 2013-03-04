@@ -158,7 +158,7 @@ CVSB        MXITERXMD = 50
 CVSB      ELSEIF ( IFDPARAM.EQ.3 ) THEN
         IACL = 1 !2
         NORDER = 0
-        LEVEL = 3
+        LEVEL = 1
         NORTH = 7
         IREDSYS = 0
         RRCTOLS = 0.0
@@ -240,7 +240,7 @@ C
       RETURN
       END
 C-----------------------------------------------------------------------------------
-      SUBROUTINE XMD7DA(IGRID)
+      SUBROUTINE XMD7DA()
 C  DEALLOCATE GLOBAL DATA
       use xmdcmn
       use xmdmatrix
