@@ -1070,7 +1070,8 @@ C
      &                         CNEW,COLD,CINACT,UPDLHS,IMPSOL,TTSMULT,
      &                         TTSMAX,DELR,DELC,DH,PRSITY,SRCONC,
      &                         RHOB,RETA,PRSITY2,RETA2,ISOTHM,TMASIO,
-     &                         RMASIO,TMASS
+     &                         RMASIO,TMASS,
+     &                         FUZF,SATOLD,PRSITYSAV                !edm
 C
       IMPLICIT  NONE
       INTEGER   NTRANS,KSTP,NPS,INDEX,K,I,J,KPER
@@ -1207,7 +1208,12 @@ C
             DO J=1,NCOL
               IF(ICBUND(J,I,K,INDEX).LE.0) CYCLE
               VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
-              CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
+              IF(.NOT.FUZF) THEN
+                CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
+              ELSE
+                CMML=COLD(J,I,K,INDEX)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)
+     &                 *VOLUME
+              ENDIF
               CMMS=0.
               CIML=0.
               CIMS=0.
@@ -1350,20 +1356,46 @@ C                                                                   !# LINE 1260
 C
 C--ACCUMULATE MASS IN/OUT FOR VARIOUS SINK/SOURCE TERMS AND
 C--MASS STOAGE CHANGES SINCE THE BEGINNING OF SIMULATION
-      DO IQ=1,122
-        TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
-        TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
-      ENDDO
+      IF(.NOT.FUZF) THEN                                            !edm
+        DO IQ=1,122
+          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
+          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
+        ENDDO
+      ELSE                                                          !edm
+        DO IQ=1,117                                                 !edm
+          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
+          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
+        ENDDO                                                       !edm
+        DO IQ=119,122                                               !edm
+          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
+          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
+        ENDDO                                                       !edm
+      ENDIF                                                         !edm
 C
 C--DETERMINE TOTAL MASS IN AND OUT
       TMASIN(ICOMP)=0.
       TMASOT(ICOMP)=0.
-      DO IQ=1,122
-        IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY  !# LINE 1287 BTN
-        IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS               !# LINE 1288 BTN
-        TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
-        TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
-      ENDDO
+      IF(.NOT.FUZF) THEN                                            !edm
+        DO IQ=1,122
+          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY  !# LINE 1287 BTN
+          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS               !# LINE 1288 BTN
+          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
+          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
+        ENDDO
+      ELSE                                                          !edm
+        DO IQ=1,117                                                 !edm
+          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
+          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
+          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
+          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
+        ENDDO                                                       !edm
+        DO IQ=119,122                                               !edm
+          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
+          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
+          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
+          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
+        ENDDO                                                       !edm
+      ENDIF                                                         !edm
 C
 C--COMPUTE ACCUMULATIVE DISCREPANCY BETWEEN MASS IN AND OUT
       ERROR(ICOMP)=0.

@@ -600,7 +600,7 @@ C--FORMULATE [A] AND [RHS] MATRICES FOR EULERIAN SCHEMES
       IF(MIXELM.GT.0) GOTO 1000
 C
 C--TRANSIENT FLUID STORAGE TERM
-      IF(ISS.EQ.0 .AND. UPDLHS) THEN
+      IF(ISS.EQ.0) THEN
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
@@ -645,16 +645,18 @@ C                 HARDWIRED WITH LAYER 1 AND WILL LIKELY NEED TO    !edm
 C                 BE UPDATED BY READING THE IUZFBND ARRAY IN THE    !edm
 C                 UZF INPUT FILE TO GLEAN WHICH LAYER INFILTRATE    !edm
 C                 (AND SURFACE LEAKAGE) IS OCCURING IN (AND FROM)   !edm
-   10 IF(.NOT.FUZF) GOTO 11                                         !edm
+   10 IF(.NOT.FUZF) GOTO 12                                         !edm
       K=1                                                           !edm
       DO I=1,NROW                                                   !edm
         DO J=1,NCOL                                                 !edm
           IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                         !edm
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
+C--(SURFACE LEAKANCE)                                               !edm
             IF(SURFLK(J,I,K).LT.0) THEN                             !edm
               IF(UPDLHS) A(N)=A(N)+SURFLK(J,I,K)*                   !edm
      &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ELSE                                                    !edm
+C--(INFILTRATED)                                                    !edm
+            ELSEIF(FINFil(J,I).GT.0) THEN                           !edm
               RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*          !edm
      &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
             ENDIF                                                   !edm
@@ -662,25 +664,6 @@ C                 (AND SURFACE LEAKAGE) IS OCCURING IN (AND FROM)   !edm
         ENDDO                                                       !edm
       ENDDO                                                         !edm
 C                                                                   !edm
-C--(SURFACE LEAKANCE)                                               !edm
-   11 IF(.NOT.FUZF) GOTO 12                                         !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(SURFLK(J,I,K).EQ.0) CYCLE                              !edm
-          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                         !edm
-            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
-            IF(SURFLK(J,I,K).LT.0) THEN                             !edm
-              IF(UPDLHS) A(N)=A(N)+SURFLK(J,I,K)*                   !edm
-     &                          DELR(J)*DELC(I)*DH(J,I,K)           !edm
-            ELSE                                                    !edm
-              RHS(N)=RHS(N)-SURFLK(J,I,K)*CSURFLK(J,I,K,ICOMP)*     !edm
-     &                        DELR(J)*DELC(I)*DH(J,I,K)             !edm
-            ENDIF                                                   !edm
-          ENDIF                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C
 C--(EVAPOTRANSPIRATION)
    12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 13
       DO I=1,NROW
