@@ -56,7 +56,7 @@ C--code is distributed.                                             !edm
 C
       USE RCTMOD                                                    !# LINE 57 MAIN
       USE MIN_SAT                                                   !# LINE 58 MAIN
-      USE SFRVARS
+      USE SFRVARS, ONLY:       ISFSOLV
       USE LAKVARS
       USE MT3DMS_MODULE, ONLY: MXTRNOP,MXSTP,
      &                         FPRT,INBTN,ICBUND,CADV,COLD,RETA,PRSITY,
@@ -69,7 +69,7 @@ C
      &                         MEMDEALLOCATE,
      &                         PRSITYSAV,SATOLD,                    !edm
      &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
-     &                         IWCTS,IREACTION,IALTFM,NOCREWET,     !# V
+     &                         IWCTS,IALTFM,NOCREWET,     !# V
      &                         NODES,SAVUCN,NLAY,NROW,NCOL          !# Amended
 C
       IMPLICIT  NONE
@@ -84,9 +84,6 @@ C
      &     END_TIME
       LOGICAL existed
       CHARACTER,PARAMETER :: VID*30='[Version 5.40-beta 07/27/2010]'
-C
-C--ALLOCATE LOGICALS
-      ALLOCATE(DOMINSAT,DRYON)                                 !# NEW
 C
 C--Initialize variables 
       ALLOCATE(IREACTION,IALTFM,NOCREWET)
@@ -115,6 +112,7 @@ C--be commented out for compilers that do not support it.
 cvsb                                                           !# LINE 171 MAIN
       CALL GETARG(2,CMST)                                      !# LINE 172 MAIN
       CALL GETARG(3,CDRY)                                      !# LINE 173 MAIN
+      ALLOCATE(DOMINSAT,DRYON)
       DOMINSAT=.FALSE.                                         !# LINE 174 MAIN
       DRYON=.FALSE.                                            !# LINE 175 MAIN
       IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.       !# LINE 176 MAIN
@@ -188,9 +186,7 @@ C--INITIALIZE VARIABLES.
       ENDIF      
       IMPSOL=1
       ISPD=1
-      IF(MIXELM.EQ.0) ISPD=0
-      IF(iUnitTRNOP(18).GT.0) CALL LKT5RP(KPER)
-      IF(iUnitTRNOP(19).GT.0) CALL SFT5RP(KPER)
+      IF(MIXELM.EQ.0) ISPD=0      
 C
 C--FOR EACH STRESS PERIOD***********************************************
       HT1=0.
@@ -215,8 +211,8 @@ C--WITHIN EACH STRESS PERIOD
 C--READ AND PREPARE CTS                                        !# LINE 417 MAIN
         IF(iUnitTRNOP(6).GT.0) CALL CTS5RP(KPER)               !# LINE 418 MAIN
 C--READ LAK AND SFR BOUNDARY CONDITIONS                        !# LINE 427 MAIN
-        IF(iUnitTRNOP(18).GT.0) CALL LKT5SS(KPER)              !# LINE 429 MAIN
-        IF(iUnitTRNOP(19).GT.0) CALL SFT5SS(KPER)              !# LINE 431 MAIN
+        IF(iUnitTRNOP(18).GT.0) CALL LKT5RP(KPER)              !# LINE 429 MAIN - Vivek calls it LKT5SS?
+        IF(iUnitTRNOP(19).GT.0) CALL SFT5RP(KPER)              !# LINE 431 MAIN - Vivek calls it SFT5SS?
 C
 C--FOR EACH FLOW TIME STEP----------------------------------------------
         DO KSTP=1,NSTP
@@ -248,7 +244,7 @@ C
 C                                                              !# LINE 467 MAIN
           IF(iUnitTRNOP(19).GT.0.AND.ISFSOLV.GT.0) THEN        !# LINE 468 MAIN
             CALL FILLIASFJASF()                                !# LINE 469 MAIN
-            IF(KPER*KSTP.EQ.1) CALL XMD7AR()                   !# LINE 470 MAIN
+            IF(KPER*KSTP.EQ.1) CALL XMD7AR()                                      !# LINE 470 MAIN
           ENDIF                                                !# LINE 471 MAIN
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
@@ -537,7 +533,6 @@ C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE()
       CALL MEMDEALLOCATE2()
       CALL MEMDEALLOCATE4()
-      CALL MEMDEALLOCATE5()
 C
 C--Get CPU time at the end of simulation
 C--and print out total elapsed time in seconds

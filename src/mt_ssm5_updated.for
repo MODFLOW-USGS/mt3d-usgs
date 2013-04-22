@@ -17,6 +17,9 @@ C
      &                         IETFLG,iUnitTRNOP,IUZFOPT,IUZFBND,   !edm
      &                         IUZFOPTG,                            !edm
      &                         KSSZERO                              !# LINE 14 SSM
+      USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,   !# NEW
+     &                         ISFSOLV,WIMP,CCLOSESF,MXITERSF,      !# NEW
+     &                         CRNTSF,NOBSSF,NJASF,INFLWNOD         !# NEW
 C
       IMPLICIT  NONE
       INTEGER   ISTART, ISTOP, LLOC,I,J                             !edm
@@ -31,6 +34,12 @@ C
 C
 C--ALLOCATE
       ALLOCATE(ISSGOUT,MXSS,NSS,NTSS,IETFLG,IUZFOPTG)               !edm
+      IETFLG=.FALSE.                                                !# NEW
+      IF(FSFR) THEN                                                 !# NEW
+        ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                         !# NEW
+        ALLOCATE(ISFSOLV,WIMP,CCLOSESF,MXITERSF,CRNTSF)             !# NEW
+        ALLOCATE(NOBSSF,NJASF)                                      !# NEW
+      ENDIF                                                         !# NEW
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INSSM
@@ -135,7 +144,7 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(CGWET(NCOL,NROW,NLAY,NCOMP))                       !edm
       ELSE                                                          !edm
         ALLOCATE(IUZFOPT(1,1))                                      !edm
-        ALLOCATE(IUZFBND(1,1))                                      !edm
+        ALLOCATE(IUZFBND(NCOL,NROW))                                !edm
         ALLOCATE(UZFLX(1,1,1))                                      !edm
         ALLOCATE(UZQSTO(1,1,1))                                     !edm
         ALLOCATE(SURFLK(1,1,1))                                     !edm
@@ -161,6 +170,13 @@ C--ALLOCATE SPACE FOR ARRAYS
       SS=0.
       SSMC=0.
       SSG=0.
+C
+C--INITIALIZE IUZFBND ARRAY
+      DO I=1,NROW
+        DO J=1,NCOL
+          IUZFBND(J,I)=0
+        ENDDO
+      ENDDO
 C                                                                   !edm
 C--DETERMINE IF UZF PACKAGE IS SIMULATING ET                        !edm
 C--This approach starts at the beginning of the UZF header line and !edm
@@ -208,7 +224,7 @@ C--cells are effectively acting as though IUZFOPT=0                 !edm
             IUZFOPTG = 0                                            !edm
           ENDIF                                                     !edm
         ELSE                                                        !edm
-          IETFLG=0                                                  !edm
+          IETFLG=.FALSE.                                            !edm
         ENDIF                                                       !edm
       ENDIF
 C
@@ -1273,7 +1289,7 @@ c
      &          ncol,nrow,nlay
       real      ss,ssmc,ssg,cnew,delr,delc,dh,ctmp,qss,csink,
      &          QC_group,Q_group,Qnet_group,cavg
-      dimension ss(7,mxss),ssmc(ncomp,mxss),ssg(5,mxss),
+      dimension ss(8,mxss),ssmc(ncomp,mxss),ssg(5,mxss),
      &          cnew(ncol,nrow,nlay,ncomp),delr(ncol),delc(nrow),
      &          dh(ncol,nrow,nlay),icbund(ncol,nrow,nlay,ncomp)
 c

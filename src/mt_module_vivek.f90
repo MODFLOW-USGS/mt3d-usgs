@@ -314,7 +314,7 @@ CONTAINS
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
      &    'CTS ', 'UZF ', '    ', '    ', '    ',                       &      !edm
      &    'TOB ', '    ', 'HSS ', 'TSO ', 'RTR ',                       &
-     &    '    ', '    ', 'LKT ', 'SFT ', '    '/)
+     &    '    ', '    ', '    ', 'LKT ', 'SFT '/)
         INTEGER,          SAVE,                       POINTER :: NCOL      
         INTEGER,          SAVE,                       POINTER :: NROW      
         INTEGER,          SAVE,                       POINTER :: NLAY      

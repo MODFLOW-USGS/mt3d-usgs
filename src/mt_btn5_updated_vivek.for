@@ -31,12 +31,11 @@ C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
      &         INFTL,ICNF,IUCN,IUCN2,IOBS,IMAS,ICBM,IFTLFMT,FPRT,
      &         iUnitTRNOP(MXTRNOP),
-     &         INUZF,INCTS,INTSO,INRTR,INLKT,INSFT)                 !edm
+     &         INUZF,INCTS,INTSO)                                               !edm
 C--ALLOCATE SCALAR VARIABLES
-      !ALLOCATE(DOMINSAT)                                       !# NEEDED
-      ALLOCATE(IATS)                                            !# NEEDED
-      !ALLOCATE(DRYON)                                          !# NEEDED
-      ALLOCATE(MUTDRY,IC2DRY,MINVOL,IDRYBUD)                    !# NEW
+C      ALLOCATE(DOMINSAT)                                       !# NEEDED
+C      ALLOCATE(IATS)                                           !# NEEDED
+C      ALLOCATE(DRYON)                                          !# NEEDED
 C
 C--SET DEFAULT UNIT NUMBERS
       INBTN=1
@@ -346,7 +345,7 @@ C--ALLOCATE SCALAR VARIABLES
       ALLOCATE(UNIDX)
       ALLOCATE(UNIDY)
       ALLOCATE(UNIDZ)
-c      ALLOCATE(IETFLG)                                              !edm
+      ALLOCATE(IETFLG)                                              !edm
 C
 C--INITIALIZE VARIABLES THAT DEPEND ON OTHER PACKAGES
 	ISOTHM=0
@@ -479,7 +478,6 @@ C--ALLOCATE AND INITIALIZE
       ALLOCATE(TMASIO(122,2,NCOMP))
       ALLOCATE(RMASIO(122,2,NCOMP))
       ALLOCATE(TMASS(4,3,NCOMP))
-      ALLOCATE(IABSMIN)
       LAYCON=0
       ICBUND=0
       DELR=0.
