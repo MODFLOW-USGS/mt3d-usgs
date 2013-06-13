@@ -18,7 +18,7 @@ C
      &                         IUZFOPTG,                            !edm
      &                         KSSZERO                              !# LINE 14 SSM
       USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,   !# NEW
-     &                         ISFSOLV,WIMP,CCLOSESF,MXITERSF,      !# NEW
+     &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,      !# NEW
      &                         CRNTSF,NOBSSF,NJASF,INFLWNOD         !# NEW
 C
       IMPLICIT  NONE
@@ -37,7 +37,7 @@ C--ALLOCATE
       IETFLG=.FALSE.                                                !# NEW
       IF(FSFR) THEN                                                 !# NEW
         ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                         !# NEW
-        ALLOCATE(ISFSOLV,WIMP,CCLOSESF,MXITERSF,CRNTSF)             !# NEW
+        ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)             !# NEW
         ALLOCATE(NOBSSF,NJASF)                                      !# NEW
       ENDIF                                                         !# NEW
 C
@@ -601,7 +601,8 @@ C
      &                         FSWT,FSFR,FUZF,
      &                         FINFIL,IETFLG,UZET,CUZET,GWET,CGWET, !edm
      &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND,!edm
-     &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS   !# LINE 348-349 SSM
+     &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
+     &                         CINACT,DELT,DTRANS   !# LINE 348-349 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
@@ -627,9 +628,22 @@ C--TRANSIENT FLUID STORAGE TERM
 CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD  !# LINE 390-396 SSM
 CEDM--IS WRONG                                                      !# LINE 390-396 SSM
                 IF(.NOT.FUZF .OR. IUZFBND(J,I).LE.0) THEN           !edm
-                  RHS(N)=RHS(N)-COLD(J,I,K,ICOMP)*
-     &                     QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+c                  RHS(N)=RHS(N)-COLD(J,I,K,ICOMP)*
+c     &                     QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+C
+                IF(IALTFM.EQ.1) THEN
+                  !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
+                  !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
+                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                  !ENDIF
+                ELSE
+                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+!     1                 *RETA(N,ICOMP)
+                ENDIF
+C
                 ENDIF                                               !edm
+
               ENDIF
             ENDDO
           ENDDO
@@ -994,7 +1008,7 @@ C
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,FUZF,
-     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM         !# LINE 607 SSM
+     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT         !# LINE 607 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
@@ -1014,13 +1028,30 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
 CEDM--WAS WRONG.
-            CTMP=COLD(J,I,K,ICOMP)                                  !# LINE 646 SSM
-            IF(QSTO(J,I,K).GT.0) THEN
-              RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)+QSTO(J,I,K)*  !edm
-     &         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)                !edm
+            IF(IALTFM.EQ.1) THEN
+              CTMP=COLD(J,I,K,ICOMP)
+              !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).LE.1.0E-3) then
+              !IF(COLD(J,I,K,ICOMP).LE.1.0E-6) then
+              !  CTMP=0.
+              !endif
+              IF(QSTO(J,I,K).GT.0) THEN
+                RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)
+              ELSE
+                RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)
+              ENDIF
             ELSE
-              RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)+QSTO(J,I,K)*  !edm
-     &         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)                !edm
+              CTMP=CNEW(J,I,K,ICOMP)
+              IF(QSTO(J,I,K).GT.0) THEN
+                RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+              ELSE
+                RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+              ENDIF
             ENDIF
           ENDDO
         ENDDO

@@ -5,6 +5,8 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ID2D
         REAL,             SAVE, DIMENSION(:,:,:,:,:),POINTER :: QC7
         REAL,             SAVE, DIMENSION(:),        POINTER :: C7
+        REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: COLD7
+        REAL,             SAVE, DIMENSION(:,:,:),    POINTER :: TMASS2
         INTEGER,          SAVE,                      POINTER :: ICNTDRY
         INTEGER,          SAVE,                      POINTER :: NCNTDRY
         INTEGER,          SAVE,                      POINTER :: NICBND2
@@ -24,6 +26,7 @@
         INTEGER,          SAVE,                      POINTER :: ISFSOLV
         INTEGER,          SAVE,                      POINTER :: MXITERSF
         REAL,             SAVE,                      POINTER :: WIMP
+        REAL,             SAVE,                      POINTER :: WUPS
         REAL,             SAVE,                      POINTER :: CCLOSESF
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFL
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFR
@@ -32,6 +35,7 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCH
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: NIN
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: INFLWNOD
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IEXIT
         REAL,             SAVE, DIMENSION(:),        POINTER :: SFLEN
         REAL,             SAVE, DIMENSION(:),        POINTER :: SFNAREA
         REAL,             SAVE, DIMENSION(:),        POINTER :: SFOAREA
@@ -43,6 +47,7 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: QETSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSFO
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IBNDSF
 !
         DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
@@ -94,6 +99,8 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: CETSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CSTORINSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CSTOROTSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CCCINSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CCCOUTSF
 CONTAINS
       SUBROUTINE MEMDEALLOCATE3()
         IF(ASSOCIATED(IASF))   DEALLOCATE(IASF)        !# LINE 496 SFR
@@ -153,6 +160,8 @@ CONTAINS
         IF(ASSOCIATED(CETSF))       DEALLOCATE(CETSF)
         IF(ASSOCIATED(CSTORINSF))   DEALLOCATE(CSTORINSF)
         IF(ASSOCIATED(CSTOROTSF))   DEALLOCATE(CSTOROTSF)
+        IF(ASSOCIATED(CCCINSF))   DEALLOCATE(CCCINSF)
+        IF(ASSOCIATED(CCCOUTSF))   DEALLOCATE(CCCOUTSF)
       END SUBROUTINE MEMDEALLOCATE5                   !# LINE 1466 FMI
     END MODULE SFRVARS
     MODULE LAKVARS
