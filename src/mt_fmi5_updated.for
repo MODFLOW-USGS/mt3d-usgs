@@ -283,9 +283,15 @@ C--COMPUTE SATURATION                                               !edm
                 SATNEW(J,I,K)=1                                     !edm
               ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.                    !edm
      &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN                       !edm
-                SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*    !edm
+                IF(INT(DH(J,I,K)).EQ.-111) THEN                     !edm 6/14/13
+                  SATNEW(J,I,K)).EQ.-111) THEN                      !edm 6/14/13
+                ELSE                                                !edm 6/14/13
+                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*  !edm
      &                          WC(J,I,K)/PRSITY(J,I,K)+            !edm
      &                          DH(J,I,K)/DZ(J,I,K)*1               !edm
+                ENDIF                                               !edm 6/14/13
+                SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*    !edm
+
               ENDIF                                                 !edm
             ENDDO                                                   !edm
           ENDDO                                                     !edm
@@ -297,6 +303,9 @@ C--WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ          !edm
           DO I=1,NROW                                               !edm
             DO J=1,NCOL                                             !edm
               IF(ICBUND(J,I,K,1).NE.0) THEN                         !edm
+C--THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,    !edm 6/14/13
+C  ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111             !edm 6/14/13
+                IF(INT(DH(J,I,K).EQ.-111) DH(J,I,K)=DZ(J,I,K)       !edm
                 IF(DH(J,I,K).LT.1E-5) THEN                          !edm
                   QZ(J,I,K)=UZFLX(J,I,K+1)                          !edm
                 ENDIF                                               !edm
