@@ -328,8 +328,8 @@ C--FORMULATE MATRIX COEFFICIENTS
      &                  COLD,CNEW)                             !# LINE 620 MAIN
                 IF(iUnitTRNOP(18).GT.0)                        !# LINE 622 MAIN
      &           CALL LKT5FM(ICOMP)                            !# LINE 623 MAIN
-                IF(iUnitTRNOP(19).GT.0)                        !# LINE 627 MAIN
-     1           CALL SFT5FM(ICOMP)                            !# LINE 628 MAIN
+                IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC..                        !# LINE 627 MAIN
+     1           CALL SWF5FM(ICOMP)                            !# LINE 628 MAIN
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG5AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
