@@ -41,26 +41,26 @@ C
 C--SET DEFAULT UNIT NUMBERS
       INBTN=1
       INFTL=10
-      IOUT=16
+      IOUT =16
       INADV=2
       INDSP=3
       INSSM=4
-c      INCTS=6                                                       !# Not set in Vivek's Main as expected, setting it here
+      INCTS=6                                                       !# Not set in Vivek's Main as expected, setting it here
       INUZF=7                                                       !edm
       INRCT=8
       INGCG=9  
       INTOB=12
       INHSS=13
-c      INTSO=14                                                      !# Not set in Vivek's Main as expected, setting it here
+      INTSO=14                                                      !# Not set in Vivek's Main as expected, setting it here
       INRTR=15                                                      !# LINE 144 MAIN
-      ICNF=17
+      ICNF =17
       INLKT=18                                                      !# LINE 145 MAIN
       INSFT=19                                                      !# LINE 145 MAIN
-      IUCN=200
+      IUCN =200
       IUCN2=300
-      IOBS=400
-      IMAS=600
-      ICBM=800
+      IOBS =400
+      IMAS =600
+      ICBM =800
 C
 C--INITIALIZE.
       FPRT=' '
@@ -199,6 +199,8 @@ C--CHECK FOR MAJOR OPTIONS.
                 IU=INDSP
               elseif(NameTRNOP(i).EQ.'SSM') THEN
                 IU=INSSM
+              elseif(NameTRNOP(i).EQ.'CTS') THEN              !# New 7-11-13
+                IU=INCTS                                      !# New 7-11-13
               elseif(NameTRNOP(i).EQ.'UZF') THEN                    !edm
                 IU=INUZF                                            !edm
               elseif(NameTRNOP(i).EQ.'RCT') THEN
@@ -369,7 +371,7 @@ C--READ AND PRINT NO. OF LAYERS, ROWS, COLUMNS, AND STRESS PERIODS,
 C--COMPONENTS
       IATS=0                                                   !# LINE 261 BTN
       READ(IN,'(7I10)',ERR=25,IOSTAT=IERR)                     !# LINE 262 BTN
-     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP,IATS !# LINE 263 BTN
+     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP      !# LINE 263 BTN
       IF(NCOMP.LT.1) NCOMP=1
       IF(MCOMP.LT.1) MCOMP=1
    25 IF(IERR.NE.0) THEN
@@ -560,11 +562,12 @@ C--CALL RARRAY TO READ IN POROSITY ONE LAYER AT A TIME
         CALL RARRAY(PRSITY(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,IN,IOUT)
       ENDDO
 C                                                                   !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
+C                                                                   !edm
 C--IMMEDIATELY POINT PRSITYSAV TO PRSITY SO THAT THE ORIGINAL       !edm
 C--BTN PRSITY IS RETAINED FOR THE REMAINDER OF CODE EXECUTION       !edm
-      PRSITYSAV=>PRSITY                                             !edm
-C                                                                   !edm
-      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
+        PRSITYSAV=>PRSITY                                           !edm
+C
 C--CALL RARRAY TO READ IN STARTING WATER CONTENT                    !edm
         ANAME='WATER CONTENT'                                       !edm
         DO K=1,NLAY                                                 !edm

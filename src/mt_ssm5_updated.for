@@ -170,6 +170,7 @@ C--ALLOCATE SPACE FOR ARRAYS
       SS=0.
       SSMC=0.
       SSG=0.
+      IETFLG=.FALSE.
 C
 C--INITIALIZE IUZFBND ARRAY
       DO I=1,NROW
@@ -1008,7 +1009,8 @@ C
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,FUZF,
-     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT         !# LINE 607 SSM
+     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT, !# LINE 607 SSM
+     &                        iUnitTRNOP
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
@@ -1196,7 +1198,7 @@ C--POINT SINK/SOURCE TERMS
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 729 SSM
-        IF(INCTS.GT.0) THEN                                    !# LINE 730 SSM
+        IF(iUnitTRNOP(INCTS).GT.0) THEN                        !# LINE 730 SSM
           IF(SS(8,NUM).GT.0) THEN                              !# LINE 731 SSM
             IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                    !# LINE 732 SSM
           ENDIF                                                !# LINE 733 SSM

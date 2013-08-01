@@ -40,6 +40,7 @@
 		<File RelativePath="..\src\mt_rct5_updated.for"/>
 		<File RelativePath="..\src\mt_sfr.for"/>
 		<File RelativePath="..\src\mt_ssm5_updated.for"/>
+		<File RelativePath="..\src\mt_swf.for"/>
 		<File RelativePath="..\src\mt_tob5.for"/>
 		<File RelativePath="..\src\NWT1_xmd.f"/>
 		<File RelativePath="..\src\NWT1_xmdlib.f"/>

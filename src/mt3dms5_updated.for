@@ -461,7 +461,7 @@ C
               IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
      &         CALL HSS5BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
               IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)      !# LINE 745 MAIN
-     &         CALL CTS5BD(ICOMP,DTRANS,N)                     !# LINE 746 MAIN
+     &         CALL CTS5BD(KSTP,KPER,ICOMP,DTRANS,N)           !# LINE 746 MAIN
               IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0            !# LINE 761 MAIN
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 762 MAIN
      &           CALL ADVQC7BD(ICOMP,DTRANS)                   !# LINE 763 MAIN

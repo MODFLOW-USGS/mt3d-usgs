@@ -37,7 +37,7 @@ C
 C
 C--ALLOCATE
       ALLOCATE(MaxHSSSource,MaxHSSCells,MaxHSSStep,nHSSSource,iRunHSSM,
-     &         faclength,factime,facmass)
+     &         faclength,factime,facmass,IHSSGEN)
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INHSS
