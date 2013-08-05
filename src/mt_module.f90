@@ -567,18 +567,18 @@ CONTAINS
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: JINJ                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: IOPTINJ               !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: IOPTEXT               !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGEXT              !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGINJ              !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CINCTS                !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CNTE                  !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGEXT              !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CMCHGINJ              !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: CINCTS                !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: CNTE                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: ITRTEXT               !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: ITRTINJ               !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QINCTS                !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QOUTCTS               !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: QINCTS                !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: QOUTCTS               !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: NEXT                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: NINJ                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:),         POINTER :: QCTS                  !# LINE 91-95 MAIN
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: CCTS                  !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:),         POINTER :: QCTS                  !# LINE 91-95 MAIN
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: CCTS                  !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: NCTS                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IWEXT                 !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IWINJ                 !# LINE 91-95 MAIN
