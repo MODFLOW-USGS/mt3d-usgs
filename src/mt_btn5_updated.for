@@ -201,6 +201,8 @@ C--CHECK FOR MAJOR OPTIONS.
                 IU=INSSM
               elseif(NameTRNOP(i).EQ.'CTS') THEN              !# New 7-11-13
                 IU=INCTS                                      !# New 7-11-13
+              elseif(NameTRNOP(i).EQ.'TSO') THEN              !# New 7-11-13
+                IU=INTSO                                      !# New 7-11-13
               elseif(NameTRNOP(i).EQ.'UZF') THEN                    !edm
                 IU=INUZF                                            !edm
               elseif(NameTRNOP(i).EQ.'RCT') THEN
@@ -371,7 +373,7 @@ C--READ AND PRINT NO. OF LAYERS, ROWS, COLUMNS, AND STRESS PERIODS,
 C--COMPONENTS
       IATS=0                                                   !# LINE 261 BTN
       READ(IN,'(7I10)',ERR=25,IOSTAT=IERR)                     !# LINE 262 BTN
-     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP      !# LINE 263 BTN
+     &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP,IATS !# LINE 263 BTN
       IF(NCOMP.LT.1) NCOMP=1
       IF(MCOMP.LT.1) MCOMP=1
    25 IF(IERR.NE.0) THEN

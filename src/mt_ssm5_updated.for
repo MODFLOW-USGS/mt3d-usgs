@@ -603,7 +603,7 @@ C
      &                         FINFIL,IETFLG,UZET,CUZET,GWET,CGWET, !edm
      &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND,!edm
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
-     &                         CINACT,DELT,DTRANS   !# LINE 348-349 SSM
+     &                         CINACT,DELT,DTRANS,iUnitTRNOP   !# LINE 348-349 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
@@ -767,7 +767,7 @@ C--POINT SINK/SOURCE TERMS
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 450 SSM
-        IF(INCTS.GT.0) THEN                                    !# LINE 451 SSM
+        IF(iUnitTRNOP(6).GT.0) THEN                                    !# LINE 451 SSM
           IF(SS(8,NUM).GT.0) THEN                              !# LINE 452 SSM
             CONTINUE                                           !# LINE 453 SSM
 CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                 !# LINE 454 SSM
@@ -1198,7 +1198,7 @@ C--POINT SINK/SOURCE TERMS
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 729 SSM
-        IF(iUnitTRNOP(INCTS).GT.0) THEN                        !# LINE 730 SSM
+        IF(iUnitTRNOP(6).GT.0) THEN                                    !# LINE 730 SSM
           IF(SS(8,NUM).GT.0) THEN                              !# LINE 731 SSM
             IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                    !# LINE 732 SSM
           ENDIF                                                !# LINE 733 SSM
