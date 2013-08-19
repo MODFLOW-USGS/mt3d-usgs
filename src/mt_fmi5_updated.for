@@ -79,10 +79,10 @@ C
       ELSEIF(VERSION(1:11).EQ.'MT3D4.00.00') THEN
         REWIND(INFTL)
         IF(IFTLFMT.EQ.0) THEN
-          READ(INFTL) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,
-     &     MTRIV,MTGHB,MTCHD,ISS,NPERFL,
-     &     MTSTR,MTRES,MTFHB,MTDRT,MTETS,MTTLK,MTIBS,MTLAK,MTMNW,
-     &     MTSWT,MTSFR,MTUZF
+          READ(INFTL) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,            !5
+     &     MTRIV,MTGHB,MTCHD,ISS,NPERFL,                          !10
+     &     MTSTR,MTRES,MTFHB,MTDRT,MTETS,MTTLK,MTIBS,MTLAK,MTMNW, !19
+     &     MTSWT,MTSFR,MTUZF                                      !22
         ELSEIF(IFTLFMT.EQ.1) THEN
           READ(INFTL,*) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,
      &     MTRIV,MTGHB,MTCHD,ISS,NPERFL,
@@ -724,7 +724,8 @@ C
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
      &                         FETS,FSWT,FSFR,FUZF,ISS,NPERFL,
-     &                         CNEW,SSMC,KSSZERO                    !# LINE 563 FMI
+     &                         CNEW,SSMC,KSSZERO,                   !# LINE 563 FMI
+     &                         IUZFBND
 C
       IMPLICIT  NONE
       INTEGER   INUF,J,I,K,
@@ -786,7 +787,11 @@ C--PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED     !edm
       IF(FUZF) THEN                                                 !edm
         DO I=1,NROW                                                 !edm
           DO J=1,NCOL                                               !edm
-            FINFIL(J,I)=UZFLX(J,I,1)                                !edm
+            IF(ABS(IUZFBND(J,I)).GT.0) THEN                         !edm
+              FINFIL(J,I)=UZFLX(J,I,ABS(IUZFBND(J,I)))              !edm
+            ELSE                                                    !edm
+              FINFIL(J,I)=UZFLX(J,I,1)                              !edm
+            ENDIF
           ENDDO                                                     !edm
         ENDDO                                                       !edm
       ENDIF                                                         !edm
@@ -872,7 +877,7 @@ C--IF MNW OPTION IS USED IN FLOW MODEL.
       IF(FMNW) THEN
         TEXT='MNW'
         IQ=27
-        CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+        CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
@@ -905,6 +910,14 @@ C--IF LAK OPTION IS USED IN FLOW MODEL.                        !# LINE 725 FMI
      &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT,NCOMP)           !# LINE 730 FMI
       ENDIF                                                    !# LINE 731 FMI
 C                                                              !# LINE 732 FMI
+C--READ UZF -> SFR & UZF -> LAK FLOWS (L**3/T)                       !edm
+C--IF UZF AND SFR OR UZF AND LAKE OR BOTH ARE USED IN THE FLOW MODEL !edm
+      IF((FUZF.AND.FSFR).OR.(FUZF.AND.FLAK)) THEN                   !edm
+        TEXT='UZF CONNECTIONS'                                      !edm
+        IQ=32                                                       !edm
+        CALL READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,     !edm
+     &   TEXT,NCOMP)                                                !edm
+      ENDIF                                                         !edm
 C--CHECK IF MAXIMUM NUMBER OF POINT SINKS/SOURCES EXCEEDED.
 C--IF SO STOP
       WRITE(IOUT,801) NTSS
@@ -1689,7 +1702,7 @@ cvsb      IF(ALLOCATED(ISFL)) DEALLOCATE(ISFL)
 cvsb      IF(ALLOCATED(ISFR)) DEALLOCATE(ISFR)
 cvsb      IF(ALLOCATED(ISFC)) DEALLOCATE(ISFC)
 cvsb      IF(ALLOCATED(ISEG)) DEALLOCATE(ISEG)
-cvsb      IF(ALLOCATED(IRCH)) DEALLOCATE(IRCH)
+cvsb      IF(ALLOCATED(IREACH)) DEALLOCATE(IREACH)
 cvsb      IF(ALLOCATED(SFLEN)) DEALLOCATE(SFLEN)
 cvsb      IF(ALLOCATED(SFNAREA)) DEALLOCATE(SFNAREA)
 C      IF(ALLOCATED(SFOAREA)) DEALLOCATE(SFOAREA)
@@ -1714,7 +1727,7 @@ C.....INDEXING TO GET ISTRM FROM SEG AND RCH NUMBERS
 cvsb      IF(ALLOCATED(ISTRM)) DEALLOCATE(ISTRM)
 C
       ALLOCATE(ISFL(NSTRM),ISFR(NSTRM),ISFC(NSTRM),ISEG(NSTRM),
-     1  IRCH(NSTRM),SFLEN(NSTRM),SFNAREA(NSTRM), !SFOAREA(NSTRM),
+     1  IREACH(NSTRM),SFLEN(NSTRM),SFNAREA(NSTRM), !SFOAREA(NSTRM),
      1  QPRECSF(NSTRM),QRUNOFSF(NSTRM),
 !     1  QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
      1  QSFGW(NSTRM),QOUTSF(NSTRM),QETSF(NSTRM),NIN(NSTRM),
@@ -1767,8 +1780,8 @@ C--EACH LAKE INFLOWS AND OUTFLOWS
       DO N=1,NSTRM
         IF(IFTLFMT.EQ.0) THEN
           READ(INUF) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IRCH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),QRUNOFSF(N),
-     1      QPRECSF(N),QETSF(N),NIN(N)
+     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
           IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
           DO I=1,NIN(N)
             ICNT=ICNT+1
@@ -1777,8 +1790,8 @@ C--EACH LAKE INFLOWS AND OUTFLOWS
           ENDDO
         ELSEIF(IFTLFMT.EQ.1) THEN
           READ(INUF,*) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IRCH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),QRUNOFSF(N),
-     1      QPRECSF(N),QETSF(N),NIN(N)
+     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
           IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
           DO I=1,NIN(N)
             ICNT=ICNT+1
@@ -1787,12 +1800,12 @@ C--EACH LAKE INFLOWS AND OUTFLOWS
           ENDDO
         ENDIF
 C.......STORE N
-        ISTRM(IRCH(N),ISEG(N))=N
+        ISTRM(IREACH(N),ISEG(N))=N
 C.......WRITE TO OUTPUT FILE
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
           WRITE(IOUT,51) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IRCH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),QRUNOFSF(N),
-     1      QPRECSF(N),QETSF(N),NIN(N)
+     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
           DO I=1,NIN(N)
             WRITE(IOUT,52) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
      1        IDSPFLG(ICNT)
@@ -1877,15 +1890,16 @@ C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF LAK PAKCAGE
 C *********************************************************************
 C last modified: 08-10-2012
 C
+      USE MT3DMS_MODULE, ONLY: IFTLFMT                            !# New
       USE LAKVARS
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
-     &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,IFTLFMT,
+     &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
      &          KKK,III,JJJ,ITEMP,IGROUP,NCOMP
       REAL      BUFF,SS,QSS,QSTEMP,QSW
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),SS(8,MXSS)
-      COMMON /FTL/IFTLFMT
+C      COMMON /FTL/IFTLFMT
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -2014,5 +2028,111 @@ C--PRINT FORMATS
 53    FORMAT(1X,3I5,1(1X,G12.5))
 C
 C--RETURN
+      RETURN
+      END
+C
+C
+      SUBROUTINE READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                          NCOMP)
+C *********************************************************************
+C THIS SUBROUTINE READS UZF->SFR & UZF->LAK CONNECTIONS
+C *********************************************************************
+C last modified: 08-15-2013
+C
+      USE MT3DMS_MODULE, ONLY: IFTLFMT 
+      USE SFRVARS,       ONLY: MXUZCON,IROUTE,UZQ
+      IMPLICIT  NONE
+      INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
+     &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
+     &          KK,II,JJ,ITEMP,IGROUP,NCOMP,NCON
+      INTEGER   ISTSG,NREACH,ILAK
+      REAL      Q,LENFRAC
+      CHARACTER LABEL*16,TEXT*16
+C      COMMON /FTL/IFTLFMT
+C
+C--WRITE IDENTIFYING INFORMATION
+      WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
+C--PRINT FORMATS
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
+     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     & /20X,92('-'))
+C
+C--READ IDENTIFYING RECORD
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+      ENDIF
+C
+C--CLEAN AND INITIALIZE TO ZERO
+      DO II=1,MXUZCON
+        DO JJ=1,7
+          IROUTE(JJ,II)=0
+        ENDDO
+        DO JJ=1,4
+          UZQ(JJ,II)=0.
+        ENDDO
+      ENDDO
+C
+C--READ CONNECTIONS INFORMATION
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) LABEL
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) LABEL
+      ENDIF
+      BACKSPACE (INUF)
+C
+C--LOOP THROUGH EACH CONNECTION
+      DO I=1,NCON
+C
+C--IF UZF -> SFR, READ 9 VALUES
+        IF(LABEL.EQ.'SFR') THEN
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q,LENFRAC
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q,LENFRAC
+          ENDIF
+          IROUTE(1,I)=1  !1:SFR, 2:LAK
+          IROUTE(2,I)=KK
+          IROUTE(3,I)=II
+          IROUTE(4,I)=JJ
+          IROUTE(5,I)=ISTSG
+          IROUTE(6,I)=NREACH
+          IF(TEXT.EQ.'GRW') THEN
+            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'EXC') THEN
+            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'REJ') THEN
+            IROUTE(7,I)=3    !1:GRW, 2:EXC, 3:REJ
+          ENDIF
+          UZQ(1,I)=Q
+          UZQ(2,I)=LENFRAC
+C
+C--IF UZF -> LAK, READ 7 VALUES
+        ELSEIF(LABEL.EQ.'LAK') THEN
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) LABEL,TEXT,KK,II,JJ,ILAK,Q
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
+          ENDIF
+          IROUTE(1,I)=2  !1:SFR, 2:LAK
+          IROUTE(2,I)=KK
+          IROUTE(3,I)=II
+          IROUTE(4,I)=JJ
+          IROUTE(5,I)=ILAK
+          !IROUTE(6,I) ALREADY EQUALS ZERO
+          IF(TEXT.EQ.'GRW') THEN
+            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'EXC') THEN
+            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'REJ') THEN
+            IROUTE(7,I)=3    !1:GRW, 2:EXC, 3:REJ
+          ENDIF
+          UZQ(1,I)=Q
+          !UZQ(2,I) ALREADY EQUALS ZERO
+        ENDIF
+C        
+      ENDDO
+C
       RETURN
       END

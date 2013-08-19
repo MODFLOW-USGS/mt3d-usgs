@@ -32,7 +32,7 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFR
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFC
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEG
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCH
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IREACH
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: NIN
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: INFLWNOD
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IEXIT
@@ -48,6 +48,10 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: QETSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSFO
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IBNDSF
+!--UZF -> SFR & UZF -> LAK CONNECTIONS
+        INTEGER,          SAVE,                      POINTER :: MXUZCON
+        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: IROUTE
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: UZQ
 !
         DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
@@ -114,7 +118,7 @@ CONTAINS
         IF(ASSOCIATED(ISFR))       DEALLOCATE(ISFR)         !# LINE 1441 FMI
         IF(ASSOCIATED(ISFC))       DEALLOCATE(ISFC)         !# LINE 1442 FMI
         IF(ASSOCIATED(ISEG))       DEALLOCATE(ISEG)         !# LINE 1443 FMI
-        IF(ASSOCIATED(IRCH))       DEALLOCATE(IRCH)         !# LINE 1444 FMI
+        IF(ASSOCIATED(IREACH))     DEALLOCATE(IREACH)       !# LINE 1444 FMI
         IF(ASSOCIATED(NIN))        DEALLOCATE(NIN)          !# UPDATED
         IF(ASSOCIATED(INFLWNOD))   DEALLOCATE(INFLWNOD)     !# UPDATED
         IF(ASSOCIATED(SFLEN))      DEALLOCATE(SFLEN)        !# LINE 1445 FMI
