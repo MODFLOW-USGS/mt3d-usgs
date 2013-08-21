@@ -549,6 +549,7 @@ CONTAINS
 !--SSM-Vivek
         INTEGER,          SAVE,                       POINTER :: IALTFM                !# LINE 99 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: KSSZERO               !# LINE 2 SSM
+        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: COLDFLW
 !--RCT
         INTEGER,          SAVE,                       POINTER :: IREACT
         INTEGER,          SAVE,                       POINTER :: IRCTOP

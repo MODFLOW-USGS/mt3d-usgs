@@ -12,7 +12,7 @@ C
      &                         NPMAX,INTERP,NLSINK,NPSINK,WD,DCEPS,
      &                         SRMULT,DCHMOC,NCOUNT,NPCHEK,INDEXX,
      &                         INDEXY,INDEXZ,XP,YP,ZP,CNPT,
-     &                         IALTFM,NOCREWET !cvsb123,NCOMP                 !# LINE 4 ADV
+     &                         IALTFM,NOCREWET,COLDFLW,NCOMP !cvsb123,NCOMP                 !# LINE 4 ADV
       USE MIN_SAT, ONLY: DOMINSAT,DRYON,NICBND2,ICBND2,QC7,ID2D,C7,
      &  COLD7,TMASS2                        !# LINE 11 ADV
 C
@@ -129,6 +129,8 @@ C-----MST AND DRY OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM=0
         ENDIF                                                         !# LINE 108 ADV
       ENDIF                                                           !# LINE 109 ADV
 C                                                                     !# LINE 110 ADV
+C-----ALLOCATE ONLY IF IALTFM=1
+      IF(IALTFM.EQ.1) ALLOCATE(COLDFLW(NCOL,NROW,NLAY,NCOMP))
 C
 C--ALLOCATE AND INITIALIZE
 C--INTEGER ARRAYS

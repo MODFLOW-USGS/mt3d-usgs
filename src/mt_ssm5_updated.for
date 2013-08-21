@@ -603,7 +603,7 @@ C
      &                         FINFIL,IETFLG,UZET,CUZET,GWET,CGWET, !edm
      &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND,!edm
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
-     &                         CINACT,DELT,DTRANS,iUnitTRNOP   !# LINE 348-349 SSM
+     &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW   !# LINE 348-349 SSM
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
@@ -633,6 +633,12 @@ c                  RHS(N)=RHS(N)-COLD(J,I,K,ICOMP)*
 c     &                     QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
 C
                 IF(IALTFM.EQ.1) THEN
+                  !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
+                  !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
+                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1            *RETA(J,I,K,ICOMP)*COLDFLW(J,I,K,ICOMP) !*DELT/DTRANS
+                  !ENDIF
+                ELSEIF(IALTFM.EQ.2) THEN
                   !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
                   !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
                   RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
@@ -1010,7 +1016,7 @@ C
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,FUZF,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT, !# LINE 607 SSM
-     &                        iUnitTRNOP
+     &                        iUnitTRNOP,DELT,COLDFLW
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
@@ -1030,20 +1036,21 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
 CEDM--WAS WRONG.
-            IF(IALTFM.EQ.1) THEN
-              CTMP=COLD(J,I,K,ICOMP)
+            IF(IALTFM.GE.1) THEN
+              IF(IALTFM.EQ.1) CTMP=COLDFLW(J,I,K,ICOMP)
+              IF(IALTFM.EQ.2) CTMP=COLD(J,I,K,ICOMP)
               !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).LE.1.0E-3) then
               !IF(COLD(J,I,K,ICOMP).LE.1.0E-6) then
               !  CTMP=0.
               !endif
               IF(QSTO(J,I,K).GT.0) THEN
                 RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
-     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
-     1                 *RETA(J,I,K,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
               ELSE
                 RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
-     &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
-     1                 *RETA(J,I,K,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
               ENDIF
             ELSE
               CTMP=CNEW(J,I,K,ICOMP)

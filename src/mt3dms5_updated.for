@@ -70,7 +70,7 @@ C
      &                         PRSITYSAV,SATOLD,                    !edm
      &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
      &                         IWCTS,IREACTION,IALTFM,NOCREWET,     !# V
-     &                         NODES,SAVUCN,NLAY,NROW,NCOL          !# Amended
+     &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW          !# Amended
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
@@ -245,6 +245,7 @@ C
           IF(iUnitTRNOP(3).GT.0) CALL FMI5RP2(KPER,KSTP)
 C
           IF(DRYON) CALL ADVQC7RP(KPER,KSTP)                   !# LINE 467 MAIN
+          IF(IALTFM.EQ.1) COLDFLW=COLD
 C                                                              !# LINE 467 MAIN
           IF(iUnitTRNOP(19).GT.0.AND.ISFSOLV.GT.0) THEN        !# LINE 468 MAIN
             CALL FILLIASFJASF()                                !# LINE 469 MAIN
@@ -294,6 +295,7 @@ C
 C--ALWAYS UPDATE MATRIX IF NONLINEAR SORPTION OR MULTICOMPONENT
               IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.1) UPDLHS=.TRUE.
               IF(NCOMP.GT.1) UPDLHS=.TRUE.
+              IF(IALTFM.EQ.2) UPDLHS=.TRUE.
               IF(iUnitTRNOP(6).GT.0 .OR.                       !# LINE 545 MAIN
      1           iUnitTRNOP(18).GT.0 .OR.                      !# LINE 546 MAIN
      1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.            !# LINE 547 MAIN
@@ -307,7 +309,7 @@ C--UPDATE COEFFICIENTS THAT VARY WITH ITERATIONS
 C
 C--FORMULATE MATRIX COEFFICIENTS
                 CALL BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
-     &                      DTRANS,PRSITYSAV,SATOLD)                !edm
+     &                      DTRANS,PRSITYSAV,SATOLD,HT2,TIME2)                !edm
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
      &           .AND. ICOMP.LE.MCOMP)
      &           CALL ADV5FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
@@ -475,7 +477,7 @@ C
      1          CALL SFT5BD(ICOMP,KPER,KSTP,DTRANS,N)          !# LINE 781 MAIN
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE
-              CALL BTN5BD(ICOMP,DTRANS)
+              CALL BTN5BD(ICOMP,DTRANS,TIME2,HT2)
 C
 C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY !# LINE 792 MAIN
               IF(IREACTION.EQ.2) THEN                          !# LINE 793 MAIN

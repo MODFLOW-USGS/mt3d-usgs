@@ -1303,7 +1303,7 @@ C
       END
 C
 C
-      SUBROUTINE BTN5BD(ICOMP,DTRANS)
+      SUBROUTINE BTN5BD(ICOMP,DTRANS,TIME2,HT2)
 C **********************************************************************
 C THIS SUBROUTINE SUMMARIZES VOLUMETRIC MASS BUDGETS AND CALCULATES
 C MASS BALANCE DISCREPANCY SINCE THE BEGINNING OF THE SIMULATION.
@@ -1315,7 +1315,7 @@ C
      &                         PRSITY2,RETA2,iSSTrans,ISOTHM,TMASIN,
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
      &                         ISS,
-     &                         PRSITYSAV,SATOLD,FUZF                !edm
+     &                         PRSITYSAV,SATOLD,FUZF,IALTFM,QSTO                !edm
       USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7                                    !# LINE 1227 BTN
       USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG                   !# LINE 1228 BTN
 C
@@ -1323,6 +1323,7 @@ C
       INTEGER   ICOMP,K,I,J,IQ,INDX,N
       REAL      DMSTRG,SOURCE,SINK,TM1,TM2,DTRANS,
      &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS
+      REAL TIME2,HT2
 C
 C--CALCULATE SOLUTE AND SORBED MASS STORAGE CHANGES (MOBILE-DOMAIN)
 C--FOR THE CURRENT TRANSPORT STEP
@@ -1332,8 +1333,15 @@ C--FOR THE CURRENT TRANSPORT STEP
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
               IF(.NOT.FUZF) THEN
+                IF(IALTFM.EQ.2) THEN
+                DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
+     &                     *PRSITY(J,I,K)*(DELR(J)*DELC(I)*DH(J,I,K)
+     &              +DELR(J)*DELC(I)*DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)
+     &              *(HT2-TIME2))
+                ELSE
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+                ENDIF
 C                                                                   !# LINE 1254 BTN
                 IF(IREACTION.EQ.2) THEN                             !# LINE 1255 BTN
                   IF(ICOMP==NCOMP.AND.IFESLD>0)THEN                 !# LINE 1256 BTN
@@ -1426,6 +1434,10 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
             VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
+            IF(IALTFM.GE.1) THEN
+              VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1        (HT2-TIME2)/PRSITY(J,I,K)
+            ENDIF
             CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
             CMMS=0.
             CIML=0.
@@ -1784,7 +1796,7 @@ C--RETURN
 C
 C
       SUBROUTINE BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DZ,DTRANS,
-     &                  PRSITYSAV,SATOLD)                           !edm
+     &                  PRSITYSAV,SATOLD,HT2,TIME2)                           !edm
 C *********************************************************************
 C THIS SUBROUTINE INITIALIZES ALL MATRICES FOR THE IMPLICIT SCHEME.
 C *********************************************************************
@@ -1792,14 +1804,14 @@ C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
-     &                         FUZF,IUZFBND                         !edm
+     &                         FUZF,IUZFBND,IALTFM,QSTO                         !edm
       USE MIN_SAT, ONLY: COLD7,DRYON
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,ICBUND,N,NRC,
      &          NSIZE
       REAL      CADV,COLD,PRSITY,DTRANS,DZ,RETA,TEMP,
-     &          PRSITYSAV,SATOLD                                    !edm
+     &          PRSITYSAV,SATOLD,HT2,TIME2                                    !edm
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
      &          RETA(NODES,NCOMP),PRSITY(NODES),DZ(NODES),
      &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
@@ -1825,8 +1837,15 @@ C
 C            
             ELSE
               IF(.NOT.FUZF.OR. IUZFBND(J,I).LE.0) THEN
+                IF(IALTFM.EQ.2) THEN
+                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                 *(DELR(J)*DELC(I)*DZ(N)
+     &         +DELR(J)*DELC(I)*DZ(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+                ELSE
                 RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                 *DELR(J)*DELC(I)*DZ(N)
+                ENDIF
+
               ELSE                                                  !edm
                 RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(N)      !edm
      &                  *SATOLD(N)*DELR(J)*DELC(I)*DZ(N)            !edm
@@ -1866,8 +1885,14 @@ C--IF INACTIVE OR CONSTANT CELL
             IF(ICBUND(N,ICOMP).LE.0) THEN
                A(N)=-1.
             ELSE if(iSSTrans.eq.0)  then
+              IF(IALTFM.EQ.2) THEN
+               A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &              *(DELR(J)*DELC(I)*DZ(N)
+     &         +DELR(J)*DELC(I)*DZ(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+              ELSE
                A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &              *DELR(J)*DELC(I)*DZ(N)
+              ENDIF
             ENDIF
           ENDDO
         ENDDO
