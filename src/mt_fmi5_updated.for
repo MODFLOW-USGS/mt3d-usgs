@@ -2069,9 +2069,7 @@ C--CLEAN AND INITIALIZE TO ZERO
         DO JJ=1,7
           IROUTE(JJ,II)=0
         ENDDO
-        DO JJ=1,4
-          UZQ(JJ,II)=0.
-        ENDDO
+        UZQ(II)=0.
       ENDDO
 C
 C--READ CONNECTIONS INFORMATION
@@ -2088,9 +2086,9 @@ C
 C--IF UZF -> SFR, READ 9 VALUES
         IF(LABEL.EQ.'SFR') THEN
           IF(IFTLFMT.EQ.0) THEN
-            READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q,LENFRAC
+            READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
           ELSEIF(IFTLFMT.EQ.1) THEN
-            READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q,LENFRAC
+            READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
           ENDIF
           IROUTE(1,I)=1  !1:SFR, 2:LAK
           IROUTE(2,I)=KK
@@ -2105,8 +2103,7 @@ C--IF UZF -> SFR, READ 9 VALUES
           ELSEIF(TEXT.EQ.'REJ') THEN
             IROUTE(7,I)=3    !1:GRW, 2:EXC, 3:REJ
           ENDIF
-          UZQ(1,I)=Q
-          UZQ(2,I)=LENFRAC
+          UZQ(I)=Q
 C
 C--IF UZF -> LAK, READ 7 VALUES
         ELSEIF(LABEL.EQ.'LAK') THEN
@@ -2128,8 +2125,7 @@ C--IF UZF -> LAK, READ 7 VALUES
           ELSEIF(TEXT.EQ.'REJ') THEN
             IROUTE(7,I)=3    !1:GRW, 2:EXC, 3:REJ
           ENDIF
-          UZQ(1,I)=Q
-          !UZQ(2,I) ALREADY EQUALS ZERO
+          UZQ(I)=Q
         ENDIF
 C        
       ENDDO

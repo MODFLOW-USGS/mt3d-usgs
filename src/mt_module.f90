@@ -51,7 +51,7 @@
 !--UZF -> SFR & UZF -> LAK CONNECTIONS
         INTEGER,          SAVE,                      POINTER :: MXUZCON
         INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: IROUTE
-        REAL,             SAVE, DIMENSION(:,:),      POINTER :: UZQ
+        REAL,             SAVE, DIMENSION(:),        POINTER :: UZQ
 !
         DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
