@@ -388,9 +388,6 @@ c     initialize arrays
 
       do 4 iblck = 1, nblack       ! do it in NEW number!!
 
-      if(iblck.eq.16) then
-      continue
-      endif
 
         iold = RBorder(iblck)       ! black node number in old numbering
 
@@ -467,6 +464,9 @@ c      new fill-in caused by red node elimination -> level = 1
         enddo
         list(jafwk(iend)) = n+1         ! end marker
 
+      if(iblck.eq.5) then
+      continue
+      endif
 
         call xmdmrgd(a, afwk, row, epsrn, iblck, nblack, ia, iaf,
      [              jafwk, idiagf, list, RBorder, nja, size(jafwk),
@@ -1818,6 +1818,11 @@ c
       ierr = 0
       do i = 1, n
         found = .false.
+        
+        IF(I.EQ.31) THEN
+        CONTINUE
+        ENDIF
+        
         do j = ia(i), ia(i+1)-1
           if (ja(j) == i) then
             node = ja(ia(i))
@@ -1834,7 +1839,9 @@ c
           return
         endif
         nentry = ia(i+1)-ia(i)-1
+        IF(nentry.GT.0) THEN
         call xmdshell(ja(ia(i)+1),nentry)
+        ENDIF
       enddo
 
       end subroutine xmdrowrg

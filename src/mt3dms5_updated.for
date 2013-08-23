@@ -87,6 +87,8 @@ C
 C
 C--ALLOCATE LOGICALS
       ALLOCATE(DOMINSAT,DRYON)                                 !# NEW
+      DOMINSAT=.FALSE.                                         !# LINE 174 MAIN
+      DRYON=.FALSE.                                            !# LINE 175 MAIN
 C
 C--Initialize variables 
       ALLOCATE(IREACTION,IALTFM,NOCREWET)
@@ -112,16 +114,14 @@ C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
       CALL GETARG(1,COMLIN)                                    !# LINE 170 MAIN
-!cvsb                                                           !# LINE 171 MAIN
-!      CALL GETARG(2,CMST)                                      !# LINE 172 MAIN
-!      CALL GETARG(3,CDRY)                                      !# LINE 173 MAIN
-!      DOMINSAT=.FALSE.                                         !# LINE 174 MAIN
-!      DRYON=.FALSE.                                            !# LINE 175 MAIN
-!      IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.       !# LINE 176 MAIN
-!      IF(CDRY.EQ.'DRY'.OR.CDRY.EQ.'dry') DRYON=.TRUE.          !# LINE 177 MAIN
-!      IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.                    !# LINE 178 MAIN
-!c      CALL GETCL(FLNAME)                                      !# LINE 179 MAIN
-!C                                                              !# LINE 180 MAIN
+cvsb                                                           !# LINE 171 MAIN
+      CALL GETARG(2,CMST)                                      !# LINE 172 MAIN
+      CALL GETARG(3,CDRY)                                      !# LINE 173 MAIN
+      IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.       !# LINE 176 MAIN
+      IF(CDRY.EQ.'DRY'.OR.CDRY.EQ.'dry') DRYON=.TRUE.          !# LINE 177 MAIN
+      IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.                    !# LINE 178 MAIN
+c      CALL GETCL(FLNAME)                                      !# LINE 179 MAIN
+C                                                              !# LINE 180 MAIN
       IF(COMLIN.NE.' ') THEN                                   !# LINE 181 MAIN
         flname=COMLIN                                          !# LINE 182 MAIN
       ELSE                                                     !# LINE 183 MAIN

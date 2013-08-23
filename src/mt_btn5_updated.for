@@ -18,7 +18,7 @@ C
       IMPLICIT NONE
       INTEGER       INUNIT,IBTN,IFTL,IFLEN,I,ILIST,LLOC,
      &              ITYP1,ITYP2,N,ISTART,ISTOP,IU,INAM1,INAM2,
-     &              ISTART2,ISTOP2,LLOCSAVE
+     &              ISTART2,ISTOP2
       REAL          R
       LOGICAL       LOP
       CHARACTER*200 LINE,FNAME
@@ -70,8 +70,6 @@ C--INITIALIZE.
       DO I=1,MXTRNOP
         iUnitTRNOP(I)=0
       ENDDO
-      DOMINSAT=.FALSE.
-      DRYON=.FALSE.
 C
 C--READ A LINE; IGNORE BLANK LINES AND PRINT COMMENT LINES.
    10 READ(INUNIT,'(A)',END=1000) LINE
@@ -400,14 +398,14 @@ C--CHECK FOR SECOND KEYWORD
         IF(LINE(ISTART:ISTOP).EQ.'MST') THEN
           DOMINSAT=.TRUE.
           WRITE(IOUT,*)
-          WRITE(IOUT,'(A)')'*MST* OPTION HAS BEEN ACTIVATED BY KEYWORD',
-     &                     ' ON THE FIRST LINE OF THE BTN PACKAGE'
+          WRITE(IOUT,'(A)')'*** MST OPTION HAS BEEN ACTIVATED BY ',
+     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
           WRITE(IOUT,*)
         ELSEIF(LINE(ISTART:ISTOP).EQ.'DRY') THEN
           DRYON=.TRUE.
           WRITE(IOUT,*)
-          WRITE(IOUT,'(A)')'*DRY* OPTION HAS BEEN ACTIVATED BY KEYWORD',
-     &                     ' ON THE FIRST LINE OF THE BTN PACKAGE'
+        WRITE(IOUT,'(A)')'*** DRY OPTION HAS BEEN ACTIVATED BY ',
+     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
           WRITE(IOUT,*)
         ELSE
           GOTO 16
@@ -632,17 +630,6 @@ C--CALL RARRAY TO READ IN STARTING SATURATED THICKNESS              !edm
         ANAME='STARTING SATURATED THICKNESS'                        !edm
         DO K=1,NLAY                                                 !edm
          CALL RARRAY(SDH(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,IN,IOUT)!edm
-        ENDDO                                                       !edm
-C--CALCULATE SATURATION AND STORE IN SATOLD                         !edm
-        DO K=1,NLAY                                                 !edm
-          DO I=1,NROW                                               !edm
-            DO J=1,NCOL                                             !edm
-              DH(J,I,K)=SDH(J,I,K)                                  !edm
-              SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*      !edm
-     &                          WC(J,I,K)/PRSITY(J,I,K)+            !edm
-     &                          DH(J,I,K)/DZ(J,I,K)*1               !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
         ENDDO                                                       !edm
       ENDIF                                                         !edm
 C
@@ -982,6 +969,27 @@ C--INITIALIZE RETARDATION FACTOR ARRAY AND THE MINUMIN
         ENDDO
       ENDDO
       RFMIN=1.
+C
+C--CALCULATE SATURATION AND STORE IN SATOLD                         !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
+        DO K=1,NLAY                                                 !edm
+          DO I=1,NROW                                               !edm
+            DO J=1,NCOL                                             !edm
+
+              IF(K.EQ.3.AND.I.GE.1.AND.J.GE.2) THEN
+              CONTINUE
+              ENDIF
+
+              IF(ICBUND(J,I,K,1).GT.0) THEN
+              DH(J,I,K)=SDH(J,I,K)                                  !edm
+              SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*      !edm
+     &                          WC(J,I,K)/PRSITY(J,I,K)+            !edm
+     &                          DH(J,I,K)/DZ(J,I,K)*1               !edm
+              ENDIF
+            ENDDO                                                   !edm
+          ENDDO                                                     !edm
+        ENDDO                                                       !edm
+      ENDIF                                                         !edm
 C
 C--RETURN
       RETURN

@@ -73,6 +73,7 @@ C------------------------------------------------------------------
       SUBROUTINE XMD7AR()
       USE SFRVARS
 C      USE GLOBAL, ONLY: IOUT
+      USE MT3DMS_MODULE, ONLY: IOUT
       USE XMDMODULE
 C      USE GWFNWTMODULE, ONLY: IPRNWT,NUMACTIVE,IA,JA,NJA,IFDPARAM
 cmi
@@ -90,7 +91,7 @@ cmi
 !     ------------------------------------------------------------------
 !     ARGUMENTS
 !     ------------------------------------------------------------------
-      INTEGER IN,NODES,IOUT
+      INTEGER IN,NODES
 !     ------------------------------------------------------------------
 !     LOCAL VARIABLES
 !     ------------------------------------------------------------------

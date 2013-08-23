@@ -48,11 +48,6 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: QETSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSFO
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IBNDSF
-!--UZF -> SFR & UZF -> LAK CONNECTIONS
-        INTEGER,          SAVE,                      POINTER :: MXUZCON
-        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: IROUTE
-        REAL,             SAVE, DIMENSION(:),        POINTER :: UZQ
-!
         DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF2
@@ -389,6 +384,14 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: WC         !edm
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZFLX      !edm
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZQSTO     !edm
+!--UZF -> SFR & UZF -> LAK CONNECTIONS
+        INTEGER,          SAVE,                      POINTER :: MXUZCON
+        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: IROUTE
+        REAL,             SAVE, DIMENSION(:),        POINTER :: UZQ
+        INTEGER,          SAVE,                      POINTER :: NCON
+        INTEGER,          SAVE,                      POINTER :: NCONLK
+        INTEGER,          SAVE,                      POINTER :: NCONSF
+!
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SURFLK     !edm
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: QSTO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: DH

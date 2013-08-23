@@ -5,12 +5,15 @@ C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR SFR VARIABLES
 C***********************************************************************
       USE SFRVARS
-      USE MT3DMS_MODULE, ONLY: INSFT,IOUT,NCOMP
+      USE MT3DMS_MODULE, ONLY: INSFT,IOUT,NCOMP,IROUTE,UZQ,MXUZCON,NCON,
+     1  NCONLK,NCONSF
       INTEGER IN
       LOGICAL OPND
 C
-      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,MXUZCON)      !# NEW
+      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,MXUZCON,NCON,
+     1  NCONLK,NCONSF)      !# NEW
       ALLOCATE(NSSSF)                                             !# NEW
+      ALLOCATE(IROUTE(7,MXUZCON),UZQ(MXUZCON))
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INSFT
@@ -304,7 +307,8 @@ C***********************************************************************
 C     THIS SUBROUTINE ASSEMBLES AND SOLVES MATRIX FOR SFR TRANSPORT
 C***********************************************************************
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
-     &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES
+     &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
+     &  NCONSF,IROUTE,UZQ,CUZINF
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE XMDMODULE
@@ -312,9 +316,10 @@ C***********************************************************************
       INTEGER ICOMP
       REAL    DELT,DELTMIN
       INTEGER K,I,J,II,JJ,N,NN,IS,IR,NC,ICNT,ISIN,IRIN,III
-      REAL    CONC,Q,VOL,COEFO,COEFN
+      REAL    CONC,Q,VOL,COEFO,COEFN,VOLMIN
       INTEGER numactive,KKITER,ITER,N_ITER,KITERSF,NSUBSTEPS,KSFSTP
       DOUBLE PRECISION ADV1,ADV2,ADV3
+      INTEGER ICON,INOFLOW
 C
       DELT=DTRANS
       DELTMIN=DTRANS
@@ -339,6 +344,7 @@ C
 CCC      DO KSFSTP=1,NSUBSTEPS
 CCC      COLDSF2(:,ICOMP)=CNEWSF(:,ICOMP)
 C
+      VOLMIN=0.0E-6
       RHSSF=0.
       AMATSF=0.
 C
@@ -365,7 +371,7 @@ C                ENDIF
                 GOTO 105
             ENDIF
           ENDDO
-104       WRITE (*,*) 'INVLID SFR BC-TYPE',IS,IR
+104       WRITE (*,*) 'INVALID SFR BC-TYPE',IS,IR
           STOP
 105       CONTINUE
         ELSEIF(ISFBCTYP(I).EQ.1) THEN
@@ -393,6 +399,7 @@ C
 C
 C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
         VOL=SFLEN(N)*SFNAREA(N)
+        IF(VOL.LT.VOLMIN) VOL=VOLMIN
         VOL=VOL/DELT
 C        IF(ISFSOLV.EQ.2) THEN
           RHSSF(N)=RHSSF(N)-VOL*COLDSF(N,ICOMP)
@@ -400,7 +407,12 @@ C        ELSE
 C          RHSSF(N)=RHSSF(N)+COLDSF(N,ICOMP)/DELT
 C        ENDIF
 C
-C.......INFLOW/OUTFLOW GW
+
+      IF(N.EQ.21)THEN
+      CONTINUE
+      ENDIF
+
+C.......GW TO SFR
         Q=QSFGW(N)
         IF(Q.LT.0.0) THEN
 C          IF(ISFSOLV.EQ.2) THEN
@@ -424,6 +436,30 @@ C            ENDIF
           ENDIF
         ENDDO
       ENDDO
+C
+C.....INFLOW FROM UZF
+      DO ICON=1,NCONSF
+        IF(IROUTE(1,ICON).EQ.1) THEN
+          IS=IROUTE(5,ICON)      !SEGMENT
+          IR=IROUTE(6,ICON)      !REACH
+          N=ISTRM(IR,IS)
+          K=IROUTE(2,ICON)      !LAYER
+          I=IROUTE(3,ICON)      !ROW
+          J=IROUTE(4,ICON)      !COLUMN
+          Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+          IF(IROUTE(7,ICON).EQ.1) THEN
+            CONC=CNEW(J,I,K,ICOMP)
+          ELSEIF(IROUTE(7,ICON).EQ.2) THEN
+            CONC=CUZINF(J,I,ICOMP)
+          ELSE
+            WRITE(IOUT,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
+            WRITE(*,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
+            STOP
+          ENDIF
+          RHSSF(N)=RHSSF(N)+Q*CONC
+        ENDIF
+      ENDDO
+C
 C--FILL RHSSF COMPLETE------------------------------------------------
 C
 C--FILL AMATSF--------------------------------------------------------
@@ -433,6 +469,7 @@ C--FILL AMATSF--------------------------------------------------------
 C
 C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
         VOL=SFLEN(N)*SFNAREA(N)
+        IF(VOL.LT.VOLMIN) VOL=VOLMIN
         VOL=VOL/DELT
 C        IF(ISFSOLV.EQ.2) THEN
           AMATSF(II)=AMATSF(II)-VOL
@@ -454,8 +491,13 @@ C        IF(ISFSOLV.EQ.2) THEN
 C        ELSE
 C        ENDIF
         ENDIF
+
+      IF(N.EQ.21)THEN
+      CONTINUE
+      ENDIF
+
 C
-C.......INFLOW/OUTFLOW GW
+C.......SFR TO GW
         Q=QSFGW(N)
         IF(Q.GE.0.0) THEN
 C          IF(ISFSOLV.EQ.2) THEN
@@ -548,6 +590,11 @@ C...........DISPERSION TERMS i,i+1
 C              RHSSF(N)=RHSSF(N)
 C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
             ENDIF
+C.........HEADWATER INFLOW
+          ELSEIF(IS.LT.0.AND.IR.LT.0) THEN
+            Q=QINSF(ICNT)
+            CONC=0.
+            RHSSF(N)=RHSSF(N)-Q*CONC
           ENDIF
         ENDDO
       ENDDO
@@ -580,6 +627,25 @@ CVSB      ENDDO
           II=IASF(N)
           AMATSF(II)=-1.0D0
           RHSSF(N)=-CONC
+        ENDIF
+      ENDDO
+C
+C--HANDLE NO-FLOW CELLS
+      DO N=1,NSTRM
+  
+      if(n.eq.21)then
+      continue
+      endif
+  
+        INOFLOW=1
+        DO II=IASF(N),IASF(N+1)-1
+          IF(ABS(AMATSF(II)).GT.1.0E-10) INOFLOW=0
+        ENDDO
+        IF(ABS(RHSSF(N)).GT.1.0E-10) INOFLOW=0
+        IF(INOFLOW.EQ.1) THEN
+          II=IASF(N)
+          AMATSF(II)=-1.0D0
+          RHSSF(N)=-CNEWSF(N,ICOMP)
         ENDIF
       ENDDO
 C
@@ -634,9 +700,10 @@ C***********************************************************************
       USE SFRVARS
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
-     &                         MIXELM,INLKT,RMASIO,iUnitTRNOP
+     &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
+     &  NCONSF,IROUTE,UZQ,CUZINF
       IMPLICIT  NONE
-      INTEGER IS,IR
+      INTEGER IS,IR,ICON
       INTEGER ICOMP
       INTEGER K,I,J,N,NUM,II,ICCNODE
       INTEGER KPER,KSTP,NTRANS
@@ -928,6 +995,31 @@ C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
             ENDIF
           ENDIF
         ENDDO
+      ENDDO
+C
+C.....INFLOW FROM UZF
+      DO ICON=1,NCONSF
+        IF(IROUTE(1,ICON).EQ.1) THEN
+          IS=IROUTE(5,ICON)      !SEGMENT
+          IR=IROUTE(6,ICON)      !REACH
+          N=ISTRM(IR,IS)
+          K=IROUTE(2,ICON)      !LAYER
+          I=IROUTE(3,ICON)      !ROW
+          J=IROUTE(4,ICON)      !COLUMN
+          Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+          IF(IROUTE(7,ICON).EQ.1) THEN
+            CONC=CNEW(J,I,K,ICOMP)
+          ELSEIF(IROUTE(7,ICON).EQ.2) THEN
+            CONC=CUZINF(J,I,ICOMP)
+          ENDIF
+          Q1=Q1+ABS(Q)*DTRANS
+          IF(IBNDSF(N).EQ.-1) THEN
+C            CCOUTSF=CCOUTSF-Q*CONC*DTRANS
+          ELSE
+            GW2SFR=GW2SFR-Q*CONC*DTRANS
+          ENDIF
+C          RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS !UZF HANDLES THIS
+        ENDIF
       ENDDO
 C
 C--CUMULATIVE TERMS
