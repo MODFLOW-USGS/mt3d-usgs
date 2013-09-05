@@ -58,6 +58,7 @@ C
       USE MIN_SAT                                                   !# LINE 58 MAIN
       USE SFRVARS
       USE LAKVARS
+      USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
       USE MT3DMS_MODULE, ONLY: MXTRNOP,MXSTP,
      &                         FPRT,INBTN,ICBUND,CADV,COLD,RETA,PRSITY,
      &                         DZ,DH,QX,QY,QZ,A,RHOB,SP1,SP2,SRCONC,
@@ -67,7 +68,6 @@ C
      &                         ISOTHM,UPDLHS,MXITER,FMNW,HT1,HT2,DTRANS,
      &                         DELT,TIME1,TIME2,NPS,
      &                         MEMDEALLOCATE,
-     &                         PRSITYSAV,SATOLD,                    !edm
      &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
      &                         IWCTS,IREACTION,IALTFM,NOCREWET,     !# V
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW          !# Amended
@@ -175,6 +175,7 @@ C--ALLOCATE STORAGE SPACE FOR DATA ARRAYS
       IF(iUnitTRNOP(4).GT.0) CALL RCT5AR(iUnitTRNOP(4))
       IF(iUnitTRNOP(5).GT.0) CALL GCG5AR(iUnitTRNOP(5))
       IF(iUnitTRNOP(6).GT.0) CALL CTS5AR(iUnitTRNOP(6))        !# LINE 263 MAIN
+      IF(iUnitTRNOP(7).GT.0) CALL UZT5AR(iUnitTRNOP(7))
       IF(iUnitTRNOP(11).GT.0) CALL TOB5AR(iUnitTRNOP(11))     
       IF(iUnitTRNOP(13).GT.0) CALL HSS5AR(iUnitTRNOP(13))
       IF(iUnitTRNOP(18).GT.0) CALL LKT5AR(iUnitTRNOP(18))      !# LINE 280 MAIN
@@ -212,8 +213,8 @@ C
 C--READ AND PREPARE INPUT INFORMATION WHICH IS CONSTANT
 C--WITHIN EACH STRESS PERIOD
         IF(iUnitTRNOP(3).GT.0) CALL SSM5RP(KPER)
-C--READ AND PREPARE CTS                                        !# LINE 417 MAIN
         IF(iUnitTRNOP(6).GT.0) CALL CTS5RP(KPER)               !# LINE 418 MAIN
+        IF(iUnitTRNOP(7).GT.0) CALL UZT5RP(KPER)
 C--READ LAK AND SFR BOUNDARY CONDITIONS                        !# LINE 427 MAIN
         IF(iUnitTRNOP(18).GT.0) CALL LKT5SS(KPER)              !# LINE 429 MAIN
         IF(iUnitTRNOP(19).GT.0) CALL SFT5SS(KPER)              !# LINE 431 MAIN
@@ -314,9 +315,11 @@ C--FORMULATE MATRIX COEFFICIENTS
      &           .AND. ICOMP.LE.MCOMP)
      &           CALL ADV5FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
                 IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL DSP5FM(ICOMP,ICBUND,A,COLD)
+     &           CALL DSP5FM(ICOMP,ICBUND,A,CNEW)
                 IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL SSM5FM(ICOMP)
+                IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL UZT5FM(ICOMP)
                 IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL HSS5FM(ICOMP,ICBUND,time1,time2)
                 IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)    !# LINE 596 MAIN
@@ -460,6 +463,8 @@ C
      &         CALL DSP5BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL SSM5BD(ICOMP,DTRANS)
+              IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
+     &         CALL UZT5BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
      &         CALL HSS5BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
               IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)      !# LINE 745 MAIN

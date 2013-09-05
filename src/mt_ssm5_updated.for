@@ -9,17 +9,16 @@ C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                         FSFR,FUZF,IVER,
+     &                         FSFR,IVER,iUnitTRNOP,
      &                         ISSGOUT,MXSS,NSS,NTSS,RECH,IRCH,CRCH,
-     &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,
-     &                         CUZINF,UZET,CUZET,GWET,CGWET,IETFLG, !edm
-     &                         FINFIL,UZFLX,UZQSTO,SURFLK,CSURFLK,  !edm
-     &                         IETFLG,iUnitTRNOP,IUZFOPT,IUZFBND,   !edm
-     &                         IUZFOPTG,                            !edm
-     &                         KSSZERO                              !# LINE 14 SSM
+     &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,KSSZERO   !# LINE 14 SSM
       USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,   !# NEW
      &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,      !# NEW
      &                         CRNTSF,NOBSSF,NJASF,INFLWNOD         !# NEW
+      USE UZTVARS,       ONLY: CUZINF,UZET,CUZET,GWET,CGWET,IETFLG, !edm
+     &                         FINFIL,UZFLX,UZQSTO,                 !edm
+     &                         IETFLG,IUZFOPT,IUZFBND,              !edm
+     &                         IUZFOPTG                             !edm
 C
       IMPLICIT  NONE
       INTEGER   ISTART, ISTOP, LLOC,I,J                             !edm
@@ -28,13 +27,11 @@ C
       REAL      R                                                   !edm
       CHARACTER VERSION*11,LINE*72,BNAME*24
       CHARACTER(LEN=*),PARAMETER :: FMT2="(3I8,I7)"                 !edm
-      LOGICAL   IUZFBND_CHK                                         !edm
 C
       INSSM=IN
 C
 C--ALLOCATE
-      ALLOCATE(ISSGOUT,MXSS,NSS,NTSS,IETFLG,IUZFOPTG)               !edm
-      IETFLG=.FALSE.                                                !# NEW
+      ALLOCATE(ISSGOUT,MXSS,NSS,NTSS)                               !edm
       IF(FSFR) THEN                                                 !# NEW
         ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                         !# NEW
         ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)             !# NEW
@@ -72,7 +69,7 @@ C--ARE USED IN FLOW MODEL
       IF(FETS) WRITE(IOUT,1416)
       IF(FSWT) WRITE(IOUT,1418)
       IF(FSFR) WRITE(IOUT,1420)
-      IF(FUZF) WRITE(IOUT,1422)
+!      IF(FUZF) WRITE(IOUT,1422)
  1010 FORMAT(1X,'HEADER LINE OF THE SSM PACKAGE INPUT FILE:',/1X,A)
  1020 FORMAT(1X,'MAJOR STRESS COMPONENTS PRESENT IN THE FLOW MODEL:')
  1340 FORMAT(1X,' o WELL [WEL]')
@@ -92,7 +89,7 @@ C--ARE USED IN FLOW MODEL
  1416 FORMAT(1X,' o SEGMENTED EVAPOTRANSPIRATION [ETS]')
  1418 FORMAT(1X,' o SUBSIDENCE-WATER TABLE [SWT]')
  1420 FORMAT(1X,' o STREAMFLOW-ROUTING [SFR]')
- 1422 FORMAT(1X,' o UNSATURATED-ZONE FLOW [UZF]')
+! 1422 FORMAT(1X,' o UNSATURATED-ZONE FLOW [UZF]')
 C
 C--READ AND PRINT MAXIMUM NUMBER OF
 C--POINT SINKS/SOURCES PRESENT IN THE FLOW MODEL
@@ -129,33 +126,6 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(IEVT(1,1))
         ALLOCATE(CEVT(1,1,1))
       ENDIF
-      IF(FUZF) THEN                                                 !edm
-        ALLOCATE(IUZFOPT(NCOL,NROW))                                !edm
-        ALLOCATE(IUZFBND(NCOL,NROW))                                !edm
-        ALLOCATE(UZFLX(NCOL,NROW,NLAY))                             !edm
-        ALLOCATE(UZQSTO(NCOL,NROW,NLAY))                            !edm
-        ALLOCATE(SURFLK(NCOL,NROW,NLAY))                            !edm
-        ALLOCATE(CSURFLK(NCOL,NROW,NLAY,NCOMP))                     !edm
-        ALLOCATE(FINFIL(NCOL,NROW))                                 !edm
-        ALLOCATE(CUZINF(NCOL,NROW,NCOMP))                           !edm
-        ALLOCATE(UZET(NCOL,NROW,NLAY))                              !edm
-        ALLOCATE(CUZET(NCOL,NROW,NLAY,NCOMP))                       !edm
-        ALLOCATE(GWET(NCOL,NROW,NLAY))                              !edm
-        ALLOCATE(CGWET(NCOL,NROW,NLAY,NCOMP))                       !edm
-      ELSE                                                          !edm
-        ALLOCATE(IUZFOPT(1,1))                                      !edm
-        ALLOCATE(IUZFBND(NCOL,NROW))                                !edm
-        ALLOCATE(UZFLX(1,1,1))                                      !edm
-        ALLOCATE(UZQSTO(1,1,1))                                     !edm
-        ALLOCATE(SURFLK(1,1,1))                                     !edm
-        ALLOCATE(CSURFLK(1,1,1,1))                                  !edm
-        ALLOCATE(FINFIL(1,1))                                       !edm
-        ALLOCATE(CUZINF(1,1,1))                                     !edm
-        ALLOCATE(UZET(1,1,1))                                       !edm
-        ALLOCATE(CUZET(1,1,1,1))                                    !edm
-        ALLOCATE(GWET(1,1,1))                                       !edm
-        ALLOCATE(CGWET(1,1,1,1))                                    !edm
-      ENDIF                                                         !edm
       ALLOCATE(SS(8,MXSS))                                          !# Amended (LINE 154 SSM)
       ALLOCATE(SSMC(NCOMP,MXSS))
       ALLOCATE(SSG(5,MXSS))
@@ -170,64 +140,6 @@ C--ALLOCATE SPACE FOR ARRAYS
       SS=0.
       SSMC=0.
       SSG=0.
-      IETFLG=.FALSE.
-C
-C--INITIALIZE IUZFBND ARRAY
-      DO I=1,NROW
-        DO J=1,NCOL
-          IUZFBND(J,I)=0
-        ENDDO
-      ENDDO
-C                                                                   !edm
-C--DETERMINE IF UZF PACKAGE IS SIMULATING ET                        !edm
-C--This approach starts at the beginning of the UZF header line and !edm
-C--goes one-by-one                                                  !edm
-      IF(FUZF) THEN                                                 !edm
-    9   READ(iUnitTRNOP(7),'(A)',ERR=100,IOSTAT=IERR) LINE          !edm
-        IF(LINE(1:1).EQ.'#' .OR. LINE(1:1).EQ.'S') THEN !READ NEXT  !edm
-          GOTO 9                                                    !edm
-        ELSE                                                        !edm
-          lloc = 1                                                  !edm
-          !Reads NUZTOP
-          CALL URWORD(line, LLOC, ISTART, ISTOP, 2, NUZTOP, r, IOUT, In)
-          !Reads IUZFOPT
-          CALL URWORD(line, LLOC, ISTART, ISTOP, 2, IUZFOPTG,r,IOUT,In)
-          !IRUNFLG
-          CALL URWORD(line, LLOC, ISTART, ISTOP, 2, IRUNFLG, r, IOUT,In)
-C--The next line is really IETFLG, but to get URWORD to work,
-C--needed to use a dummy integer variable only to convert to 
-C--'logical' in the next step.
-          CALL URWORD(line,LLOC,ISTART,ISTOP,2,IRUNFLG,r,IOUT,In)   !edm
-          IF(IRUNFLG.EQ.0) THEN                                     !edm
-            IETFLG=.FALSE.                                          !edm
-          ELSE                                                      !edm
-            IETFLG=.TRUE.                                           !edm
-          ENDIF                                                     !edm
-C--Read the IUZFBND array                                           !edm
-          BNAME=' AREAL EXTENT OF UZ FLOW'                          !edm
-          CALL U2DINT(IUZFBND,BNAME,NROW,NCOL,0,iUnitTRNOP(7),IOUT) !edm
-        ENDIF                                                       !edm
-C--Adjust IUZFOPTG (IUZFOPT-Global) according to what is stored in  !edm
-C--the IUZFBND array                                                !edm
-        IF(IUZFOPTG.GT.0) THEN                                      !edm
-          IUZFBND_CHK = .FALSE.                                     !edm
-          DO I=1,NROW                                               !edm
-            DO J=1,NCOL                                             !edm
-              IF(.NOT.IUZFBND(J,I).LE.0) THEN                       !edm
-                IUZFBND_CHK = .TRUE.                                !edm
-              ENDIF                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-C--If the check on IUZFBND called IUZFBND_CHK remains false,        !edm
-C--then the value of IUZFOPT can be set equal to zero, since all    !edm
-C--cells are effectively acting as though IUZFOPT=0                 !edm
-          IF(.NOT.IUZFBND_CHK) THEN                                 !edm
-            IUZFOPTG = 0                                            !edm
-          ENDIF                                                     !edm
-        ELSE                                                        !edm
-          IETFLG=.FALSE.                                            !edm
-        ENDIF                                                       !edm
-      ENDIF
 C
 C--NORMAL RETURN
   100 RETURN
@@ -244,9 +156,8 @@ C
      &                         CNEW,
      &                         FWEL,FDRN,FRIV,FGHB,FRCH,FEVT,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                         FSFR,FUZF,
+     &                         FSFR,
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
-     &                         CUZINF,CUZET,CGWET,CSURFLK,IETFLG,   !edm
      &                         KSSZERO                              !# LINE 146 SSM
 C
       IMPLICIT  NONE
@@ -281,7 +192,7 @@ C--INITIALIZE.
 C
 C--READ CONCENTRATION OF DIFFUSIVE SOURCES/SINKS (RECHARGE/E.T.)
 C--FOR CURRENT STRESS PERIOD IF THEY ARE SIMULATED IN FLOW MODEL
-      IF(.NOT.FRCH) GOTO 10
+      IF(.NOT.FRCH) GOTO 11
 C
 C--READ FLAG INCRCH INDICATING HOW TO READ RECHARGE CONCENTRATION
       READ(IN,'(I10)') INCRCH
@@ -289,7 +200,7 @@ C
 C--IF INCRCH < 0, CONCENTRATIN REUSED FROM LAST STRESS PERIOD
       IF(INCRCH.LT.0) THEN
         WRITE(IOUT,1)
-        GOTO 10
+        GOTO 11
       ENDIF
     1 FORMAT(/1X,'CONCENTRATION OF RECHARGE FLUXES',
      & ' REUSED FROM LAST STRESS PERIOD')
@@ -304,33 +215,9 @@ C--CONTAING CONCENTRATION OF RECHARGE FLUX [CRCH]
       ENDDO
     2 FORMAT(/1X,'CONCENTRATION OF RECHARGE FLUXES',
      & ' WILL BE READ IN STRESS PERIOD',I3)
-C--READ CONCENTATION OF INFILTRATING FLUX (CUZINF)                  !edm
-   10 IF(.NOT.FUZF) GOTO 11                                         !edm
-C--READ FLAG INDICATING HOW TO READ APPLD AMT CONC.                 !edm
-      READ(IN,'(I10)') INCUZINF                                     !edm
-C                                                                   !edm
-C--IF INCUZINF<0, CONC.REUSED FROM LAST STRESS PERIOD               !edm
-      IF(INCUZINF.LT.0) THEN                                        !edm
-        WRITE(IOUT,3)                                               !edm
-        GOTO 11                                                     !edm
-      ENDIF                                                         !edm
-    3 FORMAT(/1X,'CONCENTRATION OF APPLIED WATER',                  !edm
-     & ' REUSED FROM LAST STRESS PERIOD')                           !edm
-C                                                                   !edm
-C--IF INCUINF>=0, READ AN ARRAY CONTAINING CONC. OF APPL.           !edm
-C--WATER [CIUZNF]                                                   !edm
-      WRITE(IOUT,4) KPER                                            !edm
-      ANAME='APPLD CONC. COMP.NO.'                                  !edm
-      DO INDEX=1,NCOMP                                              !edm
-        WRITE(ANAME(19:21),'(I3.2)') INDEX                          !edm
-        CALL RARRAY(CUZINF(:,:,INDEX),ANAME,NROW,NCOL,              !edm
-     &              0,IN,IOUT)                                      !edm
-      ENDDO                                                         !edm
-    4 FORMAT(/1X,'CONCENTRATION OF APPLIED WATER',                  !edm
-     & ' WILL BE READ IN STRESS PERIOD',I3)                         !edm
 C
 C--READ CONCENTRAION OF EVAPOTRANSPIRATION FLUX
-   11 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 14
+   11 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 20
 C
       IF(KPER.EQ.1) THEN            
         DO INDEX=1,NCOMP
@@ -357,127 +244,7 @@ C
       ENDDO
    13 FORMAT(/1X,'CONCENTRATION OF E. T. FLUXES',
      & ' WILL BE READ IN STRESS PERIOD',I3)
-C
-C--READ CONCENTRATION OF ET FLUX WHEN UZF ET IS BEING               !edm
-C--SIMULATED.                                                       !edm
-C--What the CUZET should be set equal to is still unknown           !edm
-C--Maybe something slightly higher than zero because the            !edm
-C--the crops will remove some small amount of N or P, which         !edm
-C--would act to lower the concentration in the upper unsat          !edm
-C--zone.  However, the CGWET will most likely be equal to           !edm
-C--the aquifer concentration when dealing with the upflux           !edm
-C--of salts. Bottom line: CUZET & CGWET should be kept              !edm
-C--separate and specifiable for maximum code flexibility.           !edm
-   14 IF(.NOT.IETFLG) GOTO 17                                       !edm
-C                                                                   !edm
-      IF(KPER.EQ.1) THEN                                            !edm
-        DO INDEX=1,NCOMP                                            !edm
-          DO KK=1,NLAY                                              !edm
-            DO II=1,NROW                                            !edm
-              DO JJ=1,NCOL                                          !edm
-                CUZET(JJ,II,KK,INDEX)=-1.E-30                       !edm
-              ENDDO                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
-      READ(IN,'(I10)') INCUZET                                      !edm
-      IF(INCUZET.LT.0) THEN                                         !edm
-        WRITE(IOUT,15)                                              !edm
-        GOTO 17                                                     !edm
-      ENDIF                                                         !edm
-   15 FORMAT(/1X,'CONCENTRATION OF UZET FLUXES',                    !edm
-     & ' REUSED FROM LAST STRESS PERIOD')                           !edm
-C                                                                   !edm
-      WRITE(IOUT,16) KPER                                           !edm
-      ANAME='UZET. CONC. COMP. NO.'                                 !edm
-      DO INDEX=1,NCOMP                                              !edm
-        WRITE(ANAME(19:21),'(I3.2)') INDEX                          !edm
-C--BECAUSE UZET CAN BE WITHDRAWN FROM MULTIPLE LAYERS,              !edm
-C--AN 'RARRAY_UZ' FUNCTION MAY NEED TO BE ADDED.  BUT FOR NOW I'LL  !edm
-C--ASSUME THAT CONSTANT VALUES WILL BE UTILIZED RELIEVING THE NEED  !edm
-C--TO ADDRESS THIS RIGHT NOW.                                       !edm
-        CALL RARRAY(CUZET(:,:,:,INDEX),ANAME,NROW,NCOL,             !edm
-     &              NLAY,IN,IOUT)                                   !edm
-C--AFTER READING IN TOP LAYERS CUZET, COPY IT TO THE REMAINING      !edm
-C--LAYERS                                                           !edm
-        DO KK=2,NLAY                                                !edm
-          DO II=1,NROW                                              !edm
-            DO JJ=1,NCOL                                            !edm
-              CUZET(JJ,II,KK,INDEX)=CUZET(JJ,II,1,INDEX)            !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-   16 FORMAT(/1X,'CONCENTRATION OF UZET FLUXES',                    !edm
-     & ' WILL BE READ IN STRESS PERIOD',I3)                         !edm
-C                                                                   !edm
-C--READ CONCENTRATION OF GWET FLUX WHEN UZF ET IS BEING             !edm
-C--SIMULATED.                                                       !edm
-   17 IF(.NOT.IETFLG) GOTO 20                                       !edm
-C                                                                   !edm
-      IF(KPER.EQ.1) THEN                                            !edm
-        DO INDEX=1,NCOMP                                            !edm
-          DO KK=1,NLAY                                              !edm
-            DO II=1,NROW                                            !edm
-              DO JJ=1,NCOL                                          !edm
-                CGWET(JJ,II,KK,INDEX)=-1.E-30                       !edm
-              ENDDO                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
-      READ(IN,'(I10)') INCGWET                                      !edm
-      IF(INCGWET.LT.0) THEN                                         !edm
-        WRITE(IOUT,18)                                              !edm
-        GOTO 20                                                     !edm
-      ENDIF                                                         !edm
-   18 FORMAT(/1X,'CONCENTRATION OF GWET FLUXES',                    !edm
-     & ' REUSED FROM LAST STRESS PERIOD')                           !edm
-C                                                                   !edm
-      WRITE(IOUT,19) KPER                                           !edm
-      ANAME='GWET. CONC. COMP. NO.'                                 !edm
-      DO INDEX=1,NCOMP                                              !edm
-        WRITE(ANAME(19:21),'(I3.2)') INDEX                          !edm
-        CALL RARRAY(CGWET(:,:,:,INDEX),ANAME,NROW,NCOL,             !edm
-     &              NLAY,IN,IOUT)                                   !edm
-      ENDDO                                                         !edm
-   19 FORMAT(/1X,'CONCENTRATION OF GWET FLUXES',                    !edm
-     & ' WILL BE READ IN STRESS PERIOD',I3)                         !edm
-C                                                                   !edm
-C--READ CONCENTRATION OF SURFACE LEAKANCE FLUX WHEN UZF             !edm
-C--PACKAGE IS BEING USED.                                           !edm
-   20 IF(.NOT.FUZF) GOTO 25                                         !edm
-C                                                                   !edm
-      IF(KPER.EQ.1) THEN                                            !edm
-        DO INDEX=1,NCOMP                                            !edm
-          DO KK=1,NLAY                                              !edm
-            DO II=1,NROW                                            !edm
-              DO JJ=1,NCOL                                          !edm
-                CSURFLK(JJ,II,KK,INDEX)=-1.E-30                     !edm
-              ENDDO                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
-      READ(IN,'(I10)') INCSRFLK                                     !edm
-      IF(INCSRFLK.LT.0) THEN                                        !edm
-        WRITE(IOUT,21)                                              !edm
-        GOTO 25                                                     !edm
-      ENDIF                                                         !edm
-   21 FORMAT(/1X,'CONCENTRATION OF SURFACE LEAKANCE',               !edm
-     & ' REUSED FROM LAST STRESS PERIOD')                           !edm
-C                                                                   !edm
-      WRITE(IOUT,22) KPER                                           !edm
-      ANAME='SF LK CONC. COMP. NO.'                                 !edm
-      DO INDEX=1,NCOMP                                              !edm
-        WRITE(ANAME(19:21),'(I3.2)') INDEX                          !edm
-        CALL RARRAY(CSURFLK(:,:,:,INDEX),ANAME,NROW,NCOL,           !edm
-     &              NLAY,IN,IOUT)                                   !edm
-      ENDDO                                                         !edm
-   22 FORMAT(/1X,'CONCENTRATION OF SURFACE LEAKANCE FLUXES',        !edm
-     & ' WILL BE READ IN STRESS PERIOD',I3)                         !edm
-   25 CONTINUE
+   20 CONTINUE
 C
 C--READ AND ECHO POINT SINKS/SOURCES OF SPECIFIED CONCENTRATIONS
       READ(IN,'(I10)') NTMP
@@ -599,9 +366,7 @@ C
      &                         RHS,NODES,UPDLHS,MIXELM,COLD,
      &                         ISS,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &                         FSWT,FSFR,FUZF,
-     &                         FINFIL,IETFLG,UZET,CUZET,GWET,CGWET, !edm
-     &                         CUZINF,SATNEW,SURFLK,CSURFLK,IUZFBND,!edm
+     &                         FSWT,FSFR,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
      &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW   !# LINE 348-349 SSM
 C
@@ -628,10 +393,6 @@ C--TRANSIENT FLUID STORAGE TERM
 !CDL--SEAWAT: This seems to fix the problem with storage
 CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD  !# LINE 390-396 SSM
 CEDM--IS WRONG                                                      !# LINE 390-396 SSM
-                IF(.NOT.FUZF .OR. IUZFBND(J,I).LE.0) THEN           !edm
-c                  RHS(N)=RHS(N)-COLD(J,I,K,ICOMP)*
-c     &                     QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-C
                 IF(IALTFM.EQ.1) THEN
                   !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
                   !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
@@ -648,9 +409,6 @@ C
                 A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
 !     1                 *RETA(N,ICOMP)
                 ENDIF
-C
-                ENDIF                                               !edm
-
               ENDIF
             ENDDO
           ENDDO
@@ -659,7 +417,7 @@ C
 C
 C--AREAL SINK/SOURCE TERMS 
 C--(RECHARGE)
-      IF(.NOT.FRCH) GOTO 10
+      IF(.NOT.FRCH) GOTO 12
       DO I=1,NROW
         DO J=1,NCOL
           K=IRCH(J,I)
@@ -675,34 +433,8 @@ C--(RECHARGE)
         ENDDO
       ENDDO
 C
-C--(INFILTRATED) -ASSUMES THE INFILTRATION IS OCCURING AT TOP OF    !edm
-C                 LAYER 1, BUT UZF ALLOWS FOR INFILTRATION TO BE    !edm
-C                 SPECIFIED IN OTHER LAYERS. FOR NOW, CODE IS       !edm
-C                 HARDWIRED WITH LAYER 1 AND WILL LIKELY NEED TO    !edm
-C                 BE UPDATED BY READING THE IUZFBND ARRAY IN THE    !edm
-C                 UZF INPUT FILE TO GLEAN WHICH LAYER INFILTRATE    !edm
-C                 (AND SURFACE LEAKAGE) IS OCCURING IN (AND FROM)   !edm
-   10 IF(.NOT.FUZF) GOTO 12                                         !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                         !edm
-            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
-C--(SURFACE LEAKANCE)                                               !edm
-            IF(SURFLK(J,I,K).LT.0) THEN                             !edm
-              IF(UPDLHS) A(N)=A(N)+SURFLK(J,I,K)*                   !edm
-     &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
-C--(INFILTRATED)                                                    !edm
-            ELSEIF(FINFil(J,I).GT.0) THEN                           !edm
-              RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*          !edm
-     &                      DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ENDIF                                                   !edm
-          ENDIF                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C                                                                   !edm
 C--(EVAPOTRANSPIRATION)
-   12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 13
+   12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 20
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
@@ -718,48 +450,6 @@ C--(EVAPOTRANSPIRATION)
           ENDIF
         ENDDO
       ENDDO
-C                                                                   !edm
-C--(UZET)                                                           !edm
-   13 IF(.NOT.IETFLG) GOTO 20                                       !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(UZET(J,I,K).EQ.0) CYCLE                              !edm
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
-              IF(UZET(J,I,K).LT.0.AND.(CUZET(J,I,K,ICOMP).LT.0 .OR. !edm
-     &         CUZET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN       !edm
-                IF(UPDLHS) A(N)=A(N)+UZET(J,I,K)*                   !edm
-     &                     DELR(J)*DELC(I)*DH(J,I,K)                !edm
-              ELSEIF(CUZET(J,I,K,ICOMP).GT.0) THEN                  !edm
-                RHS(N)=RHS(N)-UZET(J,I,K)*CUZET(J,I,K,ICOMP)*       !edm
-     &                     DELR(J)*DELC(I)*DH(J,I,K)                !edm
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C                                                                   !edm
-C--(GWET)                                                           !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(GWET(J,I,K).EQ.0) CYCLE                              !edm
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
-              IF(GWET(J,I,K).LT.0.AND.(CGWET(J,I,K,ICOMP).LT.0 .OR. !edm
-     &         CGWET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN       !edm
-                IF(UPDLHS) A(N)=A(N)+GWET(J,I,K)*                   !edm
-     &              DELR(J)*DELC(I)*DH(J,I,K)                       !edm
-              ELSEIF(CGWET(J,I,K,ICOMP).GT.0) THEN                  !edm
-                RHS(N)=RHS(N)-GWET(J,I,K)*CGWET(J,I,K,ICOMP)*       !edm
-     &              DELR(J)*DELC(I)*DH(J,I,K)                       !edm
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C
 C
 C--POINT SINK/SOURCE TERMS
    20 DO NUM=1,NTSS
@@ -824,7 +514,7 @@ C--FORMULATE [A] AND [RHS] MATRICES FOR EULERIAN-LAGRANGIAN SCHEMES
 C
 C--AREAL SINK/SOURCE TERMS
 C--(RECHARGE)
-      IF(.NOT.FRCH) GOTO 30
+      IF(.NOT.FRCH) GOTO 32
       DO I=1,NROW
         DO J=1,NCOL
           K=IRCH(J,I)
@@ -837,44 +527,9 @@ C--(RECHARGE)
           ENDIF
         ENDDO
       ENDDO
-C--(INFILTRATED) -WILL NEED TO MODIFIY CODE IF IUZFBND.NE.1         !edm
-   30 IF(.NOT.FUZF) GOTO 31                                         !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(K.GT.0) THEN                                           !edm
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
-              IF(SURFLK(J,I,K).LT.0) THEN                           !edm
-                IF(UPDLHS) A(N)=A(N)+SURFLK(J,I,K)*                 !edm
-     &                          DELR(J)*DELC(I)*DH(J,I,K)           !edm
-              ELSE                                                  !edm
-                RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*        !edm
-     &                          DELR(J)*DELC(I)*DH(J,I,K)           !edm
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
-          ENDIF                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C                                                                   !edm
-C--(SURFACE LEAKANCE)                                               !edm
-   31 IF(.NOT.FUZF) GOTO 32                                         !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0                  !edm
-     &              .AND. SURFLK(J,I,K).GT.0) THEN                  !edm
-            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                          !edm
-            IF(UPDLHS) A(N)=A(N)-SURFLK(J,I,K)*                     !edm
-     &                       DELR(J)*DELC(I)*DH(J,I,K)              !edm
-            RHS(N)=RHS(N)-SURFLK(J,I,K)*CSURFLK(J,I,K,ICOMP)*       !edm
-     &                       DELR(J)*DELC(I)*DH(J,I,K)              !edm
-          ENDIF
-        ENDDO
-      ENDDO
 C
 C--(EVAPOTRANSPIRATION)
-   32 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 40
+   32 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 41
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
@@ -891,48 +546,6 @@ C--(EVAPOTRANSPIRATION)
           ENDIF
         ENDDO
       ENDDO
-C
-C--(UZET)                                                           !edm
-   40 IF(.NOT.FUZF .AND. .NOT.IETFLG) GOTO 41                       !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(UZET(J,I,K).EQ.0) CYCLE                              !edm
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
-              IF(UZET(J,I,K).LT.0.AND.(CUZET(J,I,K,ICOMP).LT.0 .OR. !edm
-     &         CUZET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN       !edm
-                CYCLE                                               !edm
-              ELSEIF(CUZET(J,I,K,ICOMP).GE.0) THEN                  !edm
-                IF(UPDLHS) A(N)=A(N)-UZET(J,I,K)                    !edm
-     &                     *DELR(J)*DELC(I)*DH(J,I,K)               !edm
-                RHS(N)=RHS(N)-UZET(J,I,K)*CUZET(J,I,K,ICOMP)        !edm
-     &                     *DELR(J)*DELC(I)*DH(J,I,K)               !edm
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C--(GWET)                                                           !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(GWET(J,I,K).EQ.0) CYCLE                              !edm
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       !edm
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        !edm
-              IF(GWET(J,I,K).LT.0.AND.(CGWET(J,I,K,ICOMP).LT.0 .OR. !edm
-     &         CGWET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN       !edm
-                CYCLE                                               !edm
-              ELSEIF(CGWET(J,I,K,ICOMP).GE.0) THEN                  !edm
-                IF(UPDLHS) A(N)=A(N)-GWET(J,I,K)                    !edm
-     &                   *DELR(J)*DELC(I)*DH(J,I,K)                 !edm
-                RHS(N)=RHS(N)-GWET(J,I,K)*CGWET(J,I,K,ICOMP)        !edm
-     &                   *DELR(J)*DELC(I)*DH(J,I,K)                 !edm
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
 C
 C--POINT SINK/SOURCE TERMS
    41 DO NUM=1,NTSS
@@ -1010,11 +623,9 @@ C
      &                        DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,MXSS,
      &                        NTSS,SS,SSMC,SSG,QSTO,CNEW,RETA,ISS,
      &                        RMASIO,
-     &                        FINFIL,CUZINF,UZET,CUZET,GWET,CGWET,  !edm
-     &                        IETFLG,SATNEW,SURFLK,CSURFLK,         !edm
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                        FSFR,FUZF,
+     &                        FSFR,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT, !# LINE 607 SSM
      &                        iUnitTRNOP,DELT,COLDFLW
 C
@@ -1068,7 +679,7 @@ CEDM--WAS WRONG.
 C
 C--AREAL SINK/SOURCE TERMS
 C--(RECHARGE)
-   50 IF(.NOT.FRCH) GOTO 70
+   50 IF(.NOT.FRCH) GOTO 100
 C
       DO I=1,NROW
         DO J=1,NCOL
@@ -1085,45 +696,9 @@ C
           ENDIF
         ENDDO
       ENDDO
-C                                                                   !edm
-C--(INFILTRATED)                                                    !edm
-   70 IF(.NOT.FUZF) GOTO 80                                         !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                        !edm
-          CTMP=CUZINF(J,I,ICOMP)                                    !edm
-          IF(FINFIL(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)               !edm
-          IF(FINFIL(J,I).GT.0) THEN                                 !edm
-            RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+FINFIL(J,I)*      !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-          ELSE                                                      !edm
-            RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+FINFIL(J,I)*      !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-          ENDIF                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C                                                                   !edm
-C--(SURFACE LEAKANCE)                                               !edm
-   80 IF(.NOT.FUZF) GOTO 100                                        !edm
-      K=1                                                           !edm
-      DO I=1,NROW                                                   !edm
-        DO J=1,NCOL                                                 !edm
-          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                        !edm
-          CTMP=CSURFLK(J,I,K,ICOMP)                                 !edm
-          IF(SURFLK(J,I,K).LT.0) CTMP=CNEW(J,I,K,ICOMP)             !edm
-          IF(SURFLK(J,I,K).GT.0) THEN                               !edm
-            RMASIO(16,1,ICOMP)=RMASIO(16,1,ICOMP)+SURFLK(J,I,K)*    !edm
-     &         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)                !edm
-          ELSE                                                      !edm
-            RMASIO(16,2,ICOMP)=RMASIO(16,2,ICOMP)+SURFLK(J,I,K)*    !edm
-     &         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)                !edm
-          ENDIF                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
 C
 C--(EVAPOTRANSPIRATION)
-  100 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 110
+  100 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 200
 C
       DO I=1,NROW
         DO J=1,NCOL
@@ -1145,54 +720,6 @@ C
           ENDIF
         ENDDO
       ENDDO
-C                                                                   !edm
-C--(UZET)                                                           !edm
-  110 IF(.NOT.FUZF .AND. .NOT.IETFLG) GOTO 120                      !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                      !edm
-            CTMP=CUZET(J,I,K,ICOMP)                                 !edm
-            IF(UZET(J,I,K).LT.0.AND.(CTMP.LT.0 .OR.                 !edm
-     &                             CTMP.GE.CNEW(J,I,K,ICOMP))) THEN !edm
-              CTMP=CNEW(J,I,K,ICOMP)                                !edm
-            ELSEIF(CTMP.LT.0) THEN                                  !edm
-              CTMP=0.                                               !edm
-            ENDIF                                                   !edm
-            IF(UZET(J,I,K).GT.0) THEN                               !edm
-              RMASIO(14,1,ICOMP)=RMASIO(14,1,ICOMP)+UZET(J,I,K)*    !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ELSE                                                    !edm
-              RMASIO(14,2,ICOMP)=RMASIO(14,2,ICOMP)+UZET(J,I,K)*    !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
-C                                                                   !edm
-C--(GWET)                                                           !edm
-  120 IF(.NOT.FUZF .AND. .NOT.IETFLG) GOTO 200                      !edm
-      DO K=1,NLAY                                                   !edm
-        DO I=1,NROW                                                 !edm
-          DO J=1,NCOL                                               !edm
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                      !edm
-            CTMP=CGWET(J,I,K,ICOMP)                                 !edm
-            IF(GWET(J,I,K).LT.0.AND.(CTMP.LT.0 .OR.                 !edm
-     &                             CTMP.GE.CNEW(J,I,K,ICOMP))) THEN !edm
-              CTMP=CNEW(J,I,K,ICOMP)                                !edm
-            ELSEIF(CTMP.LT.0) THEN                                  !edm
-              CTMP=0.                                               !edm
-            ENDIF                                                   !edm
-            IF(GWET(J,I,K).GT.0) THEN                               !edm
-              RMASIO(15,1,ICOMP)=RMASIO(15,1,ICOMP)+GWET(J,I,K)*    !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ELSE                                                    !edm
-              RMASIO(15,2,ICOMP)=RMASIO(15,2,ICOMP)+GWET(J,I,K)*    !edm
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               !edm
-            ENDIF                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDDO                                                         !edm
 C
 C--POINT SINK/SOURCE TERMS
   200 DO NUM=1,NTSS

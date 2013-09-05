@@ -10,7 +10,7 @@ C
      &                         IVER,IFTLFMT,
      &         NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR,FUZF
+     &         FSWT,FSFR
      
       IMPLICIT  NONE
       INTEGER   
@@ -27,7 +27,7 @@ C
 C--ALLOCATE
       ALLOCATE(NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR,FUZF)
+     &         FSWT,FSFR)
 C
 C--INITIALIZE
       ISS=1
@@ -51,7 +51,7 @@ C--INITIALIZE
       FETS=.FALSE.
       FSWT=.FALSE.
       FSFR=.FALSE.
-      FUZF=.FALSE.
+!      FUZF=.FALSE.
       MTSTR=0
       MTRES=0
       MTFHB=0
@@ -109,13 +109,13 @@ C--DETERMINE WHICH FLOW COMPONENTS USED IN FLOW MODEL
       IF(MTETS.GT.0) FETS=.TRUE.
       IF(MTSWT.GT.0) FSWT=.TRUE.
       IF(MTSFR.GT.0) FSFR=.TRUE.
-      IF(MTUZF.GT.0) FUZF=.TRUE.
+!      IF(MTUZF.GT.0) FUZF=.TRUE.
 C
 C--DETERMINE IF THE SSM PACKAGE IS REQUIRED
   200 IF(iUnitTRNOP(3).EQ.0) THEN
         IF(FWEL.OR.FDRN.OR.FRCH.OR.FEVT.OR.FRIV.OR.FGHB.OR.
      &   FSTR.OR.FRES.OR.FFHB.OR.FIBS.OR.FTLK.OR.FLAK.OR.FMNW.OR.
-     &   FDRT.OR.FETS.OR.FSWT.OR.FSFR.OR.FUZF) THEN
+     &   FDRT.OR.FETS.OR.FSWT.OR.FSFR) THEN
           WRITE(*,300)
           CALL USTOP(' ')
         ELSEIF(MTCHD.GT.0) THEN
@@ -177,14 +177,13 @@ C **********************************************************************
 C last modified: 02-15-2005
 C
       USE MIN_SAT                                                   !# LINE 168 FMI
+      USE UZTVARS,       ONLY: WC,UZFLX,UZQSTO,SATOLD,SATNEW,
+     &                         PRSITYSAV,IUZFOPT,IUZFOPTG,IUZFBND
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FPRT,LAYCON,ICBUND,HORIGN,DH,PRSITY,
      &                         DELR,DELC,DZ,XBC,YBC,ZBC,QSTO,COLD,CNEW,
      &                         RETA,QX,QY,QZ,DTRACK,DTRACK2,THKMIN,ISS,
-     &                         IVER,
-     &                         FUZF,WC,PRSITY,UZFLX,UZQSTO,SURFLK,  !edm
-     &                         SATOLD,SATNEW,PRSITYSAV,IUZFOPT,     !edm
-     &                         IUZFOPTG,IUZFBND,                    !edm
+     &                         IVER,iUnitTRNOP,PRSITY,
      &                         NOCREWET                             !# LINE 159 FMI
 C
       IMPLICIT  NONE
@@ -197,7 +196,7 @@ C
       INUF=INFTL
 C                                                                   !edm
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)                         !edm
-      IF(FUZF) THEN                                                 !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
         IF(IUZFOPTG.GT.0) THEN                                      !edm
           TEXT='WATER CONTENT   '                                   !edm
           CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,      !edm
@@ -213,11 +212,11 @@ C--READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)                !edm
         TEXT='UZQSTO          '                                     !edm
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
      &              UZQSTO,FPRT)                                    !edm
-C                                                                   !edm
-C--READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                        !edm
-        TEXT='GWQOUT          '                                     !edm
-        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
-     &              SURFLK,FPRT)                                    !edm
+!C                                                                   !edm
+!C--READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                        !edm
+!        TEXT='GWQOUT          '                                     !edm
+!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
+!     &              SURFLK,FPRT)                                    !edm
       ENDIF                                                         !edm
 C
 C--READ SATURATED THICKNESS (UNIT: L).
@@ -260,7 +259,7 @@ C--READ STORAGE TERM (UNIT: L**3/T).
 C
 C--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE        !edm
 C--CURRENT CELL                                                     !edm
-      IF(FUZF.AND. .NOT.IUZFOPTG.EQ.0) THEN                         !edm
+      IF(iUnitTRNOP(7).GT.0.AND. .NOT.IUZFOPTG.EQ.0) THEN           !edm
 C--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD                !edm
         IF(KPER.NE.1 .OR. KSTP.NE.1) THEN                           !edm
           DO K=1,NLAY                                               !edm
@@ -329,7 +328,7 @@ C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
 C--AND REACTIVATE DRY CELL IF REWET AND ASSIGN CONC AT REWET CELL
 C--WITH UZF TURNED ON THE GRID BECOMES FIXED.  THE USER PROVIDEDED  !edm
 C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                             !edm
-      IF(.NOT.FUZF.OR.IUZFOPTG.EQ.0) THEN                           !edm
+      IF(.NOT.(iUnitTRNOP(7).GT.0).OR.IUZFOPTG.EQ.0) THEN           !edm
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
@@ -365,16 +364,16 @@ C--IS SAVED BY LKMT PACKAGE VERSION 2 OR LATER
           DO I=1,NROW
             DO J=1,NCOL
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
-              IF(.NOT.FUZF) THEN                                    !edm
+              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                    !edm
                 IF(LAYCON(K).EQ.0.OR.INT(DH(J,I,K)).EQ.-111) THEN
                   DH(J,I,K)=DZ(J,I,K)
                 ENDIF                                               !edm
-              ELSEIF(FUZF.AND. .NOT.IUZFOPTG.EQ.0) THEN             !edm
+              ELSEIF(iUnitTRNOP(7).GT.0.AND. .NOT.IUZFOPTG.EQ.0) THEN !edm
 C--SET DH EQUAL TO DZ FOR THE CASE WHEN THE UZF PACKAGE IS ACTIVE   !edm
                 IF(IUZFBND(J,I).GT.0) THEN                          !edm
                   DH(J,I,K)=DZ(J,I,K)                               !edm
                 ENDIF                                               !edm
-              ELSEIF(FUZF.AND.IUZFOPTG.EQ.0) THEN                   !edm
+              ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.0) THEN     !edm
                 !don't need to do anything in this case             !edm
               ENDIF
             ENDDO
@@ -409,7 +408,7 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                             !edm
         NICBND2=0                                                   !# LINE 280 FMI
         ICBND2=0                                                    !# LINE 281 FMI
       ENDIF                                                         !# LINE 282 FMI
-      IF(.NOT.FUZF) THEN                                            !edm
+      IF(.NOT.iUnitTRNOP(7).GT.0) THEN                              !edm
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
@@ -651,7 +650,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            THKSAT=DH(J,I,K)  !WHEN FUZF=1, DH IS DZ
+            THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT.EQ..TRUE.) THEN                           !# LINE 528 FMI
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))    !# LINE 529 FMI
@@ -659,7 +658,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
                 QSTO(J,I,K)=0
               ENDIF                                                 !# LINE 532 FMI
             ELSE
-              IF(FUZF) THEN
+              IF(iUnitTRNOP(7).GT.0) THEN
                 QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/            !edm
      &                       (THKSAT*DELR(J)*DELC(I))               !edm
               ELSE                                                  !edm
@@ -669,23 +668,6 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
           ENDDO
         ENDDO
       ENDDO
-C--DIVIDE SURFACE LEAKANCE BY CELL VOL. TO GET DIMENSION (1/TIME)   !edm
-C--UZFLX                                                            !edm
-      IF(FUZF) THEN                                                 !edm
-        DO J=1,NCOL                                                 !edm
-          DO I=1,NROW                                               !edm
-            DO K=1,NLAY                                             !edm
-              THKSAT=DH(J,I,K)                                      !edm
-              IF(ICBUND(J,I,K,1).EQ.0) THEN                         !edm
-                SURFLK(J,I,K)=0                                     !edm
-              ELSEIF(ICBUND(J,I,K,1).GT.0.AND. .NOT.THKSAT.EQ.0) THEN !edm
-                SURFLK(J,I,K)=SURFLK(J,I,K)/(DELR(J)*DELC(I)*THKSAT)!edm
-              ENDIF                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
-
 C
 C--SYNCHRONIZE ICBUND CONDITIONS OF ALL SPECIES
       IF(NCOMP.EQ.1) GOTO 999
@@ -716,16 +698,17 @@ C IN THE FORMS NEEDED BY THE TRANSPORT MODEL.
 C **********************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,
+     &                         IUZFBND
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,NCOL,NROW,NLAY,NCOMP,FPRT,
      &                         LAYCON,ICBUND,DH,PRSITY,DELR,DELC,IRCH,
      &                         RECH,IEVT,EVTR,MXSS,NSS,NTSS,SS,BUFF,
      &                         DTSSM,
-     &                         UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,!edm
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
-     &                         FETS,FSWT,FSFR,FUZF,ISS,NPERFL,
+     &                         FETS,FSWT,FSFR,ISS,NPERFL,
      &                         CNEW,SSMC,KSSZERO,                   !# LINE 563 FMI
-     &                         IUZFBND
+     &                         iUnitTRNOP
 C
       IMPLICIT  NONE
       INTEGER   INUF,J,I,K,
@@ -784,7 +767,7 @@ C--IF RECHARGE OPTION USED IN FLOW MODEL
       ENDIF
 C
 C--PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED     !edm
-      IF(FUZF) THEN                                                 !edm
+      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
         DO I=1,NROW                                                 !edm
           DO J=1,NCOL                                               !edm
             IF(ABS(IUZFBND(J,I)).GT.0) THEN                         !edm
@@ -813,7 +796,7 @@ C--READ UZ-ET FLOW TERM (L**3/T) IF IETFLG>0 IN UZF PACKAGE         !edm
 C--NOTE THAT EITHER THE ET PACKAGE OR THE UZF PACKAGE, BUT NOT      !edm
 C--BOTH WILL BE IN USE                                              !edm
 C                                                                   !edm
-      IF(FUZF.AND.IETFLG) THEN                                      !edm
+      IF(iUnitTRNOP(7).GT.0.AND.IETFLG) THEN                        !edm
         TEXT='UZ-ET'                                                !edm
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
      &              UZET,FPRT)                                      !edm
@@ -821,7 +804,7 @@ C                                                                   !edm
 C                                                                   !edm
 C--Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge        !edm
 C                                                                   !edm
-      IF(FUZF.AND.IETFLG) THEN                                      !edm
+      IF(iUnitTRNOP(7).GT.0.AND.IETFLG) THEN                        !edm
         TEXT='GW-ET'                                                !edm
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
      &              GWET,FPRT)                                      !edm
@@ -912,7 +895,8 @@ C--IF LAK OPTION IS USED IN FLOW MODEL.                        !# LINE 725 FMI
 C                                                              !# LINE 732 FMI
 C--READ UZF -> SFR & UZF -> LAK FLOWS (L**3/T)                       !edm
 C--IF UZF AND SFR OR UZF AND LAKE OR BOTH ARE USED IN THE FLOW MODEL !edm
-      IF((FUZF.AND.FSFR).OR.(FUZF.AND.FLAK)) THEN                   !edm
+      IF((iUnitTRNOP(7).GT.0.AND.FSFR).OR.
+     &   (iUnitTRNOP(7).GT.0.AND.FLAK)) THEN                        !edm
         TEXT='UZF CONNECTIONS'                                      !edm
         IQ=32                                                       !edm
         CALL READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,     !edm
@@ -995,22 +979,23 @@ C
             RECH(J,I)=RECH(J,I)/VOLAQU
           ENDIF
           IF(RECH(J,I).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
-            TM=PRSITY(J,I,K)/RECH(J,I)
-            IF(ABS(TM).LT.DTSSM) THEN
-              DTSSM=ABS(TM)
-              KSSM=K
-              ISSM=I
-              JSSM=J
-            ENDIF
+          TM=PRSITY(J,I,K)/RECH(J,I)
+          IF(ABS(TM).LT.DTSSM) THEN
+            DTSSM=ABS(TM)
+            KSSM=K
+            ISSM=I
+            JSSM=J
+          ENDIF
         ENDDO
       ENDDO
 C
 C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL !edm
-  950 IF(.NOT.FUZF) GOTO 951                                        !edm
+  950 IF(.NOT.(iUnitTRNOP(7).GT.0)) GOTO 951                        !edm
       DO I=1,NROW                                                   !edm
         DO J=1,NCOL                                                 !edm
           IF(FINFIL(J,I).EQ.0) CYCLE                                !edm
-          VOLAQU=DELR(J)*DELC(I)*DH(J,I,1)                          !edm
+          K=ABS(IUZFBND(J,I))
+          VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)                          !edm
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN              !edm
             FINFIL(J,I)=0.                                          !edm
           ELSE                                                      !edm
@@ -1051,7 +1036,8 @@ C
 C
 C--PERFORM LOOP ONCE FOR UZET AND AGAIN FOR GWET                    !edm
 C--(UZET)                                                           !edm
-  955 IF(.NOT.IETFLG) GOTO 956                                      !edm
+  955 IF(.NOT.(iUnitTRNOP(7).GT.0)) GOTO 960
+      IF(.NOT.IETFLG) GOTO 960                                      !edm
       DO K=1,NLAY                                                   !edm
         DO I=1,NROW                                                 !edm
           DO J=1,NCOL                                               !edm
@@ -1073,7 +1059,7 @@ C--(UZET)                                                           !edm
         ENDDO                                                       !edm
       ENDDO                                                         !edm
 C--(GWET)                                                           !edm
-  956 IF(.NOT.IETFLG) GOTO 960                                      !edm
+      IF(.NOT.IETFLG) GOTO 960                                      !edm
       DO K=1,NLAY                                                   !edm
         DO I=1,NROW                                                 !edm
           DO J=1,NCOL                                               !edm
@@ -2050,8 +2036,8 @@ C THIS SUBROUTINE READS UZF->SFR & UZF->LAK CONNECTIONS
 C *********************************************************************
 C last modified: 08-15-2013
 C
-      USE MT3DMS_MODULE, ONLY: IFTLFMT,MXUZCON,IROUTE,UZQ,NCON,
-     1  NCONLK,NCONSF
+      USE MT3DMS_MODULE, ONLY: IFTLFMT
+      USE UZTVARS,       ONLY: MXUZCON,IROUTE,UZQ,NCON,NCONLK,NCONSF
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
      &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
@@ -2103,7 +2089,7 @@ C--IF UZF -> SFR, READ 9 VALUES
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
           ENDIF
-          IROUTE(1,I)=1  !1:SFR, 2:LAK
+          IROUTE(1,I)=1  !1:SFR, 2:LAK, 3:SNK
           IROUTE(2,I)=KK
           IROUTE(3,I)=II
           IROUTE(4,I)=JJ
@@ -2126,11 +2112,34 @@ C--IF UZF -> LAK, READ 7 VALUES
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
           ENDIF
-          IROUTE(1,I)=2  !1:SFR, 2:LAK
+          IROUTE(1,I)=2  !1:SFR, 2:LAK, 3:SNK
           IROUTE(2,I)=KK
           IROUTE(3,I)=II
           IROUTE(4,I)=JJ
           IROUTE(5,I)=ILAK
+          !IROUTE(6,I) ALREADY EQUALS ZERO
+          IF(TEXT.EQ.'GRW') THEN
+            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'EXC') THEN
+            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+          ELSEIF(TEXT.EQ.'REJ') THEN
+            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+          ENDIF
+          UZQ(I)=Q
+          NCONLK=NCONLK+1
+C
+C--IF UZF -> LAK, READ 6 VALUES
+        ELSEIF(LABEL.EQ.'SNK') THEN
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) LABEL,TEXT,KK,II,JJ,Q
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+          ENDIF
+          IROUTE(1,I)=3  !1:SFR, 2:LAK, 3:SNK
+          IROUTE(2,I)=KK
+          IROUTE(3,I)=II
+          IROUTE(4,I)=JJ
+          !IROUTE(5,I) ALREADY EQUALS ZERO
           !IROUTE(6,I) ALREADY EQUALS ZERO
           IF(TEXT.EQ.'GRW') THEN
             IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ

@@ -323,6 +323,7 @@ C TVD (ULTIMATE) SCHEMES.
 C **********************************************************************
 C last modified: 02-15-2005
 C
+      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,
      &                         MXPART,NCOUNT,NPINS,NRC,NPCHEK,XP,YP,ZP,
      &                         INDEXX,INDEXY,INDEXZ,CNPT,ICBUND,DELR,
@@ -330,7 +331,7 @@ C
      &                         RETA,COLD,CWGT,CNEW,CADV,BUFF,
      &                         IMPSOL,NADVFD,RMASIO,
      &                         NPL,NPH,WD,
-     &                         SATOLD,PRSITYSAV,FUZF                !edm
+     &                         iUnitTRNOP                           !edm
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K
@@ -344,7 +345,7 @@ C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
      &   PRSITY,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),QX,QY,QZ,
      &   RETA(:,:,:,ICOMP),DTRANS,RMASIO(:,:,ICOMP))
       ELSEIF(MIXELM.EQ.-1) THEN
-        IF(.NOT.FUZF) THEN                                          !edm
+        IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                          !edm
         CALL SADV5U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
      &   PRSITY,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),CADV(:,:,:,ICOMP),
      &   BUFF,QX,QY,QZ,RETA(:,:,:,ICOMP),DTRANS,
@@ -2159,9 +2160,9 @@ C WEIGHTING.
 C *********************************************************************
 C last modified: 02-15-2005
 C
+      USE UZTVARS,       ONLY: IUZFBND
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,NODES,
-     &                         UPDLHS,NADVFD,
-     &                         IUZFBND                              !edm
+     &                         UPDLHS,NADVFD
       USE MIN_SAT                                                   !# LINE 2127 ADV
 C
       IMPLICIT  NONE

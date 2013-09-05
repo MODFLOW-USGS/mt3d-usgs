@@ -610,7 +610,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SRCT5R(NCOL,NROW,NLAY,ICBUND,PRSITY,COLD,RETA,RFMIN,
+      SUBROUTINE SRCT5R(NCOL,NROW,NLAY,ICBUND,PRSITY,CNEW,RETA,RFMIN,
      & RHOB,SP1,SP2,RC1,RC2,PRSITY2,RETA2,FRAC,SRCONC,
      & ISOTHM,IREACT,DTRANS,ICOMP)                             !# LINE 664 RCT
 C ********************************************************************
@@ -625,11 +625,11 @@ C                                                              !# LINE 673 RCT
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,ISOTHM,IREACT,J,I,K,
      &          ICOMP                                          !# LINE 675 RCT
-      REAL      PRSITY,COLD,RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,
+      REAL      PRSITY,CNEW,RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,
      &          PRSITY2,FRAC,SRCONC,DTRANS,TINY,
      &          RETA2,TERM1,RC1TMP,RC2TMP
       DIMENSION PRSITY(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),
-     &          COLD(NCOL,NROW,NLAY),RETA(NCOL,NROW,NLAY),
+     &          CNEW(NCOL,NROW,NLAY),RETA(NCOL,NROW,NLAY),
      &          RHOB(NCOL,NROW,NLAY),SRCONC(NCOL,NROW,NLAY),
      &          SP1(NCOL,NROW,NLAY),SP2(NCOL,NROW,NLAY),
      &          RC1(NCOL,NROW,NLAY),RC2(NCOL,NROW,NLAY),
@@ -648,7 +648,7 @@ C--1. LINEAR EQUILIBRIUM...
               IF(ICBUND(J,I,K).EQ.0) CYCLE
               RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
               RFMIN=MIN(RFMIN,RETA(J,I,K))
-              SRCONC(J,I,K)=SP1(J,I,K)*COLD(J,I,K)
+              SRCONC(J,I,K)=SP1(J,I,K)*CNEW(J,I,K)
             ENDDO
           ENDDO
         ENDDO
@@ -659,13 +659,13 @@ C--2. FREUNDLICH EQUILIBRIUM...
           DO I=1,NROW
             DO J=1,NCOL
               IF(ICBUND(J,I,K).EQ.0) CYCLE
-              IF(COLD(J,I,K).LE.0) THEN
+              IF(CNEW(J,I,K).LE.0) THEN
                 RETA(J,I,K)=1.
                 SRCONC(J,I,K)=0.
               ELSE
                 RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*
-     &           SP1(J,I,K)*SP2(J,I,K)*COLD(J,I,K)**(SP2(J,I,K)-1.)
-                SRCONC(J,I,K)=SP1(J,I,K)*COLD(J,I,K)**SP2(J,I,K)
+     &           SP1(J,I,K)*SP2(J,I,K)*CNEW(J,I,K)**(SP2(J,I,K)-1.)
+                SRCONC(J,I,K)=SP1(J,I,K)*CNEW(J,I,K)**SP2(J,I,K)
               ENDIF
               RFMIN=MIN(RFMIN,RETA(J,I,K))
             ENDDO
@@ -678,14 +678,14 @@ C--3. LANGMUIR EQUILIBRIUM...
           DO I=1,NROW
             DO J=1,NCOL
               IF(ICBUND(J,I,K).EQ.0) CYCLE
-              IF(COLD(J,I,K).LT.0) THEN
+              IF(CNEW(J,I,K).LT.0) THEN
                 RETA(J,I,K)=1.
                 SRCONC(J,I,K)=0.
               ELSE
                 RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*
-     &           SP1(J,I,K)*SP2(J,I,K)/(1.+SP1(J,I,K)*COLD(J,I,K))**2
-                SRCONC(J,I,K)=SP1(J,I,K)*SP2(J,I,K)*COLD(J,I,K)
-     &           /(1.+SP1(J,I,K)*COLD(J,I,K))
+     &           SP1(J,I,K)*SP2(J,I,K)/(1.+SP1(J,I,K)*CNEW(J,I,K))**2
+                SRCONC(J,I,K)=SP1(J,I,K)*SP2(J,I,K)*CNEW(J,I,K)
+     &           /(1.+SP1(J,I,K)*CNEW(J,I,K))
               ENDIF
               RFMIN=MIN(RFMIN,RETA(J,I,K))
             ENDDO
@@ -705,13 +705,13 @@ C--4. LINEAR NON-EQUILIBRIUM...
 C--if with no reaction or with first-order reaction               
               IF(ireact.eq.0.or.ireact.eq.1.or.ireact.eq.2.or.   !# Amended (LINE 754 RCT)
      1           ireact.eq.3) THEN                               !# Amended (LINE 755 RCT)
-                SRCONC(J,I,K)=(SP2(J,I,K)*COLD(J,I,K)+
+                SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+
      &           RHOB(J,I,K)/DTRANS*SRCONC(J,I,K))/
      &           (RHOB(J,I,K)/DTRANS+SP2(J,I,K)/SP1(J,I,K)
      &           +RC2TMP*RHOB(J,I,K))
 C--if with zeroth-order reaction      
               ELSEIF(ireact.eq.100) THEN 
-                SRCONC(J,I,K)=(SP2(J,I,K)*COLD(J,I,K)+
+                SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+
      &           RHOB(J,I,K)/DTRANS*SRCONC(J,I,K)
      &           -RC2TMP*RHOB(J,I,K))/
      &           (RHOB(J,I,K)/DTRANS+SP2(J,I,K)/SP1(J,I,K))
@@ -757,13 +757,13 @@ C--if with no reaction or with first-order reaction
                 TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
      &           +RC1TMP*PRSITY2(J,I,K)
      &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K)-1.)
-                SRCONC(J,I,K)=(SP2(J,I,K)*COLD(J,I,K)
+                SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)
      &           +PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
      &           /TERM1
 C--if with zeroth-order reaction     
               elseif(ireact.eq.100) then 
                 TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
-                SRCONC(J,I,K)=(SP2(J,I,K)*COLD(J,I,K)
+                SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)
      &           -RC1TMP*PRSITY2(J,I,K)
      &           -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)
      &           +PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
@@ -1574,7 +1574,7 @@ C THIS SUBROUTINE UPDATES NONLINEAR REACTION COEFFICIENTS.
 C ********************************************************************
 C last modified: 02-15-2005
 C
-      USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,COLD,
+      USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
      &                         RETA2,FRAC,SRCONC,ISOTHM,IREACT,
      &                         CNEW                                 !edm
@@ -1589,7 +1589,7 @@ C
 C
       IF(ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
         CALL SRCT5R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
-     &   COLD(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
+     &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
      &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
      &   SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)       !# Amended (LINE 1655 RCT)

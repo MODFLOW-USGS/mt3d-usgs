@@ -316,11 +316,70 @@ CONTAINS
       END SUBROUTINE MEMDEALLOCATE2  
       
     END MODULE RCTMOD
-    MODULE MT3DMS_MODULE
+    MODULE UZTVARS
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: PRSITYSAV  
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SATOLD     
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SATNEW     
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZFBND    
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: WC         
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZFLX      
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZQSTO     
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SDH        
+        LOGICAL,          SAVE,                       POINTER :: IETFLG     
+        INTEGER,          SAVE,                       POINTER :: IUZFOPTG   
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZFOPT    
+        INTEGER,          SAVE,                       POINTER :: ICBCUZ
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZET       
+        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CUZET      
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: GWET       
+        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CGWET
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: FINFIL      
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CUZINF
+!        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CSURFLK   
+!--UZF -> SFR & UZF -> LAK CONNECTIONS
+        INTEGER,          SAVE,                       POINTER :: MXUZCON
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IROUTE
+        REAL,             SAVE, DIMENSION(:),         POINTER :: UZQ
+        INTEGER,          SAVE,                       POINTER :: NCON
+        INTEGER,          SAVE,                       POINTER :: NCONLK
+        INTEGER,          SAVE,                       POINTER :: NCONSF
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2LAK
+        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2SFR
+CONTAINS
+        SUBROUTINE MEMDEALLOCATE_UZ()
+        IF(ASSOCIATED(PRSITYSAV)) DEALLOCATE(PRSITYSAV)             !edm
+        IF(ASSOCIATED(SATOLD))    DEALLOCATE(SATOLD)                !edm
+        IF(ASSOCIATED(SATNEW))    DEALLOCATE(SATNEW)                !edm
+        IF(ASSOCIATED(SDH))       DEALLOCATE(SDH)                   !edm
+        IF(ASSOCIATED(IUZFBND))   DEALLOCATE(IUZFBND)               !edm
+        IF(ASSOCIATED(WC))        DEALLOCATE(WC)                    !edm
+        IF(ASSOCIATED(UZFLX))     DEALLOCATE(UZFLX)                 !edm
+        IF(ASSOCIATED(UZQSTO))    DEALLOCATE(UZQSTO)                !edm
+        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
+        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)                !edm
+        IF(ASSOCIATED(IUZFOPTG))  DEALLOCATE(IUZFOPTG)              !edm
+        IF(ASSOCIATED(IETFLG))    DEALLOCATE(IETFLG)                !edm
+        IF(ASSOCIATED(IUZFOPT))   DEALLOCATE(IUZFOPT)               !edm
+        IF(ASSOCIATED(ICBCUZ))    DEALLOCATE(ICBCUZ)                !edm
+        IF(ASSOCIATED(UZET))      DEALLOCATE(UZET)                  !edm
+        IF(ASSOCIATED(CUZET))     DEALLOCATE(CUZET)                 !edm
+        IF(ASSOCIATED(GWET))      DEALLOCATE(GWET)                  !edm
+        IF(ASSOCIATED(CGWET))     DEALLOCATE(CGWET)                 !edm
+        IF(ASSOCIATED(MXUZCON))   DEALLOCATE(MXUZCON)               !edm
+        IF(ASSOCIATED(IROUTE))    DEALLOCATE(IROUTE)                !edm 
+        IF(ASSOCIATED(UZQ))       DEALLOCATE(UZQ)                   !edm
+        IF(ASSOCIATED(NCON))      DEALLOCATE(NCON)                  !edm
+        IF(ASSOCIATED(NCONLK))    DEALLOCATE(NCONLK)                !edm
+        IF(ASSOCIATED(NCONSF))    DEALLOCATE(NCONSF)                !edm
+        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
+        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)                !edm
+        END SUBROUTINE MEMDEALLOCATE_UZ
+    END MODULE UZTVARS
+MODULE MT3DMS_MODULE
         INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=9000
         CHARACTER(LEN=4), SAVE, DIMENSION(MXTRNOP) :: NameTRNOP=        &
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
-     &    'CTS ', 'UZF ', '    ', '    ', '    ',                       &      !edm
+     &    'CTS ', 'UZT ', '    ', '    ', '    ',                       &      !edm
      &    'TOB ', '    ', 'HSS ', 'TSO ', 'RTR ',                       &
      &    '    ', '    ', 'LKT ', 'SFT ', '    '/)
         INTEGER,          SAVE,                       POINTER :: NCOL      
@@ -344,7 +403,7 @@ CONTAINS
         INTEGER,          SAVE,                       POINTER :: INRCT     
         INTEGER,          SAVE,                       POINTER :: INGCG     
         INTEGER,          SAVE,                       POINTER :: INTOB
-        INTEGER,          SAVE,                       POINTER :: INUZF         !edm     
+        INTEGER,          SAVE,                       POINTER :: INUZT
         INTEGER,          SAVE,                       POINTER :: INHSS
         INTEGER,          SAVE,                       POINTER :: INFTL     
         INTEGER,          SAVE,                       POINTER :: IFTLFMT   
@@ -368,34 +427,17 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:),         POINTER :: DELC
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: DZ
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: PRSITY
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: PRSITYSAV  !edm
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: HTOP
         REAL,             SAVE, DIMENSION(:),         POINTER :: XBC
         REAL,             SAVE, DIMENSION(:),         POINTER :: YBC
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: ZBC
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CNEW
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: COLD
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SATOLD     !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SATNEW     !edm
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: QX
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: QY
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: QZ
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZFBND    !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: WC         !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZFLX      !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZQSTO     !edm
-!--UZF -> SFR & UZF -> LAK CONNECTIONS
-        INTEGER,          SAVE,                      POINTER :: MXUZCON
-        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: IROUTE
-        REAL,             SAVE, DIMENSION(:),        POINTER :: UZQ
-        INTEGER,          SAVE,                      POINTER :: NCON
-        INTEGER,          SAVE,                      POINTER :: NCONLK
-        INTEGER,          SAVE,                      POINTER :: NCONSF
-!
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SURFLK     !edm
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: QSTO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: DH
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SDH        !edm
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CWGT
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CADV
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RETA
@@ -522,7 +564,7 @@ CONTAINS
         LOGICAL,          SAVE,                       POINTER :: FETS
         LOGICAL,          SAVE,                       POINTER :: FSWT
         LOGICAL,          SAVE,                       POINTER :: FSFR
-        LOGICAL,          SAVE,                       POINTER :: FUZF
+!        LOGICAL,          SAVE,                       POINTER :: FUZF
 !--FMI-Vivek
         INTEGER,          SAVE,                       POINTER :: NOCREWET              !# LINE 99 MAIN
 !--SSM                    
@@ -531,21 +573,11 @@ CONTAINS
         INTEGER,          SAVE,                       POINTER :: NSS
         INTEGER,          SAVE,                       POINTER :: NTSS
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: RECH
-        REAL,             SAVE, DIMENSION(:,:),       POINTER :: FINFIL       !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CUZINF       !edm
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IRCH
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CRCH
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: EVTR
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IEVT
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CEVT
-        LOGICAL,          SAVE,                       POINTER :: IETFLG       !edm
-        INTEGER,          SAVE,                       POINTER :: IUZFOPTG     !edm
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZFOPT      !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZET         !edm
-        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CUZET        !edm
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: GWET         !edm
-        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CGWET        !edm
-        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CSURFLK      !edm
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SS
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SSMC
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SSG
@@ -681,9 +713,9 @@ CONTAINS
       IF(ASSOCIATED(INDSP)) DEALLOCATE(INDSP)
       IF(ASSOCIATED(INSSM)) DEALLOCATE(INSSM)
       IF(ASSOCIATED(INRCT)) DEALLOCATE(INRCT)
+      IF(ASSOCIATED(INUZT)) DEALLOCATE(INUZT) 
       IF(ASSOCIATED(INGCG)) DEALLOCATE(INGCG)
       IF(ASSOCIATED(INTOB)) DEALLOCATE(INTOB)
-      IF(ASSOCIATED(INUZF)) DEALLOCATE(INUZF)                 !edm
       IF(ASSOCIATED(INHSS)) DEALLOCATE(INHSS)
       IF(ASSOCIATED(INFTL)) DEALLOCATE(INFTL)
       IF(ASSOCIATED(IFTLFMT)) DEALLOCATE(IFTLFMT)
@@ -707,28 +739,17 @@ CONTAINS
       IF(ASSOCIATED(DELC)) DEALLOCATE(DELC)
       IF(ASSOCIATED(DZ)) DEALLOCATE(DZ)
       IF(ASSOCIATED(PRSITY)) DEALLOCATE(PRSITY)
-!      IF(FUZF) THEN                                          !edm
-!        IF(ASSOCIATED(PRSITYSAV)) DEALLOCATE(PRSITYSAV)      !edm
-!      ENDIF                                                  !edm
       IF(ASSOCIATED(HTOP)) DEALLOCATE(HTOP)
       IF(ASSOCIATED(XBC)) DEALLOCATE(XBC)
       IF(ASSOCIATED(YBC)) DEALLOCATE(YBC)
       IF(ASSOCIATED(ZBC)) DEALLOCATE(ZBC)
       IF(ASSOCIATED(CNEW)) DEALLOCATE(CNEW)
       IF(ASSOCIATED(COLD)) DEALLOCATE(COLD)
-      IF(ASSOCIATED(SATOLD)) DEALLOCATE(SATOLD)              !edm
-      IF(ASSOCIATED(SATNEW)) DEALLOCATE(SATNEW)              !edm
       IF(ASSOCIATED(QX)) DEALLOCATE(QX)
       IF(ASSOCIATED(QY)) DEALLOCATE(QY)
       IF(ASSOCIATED(QZ)) DEALLOCATE(QZ)
       IF(ASSOCIATED(QSTO)) DEALLOCATE(QSTO)
       IF(ASSOCIATED(DH)) DEALLOCATE(DH)
-      IF(ASSOCIATED(SDH))    DEALLOCATE(SDH)                 !edm
-      IF(ASSOCIATED(IUZFBND)) DEALLOCATE(IUZFBND)            !edm
-!      IF(ASSOCIATED(WC))     DEALLOCATE(WC)                 !edm
-      IF(ASSOCIATED(UZFLX))  DEALLOCATE(UZFLX)               !edm
-      IF(ASSOCIATED(UZQSTO)) DEALLOCATE(UZQSTO)              !edm
-      IF(ASSOCIATED(SURFLK)) DEALLOCATE(SURFLK)              !edm
       
       IF(ASSOCIATED(CWGT)) DEALLOCATE(CWGT)
       IF(ASSOCIATED(CADV)) DEALLOCATE(CADV)
@@ -851,28 +872,18 @@ CONTAINS
       IF(ASSOCIATED(FETS)) DEALLOCATE(FETS)
       IF(ASSOCIATED(FSWT)) DEALLOCATE(FSWT)
       IF(ASSOCIATED(FSFR)) DEALLOCATE(FSFR)
-      IF(ASSOCIATED(FUZF)) DEALLOCATE(FUZF)
+!      IF(ASSOCIATED(FUZF)) DEALLOCATE(FUZF)
 !
       IF(ASSOCIATED(ISSGOUT)) DEALLOCATE(ISSGOUT)
       IF(ASSOCIATED(MXSS)) DEALLOCATE(MXSS)
       IF(ASSOCIATED(NSS)) DEALLOCATE(NSS)
       IF(ASSOCIATED(NTSS)) DEALLOCATE(NTSS)
       IF(ASSOCIATED(RECH)) DEALLOCATE(RECH)
-      IF(ASSOCIATED(FINFIL)) DEALLOCATE(FINFIL)        !edm
-      IF(ASSOCIATED(CUZINF)) DEALLOCATE(CUZINF)        !edm
       IF(ASSOCIATED(IRCH)) DEALLOCATE(IRCH)
       IF(ASSOCIATED(CRCH)) DEALLOCATE(CRCH)
       IF(ASSOCIATED(EVTR)) DEALLOCATE(EVTR)
       IF(ASSOCIATED(IEVT)) DEALLOCATE(IEVT)
       IF(ASSOCIATED(CEVT)) DEALLOCATE(CEVT)
-      IF(ASSOCIATED(IUZFOPTG)) DEALLOCATE(IUZFOPTG)    !edm
-      IF(ASSOCIATED(IETFLG))  DEALLOCATE(IETFLG)       !edm
-      IF(ASSOCIATED(IUZFOPT)) DEALLOCATE(IUZFOPT)      !edm
-      IF(ASSOCIATED(UZET))    DEALLOCATE(UZET)         !edm
-      IF(ASSOCIATED(CUZET))   DEALLOCATE(CUZET)        !edm
-      IF(ASSOCIATED(GWET))    DEALLOCATE(GWET)         !edm
-      IF(ASSOCIATED(CGWET))   DEALLOCATE(CGWET)        !edm
-      IF(ASSOCIATED(CSURFLK)) DEALLOCATE(CSURFLK)      !edm
       
       IF(ASSOCIATED(SS)) DEALLOCATE(SS)
       IF(ASSOCIATED(SSMC)) DEALLOCATE(SSMC)

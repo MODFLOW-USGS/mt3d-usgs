@@ -143,7 +143,7 @@ C***********************************************************************
 C last modified: 10-30-2005
 C
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,ICBUND,PRSITY,
-     &                         DELR,DELC,DZ,QX,QY,QZ,IFMTDP,DTDISP,ISS,
+     &                         DELR,DELC,DH,QX,QY,QZ,IFMTDP,DTDISP,ISS,
      &                         NPERFL,
      &                         ALPHAL,TRPT,TRPV,DMCOEF,DXX,DXY,DXZ,DYX,
      &                         DYY,DYZ,DZX,DZY,DZZ,
@@ -296,7 +296,7 @@ C
             IF(ICBUND(J,I,K,1).EQ.0.OR.ICBUND(J,I,KP1,1).EQ.0) CYCLE
 C
 C--CALCULATE VALUES AT INTERFACES
-            WW=DZ(J,I,KP1)/(DZ(J,I,K)+DZ(J,I,KP1))
+            WW=DH(J,I,KP1)/(DH(J,I,K)+DH(J,I,KP1))
             PF=1.
             AL=ALPHAL(J,I,K)*WW+ALPHAL(J,I,KP1)*(1.-WW)
             AT=ALPHAL(J,I,K)*TRPT(K)*WW+
@@ -439,7 +439,7 @@ C
           ENDIF
           IF(NLAY.GT.1.AND.K.LT.NLAY) THEN
             IF(ICBUND(J,I,K+1,1).NE.0)
-     &       TD=TD+DZZ(J,I,K,ICOMP)/(0.5*DZ(J,I,K)+0.5*DZ(J,I,K+1))**2
+     &       TD=TD+DZZ(J,I,K,ICOMP)/(0.5*DH(J,I,K)+0.5*DH(J,I,K+1))**2
           ENDIF
           IF(TD.GT.0) THEN
             TD=0.5/TD*PRSITY(J,I,K)
@@ -546,7 +546,7 @@ C
 C
 C--ALONG THE X-DIRECTION: DXX, DXY AND DXZ
             WW=DELR(JP1)/(DELR(J)+DELR(JP1))
-            AREA=DELC(I)*(DZ(J,I,K)*WW+DZ(JP1,I,K)*(1.-WW))
+            AREA=DELC(I)*(DH(J,I,K)*WW+DH(JP1,I,K)*(1.-WW))
             IF(NCOL.GT.1.AND.AREA.GT.0) THEN
               DXX(J,I,K,ICOMP)=
      &         AREA*DXX(J,I,K,ICOMP)/(0.5*DELR(JP1)+0.5*DELR(J))
@@ -555,15 +555,15 @@ C--ALONG THE X-DIRECTION: DXX, DXY AND DXZ
      &           (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
               ENDIF
               IF(NLAY.GT.1) THEN
-                DXZ(J,I,K)=AREA*DXZ(J,I,K)/((0.5*DZ(J,I,KM1)
-     &           +DZ(J,I,K)+0.5*DZ(J,I,KP1))*WW + (0.5*DZ(JP1,I,KM1)
-     &           +DZ(JP1,I,K)+0.5*DZ(JP1,I,KP1))*(1.-WW) )
+                DXZ(J,I,K)=AREA*DXZ(J,I,K)/((0.5*DH(J,I,KM1)
+     &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(JP1,I,KM1)
+     &           +DH(JP1,I,K)+0.5*DH(JP1,I,KP1))*(1.-WW) )
               ENDIF
             ENDIF
 C
 C--ALONG THE Y-DIRECTION: DYX, DYY AND DYZ
             WW=DELC(IP1)/(DELC(I)+DELC(IP1))
-            AREA=DELR(J)*(DZ(J,I,K)*WW+DZ(J,IP1,K)*(1.-WW))
+            AREA=DELR(J)*(DH(J,I,K)*WW+DH(J,IP1,K)*(1.-WW))
             IF(NROW.GT.1.AND.AREA.GT.0) THEN
               DYY(J,I,K,ICOMP)=
      &         AREA*DYY(J,I,K,ICOMP)/(0.5*DELC(IP1)+0.5*DELC(I))
@@ -572,9 +572,9 @@ C--ALONG THE Y-DIRECTION: DYX, DYY AND DYZ
      &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
               ENDIF
               IF(NLAY.GT.1) THEN
-                DYZ(J,I,K)=AREA*DYZ(J,I,K)/((0.5*DZ(J,I,KM1)
-     &           +DZ(J,I,K)+0.5*DZ(J,I,KP1))*WW + (0.5*DZ(J,IP1,KM1)
-     &           +DZ(J,IP1,K)+0.5*DZ(J,IP1,KP1))*(1.-WW) )
+                DYZ(J,I,K)=AREA*DYZ(J,I,K)/((0.5*DH(J,I,KM1)
+     &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(J,IP1,KM1)
+     &           +DH(J,IP1,K)+0.5*DH(J,IP1,KP1))*(1.-WW) )
               ENDIF
             ENDIF
 C
@@ -582,7 +582,7 @@ C--ALONG THE Z DIRECTION: DZX, DZY AND DZZ
             AREA=DELR(J)*DELC(I)
             IF(NLAY.GT.1.AND.AREA.GT.0) THEN
               DZZ(J,I,K,ICOMP)=AREA*DZZ(J,I,K,ICOMP)/
-     &         (0.5*DZ(J,I,KP1)+0.5*DZ(J,I,K))
+     &         (0.5*DH(J,I,KP1)+0.5*DH(J,I,K))
               IF(NCOL.GT.1) THEN
                 DZX(J,I,K)=AREA*DZX(J,I,K)/
      &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
@@ -611,25 +611,25 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE DSP5FM(ICOMP,ICBUND,A,COLD)
+      SUBROUTINE DSP5FM(ICOMP,ICBUND,A,CNEW)
 C **********************************************************************
 C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX FOR THE DISPERSION
 C TERM USING THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C **********************************************************************
 C last modified: 10-30-2006
 C
-      USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,DZ=>DH,
+      USE UZTVARS,       ONLY: IUZFBND
+      USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,DH,
      &                         DXX,DXY,DXZ,DYX,DYY,DYZ,DZX,DZY,DZZ,
-     &                         UPDLHS,RHS,NCRS,L,NODES,
-     &                         IUZFBND                              !edm
+     &                         UPDLHS,RHS,NCRS,L,NODES
 C
       IMPLICIT  NONE
       INTEGER   K,I,J,KP1,KM1,IP1,IM1,JP1,JM1,ICBUND,
      &          N,II,INDEX,ICOMP
-      REAL      WXP,WXM,WYP,WYM,WZP,WZM,COLD,
+      REAL      WXP,WXM,WYP,WYM,WZP,WZM,CNEW,
      &          A,TEMP1,TEMP2,BNDTMP
       DIMENSION ICBUND(NODES,MCOMP),
-     &          COLD(NODES,MCOMP),A(NODES,*),
+     &          CNEW(NODES,MCOMP),A(NODES,*),
      &          TEMP1(7),TEMP2(19)
 C
 C--LOOP THROUGH EVERY FINITE DIFFERENCE CELL
@@ -666,18 +666,18 @@ C--CALCULATE CELL INTERFACE WEIGHTING FACTORS
             IF(I.EQ.1) WYM=1.
 C
 C...........TAKE CARE OF DRY CELLS                              !# LINE 705
-            IF(DZ(J,I,KP1).LE.0.) THEN                          !# LINE 706
+            IF(DH(J,I,KP1).LE.0.) THEN                          !# LINE 706
               WZP=0                                             !# LINE 707
             ELSE                                                !# LINE 708
-              IF(DZ(J,I,K).EQ.0.AND.DZ(J,I,KP1).EQ.0) GOTO 10   !edm
-                WZP=DZ(J,I,KP1)/(DZ(J,I,K)+DZ(J,I,KP1))
+              IF(DH(J,I,K).EQ.0.AND.DH(J,I,KP1).EQ.0) GOTO 10   !edm
+                WZP=DH(J,I,KP1)/(DH(J,I,K)+DH(J,I,KP1))
             ENDIF                                               !# LINE 710
 C...........TAKE CARE OF DRY CELLS                              !# LINE 711
-  10        IF(DZ(J,I,KM1).LE.0.) THEN                          !# LINE 712
+  10        IF(DH(J,I,KM1).LE.0.) THEN                          !# LINE 712
               WZM=1                                             !# LINE 713
             ELSE                                                !# LINE 714
-              IF(DZ(J,I,KM1).EQ.0.AND.DZ(J,I,K).EQ.0) GOTO 20   !edm
-                WZM=DZ(J,I,K)/(DZ(J,I,KM1)+DZ(J,I,K))
+              IF(DH(J,I,KM1).EQ.0.AND.DH(J,I,K).EQ.0) GOTO 20   !edm
+                WZM=DH(J,I,K)/(DH(J,I,KM1)+DH(J,I,K))
             ENDIF                                               !# LINE 716
   20        IF(K.EQ.1) WZM=1.
 C      
@@ -841,7 +841,7 @@ C--UPDATE MATRIX A IF NEIGHBOR CELL IS ACTIVE
 C
 C--SHIFT COEF. TO THE RIGHT-HAND-SIDE, OTHERWISE
                  ELSE
-                   RHS(N)=RHS(N)-TEMP1(II)*COLD(INDEX,ICOMP)
+                   RHS(N)=RHS(N)-TEMP1(II)*CNEW(INDEX,ICOMP)
                  ENDIF
                ENDIF
             ENDDO
@@ -857,7 +857,7 @@ C--IF CROSS TERMS INCLUDED
 C
 C--SHIFT CROSSING TERMS TO THE RIGHT-HAND-SIDE, OTHERWISE
                  ELSE
-                   RHS(N)=RHS(N)-TEMP2(II)*COLD(INDEX,ICOMP)
+                   RHS(N)=RHS(N)-TEMP2(II)*CNEW(INDEX,ICOMP)
                  ENDIF
                ENDIF
             ENDDO

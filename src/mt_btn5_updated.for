@@ -11,7 +11,7 @@ C
      &                         INTOB,INHSS,INFTL,FPRT,MXTRNOP,
      &                         iUnitTRNOP,NameTRNOP,ICNF,IUCN,IUCN2,
      &                         IOBS,IMAS,ICBM,IFTLFMT,
-     &                         INUZF,                               !edm
+     &                         INUZT,                               !edm
      &                         INRTR,INLKT,INSFT,INCTS,INTSO,MINVOL !# LINES 3-4 BTN
 C
       USE MIN_SAT                                                   !# LINE 12 BTN
@@ -31,7 +31,7 @@ C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
      &         INFTL,ICNF,IUCN,IUCN2,IOBS,IMAS,ICBM,IFTLFMT,FPRT,
      &         iUnitTRNOP(MXTRNOP),
-     &         INUZF,INCTS,INTSO,INRTR,INLKT,INSFT)                 !edm
+     &         INUZT,INCTS,INTSO,INRTR,INLKT,INSFT)                 !edm
 C--ALLOCATE SCALAR VARIABLES
       !ALLOCATE(DOMINSAT)                                       !# NEEDED
       ALLOCATE(IATS)                                            !# NEEDED
@@ -46,7 +46,7 @@ C--SET DEFAULT UNIT NUMBERS
       INDSP=3
       INSSM=4
       INCTS=6                                                       !# Not set in Vivek's Main as expected, setting it here
-      INUZF=7                                                       !edm
+      INUZT=7                                                       !edm
       INRCT=8
       INGCG=9  
       INTOB=12
@@ -197,8 +197,8 @@ C--CHECK FOR MAJOR OPTIONS.
                 IU=INCTS                                      !# New 7-11-13
               elseif(NameTRNOP(i).EQ.'TSO') THEN              !# New 7-11-13
                 IU=INTSO                                      !# New 7-11-13
-              elseif(NameTRNOP(i).EQ.'UZF') THEN                    !edm
-                IU=INUZF                                            !edm
+              elseif(NameTRNOP(i).EQ.'UZT') THEN                    !edm
+                IU=INUZT                                            !edm
               elseif(NameTRNOP(i).EQ.'RCT') THEN
                 IU=INRCT
               elseif(NameTRNOP(i).EQ.'GCG') THEN
@@ -276,6 +276,7 @@ C SIMULATION.
 C***********************************************************************
 C last modified: 02-15-2005
 C
+      USE UZTVARS, ONLY: PRSITYSAV
 	USE MT3DMS_MODULE
       USE MIN_SAT                                              !# LINE 241 BTN
       USE RCTMOD, ONLY: IREACTION                              !# LINE 439 BTN
@@ -345,7 +346,6 @@ C--ALLOCATE SCALAR VARIABLES
       ALLOCATE(UNIDX)
       ALLOCATE(UNIDY)
       ALLOCATE(UNIDZ)
-c      ALLOCATE(IETFLG)                                              !edm
 C
 C--INITIALIZE VARIABLES THAT DEPEND ON OTHER PACKAGES
 	ISOTHM=0
@@ -488,17 +488,6 @@ C--ALLOCATE AND INITIALIZE
       ALLOCATE(DELC(NROW))
       ALLOCATE(DZ(NCOL,NROW,NLAY))
       ALLOCATE(PRSITY(NCOL,NROW,NLAY))
-      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
-        ALLOCATE(SATOLD(NCOL,NROW,NLAY))                            !edm
-        ALLOCATE(SATNEW(NCOL,NROW,NLAY))                            !edm
-        ALLOCATE(WC(NCOL,NROW,NLAY))                                !edm
-        ALLOCATE(SDH(NCOL,NROW,NLAY))                               !edm
-      ELSE                                                          !edm
-        ALLOCATE(SATOLD(1,1,1))                                     !edm
-        ALLOCATE(SATNEW(1,1,1))                                     !edm
-        ALLOCATE(WC(1,1,1))                                         !edm
-        ALLOCATE(SDH(1,1,1))                                        !edm
-      ENDIF                                                         !edm
       ALLOCATE(HTOP(NCOL,NROW))
       ALLOCATE(XBC(NCOL))
       ALLOCATE(YBC(NROW))
@@ -620,17 +609,6 @@ C                                                                   !edm
 C--IMMEDIATELY POINT PRSITYSAV TO PRSITY SO THAT THE ORIGINAL       !edm
 C--BTN PRSITY IS RETAINED FOR THE REMAINDER OF CODE EXECUTION       !edm
         PRSITYSAV=>PRSITY                                           !edm
-C
-C--CALL RARRAY TO READ IN STARTING WATER CONTENT                    !edm
-        ANAME='WATER CONTENT'                                       !edm
-        DO K=1,NLAY                                                 !edm
-         CALL RARRAY(WC(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,IN,IOUT) !edm
-        ENDDO                                                       !edm
-C--CALL RARRAY TO READ IN STARTING SATURATED THICKNESS              !edm
-        ANAME='STARTING SATURATED THICKNESS'                        !edm
-        DO K=1,NLAY                                                 !edm
-         CALL RARRAY(SDH(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,IN,IOUT)!edm
-        ENDDO                                                       !edm
       ENDIF                                                         !edm
 C
 C--CALL IARRAY TO READ IN CONCENTRATION BOUNDARY ARRAY
@@ -970,27 +948,6 @@ C--INITIALIZE RETARDATION FACTOR ARRAY AND THE MINUMIN
       ENDDO
       RFMIN=1.
 C
-C--CALCULATE SATURATION AND STORE IN SATOLD                         !edm
-      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
-        DO K=1,NLAY                                                 !edm
-          DO I=1,NROW                                               !edm
-            DO J=1,NCOL                                             !edm
-
-              IF(K.EQ.3.AND.I.GE.1.AND.J.GE.2) THEN
-              CONTINUE
-              ENDIF
-
-              IF(ICBUND(J,I,K,1).GT.0) THEN
-              DH(J,I,K)=SDH(J,I,K)                                  !edm
-              SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*      !edm
-     &                          WC(J,I,K)/PRSITY(J,I,K)+            !edm
-     &                          DH(J,I,K)/DZ(J,I,K)*1               !edm
-              ENDIF
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
-C
 C--RETURN
       RETURN
       END
@@ -1131,6 +1088,7 @@ C AT THE FIRST TRANSPORT STEP OF EACH TRANSPORT LOOP.
 C **********************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: IOUT,MXTRNOP,iUnitTRNOP,iSSTrans,NSTP,
      &                         TIMPRS,DT0,MXSTRN,MIXELM,DTRACK,
      &                         DTRACK2,PERCEL,DTDISP,DTSSM,DTRCT,RFMIN,
@@ -1139,7 +1097,7 @@ C
      &                         TTSMAX,DELR,DELC,DH,PRSITY,SRCONC,
      &                         RHOB,RETA,PRSITY2,RETA2,ISOTHM,TMASIO,
      &                         RMASIO,TMASS,
-     &                         FUZF,SATOLD,PRSITYSAV                !edm
+     &                         iUnitTRNOP                !edm
 C
       IMPLICIT  NONE
       INTEGER   NTRANS,KSTP,NPS,INDEX,K,I,J,KPER
@@ -1276,7 +1234,7 @@ C
             DO J=1,NCOL
               IF(ICBUND(J,I,K,INDEX).LE.0) CYCLE
               VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
-              IF(.NOT.FUZF) THEN
+              IF(iUnitTRNOP(7).EQ.0) THEN
                 CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
               ELSE
                 CMML=COLD(J,I,K,INDEX)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)
@@ -1371,12 +1329,13 @@ C MASS BALANCE DISCREPANCY SINCE THE BEGINNING OF THE SIMULATION.
 C **********************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,DH,
      &                         PRSITY,RETA,CNEW,COLD,RHOB,SRCONC,
      &                         PRSITY2,RETA2,iSSTrans,ISOTHM,TMASIN,
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
-     &                         ISS,
-     &                         PRSITYSAV,SATOLD,FUZF,IALTFM,QSTO                !edm
+     &                         ISS,iUnitTRNOP,
+     &                         IALTFM,QSTO                !edm
       USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7                                    !# LINE 1227 BTN
       USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG                   !# LINE 1228 BTN
 C
@@ -1393,7 +1352,7 @@ C--FOR THE CURRENT TRANSPORT STEP
         DO I=1,NROW
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
-              IF(.NOT.FUZF) THEN
+              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.EQ.2) THEN
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *PRSITY(J,I,K)*(DELR(J)*DELC(I)*DH(J,I,K)
@@ -1432,7 +1391,7 @@ C                                                                   !# LINE 1260
 C
 C--ACCUMULATE MASS IN/OUT FOR VARIOUS SINK/SOURCE TERMS AND
 C--MASS STOAGE CHANGES SINCE THE BEGINNING OF SIMULATION
-      IF(.NOT.FUZF) THEN                                            !edm
+      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
         DO IQ=1,122
           TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
           TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
@@ -1451,7 +1410,7 @@ C
 C--DETERMINE TOTAL MASS IN AND OUT
       TMASIN(ICOMP)=0.
       TMASOT(ICOMP)=0.
-      IF(.NOT.FUZF) THEN                                            !edm
+      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
         DO IQ=1,122
           IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY  !# LINE 1287 BTN
           IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS               !# LINE 1288 BTN
@@ -1587,7 +1546,7 @@ C
      &                         SAVUCN,SAVCBM,CHKMAS,NPRMAS,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
-     &                         FETS,FSWT,FSFR,FUZF,
+     &                         FETS,FSWT,FSFR,
      &                         NCOUNT,NPCHEK
       USE RCTMOD                                               !# LINE 1386 BTN
       USE MIN_SAT                                              !# LINE 1387 BTN
@@ -1758,7 +1717,8 @@ C
      &   WRITE(IOUT,2118) TMASIO(50,1,ICOMP),TMASIO(50,2,ICOMP)      
       IF(FSWT) WRITE(IOUT,2200) TMASIO(51,1,ICOMP),TMASIO(51,2,ICOMP)
       IF(FSFR) WRITE(IOUT,2202) TMASIO(52,1,ICOMP),TMASIO(52,2,ICOMP)
-      IF(FUZF) WRITE(IOUT,2204) TMASIO(53,1,ICOMP),TMASIO(53,2,ICOMP)
+      IF(iUnitTRNOP(7).GT.0) 
+     &   WRITE(IOUT,2204) TMASIO(53,1,ICOMP),TMASIO(53,2,ICOMP)
 C
       IF(iUnitTRNOP(6).GT.0)                                     !# LINE 1567 BTN
      &  WRITE(IOUT,1190) TMASIO(11,1,ICOMP),TMASIO(11,2,ICOMP)   !# LINE 1568 BTN
@@ -1856,25 +1816,26 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DZ,DTRANS,
+      SUBROUTINE BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,DTRANS,
      &                  PRSITYSAV,SATOLD,HT2,TIME2)                           !edm
 C *********************************************************************
 C THIS SUBROUTINE INITIALIZES ALL MATRICES FOR THE IMPLICIT SCHEME.
 C *********************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: IUZFBND
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
-     &                         FUZF,IUZFBND,IALTFM,QSTO                         !edm
+     &                         IUZFBND,IALTFM,QSTO,iUnitTRNOP                 !edm
       USE MIN_SAT, ONLY: COLD7,DRYON
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,ICBUND,N,NRC,
      &          NSIZE
-      REAL      CADV,COLD,PRSITY,DTRANS,DZ,RETA,TEMP,
+      REAL      CADV,COLD,PRSITY,DTRANS,RETA,TEMP,DH,
      &          PRSITYSAV,SATOLD,HT2,TIME2                                    !edm
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
-     &          RETA(NODES,NCOMP),PRSITY(NODES),DZ(NODES),
+     &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES),
      &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
 C
 C--GET RIGHT-HAND-SIDE ARRAY [RHS]
@@ -1897,19 +1858,20 @@ C
               rhs(n)=0.           
 C            
             ELSE
-              IF(.NOT.FUZF.OR. IUZFBND(J,I).LE.0) THEN
-                IF(IALTFM.EQ.2) THEN
-                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &                 *(DELR(J)*DELC(I)*DZ(N)
-     &         +DELR(J)*DELC(I)*DZ(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
+  10            IF(IALTFM.EQ.2) THEN
+                  RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                 *(DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
                 ELSE
                 RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &                 *DELR(J)*DELC(I)*DZ(N)
+     &                 *DELR(J)*DELC(I)*DH(N)
                 ENDIF
 
               ELSE                                                  !edm
+                IF(IUZFBND(J,I).LE.0) GOTO 10
                 RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(N)      !edm
-     &                  *SATOLD(N)*DELR(J)*DELC(I)*DZ(N)            !edm
+     &                  *SATOLD(N)*DELR(J)*DELC(I)*DH(N)            !edm
               ENDIF                                                 !edm
             ENDIF
           ENDDO
@@ -1948,11 +1910,11 @@ C--IF INACTIVE OR CONSTANT CELL
             ELSE if(iSSTrans.eq.0)  then
               IF(IALTFM.EQ.2) THEN
                A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *(DELR(J)*DELC(I)*DZ(N)
-     &         +DELR(J)*DELC(I)*DZ(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+     &              *(DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
               ELSE
                A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *DELR(J)*DELC(I)*DZ(N)
+     &              *DELR(J)*DELC(I)*DH(N)
               ENDIF
             ENDIF
           ENDDO

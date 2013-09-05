@@ -570,7 +570,7 @@ C
      &                         delr,delc,dh,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
-     &                         FETS,FSWT,FSFR,FUZF,
+     &                         FETS,FSWT,FSFR,
      &                         mxss,ntss,ss,ssmc,irch,rech,crch,
      &                         ievt,evtr,cevt,
      &                         INFLUXOBS,MaxFluxCells,nFLuxGroup,
