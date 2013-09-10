@@ -92,7 +92,7 @@ C--ALLOCATE LOGICALS
 C
 C--Initialize variables 
       ALLOCATE(IREACTION,IALTFM,NOCREWET)
-      IWCTS=1
+!      IWCTS=1
       IREACTION=0
       IALTFM=0
       NOCREWET=0
@@ -240,7 +240,9 @@ C--(NOTE THAT THESE ITEMS ARE READ ONLY ONCE IF FLOW MODEL
 C--IS STEADY-STATE AND HAS SINGLE STRESS PERIOD)
           IF(KPER*KSTP.GT.1.AND.ISS.NE.0.AND.NPERFL.EQ.1) GOTO 70
 C
-          IF(iUnitTRNOP(19).GT.0) CALL SFT5AD2(N)              !# LINE 454 MAIN
+          IF(KPER*KSTP.GT.1) THEN
+            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD2(N)              !# LINE 454 MAIN
+          ENDIF
 C
           CALL FMI5RP1(KPER,KSTP)
           IF(iUnitTRNOP(3).GT.0) CALL FMI5RP2(KPER,KSTP)
@@ -248,7 +250,7 @@ C
           IF(DRYON) CALL ADVQC7RP(KPER,KSTP)                   !# LINE 467 MAIN
           IF(IALTFM.EQ.1) COLDFLW=COLD
 C                                                              !# LINE 467 MAIN
-          IF(iUnitTRNOP(19).GT.0.AND.ISFSOLV.GT.0) THEN        !# LINE 468 MAIN
+          IF(iUnitTRNOP(19).GT.0) THEN        !# LINE 468 MAIN
             CALL FILLIASFJASF()                                !# LINE 469 MAIN
             IF(KPER*KSTP.EQ.1) CALL XMD7AR()                   !# LINE 470 MAIN
           ENDIF                                                !# LINE 471 MAIN
@@ -266,7 +268,7 @@ C--ADVANCE ONE TRANSPORT STEP
             CALL BTN5AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
 C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                       !# LINE 506 MAIN
             IF(iUnitTRNOP(18).GT.0) CALL LKT5AD(N)             !# LINE 507 MAIN
-            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(N)             !# LINE 508 MAIN
+            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(KSTP,KPER,N)             !# LINE 508 MAIN
 C
 C
 C--FOR EACH COMPONENT......
@@ -338,7 +340,8 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG5AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
-                IF(IREACTION.EQ.2.AND.ICOMP.LE.NED+NEA) THEN !# LINE 645 MAIN
+                IF(IREACTION.EQ.2) THEN !# LINE 645 MAIN
+                IF(ICOMP.LE.NED+NEA) THEN !# LINE 645 MAIN
                   IF(SPECIAL(ICOMP)=="MAXEC") THEN           !# LINE 646 MAIN
                     DO K=1,NLAY                              !# Modified
                       DO I=1,NROW                            !# Modified
@@ -385,6 +388,7 @@ CEDM              ENDIF                                        !# LINE 678 MAIN
                       ENDDO  
                     ENDDO
                   ENDIF
+                ENDIF
                 ENDIF
 C
 C--IF CONVERGED, GO TO NEXT OUTER ITERATION

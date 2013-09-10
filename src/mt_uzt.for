@@ -303,10 +303,11 @@ C--(SURFACE LEAKANCE - HANDLE FOR SINK ON THE GW SYSTEM)
             K=IROUTE(2,II)  
             I=IROUTE(3,II)
             J=IROUTE(4,II)
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             GWQOUT=-UZQ(II)
             IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)+GWQOUT*DELR(J)*DELC(I)*DH(J,I,K)
+              IF(UPDLHS) A(N)=A(N)+GWQOUT !*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ENDIF
         ENDIF
@@ -387,7 +388,7 @@ C--(SURFACE LEAKANCE)
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             GWQOUT=-UZQ(II)
             IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)+GWQOUT*DELR(J)*DELC(I)*DH(J,I,K)
+              IF(UPDLHS) A(N)=A(N)+GWQOUT !*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ENDIF
         ENDIF
@@ -469,10 +470,10 @@ C--(INFILTRATED)
           CTMP=CUZINF(J,I,ICOMP)
           IF(FINFIL(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)              
           IF(FINFIL(J,I).GT.0) THEN                                
-            RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+FINFIL(J,I)*     
+            RMASIO(53,1,ICOMP)=RMASIO(53,1,ICOMP)+FINFIL(J,I)*     
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)              
           ELSE                                                     
-            RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+FINFIL(J,I)*     
+            RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)+FINFIL(J,I)*     
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)              
           ENDIF                                                    
         ENDDO                                                      
@@ -481,7 +482,7 @@ C
 C--(SURFACE LEAKANCE)                                              
       IF(NCON.LT.1) GOTO 110
       DO II=1,NCON                                                 
-        IF(UZQ(II).NE.0) THEN
+        IF(ABS(UZQ(II)-0.).GT.1.0E-6) THEN
           IF(IROUTE(7,II).EQ.1) THEN !GW DISCHARGE
             K=IROUTE(2,II)
             I=IROUTE(3,II)
@@ -494,8 +495,16 @@ C--(SURFACE LEAKANCE)
      &                          'CHECK SIGNS IN FTL FILE'
               CALL USTOP('ERROR: BAD SIGNS ON GWQOUT')
             ELSE                                                     
-              RMASIO(16,2,ICOMP)=RMASIO(16,2,ICOMP)+GWQOUT*   
-     &           CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
+              IF(IROUTE(1,II).EQ.3) THEN !GW DISCHARGE
+                RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)+GWQOUT*   
+     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
+              ELSEIF(IROUTE(1,II).EQ.1) THEN !SFR
+                RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+GWQOUT*   
+     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
+              ELSEIF(IROUTE(1,II).EQ.2) THEN !LAK
+                RMASIO(26,2,ICOMP)=RMASIO(26,2,ICOMP)+GWQOUT*   
+     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
+              ENDIF
             ENDIF  
           ENDIF
         ENDIF                                                     
@@ -515,10 +524,10 @@ C--(UZET)
               CTMP=0.                                               
             ENDIF                                                   
             IF(UZET(J,I,K).GT.0) THEN                               
-              RMASIO(14,1,ICOMP)=RMASIO(14,1,ICOMP)+UZET(J,I,K)*    
+              RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+UZET(J,I,K)*    
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
             ELSE                                                    
-              RMASIO(14,2,ICOMP)=RMASIO(14,2,ICOMP)+UZET(J,I,K)*    
+              RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+UZET(J,I,K)*    
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
             ENDIF                                                   
           ENDDO                                                     
@@ -538,10 +547,10 @@ C--(GWET)
               CTMP=0.                                               
             ENDIF                                                   
             IF(GWET(J,I,K).GT.0) THEN                               
-              RMASIO(15,1,ICOMP)=RMASIO(15,1,ICOMP)+GWET(J,I,K)*    
+              RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I,K)*    
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
             ELSE                                                    
-              RMASIO(15,2,ICOMP)=RMASIO(15,2,ICOMP)+GWET(J,I,K)*    
+              RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I,K)*    
      &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
             ENDIF                                                   
           ENDDO                                                     

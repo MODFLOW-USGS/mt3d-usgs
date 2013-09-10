@@ -10,7 +10,7 @@ C
      &                         IVER,IFTLFMT,
      &         NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR
+     &         FSWT,FSFR,FUZF
      
       IMPLICIT  NONE
       INTEGER   
@@ -27,7 +27,7 @@ C
 C--ALLOCATE
       ALLOCATE(NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR)
+     &         FSWT,FSFR,FUZF)
 C
 C--INITIALIZE
       ISS=1
@@ -51,7 +51,7 @@ C--INITIALIZE
       FETS=.FALSE.
       FSWT=.FALSE.
       FSFR=.FALSE.
-!      FUZF=.FALSE.
+      FUZF=.FALSE.
       MTSTR=0
       MTRES=0
       MTFHB=0
@@ -109,13 +109,13 @@ C--DETERMINE WHICH FLOW COMPONENTS USED IN FLOW MODEL
       IF(MTETS.GT.0) FETS=.TRUE.
       IF(MTSWT.GT.0) FSWT=.TRUE.
       IF(MTSFR.GT.0) FSFR=.TRUE.
-!      IF(MTUZF.GT.0) FUZF=.TRUE.
+      IF(MTUZF.GT.0) FUZF=.TRUE.
 C
 C--DETERMINE IF THE SSM PACKAGE IS REQUIRED
   200 IF(iUnitTRNOP(3).EQ.0) THEN
         IF(FWEL.OR.FDRN.OR.FRCH.OR.FEVT.OR.FRIV.OR.FGHB.OR.
      &   FSTR.OR.FRES.OR.FFHB.OR.FIBS.OR.FTLK.OR.FLAK.OR.FMNW.OR.
-     &   FDRT.OR.FETS.OR.FSWT.OR.FSFR) THEN
+     &   FDRT.OR.FETS.OR.FSWT.OR.FSFR.OR.FUZF) THEN
           WRITE(*,300)
           CALL USTOP(' ')
         ELSEIF(MTCHD.GT.0) THEN
@@ -163,6 +163,35 @@ C--ERROR READING THE FLOW-TRANSPORT LINK FILE
      & ' Verison 1 of LinkMT3D',
      & /1X,'   Package Which Is No Longer Supported by MT3DMS.')
 C
+C--CHECK IF PACKAGES ARE ON
+      IF(FUZF) THEN
+        IF(iUnitTRNOP(7).EQ.0) WRITE(IOUT,*) ' UZT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(7).GT.0) THEN
+          WRITE(IOUT,*) ' UZT FILE WILL NOT BE USED'
+          iUnitTRNOP(7)=0
+        ENDIF
+      ENDIF
+      IF(FLAK) THEN
+        IF(iUnitTRNOP(18).EQ.0) WRITE(IOUT,*) ' LKT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(18).GT.0) THEN
+          WRITE(IOUT,*) ' LKT FILE WILL NOT BE USED'
+          iUnitTRNOP(18)=0
+        ENDIF
+      ENDIF
+      IF(FSFR) THEN
+        IF(iUnitTRNOP(19).EQ.0) WRITE(IOUT,*) ' SFT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(19).GT.0) THEN
+          WRITE(IOUT,*) ' SFT FILE WILL NOT BE USED'
+          iUnitTRNOP(19)=0
+        ENDIF
+      ENDIF
+C
  1000 RETURN
       END
 C
@@ -183,7 +212,7 @@ C
      &                         FPRT,LAYCON,ICBUND,HORIGN,DH,PRSITY,
      &                         DELR,DELC,DZ,XBC,YBC,ZBC,QSTO,COLD,CNEW,
      &                         RETA,QX,QY,QZ,DTRACK,DTRACK2,THKMIN,ISS,
-     &                         IVER,iUnitTRNOP,PRSITY,
+     &                         IVER,iUnitTRNOP,PRSITY,FUZF,
      &                         NOCREWET                             !# LINE 159 FMI
 C
       IMPLICIT  NONE
@@ -196,7 +225,7 @@ C
       INUF=INFTL
 C                                                                   !edm
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)                         !edm
-      IF(iUnitTRNOP(7).GT.0) THEN                                   !edm
+      IF(FUZF) THEN                                   !edm
         IF(IUZFOPTG.GT.0) THEN                                      !edm
           TEXT='WATER CONTENT   '                                   !edm
           CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,      !edm
@@ -259,7 +288,7 @@ C--READ STORAGE TERM (UNIT: L**3/T).
 C
 C--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE        !edm
 C--CURRENT CELL                                                     !edm
-      IF(iUnitTRNOP(7).GT.0.AND. .NOT.IUZFOPTG.EQ.0) THEN           !edm
+      IF(FUZF.AND. .NOT.IUZFOPTG.EQ.0) THEN                         !edm
 C--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD                !edm
         IF(KPER.NE.1 .OR. KSTP.NE.1) THEN                           !edm
           DO K=1,NLAY                                               !edm
@@ -328,7 +357,7 @@ C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
 C--AND REACTIVATE DRY CELL IF REWET AND ASSIGN CONC AT REWET CELL
 C--WITH UZF TURNED ON THE GRID BECOMES FIXED.  THE USER PROVIDEDED  !edm
 C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                             !edm
-      IF(.NOT.(iUnitTRNOP(7).GT.0).OR.IUZFOPTG.EQ.0) THEN           !edm
+      IF(.NOT.FUZF.OR.IUZFOPTG.EQ.0) THEN                           !edm
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
@@ -408,7 +437,7 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                             !edm
         NICBND2=0                                                   !# LINE 280 FMI
         ICBND2=0                                                    !# LINE 281 FMI
       ENDIF                                                         !# LINE 282 FMI
-      IF(.NOT.iUnitTRNOP(7).GT.0) THEN                              !edm
+      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                              !edm
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
@@ -2128,7 +2157,7 @@ C--IF UZF -> LAK, READ 7 VALUES
           UZQ(I)=Q
           NCONLK=NCONLK+1
 C
-C--IF UZF -> LAK, READ 6 VALUES
+C--IF UZF -> SNK, READ 6 VALUES
         ELSEIF(LABEL.EQ.'SNK') THEN
           IF(IFTLFMT.EQ.0) THEN
             READ(INUF) LABEL,TEXT,KK,II,JJ,Q

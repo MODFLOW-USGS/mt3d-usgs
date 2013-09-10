@@ -90,6 +90,7 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: CFLOINSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CFLOOUTSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CGW2SFR
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CUZF2SFR
         REAL,             SAVE, DIMENSION(:),        POINTER :: CGWFROMSFR
         REAL,             SAVE, DIMENSION(:),        POINTER :: CLAK2SFR
         REAL,             SAVE, DIMENSION(:),        POINTER :: CLAKFROMSFR
@@ -151,6 +152,7 @@ CONTAINS
         IF(ASSOCIATED(CFLOINSF))    DEALLOCATE(CFLOINSF)
         IF(ASSOCIATED(CFLOOUTSF))   DEALLOCATE(CFLOOUTSF)
         IF(ASSOCIATED(CGW2SFR))     DEALLOCATE(CGW2SFR)
+        IF(ASSOCIATED(CUZF2SFR))     DEALLOCATE(CUZF2SFR)
         IF(ASSOCIATED(CGWFROMSFR))  DEALLOCATE(CGWFROMSFR)
         IF(ASSOCIATED(CLAK2SFR))    DEALLOCATE(CLAK2SFR)
         IF(ASSOCIATED(CLAKFROMSFR)) DEALLOCATE(CLAKFROMSFR)
@@ -196,6 +198,7 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:),        POINTER :: RMASLAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: VOUTLAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: CGW2LAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CUZF2LAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: CGWFROMLAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: CSFR2LAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: CSFRFROMLAK
@@ -231,6 +234,7 @@ CONTAINS
         IF(ASSOCIATED(RMASLAK)) DEALLOCATE(RMASLAK)
         IF(ASSOCIATED(VOUTLAK)) DEALLOCATE(VOUTLAK)
         IF(ASSOCIATED(CGW2LAK)) DEALLOCATE(CGW2LAK)
+        IF(ASSOCIATED(CUZF2LAK)) DEALLOCATE(CUZF2LAK)
         IF(ASSOCIATED(CGWFROMLAK)) DEALLOCATE(CGWFROMLAK)
         IF(ASSOCIATED(CSFR2LAK)) DEALLOCATE(CSFR2LAK)
         IF(ASSOCIATED(CSFRFROMLAK)) DEALLOCATE(CSFRFROMLAK)
@@ -273,7 +277,7 @@ CONTAINS
         INTEGER,            SAVE,                      POINTER :: NSPECIAL
         INTEGER,            SAVE,                      POINTER :: NSTORE
         INTEGER,            SAVE,                      POINTER :: IUMETH
-        CHARACTER(LEN=500), SAVE,                      POINTER :: rec_FileName
+        CHARACTER(LEN=1000),SAVE,                      POINTER :: rec_FileName
         CHARACTER(LEN=50),  SAVE,                      POINTER :: Ad_methane_name
         REAL,               SAVE, DIMENSION(:,:,:),    POINTER :: MASSSTOR
         REAL*8,             SAVE, DIMENSION(:),        POINTER :: RCNEW 
@@ -564,7 +568,7 @@ MODULE MT3DMS_MODULE
         LOGICAL,          SAVE,                       POINTER :: FETS
         LOGICAL,          SAVE,                       POINTER :: FSWT
         LOGICAL,          SAVE,                       POINTER :: FSFR
-!        LOGICAL,          SAVE,                       POINTER :: FUZF
+        LOGICAL,          SAVE,                       POINTER :: FUZF
 !--FMI-Vivek
         INTEGER,          SAVE,                       POINTER :: NOCREWET              !# LINE 99 MAIN
 !--SSM                    

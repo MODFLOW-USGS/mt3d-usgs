@@ -184,7 +184,7 @@ C
       RRCTOL = RRCTOLS
       EPSRN = EPSRNS
       MIUNIT = IOUT
-      MIOUT = IPRNWT - 2
+      MIOUT = -1 !IPRNWT - 2
       if(north.eq.0)north = 7   !!!!
       IF(EPSRN.LT.1.0E-20) EPSRN = 1.0e-3
       REDSYS = .FALSE.

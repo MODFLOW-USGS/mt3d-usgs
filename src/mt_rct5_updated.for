@@ -27,7 +27,9 @@ C
       INRCT=IN
 C
 C--ALLOCATE AND INITIALIZE
-      ALLOCATE(IREACT,IRCTOP,IGETSC,IFMTRF,IFESLD,ISORBIMONLY,ISP1IM)
+      ALLOCATE(IREACT,IRCTOP,IGETSC,IFMTRF,IFESLD,ISORBIMONLY,ISP1IM,
+     1  rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,IUMETH,
+     1  RVAL)
       ALLOCATE(FRAC(NCOL,NROW,NLAY))
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
@@ -488,7 +490,7 @@ C.......CHECK FOR POSSIBLE ERRORS                                   !# LINE 526 
       ELSEIF(IREACTION.EQ.2) THEN                                   !# LINE 537 RCT
 C-------READ REACTION FILE NAME                                     !# LINE 538 RCT
         rec_FileName=''                                             !# LINE 539 RCT
-        READ(IN,'(A500)') rec_FileName                              !# LINE 540 RCT
+        READ(IN,'(A1000)') rec_FileName                              !# LINE 540 RCT
         INQUIRE(FILE=rec_FileName,EXIST=EXISTED)                    !# LINE 541 RCT
         IF(.NOT.EXISTED) THEN                                       !# LINE 542 RCT
           WRITE(*,*) 'FILE ',TRIM(rec_FileName),' DOES NOT ESIST'   !# LINE 543 RCT
