@@ -288,7 +288,8 @@ C--READ STORAGE TERM (UNIT: L**3/T).
 C
 C--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE        !edm
 C--CURRENT CELL                                                     !edm
-      IF(FUZF.AND. .NOT.IUZFOPTG.EQ.0) THEN                         !edm
+      IF(FUZF) THEN
+      IF(.NOT.IUZFOPTG.EQ.0) THEN                         !edm
 C--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD                !edm
         IF(KPER.NE.1 .OR. KSTP.NE.1) THEN                           !edm
           DO K=1,NLAY                                               !edm
@@ -351,6 +352,7 @@ C--FOR BOTH THE SATURATED AND UNSATURATED CASE                      !edm
         ENDDO                                                       !edm
         PRSITYSAV=>PRSITY                                           !edm
         PRSITY=>WC                                                  !edm
+      ENDIF                                                         !edm
       ENDIF                                                         !edm
 C
 C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
@@ -825,18 +827,22 @@ C--READ UZ-ET FLOW TERM (L**3/T) IF IETFLG>0 IN UZF PACKAGE         !edm
 C--NOTE THAT EITHER THE ET PACKAGE OR THE UZF PACKAGE, BUT NOT      !edm
 C--BOTH WILL BE IN USE                                              !edm
 C                                                                   !edm
-      IF(iUnitTRNOP(7).GT.0.AND.IETFLG) THEN                        !edm
+      IF(iUnitTRNOP(7).GT.0) THEN
+      IF(IETFLG) THEN                        !edm
         TEXT='UZ-ET'                                                !edm
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
      &              UZET,FPRT)                                      !edm
       ENDIF                                                         !edm
+      ENDIF                                                         !edm
 C                                                                   !edm
 C--Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge        !edm
 C                                                                   !edm
-      IF(iUnitTRNOP(7).GT.0.AND.IETFLG) THEN                        !edm
+      IF(iUnitTRNOP(7).GT.0) THEN
+      IF(IETFLG) THEN                        !edm
         TEXT='GW-ET'                                                !edm
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,        !edm
      &              GWET,FPRT)                                      !edm
+      ENDIF                                                         !edm
       ENDIF                                                         !edm
 
 C

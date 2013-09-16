@@ -312,7 +312,7 @@ C--UPDATE COEFFICIENTS THAT VARY WITH ITERATIONS
 C
 C--FORMULATE MATRIX COEFFICIENTS
                 CALL BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
-     &                      DTRANS,PRSITYSAV,SATOLD,HT2,TIME2)                !edm
+     &                      DTRANS,HT2,TIME2)                !edm
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
      &           .AND. ICOMP.LE.MCOMP)
      &           CALL ADV5FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)

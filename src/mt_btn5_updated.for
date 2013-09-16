@@ -276,7 +276,7 @@ C SIMULATION.
 C***********************************************************************
 C last modified: 02-15-2005
 C
-      USE UZTVARS, ONLY: PRSITYSAV
+      USE UZTVARS, ONLY: PRSITYSAV,IUZFOPTG
 	USE MT3DMS_MODULE
       USE MIN_SAT                                              !# LINE 241 BTN
       USE RCTMOD, ONLY: IREACTION                              !# LINE 439 BTN
@@ -346,6 +346,7 @@ C--ALLOCATE SCALAR VARIABLES
       ALLOCATE(UNIDX)
       ALLOCATE(UNIDY)
       ALLOCATE(UNIDZ)
+      ALLOCATE(IUZFOPTG)
 C
 C--INITIALIZE VARIABLES THAT DEPEND ON OTHER PACKAGES
 	ISOTHM=0
@@ -609,6 +610,9 @@ C                                                                   !edm
 C--IMMEDIATELY POINT PRSITYSAV TO PRSITY SO THAT THE ORIGINAL       !edm
 C--BTN PRSITY IS RETAINED FOR THE REMAINDER OF CODE EXECUTION       !edm
         PRSITYSAV=>PRSITY                                           !edm
+      ELSE
+C--IF UZT NOT ACTIVE NEED TO SET THE FOLLOWING VARIABLE
+        IUZFOPTG=0
       ENDIF                                                         !edm
 C
 C--CALL IARRAY TO READ IN CONCENTRATION BOUNDARY ARRAY
@@ -1818,13 +1822,13 @@ C--RETURN
 C
 C
       SUBROUTINE BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,DTRANS,
-     &                  PRSITYSAV,SATOLD,HT2,TIME2)                           !edm
+     &                  HT2,TIME2)                           !edm
 C *********************************************************************
 C THIS SUBROUTINE INITIALIZES ALL MATRICES FOR THE IMPLICIT SCHEME.
 C *********************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: IUZFBND
+      USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
      &                         IUZFBND,IALTFM,QSTO,iUnitTRNOP                 !edm
@@ -1834,10 +1838,10 @@ C
       INTEGER   ICOMP,J,I,K,ICBUND,N,NRC,
      &          NSIZE
       REAL      CADV,COLD,PRSITY,DTRANS,RETA,TEMP,DH,
-     &          PRSITYSAV,SATOLD,HT2,TIME2                                    !edm
+     &          HT2,TIME2                                    !edm
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
-     &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES),
-     &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
+     &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES)
+C     &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
 C
 C--GET RIGHT-HAND-SIDE ARRAY [RHS]
       DO K=1,NLAY
@@ -1871,8 +1875,8 @@ C
 
               ELSE                                                  !edm
                 IF(IUZFBND(J,I).LE.0) GOTO 10
-                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(N)      !edm
-     &                  *SATOLD(N)*DELR(J)*DELC(I)*DH(N)            !edm
+                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(J,I,K)      !edm
+     &                  *SATOLD(J,I,K)*DELR(J)*DELC(I)*DH(N)            !edm
               ENDIF                                                 !edm
             ENDIF
           ENDDO
