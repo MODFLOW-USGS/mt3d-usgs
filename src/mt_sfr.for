@@ -305,7 +305,7 @@ C***********************************************************************
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
      &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &  NCONSF,IROUTE,UZQ,CUZINF
+     &  NCONSF,IROUTE,UZQ,CUZINF,iSSTrans
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE XMDMODULE
@@ -401,6 +401,7 @@ C
 
 C
 C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
+      IF(iSSTrans.EQ.0) THEN
         VOL=SFLEN(N)*SFNAREA(N)
         IF(VOL.LT.VOLMIN) VOL=VOLMIN
         VOL=VOL/DELT
@@ -410,7 +411,7 @@ C        ELSE
 C          RHSSF(N)=RHSSF(N)+COLDSF(N,ICOMP)/DELT
 C        ENDIF
 C
-
+      ENDIF
       IF(N.EQ.21)THEN
       CONTINUE
       ENDIF
@@ -471,6 +472,7 @@ C--FILL AMATSF--------------------------------------------------------
         II=IASF(N)
 C
 C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
+        IF(iSSTrans.EQ.0) THEN
         VOL=SFLEN(N)*SFNAREA(N)
         IF(VOL.LT.VOLMIN) VOL=VOLMIN
         VOL=VOL/DELT
@@ -479,6 +481,7 @@ C        IF(ISFSOLV.EQ.2) THEN
 C        ELSE
 C          AMATSF(II)=AMATSF(II)+1.0D0/DELT
 C        ENDIF
+        ENDIF
 C
 C.......TOTAL FLOW OUT INCLUDING ET
         IF(IEXIT(N).EQ.1) THEN
@@ -495,7 +498,7 @@ C        ELSE
 C        ENDIF
         ENDIF
 
-      IF(N.EQ.1)THEN
+      IF(N.EQ.13)THEN
       CONTINUE
       ENDIF
 
@@ -717,7 +720,7 @@ C***********************************************************************
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
      &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
-     &  NCONSF,IROUTE,UZQ,CUZINF
+     &  NCONSF,IROUTE,UZQ,CUZINF,iSSTrans
       IMPLICIT  NONE
       INTEGER IS,IR,ICON
       INTEGER ICOMP
@@ -731,6 +734,7 @@ C***********************************************************************
      1  STORINSF,STOROTSF,TOTMASOLD,TOTMASNEW,STORDIFF,CCINSF,CCOUTSF,
      1  UZF2SFR
       REAL FLOINSF,FLOOUTSF
+      REAL QL
 C
 C--ZERO OUT TERMS
       CONC=0.
@@ -820,22 +824,29 @@ C
         K=ISFL(N)     !LAYER
         I=ISFR(N)     !ROW
         J=ISFC(N)     !COLUMN
+
+      IF(N.EQ.13)THEN
+      CONTINUE
+      ENDIF
+
 C
 C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
+        IF(iSSTrans.EQ.0) THEN
         VOLN=SFLEN(N)*SFNAREA(N)
         VOLO=SFLEN(N)*SFOAREA(N)
         DELV=DELV+VOLN-VOLO
         IF(IBNDSF(N).NE.-1) THEN
 CCC        STORDIFF=VOLN*CNEWSF(N,ICOMP)-VOLO*COLDSF(N,ICOMP)
         STORDIFF=VOLN*(CNEWSF(N,ICOMP)-COLDSF(N,ICOMP))
-        IF(STORDIFF.LT.0) THEN
-          STORINSF=STORINSF-STORDIFF
-        ELSE
-          STOROTSF=STOROTSF+STORDIFF
+          IF(STORDIFF.LT.0) THEN
+            STORINSF=STORINSF-STORDIFF
+          ELSE
+            STOROTSF=STOROTSF+STORDIFF
+          ENDIF
         ENDIF
+C
         ENDIF
-
-      if(n.eq.100)then
+      if(KPER.EQ.5.AND.N.EQ.31)then
       continue
       endif
 
@@ -877,7 +888,29 @@ C.......TOTAL FLOW OUT INCLUDING/EXCLUDING ET
           IF(IBNDSF(N).EQ.-1) THEN
             CCOUTSF=CCOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
           ELSE
-            FLOOUTSF=FLOOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
+C
+C.......OUTFLOW TO LAK
+            II=0
+            IF(INLKT.GT.0) THEN
+              DO NUM=1,NSFRLAK
+                IS=LAKSEG(NUM)    !SEGMENT NUMBER
+                IR=LAKRCH(NUM)    !REACH NUMBER
+                II=ISTRM(IR,IS)
+                QL=0.
+                QL=QLAKSFR(NUM)      !(-) MEANS SFR TO LAK; (+) MEANS LAK TO SFR
+                IF(QL.LT.0..AND.II.EQ.N) THEN
+                  EXIT
+                ELSE
+                  II=0
+                ENDIF
+              ENDDO
+            ENDIF
+C
+            IF(II.EQ.N) THEN !SFR TO LAKE FLOW
+              LAKFROMSFR=LAKFROMSFR+Q*CNEWSF(N,ICOMP)*DTRANS
+            ELSE
+              FLOOUTSF=FLOOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
+            ENDIF
           ENDIF
         ENDIF
 C

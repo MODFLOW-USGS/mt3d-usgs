@@ -1766,8 +1766,8 @@ C                                                                !# LINE 1594 BT
      &   TMASIN(ICOMP)+TMASOT(ICOMP),ERROR(ICOMP)
       ENDIF                                                      !# LINE 1612 BTN
 C
- 1110 FORMAT(/21X,'CUMMULATIVE MASS BUDGETS AT END OF TRANSPORT STEP',
-     & I5,', TIME STEP',I5,', STRESS PERIOD',I5/21X,90('-'))
+ 1110 FORMAT(/21X,'CUMULATIVE MASS BUDGETS AT END OF TRANSPORT STEP',
+     & I5,', TIME STEP',I5,', STRESS PERIOD',I5/21X,89('-'))
  1114 FORMAT(/30X,24X,7X,'IN',8X,13X,6X,'OUT',
      &      /30X,24X,16('-'),13X,16('-'))
  1122 FORMAT(30X,' CONSTANT CONCENTRATION: ',G15.7,13X,G15.7)

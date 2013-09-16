@@ -335,6 +335,11 @@ C--FORMULATE MATRIX COEFFICIENTS
      &                  COLD,CNEW)                             !# LINE 620 MAIN
                 IF(iUnitTRNOP(18).GT.0)                        !# LINE 622 MAIN
      &           CALL LKT5FM(ICOMP)                            !# LINE 623 MAIN
+
+      IF(KPER.EQ.2)THEN
+      CONTINUE
+      ENDIF
+
                 IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC..                        !# LINE 627 MAIN
      1           CALL SWF5FM(ICOMP)                            !# LINE 628 MAIN
                 IF(iUnitTRNOP(5).GT.0)

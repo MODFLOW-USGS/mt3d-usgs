@@ -269,7 +269,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,
      &                         DELC,DH,CNEW,A,RHS,NODES,UPDLHS,MIXELM,
      &                         RETA,COLD,IALTFM,
-     &                         CINACT,DELT,DTRANS,iUnitTRNOP
+     &                         CINACT,DELT,DTRANS,iUnitTRNOP,iSSTrans
 C
       IMPLICIT NONE
       INTEGER  I,J,K,II,N,ICOMP
