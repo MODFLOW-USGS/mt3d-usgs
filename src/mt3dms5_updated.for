@@ -69,7 +69,7 @@ C
      &                         DELT,TIME1,TIME2,NPS,
      &                         MEMDEALLOCATE,
      &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
-     &                         IWCTS,IREACTION,IALTFM,NOCREWET,     !# V
+     &                         IWCTS,IALTFM,NOCREWET,               !# V
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW          !# Amended
 C
       IMPLICIT  NONE
@@ -268,7 +268,7 @@ C--ADVANCE ONE TRANSPORT STEP
             CALL BTN5AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
 C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                       !# LINE 506 MAIN
             IF(iUnitTRNOP(18).GT.0) CALL LKT5AD(N)             !# LINE 507 MAIN
-            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(KSTP,KPER,N)             !# LINE 508 MAIN
+            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(KSTP,KPER,N)   !# LINE 508 MAIN
 C
 C
 C--FOR EACH COMPONENT......

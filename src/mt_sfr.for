@@ -6,7 +6,7 @@ C     THIS SUBROUTINE ALLOCATES SPACE FOR SFR VARIABLES
 C***********************************************************************
       USE SFRVARS
       USE LAKVARS
-      USE MT3DMS_MODULE, ONLY: INSFT,IOUT,NCOMP
+      USE MT3DMS_MODULE, ONLY: INSFT,IOUT,NCOMP,iUnitTRNOP
       INTEGER IN
       LOGICAL OPND
 C
@@ -54,6 +54,13 @@ C--ALLOCATE INITIAL AND BOUNDARY CONDITION ARRAYS
       ALLOCATE(ISEGBC(MXSFBC),IRCHBC(MXSFBC),ISFBCTYP(MXSFBC))    !# MOVED
       ALLOCATE(CBCSF(MXSFBC,NCOMP))                               !# MOVED
       CBCSF=0.
+C
+C--IF LAKE PACKAGE NOT ACTIVE, NLKINIT WILL BE UNDEFINED.  
+C  ASSIGN VALUE OF 1 IF LAKE PACKAGE INACTIVE
+      IF(iUnitTRNOP(18).EQ.0) THEN
+        ALLOCATE(NLKINIT)
+        NLKINIT=1
+      ENDIF
       ALLOCATE(RMASSF(NLKINIT),VOUTSF(NLKINIT))
       RMASSF=0.
       IBNDSF=1
@@ -305,7 +312,7 @@ C***********************************************************************
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
      &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &  NCONSF,IROUTE,UZQ,CUZINF,iSSTrans
+     &                         iSSTrans,iUnitTRNOP
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE XMDMODULE
@@ -442,27 +449,29 @@ C            ENDIF
       ENDDO
 C
 C.....INFLOW FROM UZF
-      DO ICON=1,NCONSF
-        IF(IROUTE(1,ICON).EQ.1) THEN
-          IS=IROUTE(5,ICON)      !SEGMENT
-          IR=IROUTE(6,ICON)      !REACH
-          N=ISTRM(IR,IS)
-          K=IROUTE(2,ICON)      !LAYER
-          I=IROUTE(3,ICON)      !ROW
-          J=IROUTE(4,ICON)      !COLUMN
-          Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
-          IF(IROUTE(7,ICON).EQ.1) THEN
-            CONC=CNEW(J,I,K,ICOMP)
-          ELSEIF(IROUTE(7,ICON).EQ.2) THEN
-            CONC=CUZINF(J,I,ICOMP)
-          ELSE
-            WRITE(IOUT,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
-            WRITE(*,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
-            STOP
+      IF(iUnitTRNOP(7).GT.0) THEN
+        DO ICON=1,NCONSF
+          IF(IROUTE(1,ICON).EQ.1) THEN
+            IS=IROUTE(5,ICON)      !SEGMENT
+            IR=IROUTE(6,ICON)      !REACH
+            N=ISTRM(IR,IS)
+            K=IROUTE(2,ICON)      !LAYER
+            I=IROUTE(3,ICON)      !ROW
+            J=IROUTE(4,ICON)      !COLUMN
+            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            IF(IROUTE(7,ICON).EQ.1) THEN
+              CONC=CNEW(J,I,K,ICOMP)
+            ELSEIF(IROUTE(7,ICON).EQ.2) THEN
+              CONC=CUZINF(J,I,ICOMP)
+            ELSE
+              WRITE(IOUT,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
+              WRITE(*,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
+              STOP
+            ENDIF
+            RHSSF(N)=RHSSF(N)+Q*CONC
           ENDIF
-          RHSSF(N)=RHSSF(N)+Q*CONC
-        ENDIF
-      ENDDO
+        ENDDO
+      ENDIF
 C
 C--FILL RHSSF COMPLETE------------------------------------------------
 C
@@ -720,7 +729,7 @@ C***********************************************************************
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
      &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
-     &  NCONSF,IROUTE,UZQ,CUZINF,iSSTrans
+     &                         iSSTrans
       IMPLICIT  NONE
       INTEGER IS,IR,ICON
       INTEGER ICOMP
@@ -891,19 +900,21 @@ C.......TOTAL FLOW OUT INCLUDING/EXCLUDING ET
 C
 C.......OUTFLOW TO LAK
             II=0
-            IF(INLKT.GT.0) THEN
-              DO NUM=1,NSFRLAK
-                IS=LAKSEG(NUM)    !SEGMENT NUMBER
-                IR=LAKRCH(NUM)    !REACH NUMBER
-                II=ISTRM(IR,IS)
-                QL=0.
-                QL=QLAKSFR(NUM)      !(-) MEANS SFR TO LAK; (+) MEANS LAK TO SFR
-                IF(QL.LT.0..AND.II.EQ.N) THEN
-                  EXIT
-                ELSE
-                  II=0
-                ENDIF
-              ENDDO
+            IF(iUnitTRNOP(18).GT.0) THEN
+              IF(INLKT.GT.0) THEN
+                DO NUM=1,NSFRLAK
+                  IS=LAKSEG(NUM)    !SEGMENT NUMBER
+                  IR=LAKRCH(NUM)    !REACH NUMBER
+                  II=ISTRM(IR,IS)
+                  QL=0.
+                  QL=QLAKSFR(NUM)      !(-) MEANS SFR TO LAK; (+) MEANS LAK TO SFR
+                  IF(QL.LT.0..AND.II.EQ.N) THEN
+                    EXIT
+                  ELSE
+                    II=0
+                  ENDIF
+                ENDDO
+              ENDIF
             ENDIF
 C
             IF(II.EQ.N) THEN !SFR TO LAKE FLOW
@@ -1051,29 +1062,31 @@ C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
       ENDDO
 C
 C.....INFLOW FROM UZF
-      DO ICON=1,NCONSF
-        IF(IROUTE(1,ICON).EQ.1) THEN
-          IS=IROUTE(5,ICON)      !SEGMENT
-          IR=IROUTE(6,ICON)      !REACH
-          N=ISTRM(IR,IS)
-          K=IROUTE(2,ICON)      !LAYER
-          I=IROUTE(3,ICON)      !ROW
-          J=IROUTE(4,ICON)      !COLUMN
-          Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
-          IF(IROUTE(7,ICON).EQ.1) THEN
-            CONC=CNEW(J,I,K,ICOMP)
-          ELSEIF(IROUTE(7,ICON).EQ.2) THEN
-            CONC=CUZINF(J,I,ICOMP)
+      IF(iUnitTRNOP(7).GT.0) THEN
+        DO ICON=1,NCONSF
+          IF(IROUTE(1,ICON).EQ.1) THEN
+            IS=IROUTE(5,ICON)      !SEGMENT
+            IR=IROUTE(6,ICON)      !REACH
+            N=ISTRM(IR,IS)
+            K=IROUTE(2,ICON)      !LAYER
+            I=IROUTE(3,ICON)      !ROW
+            J=IROUTE(4,ICON)      !COLUMN
+            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            IF(IROUTE(7,ICON).EQ.1) THEN
+              CONC=CNEW(J,I,K,ICOMP)
+            ELSEIF(IROUTE(7,ICON).EQ.2) THEN
+              CONC=CUZINF(J,I,ICOMP)
+            ENDIF
+            Q1=Q1+ABS(Q)*DTRANS
+            IF(IBNDSF(N).EQ.-1) THEN
+C              CCOUTSF=CCOUTSF-Q*CONC*DTRANS
+            ELSE
+              UZF2SFR=UZF2SFR-Q*CONC*DTRANS
+            ENDIF
+C            RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS !UZF HANDLES THIS
           ENDIF
-          Q1=Q1+ABS(Q)*DTRANS
-          IF(IBNDSF(N).EQ.-1) THEN
-C            CCOUTSF=CCOUTSF-Q*CONC*DTRANS
-          ELSE
-            UZF2SFR=UZF2SFR-Q*CONC*DTRANS
-          ENDIF
-C          RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS !UZF HANDLES THIS
-        ENDIF
-      ENDDO
+        ENDDO
+      ENDIF
 C
 C--CUMULATIVE TERMS
       CFLOINSF(ICOMP)=CFLOINSF(ICOMP)+FLOINSF
