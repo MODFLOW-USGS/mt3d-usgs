@@ -1831,7 +1831,7 @@ C
       USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
-     &                         IUZFBND,IALTFM,QSTO,iUnitTRNOP                 !edm
+     &                         IALTFM,QSTO,iUnitTRNOP                 !edm
       USE MIN_SAT, ONLY: COLD7,DRYON
 C
       IMPLICIT  NONE

@@ -149,7 +149,7 @@ C--PRINT A HEADER
  1    FORMAT(//1X,'UNSATURATED-ZONE INPUT PARAMETERS'/1X,23('-')/)
 C
 C--READ CONCENTATION OF INFILTRATING FLUX (CUZINF)                  
-C  READ FLAG INDICATING HOW TO READ APPLD AMT CONC.                 
+C  READ FLAG INDICATING HOW TO READ APPLD AMT CONC.
       READ(INUZT,'(I10)') INCUZINF                                     
 C                                                                   
 C--IF INCUZINF<0, CONC.REUSED FROM LAST STRESS PERIOD               
