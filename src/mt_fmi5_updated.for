@@ -222,6 +222,10 @@ C
       REAL      WW,WTBL,THKSAT,TK,CTMP,CREWET,THKMIN0
       CHARACTER TEXT*16
 C
+      JTRACK=0
+      ITRACK=0
+      KTRACK=0
+C
       INUF=INFTL
 C                                                                   !edm
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)                         !edm

@@ -276,6 +276,7 @@ CONTAINS
         INTEGER,            SAVE,                      POINTER :: NEA
         INTEGER,            SAVE,                      POINTER :: NSPECIAL
         INTEGER,            SAVE,                      POINTER :: NSTORE
+        INTEGER,            SAVE,                      POINTER :: NSOLID
         INTEGER,            SAVE,                      POINTER :: IUMETH
         CHARACTER(LEN=1000),SAVE,                      POINTER :: rec_FileName
         CHARACTER(LEN=50),  SAVE,                      POINTER :: Ad_methane_name

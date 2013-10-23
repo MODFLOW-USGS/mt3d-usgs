@@ -20,16 +20,15 @@ C
       INTEGER   NODES                                          !# LINE 271 RCT
       REAL      TR,TINY,EPSILON,TOTPOR
       CHARACTER ANAME*24
-      CHARACTER FINDEX*30                                      !# LINE 274 RCT
       PARAMETER (TINY=1.E-30,EPSILON=0.5E-6)
       LOGICAL   EXISTED                                        !# LINE 283 RCT
 C
       INRCT=IN
 C
 C--ALLOCATE AND INITIALIZE
-      ALLOCATE(IREACT,IRCTOP,IGETSC,IFMTRF,IFESLD,ISORBIMONLY,ISP1IM,
+      ALLOCATE(IREACT,IRCTOP,IGETSC,IFESLD,ISORBIMONLY,ISP1IM,
      1  rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,IUMETH,
-     1  RVAL)
+     1  RVAL,NSOLID)
       ALLOCATE(FRAC(NCOL,NROW,NLAY))
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
@@ -48,7 +47,7 @@ C--PRINT PACKAGE NAME AND VERSION NUMBER
 C
 C--READ AND ECHO SORPTION ISOTHERM TYPE AND FLAG IREACT
       READ(INRCT,'(6I10)',ERR=100,IOSTAT=IERR)
-     & ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION,IFESLD            !# Amended 
+     & ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION !,IFESLD            !# Amended 
   100 IF(IERR.NE.0) THEN
         IRCTOP=1
         IGETSC=0
@@ -133,10 +132,6 @@ C                                                                !# LINE 121 RCT
         READ(*,*)                                                !# LINE 130 RCT
         STOP                                                     !# LINE 131 RCT
       ENDIF                                                      !# LINE 132 RCT
-C                                                                !# LINE 133 RCT
-      IF(IREACTION.EQ.2.AND.IFESLD.EQ.1) THEN                    !# LINE 134 RCT
-        WRITE(IOUT,1040)                                         !# LINE 135 RCT
-      ENDIF                                                      !# LINE 136 RCT
 C                                                                !# LINE 137 RCT
  1022 FORMAT(1X,'TYPE OF SORPTION SELECTED IS [LINEAR]')
  1024 FORMAT(1X,'TYPE OF SORPTION SELECTED IS [FREUNDLICH]')
@@ -152,9 +147,8 @@ C                                                                !# LINE 137 RCT
  1035 FORMAT(1X,'FIRST-ORDER CHAIN REACTION IS SIMULATED')       !# LINE 149 RCT
  1034 FORMAT(1X,'ZEROTH-ORDER DECAY OR PRODUCTION IS SIMULATED')
 C
- 1036 FORMAT(1X,'REACTION BETWEEN AN EA AND AN ED IS SIMULATED') !# LINE 151 RCT
- 1038 FORMAT(1X,'KINETIC REACTION MODULE IS SIMULATED')          !# LINE 152 RCT
- 1040 FORMAT(1X,'SOLID PHASE Fe(3+) IS SIMULATED')               !# LINE 153 RCT
+ 1036 FORMAT(1X,'REACTION BETWEEN 1 EA AND 1 ED IS SIMULATED') !# LINE 151 RCT
+ 1038 FORMAT(1X,'MULTI-SPECIES KINETIC REACTION MODULE IS SIMULATED')          !# LINE 152 RCT
  1042 FORMAT(1X,'SEPARATE Kd FOR TWO DOMAINS')                   !# LINE 154 RCT
       IF(IRCTOP.LE.1) THEN
         IRCTOP=1
@@ -461,7 +455,7 @@ C                                                                   !# LINE 506 
         DO INDEX=1,NCOMP-1                                          !# LINE 508 RCT
           READ(IN,*) YLD(INDEX)                                     !# LINE 509 RCT
           WRITE(IOUT,'(18X,2(A,I3),A,G13.6)')                       !# LINE 510 RCT
-     1      'YILED COEFFICIENT BETWEEN SPECIES ',INDEX,             !# LINE 511 RCT
+     1      'YIELD COEFFICIENT BETWEEN SPECIES ',INDEX,             !# LINE 511 RCT
      1      ' AND ',INDEX+1,' = ', YLD(INDEX)                       !# LINE 512 RCT
         ENDDO                                                       !# LINE 513 RCT
       ENDIF                                                         !# LINE 514 RCT
@@ -499,26 +493,6 @@ C-------READ REACTION FILE NAME                                     !# LINE 538 
           NODES=NLAY*NROW*NCOL                                      !# LINE 546 RCT
           CALL REACTION_PRE(NODES)                                  !# LINE 547 RCT (Modified)
         ENDIF                                                       !# LINE 548 RCT
-C                                                                   !# LINE 549 RCT
-        IF(NSPECIAL.GT.0) THEN                                      !# LINE 550 RCT
-          NSTORE=COUNT(SPECIAL=='STORE',DIM=NED+NEA)                !# LINE 551 RCT
-          IF(NSTORE.GT.0) THEN                                      !# LINE 552 RCT
-            ALLOCATE (MASSSTOR(NCOL,NROW,NLAY))                     !# LINE 553 RCT
-            MASSSTOR=0.                                             !# LINE 554 RCT
-            IF(SAVUCN) THEN                                         !# LINE 555 RCT
-              Ad_methane_name ='MT3D_Ad_methane.UCN'                !# LINE 556 RCT
-              IUMETH=111                                            !# LINE 557 RCT
-              FINDEX=' '                                            !# LINE 558 RCT
-              CALL OPENFL(-IUMETH,0,Ad_methane_name,1,FINDEX)       !# LINE 559 RCT
-              WRITE(IOUT,120)                                       !# LINE 560 RCT
- 120   FORMAT(1X,'SAVE THE ADDITIONAL METHANE MASS ',               !# LINE 561 RCT
-     & 'IN UNFORMATTED FILE [MT3D_Ad_methane.UCN]')                 !# LINE 562 RCT
-            ENDIF                                                   !# LINE 563 RCT
-          ENDIF                                                     !# LINE 564 RCT
-C                                                                   !# LINE 565 RCT
-C          ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))   !# LINE 566 RCT
-        ENDIF                                                       !# LINE 567 RCT
-        ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))      !# LINE 568 RCT
       ENDIF                                                         !# LINE 569 RCT
 C                                                                   !# LINE 570 RCT
 C--DETERMINE DEFAULT CONCENTRATION FOR THE NONEQUILIBRIUM PHASE
@@ -1094,9 +1068,6 @@ C                                                                    !# LINE 113
 C                                                                    !# LINE 1140 RCT
 		        CALL reaction_sub(ICOMP,1)                         !# LINE 1141 RCT
 C                                                                    !# LINE 1142 RCT
-                DO MM=1,NED                                          !# LINE 1143 RCT
-                  IF(ICOMP>NED)DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM) !# LINE 1144 RCT
-                ENDDO                                                !# LINE 1145 RCT
                 DCDT_S(N,ICOMP)=DCDT(ICOMP)                          !# LINE 1146 RCT
 C                                                                    !# LINE 1147 RCT
                 IF(ICOMP.LE.NED) THEN                                !# LINE 1148 RCT
@@ -1104,12 +1075,13 @@ C                                                                    !# LINE 114
      +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N)                !# LINE 1150 RCT
                 ELSE                                                 !# LINE 1151 RCT
                   DO MM=1,NED                                        !# LINE 1152 RCT
+			          DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM) !# LINE 1144 RCT
 			          RHS(N)=RHS(N)-DEA_ED_DT(MM)* COLD(N,MM)*     !# LINE 1153 RCT
      +		                      PRSITY(N)*DELR(J)*DELC(I)*DH(N)  !# LINE 1154 RCT
                   ENDDO                                              !# LINE 1155 RCT
                 ENDIF                                                !# LINE 1156 RCT
               ENDIF                                                  !# LINE 1157 RCT
-     		  ENDDO                                                    !# LINE 1158 RCT
+     		    ENDDO                                                    !# LINE 1158 RCT
           ENDDO                                                      !# LINE 1159 RCT
 	  ENDDO                                                        !# LINE 1160 RCT
       ENDIF                                                          !# LINE 1161 RCT
@@ -1506,7 +1478,7 @@ CVSB                ENDIF                                          !# LINE 1547 
      &          *DELC(I)*DH(j,i,k)*PRSITY(j,i,k)*DTRANS            !# LINE 1563 RCT
     ! &          *COLD(J,I,K,ICOMP)/                               !# LINE 1564 RCT
     ! &          ABS(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))          !# LINE 1565 RCT
-              ELSEIF(COLD(J,I,K,ICOMP)<=0) THEN                    !# LINE 1566 RCT
+              ELSEIF(COLD(J,I,K,ICOMP)<=0.) THEN                    !# LINE 1566 RCT
                 !COLD(J,I,K,ICOMP)=0.0                             !# LINE 1567 RCT
                 DCRCT=0.0                                          !# LINE 1568 RCT
 !                DCRCT=DCDT_S(N,ICOMP)*COLD(J,I,K,ICOMP)*DELR(J)   !# LINE 1569 RCT
@@ -1518,12 +1490,12 @@ CVSB                ENDIF                                          !# LINE 1547 
             ELSEIF(ICOMP>NED.AND.ICOMP<=NED+NEA)THEN               !# LINE 1575 RCT
               DCRCT=0.0                                            !# LINE 1576 RCT
               DO M=1,NED                                           !# LINE 1577 RCT
-                IF(COLD(J,I,K,M)>0)THEN                            !# LINE 1578 RCT
+                IF(COLD(J,I,K,M)>0.)THEN                            !# LINE 1578 RCT
                 DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M)*COLD(J,I,K,M)   !# LINE 1579 RCT
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)          !# LINE 1580 RCT
      &          *DTRANS !*COLD(J,I,K,M)/                           !# LINE 1581 RCT
     !&          ABS(CNEW(J,I,K,M)-COLD(J,I,K,M))                   !# LINE 1582 RCT
-                ELSEIF(COLD(J,I,K,M)<=0)THEN                       !# LINE 1583 RCT
+                ELSEIF(COLD(J,I,K,M)<=0.)THEN                       !# LINE 1583 RCT
                 DCRCT=DCRCT+0.0                                    !# LINE 1584 RCT
 !                COLD(J,I,K,M)=0.0                                 !# LINE 1585 RCT
 !                DCRCT=DCRCT +DCDT_FE(N,ICOMP-NED,M)*COLD(J,I,K,M) !# LINE 1586 RCT
@@ -1539,7 +1511,7 @@ CVSB                ENDIF                                          !# LINE 1547 
               DCRCT=0.0                                            !# LINE 1596 RCT
               DO M=1,NED                                           !# LINE 1597 RCT
                 IF(COLD(J,I,K,M)>0)THEN                            !# LINE 1598 RCT
-                DCRCT=DCRCT-DCDT_FE(N,3,M)*COLD(J,I,K,M)           !# LINE 1599 RCT
+                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*COLD(J,I,K,M)           !# LINE 1599 RCT
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS   !# LINE 1600 RCT
 !     &          *COLD(J,I,K,M)/                                   !# LINE 1601 RCT
 !     &          ABS(CNEW(J,I,K,M)-COLD(J,I,K,M))                  !# LINE 1602 RCT
@@ -1549,7 +1521,7 @@ CVSB                ENDIF                                          !# LINE 1547 
 !                DCRCT=DCRCT-DCDT_FE(N,3,M)*COLD(J,I,K,M)          !# LINE 1606 RCT
 !     &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS  !# LINE 1607 RCT
                 ELSE                                               !# LINE 1608 RCT
-                DCRCT=DCRCT-DCDT_FE(N,3,M)*COLD(J,I,K,M)           !# LINE 1609 RCT
+                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*COLD(J,I,K,M)           !# LINE 1609 RCT
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS   !# LINE 1610 RCT
                 ENDIF                                              !# LINE 1611 RCT
               ENDDO                                                !# LINE 1612 RCT
@@ -1656,17 +1628,29 @@ C
 C THIS SUBROUTINE READS THE REACTION FILE rec_FileName
 C
 C ********************************************************************
-      USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,NCOL,NROW,NLAY           !# New
+      USE MT3DMS_MODULE, ONLY: IOUT,MCOMP,NCOMP,NCOL,NROW,NLAY,SAVUCN           !# New
       USE RCTMOD
       CHARACTER*100 LINE
       INTEGER LLOC,ITYP1,ITYP2,ISTART,ISTOP
       INTEGER NODES                                                !# Modified
       REAL R
+      LOGICAL OPND
+      CHARACTER FINDEX*30                                      !# LINE 274 RCT
 C
+C-----OPEN FILE ON AN UNUSED UNIT NUMBER
       INUNIT=111
+5     INQUIRE(UNIT=INUNIT,OPENED=OPND)
+      IF(OPND) THEN
+        INUNIT=INUNIT+1
+        GOTO 5
+      ENDIF
       OPEN(INUNIT,FILE=rec_FileName)
+      WRITE(IOUT,'(/1X,4A,I5)') 'KINETIC REACTION PARAMETERS READ',
+     1    ' FROM FILE: ',TRIM(rec_FileName),' ON UNIT NUMBER',INUNIT
 C
       NSPECIAL=0
+      NSTORE=0
+      NSOLID=0
 C
 C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
 10    LINE=' '
@@ -1677,13 +1661,16 @@ C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
         GOTO 10
       ENDIF
 C
-CVSB      LLOC=1
-CVSB      CALL URWORD(LINE,LLOC,ITYP1,ITYP2,1,N,R,IOUT,INUNIT)
-CVSB      CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INUNIT)
-      READ(LINE,*) NED,NEA,NSPECIAL
-      WRITE(IOUT,100) NED,NEA
+      READ(LINE,*) NED,NEA,NSPECIAL,IFESLD
+      WRITE(IOUT,100) NED,NEA,NSPECIAL
 100   FORMAT(/1X,'NUMBER OF ELECTRON DONORS    = ',I3,
-     1       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3)
+     1       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3,
+     1       /1X,'NUMBER OF SPECIAL COMPONENTS = ',I3)
+C
+      WRITE(IOUT,*)
+      WRITE(IOUT,'(2(A,I2))') 'ELECTRON DONORS:    SPECIES ',1,' - ',NED
+      WRITE(IOUT,'(2(A,I2))') 'ELECTRON ACCEPTERS: SPECIES ',NED+1,
+     1' - ',NEA+NED
 C
       ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NED+NEA))
       ALLOCATE(MAXEC(NED+NEA),SWITCH(NED+NEA),INHIB(NED+NEA),
@@ -1694,60 +1681,107 @@ C
       MASS_NEG=0.0
       CON_NEG=0.0
 C
-CVSB      WRITE(IOUT,*) 'INITIAL CONCENTRATIONS'
-CVSB      DO I=1,NED+NEA
-CVSB        READ(INUNIT,*) RCOLD(I)
-CVSB        IF(I.LE.NED) THEN
-CVSB          WRITE(IOUT,105) I,RCOLD(I)
-CVSB        ELSE
-CVSB          WRITE(IOUT,106) I-NED,RCOLD(I)
-CVSB        ENDIF
-CVSB      ENDDO
-105   FORMAT('ED',I3,5X,1PG15.5)
-106   FORMAT('EA',I3,5X,1PG15.5)
-      RCNEW = RCOLD
-C
       WRITE(IOUT,110)
-110   FORMAT(/1x,'Species no.',5x,'Case code' , 5x, 'Max EFC')
+110   FORMAT(/1x,'Species no.',5x,'Case code' , 5x, 'Max EFC',
+     1       /1x,'-----------',5x,'---------' , 5x, '-------')
       DO I=1,NSPECIAL
         READ(INUNIT,'(A)') LINE
         READ(LINE,*) N
         READ(LINE,*) IDUM,SPECIAL(N),MAXEC(N)
         WRITE(IOUT,120) IDUM,SPECIAL(N),MAXEC(N)
+        IF(SPECIAL(N).EQ.'STORE') NSTORE=N
+        IF(SPECIAL(N).EQ.'SOLID') NSOLID=N
+C
+C.......'SOLID' ONLY APPLICABLE FOR EAs
+        IF(SPECIAL(N).EQ.'SOLID') THEN
+          IF(N.LE.NED) THEN
+            WRITE(IOUT,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
+            WRITE(IOUT,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
+            WRITE(*,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
+            WRITE(*,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
+            READ(*,*)
+            STOP
+          ENDIF
+        ENDIF
       ENDDO
 120   FORMAT(I9,9X,A,3X,1PG15.5)
 C
-      WRITE(IOUT,'(/,A)') 'HALF SATURATION AND INHIBITION CONSTANTS'
+      IF(IFESLD.EQ.1) THEN
+        IF(NCOMP.EQ.MCOMP) THEN
+          IFESLD=0
+          WRITE(IOUT,'(/,2A)') 'SET NCOMP>MCOMP TO SIMULATE IMMOBILE',
+     1    ' SOLID-PHASE SPECIES, IFESLD RESET TO 0'
+        ELSEIF(NSOLID.EQ.0) THEN
+          IFESLD=0
+          WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
+     1    ', IFESLD RESET TO 0'
+        ELSE
+          WRITE(IOUT,1040) NSOLID,NCOMP
+        ENDIF
+      ENDIF
+1040  FORMAT(/1X,'SOLID PHASE FOR SPECIES ',I3,
+     1  ' IS SIMULATED AS IMMOBILE SPECIES ',I3)
+C
+      WRITE(IOUT,'(/,2A)') 'EA#  SPECIES#  HALF SATURATION CONSTANT',
+     1  ' INHIBITION CONSTANT'
+      WRITE(IOUT,'(2A)') '---  --------  ------------------------',
+     1  ' -------------------'
       DO I=1,NEA
         READ(INUNIT,*) SWITCH(I),INHIB(I)
-        WRITE(IOUT,130) I,SWITCH(I),INHIB(I)
+        WRITE(IOUT,130) I,NED+I,SWITCH(I),INHIB(I)
       ENDDO
-130   FORMAT('EA',I3,5X,1PG15.5,5X,1PG15.5)
+130   FORMAT(I3,5X,I3,7X,1PG15.5,5X,1PG15.5)
 C
-      WRITE(IOUT,'(/,A)') 'DECAY RATES'
-      WRITE(IOUT,'(15X,A)') 'ED(1:NED)'
+      WRITE(IOUT,'(/,A)') 'EA#  SPECIES#   DECAY RATES ED(1:NED)'
+      WRITE(IOUT,'(A)') '---  --------   -------------'
       DO I=1,NEA
         READ(INUNIT,*) (DECAY(J,I),J=1,NED)
-        WRITE(IOUT,140) I,(DECAY(J,I),J=1,NED)
+        WRITE(IOUT,140) I,NED+I,(DECAY(J,I),J=1,NED)
       ENDDO
-140   FORMAT('EA',I3,100(5X,1PG15.5))
+140   FORMAT(I3,5X,I3,100(3X,1PG15.5))
 C
-      WRITE(IOUT,'(/,A)') 'YIELD COEFFICIENTS'
-      WRITE(IOUT,'(15X,A)') 'ED(1:NED)'
+      WRITE(IOUT,'(/,2A)') 'EA/ED  SPECIES#   YIELD COEFFICIENTS ',
+     1'ED(1:NED)'
+      WRITE(IOUT,'(A)') '-----  --------   ------------------'
       DO I=1,NED+NEA
         READ(INUNIT,*) (YIELDC(J,I),J=1,NED)
         IF(I.LE.NED) THEN
-          WRITE(IOUT,150) I,(YIELDC(J,I),J=1,NED)
+          WRITE(IOUT,150) I,I,(YIELDC(J,I),J=1,NED)
         ELSE
-          WRITE(IOUT,151) I-NED,(YIELDC(J,I),J=1,NED)
+          WRITE(IOUT,151) I-NED,I,(YIELDC(J,I),J=1,NED)
         ENDIF
       ENDDO
-150   FORMAT('ED',I3,100(5X,1PG15.5))
-151   FORMAT('EA',I3,100(5X,1PG15.5))
+150   FORMAT('ED',I3,5X,I3,100(5X,1PG15.5))
+151   FORMAT('EA',I3,5X,I3,100(5X,1PG15.5))
+      CLOSE(INUNIT)
+C
+      IF(NSTORE.GT.0) THEN
+        ALLOCATE (MASSSTOR(NCOL,NROW,NLAY))
+        MASSSTOR=0.
+        IF(SAVUCN) THEN
+          Ad_methane_name ='MT3D_Ad_methane.UCN'
+          IUMETH=INUNIT
+          FINDEX=' '
+          CALL OPENFL(-IUMETH,0,Ad_methane_name,1,FINDEX)
+          WRITE(IOUT,160)
+160   FORMAT(1X,'SAVE THE ADDITIONAL METHANE MASS ',
+     & 'IN UNFORMATTED FILE [MT3D_Ad_methane.UCN]')
+          ENDIF
+        ENDIF
+C
+      ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))
+C
+C--ADD CODE FOR SOME BASIC QA
+C      IF() THEN
+C      ENDIF
+C
+      RETURN
 C
 1000  CONTINUE
-C
-      CLOSE(INUNIT)
+      WRITE(*,*) TRIM(rec_FileName),' FILE IS EMPTY'
+      WRITE(IOUT,*) TRIM(rec_FileName),' FILE IS EMPTY'
+      READ(*,*)
+      STOP
 C
       RETURN
       END
@@ -1823,7 +1857,7 @@ C
      &  	      maxEC(m)) !for iron 
        	    elseif(special(m).eq.'STORE')then
 		       rval = decay(n,m-ned) * (rcold(n) / (switch(m-ned) + rcold(n))) !for methane
-		    elseif(RCOLD(m)>0.0)then
+	    elseif(RCOLD(m)>0.0)then
 		       rval = decay(n,m-ned) * (rcold(m) / (switch(m-ned) + rcold(m))) !for other EAs
 		    else 
 		       rval=0.0    
@@ -1885,3 +1919,94 @@ C
 C
       end subroutine
 C
+C
+      SUBROUTINE KINETIC_SOLID(ICOMP,DTRANS)
+      USE RCTMOD
+      USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL,CNEW,
+     1  ICBUND,COLD,RHOB
+      INTEGER ICOMP
+      REAL DTRANS
+C
+      DO IEDEA=1,NED+NEA                               !# Modified
+        IF(SPECIAL(IEDEA)=="SOLID") THEN               !# Modified
+          DO K=1,NLAY                                  !# Modified
+            DO I=1,NROW                                !# Modified
+              DO J=1,NCOL                              !# Modified
+                NN=(K-1)*NCOL*NROW+(I-1)*NCOL+J        !# Modified
+                IF(ICBUND(J,I,K,1).LE.0) CYCLE         !# Modified
+                MAXEC(IEDEA)=COLD(J,I,K,ICOMP)*        !# Modified
+     &                        RHOB(J,I,K)/PRSITY(J,I,K)            !# Modified
+                DO II=1,NED                            !# Modified
+                  MAXEC(IEDEA)=MAXEC(IEDEA)-           !# Modified
+     &                          DCDT_FE(NN,IEDEA-NED,II)*          !# Modified
+     &                          DTRANS*COLD(J,I,K,II)              !# Modified
+                ENDDO                                  !# Modified
+                CNEW(J,I,K,ICOMP)=MAXEC(IEDEA)*        !# Modified
+     &                          PRSITY(J,I,K)/RHOB(J,I,K)          !# Modified
+                IF(CNEW(J,I,K,ICOMP).LT.0.)            !# Modified
+     &                          CNEW(J,I,K,ICOMP)=0.0              !# Modified
+              ENDDO                                    !# Modified
+            ENDDO                                      !# Modified
+          ENDDO                                        !# Modified
+        ENDIF                                          !# Modified
+      ENDDO                                            !# Modified
+C
+      RETURN
+      END
+C
+C
+      SUBROUTINE DTS(ICOMP)
+      USE RCTMOD
+      USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL,CNEW,
+     1  ICBUND,COLD,RHOB
+      INTEGER ICOMP
+      REAL DTRANS
+C
+C--THIS SUBROUTINE CALCULATES A STABLE TIME-STEP SIZE
+C
+      DO K=1,NLAY                              !# Modified
+        DO I=1,NROW                            !# Modified
+          DO J=1,NCOL                          !# Modified
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE !# Modified
+            IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN !# Modified
+              CNEW=COLD                        !# Modified
+                            !N=N-1                             !# Added by Vivek? (See email 2-22-13)
+                            !CYCLE TRANSPORT TIME-STEP LOOP    !# Added by Vivek? (See email 2-22-13)
+CEDM                  DO NN=1,NODES                            !# LINE 647 MAIN
+CEDM                    IF(IX(LCIB+NN-1)<=0)CYCLE              !# LINE 648 MAIN
+CEDM                    IF(X(LCCNEW+(ICOMP-1)*NODES+NN-1).GT.  !# LINE 649 MAIN
+CEDM 1                     MAXEC(ICOMP))THEN                   !# LINE 650 MAIN
+                          !concentration is over the maximum EFC !# LINE 651 MAIN
+CVSB                          OperFlag=2                       !# LINE 652 MAIN 
+                          !time1=time1-DTRANS                  !# LINE 653 MAIN
+CVSB                          IF(PRTOUT)NPS=NPS-1              !# LINE 654 MAIN
+CVSB                          TIME2=TIME1                      !# LINE 655 MAIN
+                          !2-DTRANS                            !# LINE 656 MAIN
+CVSB                          CALL TimeStep_adjust(OperFlag,   !# LINE 657 MAIN
+CVSB     &                    X(LCCOLD+(ICOMP-1)*NODES+NN-1),  !# LINE 658 MAIN
+CVSB     &                    X(LCCNEW+(ICOMP-1)*NODES+NN-1),MAXEC(ICOMP),  !# LINE 659 MAIN
+CVSB     &                    DTRANS,ICOMP)                    !# LINE 660 MAIN
+CVSB                          IF(DTRANS<DT0)THEN               !# LINE 661 MAIN
+CVSB                            DT0=DTRANS                     !# LINE 662 MAIN
+CVSB                          ENDIF                            !# LINE 663 MAIN
+CEDM                      X(LCCNEW:LCCNEW+NCOMP*NODES-1)=      !# LINE 664 MAIN
+CEDM &                    X(LCCOLD:LCCOLD+NCOMP*NODES-1)       !# LINE 665 MAIN
+CEDM                      DO III=0,NCOMP*NODES-1               !# LINE 666 MAIN
+CEDM                        X(LCCNEW+III)=X(LCCOLD+III)        !# LINE 667 MAIN
+CEDM                      ENDDO                                !# LINE 668 MAIN
+CVSB                          N=N-1                            !# LINE 669 MAIN
+CVSB                          cycle mstrans_loop               !# LINE 670 MAIN
+CEDM                    ELSEIF(X(LCCNEW+(ICOMP-1)*NODES+NN-1)- !# LINE 671 MAIN
+CEDM &                        MAXEC(ICOMP)<1.E-6)THEN          !# LINE 672 MAIN
+CVSB                          ! restore the default time step for mass transport  !# LINE 673 MAIN
+CVSB                          IF(DT0<DT00)DT0=DT00             !# LINE 674 MAIN
+CEDM                    ENDIF                                  !# LINE 675 MAIN
+CEDM                  ENDDO                                    !# LINE 676 MAIN
+CEDM                ENDIF                                      !# LINE 677 MAIN
+CEDM              ENDIF                                        !# LINE 678 MAIN
+            ENDIF
+          ENDDO
+        ENDDO  
+      ENDDO
+      RETURN
+      END

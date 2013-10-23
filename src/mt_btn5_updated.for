@@ -1624,13 +1624,11 @@ C--SORBED/IMMOBILE PHASE CONCENTRATIONS TO FILE [MT3DnnnS.UCN]
 C                                                                      !# LINE 1473
 C--MASS FOR METHANE FOR KINETIC REACTION                               !# LINE 1474
         IF(IREACTION.EQ.2) THEN                                        !# LINE 1475
-          IF(NSTORE.GT.0.AND.ICOMP<=NED+NEA)THEN                       !# LINE 1476
-            IF(SPECIAL(ICOMP)=='STORE')THEN                            !# LINE 1477
-              DO K=1,NLAY                                              !# LINE 1478
-                WRITE(IUMETH) NTRANS,KSTP,KPER,TIME2,TEXT,NCOL,NROW,K  !# LINE 1479
-                WRITE(IUMETH) ((MASSSTOR(J,I,K),J=1,NCOL),I=1,NROW)    !# LINE 1480
-              ENDDO                                                    !# LINE 1481
-            ENDIF                                                      !# LINE 1482
+          IF(NSTORE.EQ.ICOMP)THEN                       !# LINE 1476
+            DO K=1,NLAY                                              !# LINE 1478
+              WRITE(IUMETH) NTRANS,KSTP,KPER,TIME2,TEXT,NCOL,NROW,K  !# LINE 1479
+              WRITE(IUMETH) ((MASSSTOR(J,I,K),J=1,NCOL),I=1,NROW)    !# LINE 1480
+            ENDDO                                                    !# LINE 1481
           ENDIF                                                        !# LINE 1483
         ENDIF                                                          !# LINE 1484
       ENDIF

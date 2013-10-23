@@ -274,7 +274,7 @@ C
 C--FOR EACH COMPONENT......
             DO ICOMP=1,NCOMP
 C
-C--TAKE CARE OF Fe2+                                           !# LINE 513 MAIN
+C--TAKE CARE OF Fe3+                                           !# LINE 513 MAIN
               IF(IREACTION.EQ.2) THEN                          !# LINE 514 MAIN
                 IF(ICOMP==NCOMP.AND.IFESLD>0)GOTO 1001         !# LINE 515 MAIN
               ENDIF                                            !# LINE 516 MAIN
@@ -345,53 +345,11 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG5AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
+C
                 IF(IREACTION.EQ.2) THEN !# LINE 645 MAIN
                 IF(ICOMP.LE.NED+NEA) THEN !# LINE 645 MAIN
                   IF(SPECIAL(ICOMP)=="MAXEC") THEN           !# LINE 646 MAIN
-                    DO K=1,NLAY                              !# Modified
-                      DO I=1,NROW                            !# Modified
-                        DO J=1,NCOL                          !# Modified
-                          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE !# Modified
-                          IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN !# Modified
-                            CNEW=COLD                        !# Modified
-                            !N=N-1                             !# Added by Vivek? (See email 2-22-13)
-                            !CYCLE TRANSPORT TIME-STEP LOOP    !# Added by Vivek? (See email 2-22-13)
-CEDM                  DO NN=1,NODES                            !# LINE 647 MAIN
-CEDM                    IF(IX(LCIB+NN-1)<=0)CYCLE              !# LINE 648 MAIN
-CEDM                    IF(X(LCCNEW+(ICOMP-1)*NODES+NN-1).GT.  !# LINE 649 MAIN
-CEDM 1                     MAXEC(ICOMP))THEN                   !# LINE 650 MAIN
-                          !concentration is over the maximum EFC !# LINE 651 MAIN
-CVSB                          OperFlag=2                       !# LINE 652 MAIN 
-                          !time1=time1-DTRANS                  !# LINE 653 MAIN
-CVSB                          IF(PRTOUT)NPS=NPS-1              !# LINE 654 MAIN
-CVSB                          TIME2=TIME1                      !# LINE 655 MAIN
-                          !2-DTRANS                            !# LINE 656 MAIN
-CVSB                          CALL TimeStep_adjust(OperFlag,   !# LINE 657 MAIN
-CVSB     &                    X(LCCOLD+(ICOMP-1)*NODES+NN-1),  !# LINE 658 MAIN
-CVSB     &                    X(LCCNEW+(ICOMP-1)*NODES+NN-1),MAXEC(ICOMP),  !# LINE 659 MAIN
-CVSB     &                    DTRANS,ICOMP)                    !# LINE 660 MAIN
-CVSB                          IF(DTRANS<DT0)THEN               !# LINE 661 MAIN
-CVSB                            DT0=DTRANS                     !# LINE 662 MAIN
-CVSB                          ENDIF                            !# LINE 663 MAIN
-CEDM                      X(LCCNEW:LCCNEW+NCOMP*NODES-1)=      !# LINE 664 MAIN
-CEDM &                    X(LCCOLD:LCCOLD+NCOMP*NODES-1)       !# LINE 665 MAIN
-CEDM                      DO III=0,NCOMP*NODES-1               !# LINE 666 MAIN
-CEDM                        X(LCCNEW+III)=X(LCCOLD+III)        !# LINE 667 MAIN
-CEDM                      ENDDO                                !# LINE 668 MAIN
-CVSB                          N=N-1                            !# LINE 669 MAIN
-CVSB                          cycle mstrans_loop               !# LINE 670 MAIN
-CEDM                    ELSEIF(X(LCCNEW+(ICOMP-1)*NODES+NN-1)- !# LINE 671 MAIN
-CEDM &                        MAXEC(ICOMP)<1.E-6)THEN          !# LINE 672 MAIN
-CVSB                          ! restore the default time step for mass transport  !# LINE 673 MAIN
-CVSB                          IF(DT0<DT00)DT0=DT00             !# LINE 674 MAIN
-CEDM                    ENDIF                                  !# LINE 675 MAIN
-CEDM                  ENDDO                                    !# LINE 676 MAIN
-CEDM                ENDIF                                      !# LINE 677 MAIN
-CEDM              ENDIF                                        !# LINE 678 MAIN
-                          ENDIF
-                        ENDDO
-                      ENDDO  
-                    ENDDO
+                    CALL DTS(ICOMP)
                   ENDIF
                 ENDIF
                 ENDIF
@@ -406,51 +364,9 @@ C
 C-------------TAKE CARE OF Fe2+                                    !# LINE 687 MAIN
  1001         IF(IREACTION.EQ.2) THEN                              !# LINE 688 MAIN
                 IF(ICOMP.EQ.NCOMP.AND.IFESLD.GT.0) THEN            !# Modified
-                  DO IEDEA=1,NED+NEA                               !# Modified
-                    IF(SPECIAL(IEDEA)=="SOLID") THEN               !# Modified
-                      DO K=1,NLAY                                  !# Modified
-                        DO I=1,NROW                                !# Modified
-                          DO J=1,NCOL                              !# Modified
-                            NN=(K-1)*NCOL*NROW+(I-1)*NCOL+J        !# Modified
-                            IF(ICBUND(J,I,K,1).LE.0) CYCLE         !# Modified
-                            MAXEC(IEDEA)=COLD(J,I,K,ICOMP)*        !# Modified
-     &                        RHOB(J,I,K)/PRSITY(J,I,K)            !# Modified
-                            DO II=1,NED                            !# Modified
-                              MAXEC(IEDEA)=MAXEC(IEDEA)-           !# Modified
-     &                          DCDT_FE(NN,IEDEA-NED,II)*          !# Modified
-     &                          DTRANS*COLD(J,I,K,II)              !# Modified
-                            ENDDO                                  !# Modified
-                            CNEW(J,I,K,ICOMP)=MAXEC(IEDEA)*        !# Modified
-     &                          PRSITY(J,I,K)/RHOB(J,I,K)          !# Modified
-                            IF(CNEW(J,I,K,ICOMP).LT.0.)            !# Modified
-     &                          CNEW(J,I,K,ICOMP)=0.0              !# Modified
-                          ENDDO                                    !# Modified
-                        ENDDO                                      !# Modified
-                      ENDDO                                        !# Modified
-                    ENDIF                                          !# Modified
-                  ENDDO                                            !# Modified
+                  CALL KINETIC_SOLID(ICOMP,DTRANS)
                 ENDIF                                              !# Modified
               ENDIF                                                !# Modified
-CEDM            IF(ICOMP==NCOMP.AND.IFESLD>0)THEN                  !# LINE 689 MAIN
-CEDM              DO I=1,NED+NEA                                   !# LINE 690 MAIN
-CEDM                IF(SPECIAL(I)=="SOLID")THEN                    !# LINE 691 MAIN
-CEDM                    DO NN=1,NODES                              !# LINE 692 MAIN
-CEDM                      IF(IX(LCIB+NN-1)<=0)CYCLE                !# LINE 693 MAIN
-CEDM                      MAXEC(I)=X(LCCOLD+(NCOMP-1)*NODES+NN-1)* !# LINE 694 MAIN
-CEDM &                       X(LCRHOB+NN-1)/X(LCPR+NN-1)           !# LINE 695 MAIN
-CEDM                      DO II=1,NED                              !# LINE 696 MAIN
-CEDM                       MAXEC(I)=MAXEC(I)-DCDT_FE(NN,I-NED,II)* !# LINE 697 MAIN
-CEDM &                       DTRANS*X(LCCOLD+(II-1)*NODES+NN-1)    !# LINE 698 MAIN
-CEDM                      ENDDO                                    !# LINE 699 MAIN
-CEDM                      X(LCCNEW+(ICOMP-1)*NODES+NN-1)=MAXEC(I)  !# LINE 700 MAIN
-CEDM &                     *X(LCPR+NN-1)/X(LCRHOB+NN-1)            !# LINE 701 MAIN
-CEDM                      IF(X(LCCNEW+(ICOMP-1)*NODES+NN-1)<0.)    !# LINE 702 MAIN
-CEDM &                        X(LCCNEW+(ICOMP-1)*NODES+NN-1)=0.0   !# LINE 703 MAIN
-CEDM                    ENDDO                                      !# LINE 704 MAIN
-CEDM                ENDIF                                          !# LINE 705 MAIN
-CEDM              ENDDO                                            !# LINE 706 MAIN
-CEDM            ENDIF                                              !# LINE 707 MAIN
-CEDM          ENDIF                                                !# LINE 708 MAIN
 C                                                                  !# LINE 709 MAIN
 C--END OF COMPONENT LOOP
             ENDDO
