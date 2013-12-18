@@ -406,7 +406,8 @@ CEDM--IS WRONG                                                      !# LINE 390-
      1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
                   !ENDIF
                 ELSE
-                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+                  IF(UPDLHS)
+     1            A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
 !     1                 *RETA(N,ICOMP)
                 ENDIF
               ENDIF

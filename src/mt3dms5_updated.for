@@ -263,6 +263,12 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
+            if(KPER.eq.6.and.KSTP.eq.1.and.n.ge.2) then
+            continue
+            endif
+            if(KPER.eq.6.and.KSTP.eq.1.and.n.ge.14) then
+            continue
+            endif
 C
 C--ADVANCE ONE TRANSPORT STEP
             CALL BTN5AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
@@ -349,7 +355,7 @@ C
                 IF(IREACTION.EQ.2) THEN !# LINE 645 MAIN
                 IF(ICOMP.LE.NED+NEA) THEN !# LINE 645 MAIN
                   IF(SPECIAL(ICOMP)=="MAXEC") THEN           !# LINE 646 MAIN
-                    CALL DTS(ICOMP)
+                    !CALL DTS(ICOMP)
                   ENDIF
                 ENDIF
                 ENDIF

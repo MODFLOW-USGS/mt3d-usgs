@@ -1368,6 +1368,8 @@ C--FOR THE CURRENT TRANSPORT STEP
                 ENDIF
 C                                                                   !# LINE 1254 BTN
                 IF(IREACTION.EQ.2) THEN                             !# LINE 1255 BTN
+                  !TAKE CARE OF THIS HERE TO ACCOUNT FOR OVERSHOOT
+                  IF(CNEW(J,I,K,ICOMP).LT.0.) CNEW(J,I,K,ICOMP)=0.0              !# Modified
                   IF(ICOMP==NCOMP.AND.IFESLD>0)THEN                 !# LINE 1256 BTN
                     DMSTRG=DMSTRG/PRSITY(J,I,K)*RHOB(J,I,K)         !# LINE 1257 BTN
                   ENDIF                                             !# LINE 1258 BTN
@@ -1388,6 +1390,16 @@ C                                                                   !# LINE 1260
      &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
               ENDIF
             ENDIF
+
+              IF(K.EQ.3) THEN
+              IF(I.EQ.123)THEN
+              IF(J.EQ.70)THEN
+              CONTINUE
+              ENDIF
+              ENDIF
+              ENDIF
+
+
           ENDDO
         ENDDO
       ENDDO

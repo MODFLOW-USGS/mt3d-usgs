@@ -767,7 +767,7 @@ C last modified: 10-01-2005
 C
       USE RCTMOD                                               !# LINE 840 RCT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,NODES,
-     &                         UPDLHS,ISOTHM,IREACT,A,RHS
+     &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,ICBUND,K,I,J,N
@@ -1040,6 +1040,15 @@ C                                                                    !# LINE 110
         DO K=1,NLAY                                                  !# LINE 1112 RCT
           DO I=1,NROW                                                !# LINE 1113 RCT
             DO J=1,NCOL                                              !# LINE 1114 RCT
+            
+              IF(K.EQ.3) THEN
+              IF(I.EQ.123)THEN
+              IF(J.EQ.70)THEN
+              CONTINUE
+              ENDIF
+              ENDIF
+              ENDIF
+            
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                         !# LINE 1115 RCT
 C                                                                    !# LINE 1116 RCT
               DCDT_S(N,ICOMP)=0.                                     !# LINE 1117 RCT
@@ -1062,6 +1071,11 @@ C                                                                    !# LINE 113
 	          IF(ABS(SUM(RCOLD(1:NED))).LE.1.0E-7) CYCLE           !# LINE 1134 RCT
                 IF(RCOLD(ICOMP).LE.1.0E-7) CYCLE                     !# LINE 1135 RCT
 !	          IF(RCOLD(ICOMP)/INIC(J,I,K,ICOMP)<=1.E-4.and.ICOMP>NED)CYCLE !# LINE 1136 RCT
+CCC                DO MM=1,MCOMP                                        !# LINE 1130 RCT
+CCC	          IF(SPECIAL(MM).EQ."SOLID".AND.IFESLD.GT.0) THEN   !# LINE 1137 RCT
+CCC	            MAXEC(MM)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)       !# LINE 1138 RCT
+CCC	          ENDIF                                                !# LINE 1139 RCT
+CCC                ENDDO
 	          IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN   !# LINE 1137 RCT
 	            MAXEC(ICOMP)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)       !# LINE 1138 RCT
 	          ENDIF                                                !# LINE 1139 RCT
@@ -1508,6 +1522,15 @@ CVSB                ENDIF                                          !# LINE 1547 
                 ENDIF                                              !# LINE 1593 RCT
               ENDDO                                                !# LINE 1594 RCT
             ELSEIF(ICOMP==NCOMP.and.IFESLD>0)THEN                  !# LINE 1595 RCT
+
+              IF(K.EQ.3) THEN
+              IF(I.GE.123.AND.I.LE.124)THEN
+              IF(J.EQ.70)THEN
+              CONTINUE
+              ENDIF
+              ENDIF
+              ENDIF
+
               DCRCT=0.0                                            !# LINE 1596 RCT
               DO M=1,NED                                           !# LINE 1597 RCT
                 IF(COLD(J,I,K,M)>0)THEN                            !# LINE 1598 RCT
@@ -1526,6 +1549,13 @@ CVSB                ENDIF                                          !# LINE 1547 
                 ENDIF                                              !# LINE 1611 RCT
               ENDDO                                                !# LINE 1612 RCT
             ENDIF                                                  !# LINE 1613 RCT
+              IF(K.EQ.3) THEN
+              IF(I.EQ.123)THEN
+              IF(J.EQ.70)THEN
+              CONTINUE
+              ENDIF
+              ENDIF
+              ENDIF
             !IF(ICOMP==9.AND.DCRCT>0.)PAUSE                        !# LINE 1614 RCT
             IF(DCRCT<0)THEN                                        !# LINE 1615 RCT
               RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT          !# LINE 1616 RCT
@@ -1943,8 +1973,8 @@ C
                 ENDDO                                  !# Modified
                 CNEW(J,I,K,ICOMP)=MAXEC(IEDEA)*        !# Modified
      &                          PRSITY(J,I,K)/RHOB(J,I,K)          !# Modified
-                IF(CNEW(J,I,K,ICOMP).LT.0.)            !# Modified
-     &                          CNEW(J,I,K,ICOMP)=0.0              !# Modified
+c                IF(CNEW(J,I,K,ICOMP).LT.0.)            !# Modified
+c     &                          CNEW(J,I,K,ICOMP)=0.0              !# Modified
               ENDDO                                    !# Modified
             ENDDO                                      !# Modified
           ENDDO                                        !# Modified
