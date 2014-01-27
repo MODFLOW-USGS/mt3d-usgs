@@ -258,7 +258,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE UZT5FM(ICOMP)
+      SUBROUTINE UZT5FM(ICOMP,TIME2)
 C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE UZT SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
@@ -274,6 +274,9 @@ C
       IMPLICIT NONE
       INTEGER  I,J,K,II,N,ICOMP
       REAL     GWQOUT,CLOSEZERO
+      INTEGER   I1
+      REAL      R1,TIME2
+      CHARACTER FMT1*8,FMT2*8,X1*20,X2*20      
       CLOSEZERO=1E-10
 C
 C--FORMULATE [A] AND [RHS] MATRICES FOR EULERIAN SCHEMES
@@ -437,6 +440,31 @@ C--(GWET)
       ENDDO                                                        
 C--DONE WITH EULERIAN-LAGRANGIAN SCHEMES
  2000 CONTINUE
+C
+      IF(TIME2.GT.8033.AND.TIME2.LT.8190) THEN
+        FMT1='(F5.0)'
+        FMT2='(I2.2)'
+        R1=TIME2
+        WRITE(X1,FMT1) R1
+        X1=X1(1:4)
+        DO K=1,NLAY
+          I1=K
+          WRITE(X2,FMT2) I1
+          OPEN(201,FILE='C:\\TMP\\MT3D_A_RHS
+     &\\A_UZTFM_'//TRIM(X1)//'_'//TRIM(X2)//'.TXT')
+          OPEN(202,FILE='C:\\TMP\\MT3D_A_RHS
+     &\\RHS_UZTFM_'//TRIM(X1)//'_'//TRIM(X2)//'.TXT')
+          DO I=1,NROW
+            WRITE(201,171)(A(N),N=(I-1)*NCOL+1,I*NCOL)
+            WRITE(202,171)(RHS(N),N=(I-1)*NCOL+1,I*NCOL)
+          ENDDO
+        ENDDO
+  171   FORMAT(450E20.10)
+        CLOSE(201)
+        CLOSE(202)
+C
+      ENDIF
+C
 C
 C--RETURN
       RETURN

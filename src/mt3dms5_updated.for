@@ -325,9 +325,9 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL DSP5FM(ICOMP,ICBUND,A,CNEW)
                 IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL SSM5FM(ICOMP)
+     &           CALL SSM5FM(ICOMP,TIME2)  !HT2 added for debug chks
                 IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL UZT5FM(ICOMP)
+     &           CALL UZT5FM(ICOMP,TIME2)
                 IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL HSS5FM(ICOMP,ICBUND,time1,time2)
                 IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)    !# LINE 596 MAIN

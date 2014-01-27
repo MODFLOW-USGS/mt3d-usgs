@@ -1356,7 +1356,7 @@ C--FOR THE CURRENT TRANSPORT STEP
         DO I=1,NROW
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
-              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
+!             IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.EQ.2) THEN
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *PRSITY(J,I,K)*(DELR(J)*DELC(I)*DH(J,I,K)
@@ -1375,11 +1375,11 @@ C                                                                   !# LINE 1254
                   ENDIF                                             !# LINE 1258 BTN
                 ENDIF                                               !# LINE 1259 BTN
 C                                                                   !# LINE 1260 BTN
-              ELSE
-                DMSTRG=((CNEW(J,I,K,ICOMP)*PRSITY(J,I,K))-          !edm
-     &          (COLD(J,I,K,ICOMP)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)))*!edm
-     &                   DELR(J)*DELC(I)*DH(J,I,K)                  !edm
-              ENDIF
+!             ELSE
+!               DMSTRG=((CNEW(J,I,K,ICOMP)*PRSITY(J,I,K))-          !edm
+!    &          (COLD(J,I,K,ICOMP)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)))*!edm
+!    &                   DELR(J)*DELC(I)*DH(J,I,K)                  !edm
+!             ENDIF
               IF(DMSTRG.LT.0) THEN
                 RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                 RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
@@ -1852,6 +1852,9 @@ C
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
      &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES)
 C     &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
+      INTEGER   I1
+      REAL      R1
+      CHARACTER OUTFILE*80,FMT1*8,FMT2*8,X1*20,X2*20
 C
 C--GET RIGHT-HAND-SIDE ARRAY [RHS]
       DO K=1,NLAY
@@ -1873,7 +1876,7 @@ C
               rhs(n)=0.           
 C            
             ELSE
-              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
+!              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
   10            IF(IALTFM.EQ.2) THEN
                   RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                 *(DELR(J)*DELC(I)*DH(N)
@@ -1883,11 +1886,11 @@ C
      &                 *DELR(J)*DELC(I)*DH(N)
                 ENDIF
 
-              ELSE                                                  !edm
-                IF(IUZFBND(J,I).LE.0) GOTO 10
-                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(J,I,K)      !edm
-     &                  *SATOLD(J,I,K)*DELR(J)*DELC(I)*DH(N)            !edm
-              ENDIF                                                 !edm
+!             ELSE                                                  !edm
+!               IF(IUZFBND(J,I).LE.0) GOTO 10
+!               RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(J,I,K)      !edm
+!    &                  *SATOLD(J,I,K)*DELR(J)*DELC(I)*DH(N)            !edm
+!             ENDIF                                                 !edm
             ENDIF
           ENDDO
         ENDDO
@@ -1937,30 +1940,29 @@ C--IF INACTIVE OR CONSTANT CELL
       ENDDO
 C
 C
-!        OPEN(201,FILE='C:\\TMP\\A_Array.TXT')
-!        N=0
-!        DO K=1,NLAY
-!          DO I=1,NROW
-!            DO J=1,NCOL
-!              N=N+1
-!              WRITE(201,171)(A(N))
-!            ENDDO
-!          ENDDO    
-!        ENDDO                                     
-!  171   FORMAT(40E20.10)                        
-!        CLOSE(201)                                
-!C                                                 
-!        OPEN(202,FILE='C:\\TMP\\RHS_Array.TXT')
-!        DO K=1,NLAY
-!          DO I=1,NROW
-!            DO J=1,NCOL
-!              N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
-!              WRITE(202,172)(RHS(N))
-!            ENDDO
-!          ENDDO
-!        ENDDO                                     
-!  172   FORMAT(1000E20.10)                        
-!        CLOSE(202)                                
+      IF(TIME2.GT.8033.AND.TIME2.LT.8190) THEN
+        FMT1='(F5.0)'
+        FMT2='(I2.2)'
+        R1=TIME2
+        WRITE(X1,FMT1) R1
+        X1=X1(1:4)
+        DO K=1,NLAY
+          I1=K
+          WRITE(X2,FMT2) I1
+          OPEN(201,FILE='C:\\TMP\\MT3D_A_RHS
+     &\\A_BTNFM_'//TRIM(X1)//'_'//TRIM(X2)//'.TXT')
+          OPEN(202,FILE='C:\\TMP\\MT3D_A_RHS
+     &\\RHS_BTNFM_'//TRIM(X1)//'_'//TRIM(X2)//'.TXT')
+          DO I=1,NROW
+            WRITE(201,171)(A(N),N=(I-1)*NCOL+1,I*NCOL)
+            WRITE(202,171)(RHS(N),N=(I-1)*NCOL+1,I*NCOL)
+          ENDDO
+          CLOSE(201)
+          CLOSE(202)
+        ENDDO
+  171   FORMAT(450E20.10)
+C
+      ENDIF
 C
 C
 C--CALCULATE MATRIX INDICES FOR THE GCG SOLVER
