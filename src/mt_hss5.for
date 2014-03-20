@@ -338,14 +338,16 @@ C TERM UNDER THE IMPLICIT FINITE-DIFFERENCE METHOD.
 C **********************************************************************          
 C last modified: 02-20-2010
 C
+      USE MIN_SAT, ONLY : QC7
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,MIXELM,UPDLHS,
      &                        MaxHSSSource,MaxHSSStep,MaxHSSCells,
      &                        nHSSSource,HSSData,iHSSLoc,
-     &                        A,RHS,NODES
+     &                        A,RHS,NODES,IDRY2
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,ICBUND,is,it,icell,IGRID,
      &          N,iStep,iHSSComp
+      INTEGER K,I,J
       REAL      ctmp,ctmp1,ctmp2,tstart,tend,time1,time2
       DIMENSION ICBUND(NODES,NCOMP)
 C
@@ -358,11 +360,18 @@ c
   666   DO icell=1,MaxHSSCells                   
           N=iHSSLoc(icell,1,is)
           IF(N.EQ.0) CYCLE                                     !# LINE 387 HSS
-          IF(ICBUND(N,ICOMP).le.0) cycle
 c          
           CALL TVSource(NCOL,NROW,NLAY,iStep,iCell,is,
      &     MaxHSSSource,MaxHSSStep,MaxHSSCells,time1,time2,
      &     HSSData,CTMP)     
+          IF(ICBUND(N,ICOMP).le.0) THEN
+            IF(ICBUND(N,ICOMP).eq.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+                QC7(J,I,K,7)=QC7(J,I,K,7)-CTMP
+              ENDIF
+            ENDIF
+          ELSE
 c
 c--add contribution to [RHS] if ctmp is positive
           IF(CTMP.LT.0) THEN
@@ -370,6 +379,8 @@ c--add contribution to [RHS] if ctmp is positive
           ELSE
             RHS(N)=RHS(N)-CTMP
           ENDIF             
+C
+          ENDIF
         ENDDO         
 C
       ENDDO        
@@ -386,14 +397,16 @@ C SOURCE TERM.
 C **********************************************************************          
 C last modified: 02-20-2010
 C
+      USE MIN_SAT, ONLY: QC7
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,NODES,RMASIO,
      &                         MaxHSSSource,MaxHSSCells,MaxHSSStep,
      &                         nHSSSource,iRunHSSM,faclength,factime,
-     &                         facmass,iHSSLoc,HSSData,HSSNAM
+     &                         facmass,iHSSLoc,HSSData,HSSNAM,IDRY2
 C
       IMPLICIT  NONE      
       INTEGER   ICOMP,ICBUND,is,it,icell,N,iStep,IGRID,
      &          iHSSComp,IQ    !IQ is iSSType for HSS source
+      INTEGER K,I,J
       REAL      DTRANS,ctmp,ctmp1,ctmp2,tstart,tend,time1,time2
       DIMENSION ICBUND(NODES,NCOMP)
 C
@@ -407,17 +420,27 @@ c
 c  
             N=iHSSLoc(icell,1,is)
             IF(N.EQ.0) CYCLE                                   !# LINE 437 HSS
-            IF(ICBUND(N,icomp).le.0) cycle
+C            IF(ICBUND(N,icomp).le.0) cycle
 c            
             CALL TVSource(NCOL,NROW,NLAY,iStep,iCell,is,
      &       MaxHSSSource,MaxHSSStep,MaxHSSCells,time1,time2,
      &       HSSData,CTMP)            
+            IF(ICBUND(N,ICOMP).le.0) THEN
+              IF(ICBUND(N,ICOMP).eq.0) THEN
+                IF(IDRY2.EQ.1) THEN
+                  CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-CTMP
+                  RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+CTMP*DTRANS     
+                ENDIF
+              ENDIF
+            ELSE
 c
             IF(CTMP.GT.0) THEN
               RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+CTMP*DTRANS     
             ELSE
               RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+CTMP*DTRANS    
             ENDIF                     
+            ENDIF
           ENDDO
 C
         ENDDO  

@@ -12,9 +12,9 @@ C
      &                         NPMAX,INTERP,NLSINK,NPSINK,WD,DCEPS,
      &                         SRMULT,DCHMOC,NCOUNT,NPCHEK,INDEXX,
      &                         INDEXY,INDEXZ,XP,YP,ZP,CNPT,
-     &                         IALTFM,NOCREWET,COLDFLW,NCOMP !cvsb123,NCOMP                 !# LINE 4 ADV
+     &                         IALTFM,NOCREWET,COLDFLW,NCOMP,IDRY2                  !# LINE 4 ADV
       USE MIN_SAT, ONLY: DOMINSAT,DRYON,NICBND2,ICBND2,QC7,ID2D,C7,
-     &  COLD7,TMASS2                        !# LINE 11 ADV
+     &  COLD7,TMASS2,ICIMDRY,VAQSAT                        !# LINE 11 ADV
 C
       IMPLICIT  NONE
       INTEGER   IN,INDEX,IERR
@@ -25,9 +25,8 @@ C--ALLOCATE
       ALLOCATE(NADVFD,ITRACK,ISEED,NPLANE,NPL,NPH,NPMIN,NPMAX,INTERP,
      &         NLSINK,NPSINK,WD,DCEPS,SRMULT,DCHMOC,NICBND2)
       IF(DRYON) THEN
-        ALLOCATE (ICBND2(NCOL,NROW,NLAY),QC7(NCOL,NROW,NLAY,MCOMP,7),
+        ALLOCATE (ICBND2(NCOL,NROW,NLAY),QC7(NCOL,NROW,NLAY,9),
      &  ID2D(NCOL*NROW*NLAY),C7(NCOL*NROW*NLAY),STAT=IERR)
-cvsb123     &  COLD7(NCOL,NROW,NLAY,MCOMP),TMASS2(4,1,NCOMP),STAT=IERR)
         ICBND2=0
         QC7=0.
         ID2D=0
@@ -49,8 +48,10 @@ C--READ ADVECTION SOLUTION OPTION AND MAXIMUM PARTICLES ALLOWED
       NADVFD=0
       IALTFM=0                                                 !# LINE 29 ADV
       NOCREWET=0                                               !# LINE 30 ADV
-      READ(INADV,'(I10,F10.0,4I10)',ERR=10,IOSTAT=IERR)        !# Amended
-     & MIXELM,PERCEL,MXPART,NADVFD,IALTFM,NOCREWET             !# Amended
+      ICIMDRY=0
+      IDRY2=0
+      READ(INADV,'(I10,F10.0,6I10)',ERR=10,IOSTAT=IERR)        !# Amended
+     & MIXELM,PERCEL,MXPART,NADVFD,IALTFM,NOCREWET,ICIMDRY,IDRY2             !# Amended
    10 IF(IERR.NE.0) THEN
         REWIND(INADV)
         READ(INADV,'(I10,F10.0,I10)')
@@ -92,6 +93,33 @@ C
         ENDIF
       ENDIF
 C
+C-----IF DRYON IS FALSE - THEN IDRY2=0 AND ICIMDRY=0
+      IF(.NOT.DRYON) THEN
+        IDRY2=0
+        ICIMDRY=0
+      ENDIF
+C
+C-----ICIMDRY CANNOT WORK IF DRY CELL STORAGE AND BOUNDARY IS NOT ACTIVE
+      IF(IDRY2.EQ.0) ICIMDRY=0 
+C
+C-----WRITE OUTPUT
+      IF(IDRY2.GT.0) WRITE(IOUT,1062)
+C
+      WRITE(IOUT,*) ' ICIMDRY = ',ICIMDRY
+      IF(ICIMDRY.EQ.0) WRITE(IOUT,1065)
+      IF(ICIMDRY.EQ.1) WRITE(IOUT,1061)
+      IF(ICIMDRY.EQ.2) WRITE(IOUT,1063)
+      IF(ICIMDRY.EQ.3) WRITE(IOUT,1064)
+      IF(ICIMDRY.GE.2) THEN
+        ALLOCATE(VAQSAT(NCOL,NROW,NLAY))
+        VAQSAT=1.0E-02
+      ENDIF
+      IF(ICIMDRY.LT.0.OR.ICIMDRY.GT.3) THEN
+        WRITE(IOUT,*) ' INVALID ICIMDRY'
+        WRITE(*,*) ' INVALID ICIMDRY'
+        STOP
+      ENDIF
+C
  2000 FORMAT(1X,'ADVECTION IS SOLVED WITH THE [MOC] SCHEME')
  2002 FORMAT(1X,'ADVECTION IS SOLVED WITH THE [MMOC] SCHEME')
  2004 FORMAT(1X,'ADVECTION IS SOLVED WITH',
@@ -117,6 +145,15 @@ C
 1054  FORMAT(1X,'ALTERNATE FORMULATION IS USED, 'I2)                      !# LINE 96 ADV
 1056  FORMAT(1X,'FUNCTION CREWET IS DEACTIVATED: ZERO CONCENTRATION', !# LINE 97 ADV
      1       ' ASSIGNED TO REWET CELLS')                              !# LINE 98 ADV
+1065  FORMAT(1X,'NON-EQUILIBRIUM CONCENTRATION WILL NOT CHANGE ',
+     1       'IN DRY CELLS')
+1061  FORMAT(1X,'NON-EQUILIBRIUM CONCENTRATION WILL BE SET TO ZERO ',
+     1       'IN DRY CELLS')
+1062  FORMAT(1X,'DRY CELL STORAGE LOSS AND BOUNDARY FLOW IS TRACKED')
+1063  FORMAT(1X,'IMMOBILE CONC IN DRY CELLS SOLVED USING ALL FLOW',
+     1 ' THROUGH DRY CELLS')
+1064  FORMAT(1X,'IMMOBILE CONC IN DRY CELLS SOLVED USING ONLY BOUNDARY',
+     1 ' FLOW AND STORAGE CHANGE IN DRY CELLS')
 C                                                                     !# LINE 99 ADV
 C-----MST AND DRY OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM=0) !# LINE 100 ADV
       IF(DOMINSAT.OR.DRYON) THEN                                      !# LINE 101 ADV
@@ -130,7 +167,8 @@ C-----MST AND DRY OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM=0
       ENDIF                                                           !# LINE 109 ADV
 C                                                                     !# LINE 110 ADV
 C-----ALLOCATE ONLY IF IALTFM=1
-      IF(IALTFM.EQ.1) ALLOCATE(COLDFLW(NCOL,NROW,NLAY,NCOMP))
+      IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) 
+     1 ALLOCATE(COLDFLW(NCOL,NROW,NLAY,NCOMP))
 C
 C--ALLOCATE AND INITIALIZE
 C--INTEGER ARRAYS
@@ -3355,12 +3393,14 @@ C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
-     &                         RHS,CNEW !cvsb123,COLD
+     &                         RHS,CNEW,IDRY2,DTRANS,
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
       INTEGER   INDX
       REAL      WW,THKSAT,AREA,ALPHA
-      REAL      QCTEMP,QTEMP,QCTEMP2
+      REAL      QCTEMP,QTEMP,QCTEMP2,CTEMP,TERMA,TERMB
+      REAL      RC1TMP,RC2TMP,TERM1,TERM2,SIGMA
       PARAMETER (IUPS=1,ICTRL=2)
 C
 C--RETURN IF COEFF MATRICES ARE NOT TO BE UPDATED
@@ -3377,6 +3417,9 @@ C-----FORMULATE FOR DRY CELLS - FLOW INTO DRY CELLS
         QCTEMP=0.
         QCTEMP2=0.
         QTEMP=0.
+        CTEMP=0.
+        TERMA=0.
+        TERMB=0.
 C
 C--SKIP IF INACTIVE OR CONSTANT CELL
         IF(ICBND2(J,I,K).EQ.0) CYCLE
@@ -3385,24 +3428,24 @@ C------CALCULATE IN THE Z DIRECTION
         IF(NLAY.LT.2) GOTO 1410
 C---------TOP FACE
         IF(K.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,1).LT.0.) THEN
+          IF(QC7(J,I,K,1).LT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,1)*CNEW(J,I,K-1,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,1)*C7(N-NCR)
+              QCTEMP=QCTEMP+QC7(J,I,K,1)*C7(N-NCR)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,1)
+            QTEMP=QTEMP+QC7(J,I,K,1)
           ENDIF
         ENDIF
 C-------BOTTOM FACE
         IF(K.LT.NLAY) THEN
-          IF(QC7(J,I,K,ICOMP,6).LT.0.) THEN
+          IF(QC7(J,I,K,6).LT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,6)*CNEW(J,I,K+1,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,6)*C7(N+NCR)
+              QCTEMP=QCTEMP+QC7(J,I,K,6)*C7(N+NCR)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,6)
+            QTEMP=QTEMP+QC7(J,I,K,6)
           ENDIF
         ENDIF
 C
@@ -3410,24 +3453,24 @@ C------CALCULATE IN THE Y DIRECTION
  1410   IF(NROW.LT.2) GOTO 1420    
 C---------BACK FACE
         IF(I.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,2).LT.0.) THEN
+          IF(QC7(J,I,K,2).LT.0.) THEN
             IF(ICBND2(J,I-1,K).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,2)*CNEW(J,I-1,K,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,2)*C7(N-NCOL)
+              QCTEMP=QCTEMP+QC7(J,I,K,2)*C7(N-NCOL)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,2)
+            QTEMP=QTEMP+QC7(J,I,K,2)
           ENDIF
         ENDIF
 C-------FRONT FACE
         IF(I.LT.NROW) THEN
-          IF(QC7(J,I,K,ICOMP,5).LT.0.) THEN
+          IF(QC7(J,I,K,5).LT.0.) THEN
             IF(ICBND2(J,I+1,K).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,5)*CNEW(J,I+1,K,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,5)*C7(N+NCOL)
+              QCTEMP=QCTEMP+QC7(J,I,K,5)*C7(N+NCOL)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,5)
+            QTEMP=QTEMP+QC7(J,I,K,5)
           ENDIF
         ENDIF
 C
@@ -3435,33 +3478,109 @@ C--------CALCULATE IN THE X DIRECTION
  1420   IF(NCOL.LT.2) GOTO 1430
 C---------LEFT FACE
         IF(J.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,3).LT.0.) THEN
+          IF(QC7(J,I,K,3).LT.0.) THEN
             IF(ICBND2(J-1,I,K).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,3)*CNEW(J-1,I,K,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,3)*C7(N-1)
+              QCTEMP=QCTEMP+QC7(J,I,K,3)*C7(N-1)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,3)
+            QTEMP=QTEMP+QC7(J,I,K,3)
           ENDIF
         ENDIF
 C-------RIGHT FACE      
         IF(J.LT.NCOL) THEN
-          IF(QC7(J,I,K,ICOMP,4).LT.0.) THEN
+          IF(QC7(J,I,K,4).LT.0.) THEN
             IF(ICBND2(J+1,I,K).EQ.0) THEN
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,4)*CNEW(J+1,I,K,ICOMP)
+              QCTEMP=QCTEMP+QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)
             ELSE
-              QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,4)*C7(N+1)
+              QCTEMP=QCTEMP+QC7(J,I,K,4)*C7(N+1)
             ENDIF
-            QTEMP=QTEMP+QC7(J,I,K,ICOMP,4)
+            QTEMP=QTEMP+QC7(J,I,K,4)
           ENDIF
         ENDIF
  1430   CONTINUE
 C
-C-------STORAGE
-cvsb123        QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,7)*COLD7(J,I,K,ICOMP)
-cvsb123        QTEMP=QTEMP+QC7(J,I,K,ICOMP,7)
+C-------STORAGE AND ALL BOUNDARY CONDITIONS - HSS,CTS,LKT,SFT
+        IF(IDRY2.EQ.1) THEN
+C          IF(QC7(J,I,K,8).LT.0.0) THEN
+            QCTEMP=QCTEMP+QC7(J,I,K,7)
+            QTEMP=QTEMP+QC7(J,I,K,8)
+C          ENDIF
+        ENDIF
 C
-        IF(ABS(QTEMP).GT.1.E-6) C7(N)=QCTEMP/QTEMP
+C-------DUAL-DOMAIN CONCENTRATION - ASSUME ZERO CONCENTRATION IN MOBILE DOMAIN
+        IF(ISOTHM.EQ.5.OR.ISOTHM.EQ.6) THEN
+        IF(ABS(QTEMP).GT.1.E-6) THEN
+          IF(ICIMDRY.GE.2) THEN
+              !N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            RC1TMP=0.
+            RC2TMP=0.
+            IF(IREACT.eq.1.or.IREACT.eq.100) THEN
+              RC1TMP=RC1(J,I,K,ICOMP)
+              RC2TMP=RC2(J,I,K,ICOMP)
+            ENDIF
+            IF(ICIMDRY.EQ.2) THEN
+              SIGMA=-QTEMP*DTRANS/VAQSAT(J,I,K)
+C--if with no reaction or with first-order reaction
+              if(ireact.eq.0.or.ireact.eq.1) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+     &           +RC1TMP*PRSITY2(J,I,K)*DTRANS
+     &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K,ICOMP)-1.)*DTRANS
+                TERMA=(1.0+SP2(J,I,K,ICOMP)*DTRANS)
+     1               -SP2(J,I,K,ICOMP)*SP2(J,I,K,ICOMP)*DTRANS*DTRANS
+     1                *SIGMA/TERM2
+                TERMB=SP2(J,I,K,ICOMP)*RETA2(J,I,K,ICOMP)*PRSITY2(J,I,K)
+     1               *SRCONC(J,I,K,ICOMP)*DTRANS/TERM2
+C--if with zeroth-order reaction      
+              elseif(ireact.eq.100) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+                TERMA=(1.0+SP2(J,I,K,ICOMP)*DTRANS)
+     1               -SP2(J,I,K,ICOMP)*SP2(J,I,K,ICOMP)*DTRANS*DTRANS
+     1                *SIGMA/TERM2
+                TERMB=(RETA2(J,I,K,ICOMP)*PRSITY2(J,I,K)
+     1                 *SRCONC(J,I,K,ICOMP)
+     1                 -RC1TMP*PRSITY2(J,I,K)*DTRANS
+     1                 -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)*DTRANS)
+     1                *SP2(J,I,K,ICOMP)*DTRANS/TERM2
+              endif
+            ELSEIF(ICIMDRY.EQ.3) THEN
+              SIGMA=-QC7(J,I,K,8)*DTRANS/VAQSAT(J,I,K)
+C--if with no reaction or with first-order reaction
+              if(ireact.eq.0.or.ireact.eq.1) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+     &           +RC1TMP*PRSITY2(J,I,K)*DTRANS
+     &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K,ICOMP)-1.)*DTRANS
+                TERMA=(-QTEMP-QC7(J,I,K,8)*SP2(J,I,K,ICOMP)*DTRANS)
+     1               -SP2(J,I,K,ICOMP)*SP2(J,I,K,ICOMP)*DTRANS*DTRANS
+     1                *SIGMA/TERM2*(-QC7(J,I,K,8))
+                TERMB=SP2(J,I,K,ICOMP)*RETA2(J,I,K,ICOMP)*PRSITY2(J,I,K)
+     1               *SRCONC(J,I,K,ICOMP)*DTRANS/TERM2*(-QC7(J,I,K,8))
+C--if with zeroth-order reaction      
+              elseif(ireact.eq.100) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+                TERMA=(-QTEMP-QC7(J,I,K,8)*SP2(J,I,K,ICOMP)*DTRANS)
+     1               -SP2(J,I,K,ICOMP)*SP2(J,I,K,ICOMP)*DTRANS*DTRANS
+     1                *SIGMA/TERM2*(-QC7(J,I,K,8))
+                TERMB=(RETA2(J,I,K,ICOMP)*PRSITY2(J,I,K)
+     1                 *SRCONC(J,I,K,ICOMP)
+     1                 -RC1TMP*PRSITY2(J,I,K)*DTRANS
+     1                 -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)*DTRANS)
+     1                *SP2(J,I,K,ICOMP)*DTRANS/TERM2*(-QC7(J,I,K,8))
+              endif
+            ENDIF  
+          ENDIF
+        ENDIF
+        ENDIF
+C
+        IF(ABS(QTEMP).GT.1.E-6) THEN
+          C7(N)=QCTEMP/QTEMP
+          IF(ICIMDRY.EQ.2) C7(N)=(QCTEMP/QTEMP+TERMB)/TERMA
+          IF(ICIMDRY.EQ.3) C7(N)=(-QCTEMP+TERMB)/TERMA
+        ENDIF
 C
       ENDDO
 C
@@ -3481,17 +3600,17 @@ C-------CALCULATE IN THE Z DIRECTION
         IF(NLAY.LT.2) GOTO 2410
 C-------TOP FACE
         IF(K.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,1).GT.0.) THEN
+          IF(QC7(J,I,K,1).GT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
-              RHS(N-NCR)=RHS(N-NCR)-QC7(J,I,K,ICOMP,1)*C7(N)
+              RHS(N-NCR)=RHS(N-NCR)-QC7(J,I,K,1)*C7(N)
             ENDIF
           ENDIF
         ENDIF
 C-------BOTTOM FACE
         IF(K.LT.NLAY) THEN
-          IF(QC7(J,I,K,ICOMP,6).GT.0.) THEN
+          IF(QC7(J,I,K,6).GT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
-              RHS(N+NCR)=RHS(N+NCR)-QC7(J,I,K,ICOMP,6)*C7(N)
+              RHS(N+NCR)=RHS(N+NCR)-QC7(J,I,K,6)*C7(N)
             ENDIF
           ENDIF
         ENDIF
@@ -3500,17 +3619,17 @@ C-------CALCULATE IN THE Y DIRECTION
  2410   IF(NROW.LT.2) GOTO 2420    
 C-------BACK FACE
         IF(I.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,2).GT.0.) THEN
+          IF(QC7(J,I,K,2).GT.0.) THEN
             IF(ICBND2(J,I-1,K).EQ.0) THEN
-              RHS(N-NCOL)=RHS(N-NCOL)-QC7(J,I,K,ICOMP,2)*C7(N)
+              RHS(N-NCOL)=RHS(N-NCOL)-QC7(J,I,K,2)*C7(N)
             ENDIF
           ENDIF
         ENDIF
 C-------FRONT FACE
         IF(I.LT.NROW) THEN
-          IF(QC7(J,I,K,ICOMP,5).GT.0.) THEN
+          IF(QC7(J,I,K,5).GT.0.) THEN
             IF(ICBND2(J,I+1,K).EQ.0) THEN
-              RHS(N+NCOL)=RHS(N+NCOL)-QC7(J,I,K,ICOMP,5)*C7(N)
+              RHS(N+NCOL)=RHS(N+NCOL)-QC7(J,I,K,5)*C7(N)
             ENDIF
           ENDIF
         ENDIF
@@ -3519,17 +3638,17 @@ C----------CALCULATE IN THE X DIRECTION
  2420   IF(NCOL.LT.2) GOTO 2430
 C---------LEFT FACE
         IF(J.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,3).GT.0.) THEN
+          IF(QC7(J,I,K,3).GT.0.) THEN
             IF(ICBND2(J-1,I,K).EQ.0) THEN
-            RHS(N-1)=RHS(N-1)-QC7(J,I,K,ICOMP,3)*C7(N)
+            RHS(N-1)=RHS(N-1)-QC7(J,I,K,3)*C7(N)
             ENDIF
           ENDIF
         ENDIF
 C---------RIGHT FACE      
         IF(J.LT.NCOL) THEN
-          IF(QC7(J,I,K,ICOMP,4).GT.0.) THEN
+          IF(QC7(J,I,K,4).GT.0.) THEN
             IF(ICBND2(J+1,I,K).EQ.0) THEN
-            RHS(N+1)=RHS(N+1)-QC7(J,I,K,ICOMP,4)*C7(N)
+            RHS(N+1)=RHS(N+1)-QC7(J,I,K,4)*C7(N)
             ENDIF
           ENDIF
         ENDIF
@@ -3542,7 +3661,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE ADVQC7BD(ICOMP,DTRANS)
+      SUBROUTINE ADVQC7BD(ICOMP)
 C *********************************************************************
 C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
@@ -3553,12 +3672,15 @@ C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
-     &                         RHS,CNEW,RMASIO !cvsb123,COLD
+     &                         RHS,CNEW,RMASIO,IDRY2,DTRANS,
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
       INTEGER   INDX
       REAL      WW,THKSAT,AREA,ALPHA
-      REAL      QCTEMP,QTEMP,QCTEMP2,DTRANS
+      REAL      QCTEMP,QTEMP,QCTEMP2,CTEMP,SCTEMP,TERMA,TERMB,TERM2,
+     1          SIGMA
+      REAL      RC1TMP,RC2TMP,TERM1,DCRCT,VOLUME,CIML,CIMS
       PARAMETER (IUPS=1,ICTRL=2)
 C
 C--RETURN IF COEFF MATRICES ARE NOT TO BE UPDATED
@@ -3566,14 +3688,17 @@ CCC      IF(.NOT.UPDLHS) GOTO 999
 C
 C-----BUDGET FOR DRY CELLS - FLOW INTO DRY CELLS
       NCR=NROW*NCOL
-      C7=0.
+C      IF(ICIMDRY.NE.2) C7=0.
       DO INDX=1,NICBND2
         N=ID2D(INDX)
         CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
         QCTEMP=0.
         QCTEMP2=0.
         QTEMP=0.
-        N=(K-1)*NCR + (I-1)*NCOL + J
+        CTEMP=0.
+        TERMA=0.
+        TERMB=0.
+        !N=(K-1)*NCR + (I-1)*NCOL + J
 C
 C--SKIP IF INACTIVE OR CONSTANT CELL
         IF(ICBND2(J,I,K).EQ.0) CYCLE
@@ -3582,31 +3707,31 @@ C-------CALCULATE IN THE Z DIRECTION
         IF(NLAY.LT.2) GOTO 1410
 C-----TOP FACE
           IF(K.GT.1) THEN
-            IF(QC7(J,I,K,ICOMP,1).LT.0.) THEN
+            IF(QC7(J,I,K,1).LT.0.) THEN
               IF(ICBND2(J,I,K-1).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,1)*CNEW(J,I,K-1,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,1)*CNEW(J,I,K-1,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)
+                QCTEMP2=QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,1)*C7(N-NCR)
-                QCTEMP2=QC7(J,I,K,ICOMP,1)*C7(N-NCR)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,1)*C7(N-NCR)
+                QCTEMP2=QC7(J,I,K,1)*C7(N-NCR)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,1)
+              QTEMP=QTEMP+QC7(J,I,K,1)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
 C-----------BOTTOM FACE
           IF(K.LT.NLAY) THEN
-            IF(QC7(J,I,K,ICOMP,6).LT.0.) THEN
+            IF(QC7(J,I,K,6).LT.0.) THEN
               IF(ICBND2(J,I,K+1).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,6)*CNEW(J,I,K+1,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,6)*CNEW(J,I,K+1,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)
+                QCTEMP2=QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,6)*C7(N+NCR)
-                QCTEMP2=QC7(J,I,K,ICOMP,6)*C7(N+NCR)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,6)*C7(N+NCR)
+                QCTEMP2=QC7(J,I,K,6)*C7(N+NCR)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,6)
+              QTEMP=QTEMP+QC7(J,I,K,6)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
@@ -3615,31 +3740,31 @@ C--------CALCULATE IN THE Y DIRECTION
  1410     IF(NROW.LT.2) GOTO 1420    
 C--------BACK FACE
           IF(I.GT.1) THEN
-            IF(QC7(J,I,K,ICOMP,2).LT.0.) THEN
+            IF(QC7(J,I,K,2).LT.0.) THEN
               IF(ICBND2(J,I-1,K).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,2)*CNEW(J,I-1,K,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,2)*CNEW(J,I-1,K,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)
+                QCTEMP2=QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,2)*C7(N-NCOL)
-                QCTEMP2=QC7(J,I,K,ICOMP,2)*C7(N-NCOL)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,2)*C7(N-NCOL)
+                QCTEMP2=QC7(J,I,K,2)*C7(N-NCOL)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,2)
+              QTEMP=QTEMP+QC7(J,I,K,2)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
 C---------FRONT FACE
           IF(I.LT.NROW) THEN
-            IF(QC7(J,I,K,ICOMP,5).LT.0.) THEN
+            IF(QC7(J,I,K,5).LT.0.) THEN
               IF(ICBND2(J,I+1,K).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,5)*CNEW(J,I+1,K,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,5)*CNEW(J,I+1,K,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)
+                QCTEMP2=QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,5)*C7(N+NCOL)
-                QCTEMP2=QC7(J,I,K,ICOMP,5)*C7(N+NCOL)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,5)*C7(N+NCOL)
+                QCTEMP2=QC7(J,I,K,5)*C7(N+NCOL)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,5)
+              QTEMP=QTEMP+QC7(J,I,K,5)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
@@ -3648,41 +3773,176 @@ C--------CALCULATE IN THE X DIRECTION
  1420     IF(NCOL.LT.2) GOTO 1430
 C---------LEFT FACE
           IF(J.GT.1) THEN
-            IF(QC7(J,I,K,ICOMP,3).LT.0.) THEN
+            IF(QC7(J,I,K,3).LT.0.) THEN
               IF(ICBND2(J-1,I,K).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,3)*CNEW(J-1,I,K,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,3)*CNEW(J-1,I,K,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)
+                QCTEMP2=QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,3)*C7(N-1)
-                QCTEMP2=QC7(J,I,K,ICOMP,3)*C7(N-1)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,3)*C7(N-1)
+                QCTEMP2=QC7(J,I,K,3)*C7(N-1)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,3)
+              QTEMP=QTEMP+QC7(J,I,K,3)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
 C---------RIGHT FACE      
           IF(J.LT.NCOL) THEN
-            IF(QC7(J,I,K,ICOMP,4).LT.0.) THEN
+            IF(QC7(J,I,K,4).LT.0.) THEN
               IF(ICBND2(J+1,I,K).EQ.0) THEN
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,4)*CNEW(J+1,I,K,ICOMP)
-                QCTEMP2=QC7(J,I,K,ICOMP,4)*CNEW(J+1,I,K,ICOMP)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)
+                QCTEMP2=QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
               ELSE
-                QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,4)*C7(N+1)
-                QCTEMP2=QC7(J,I,K,ICOMP,4)*C7(N+1)*DTRANS
+                QCTEMP=QCTEMP+QC7(J,I,K,4)*C7(N+1)
+                QCTEMP2=QC7(J,I,K,4)*C7(N+1)*DTRANS
               ENDIF
-              QTEMP=QTEMP+QC7(J,I,K,ICOMP,4)
+              QTEMP=QTEMP+QC7(J,I,K,4)
 cvsbabc              RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
             ENDIF
           ENDIF
  1430   CONTINUE
 C
-C-------STORAGE
-cvsb123        QCTEMP=QCTEMP+QC7(J,I,K,ICOMP,7)*COLD7(J,I,K,ICOMP)
-cvsb123        QTEMP=QTEMP+QC7(J,I,K,ICOMP,7)
+        IF(IDRY2.EQ.1) THEN
+C-------STORAGE AND ALL BOUNDARY CONDITIONS - HSS,CTS,LKT,SFT
+C          IF(QC7(J,I,K,8).LT.0.0) THEN
+            QCTEMP=QCTEMP+QC7(J,I,K,7)
+            QTEMP=QTEMP+QC7(J,I,K,8)
+            QCTEMP2=QC7(J,I,K,7)*DTRANS
+            RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+C          ENDIF
+        ENDIF
 C
-          IF(ABS(QTEMP).GT.1.E-9) C7(N)=QCTEMP/QTEMP
+C-------DUAL-DOMAIN CONCENTRATION - ASSUME ZERO CONCENTRATION IN MOBILE DOMAIN
+        IF(ISOTHM.EQ.5.OR.ISOTHM.EQ.6) THEN
+        IF(ABS(QTEMP).GT.1.E-6) THEN
+          IF(ICIMDRY.GE.2) THEN
+              RC1TMP=0.
+              RC2TMP=0.
+              IF(IREACT.eq.1.or.IREACT.eq.100) THEN
+                RC1TMP=RC1(J,I,K,ICOMP)
+                RC2TMP=RC2(J,I,K,ICOMP)
+              ENDIF
+C--CALCULATE UPDATED IMMOBILE CONCENTRATION
+            IF(ICIMDRY.EQ.2) THEN
+              SIGMA=-QTEMP*DTRANS/VAQSAT(J,I,K)
+C--if with no reaction or with first-order reaction            
+              if(ireact.eq.0.or.ireact.eq.1) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+     &           +RC1TMP*PRSITY2(J,I,K)*DTRANS
+     &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K,ICOMP)-1.)*DTRANS
+                SCTEMP=SRCONC(J,I,K,ICOMP)
+                SRCONC(J,I,K,ICOMP)=(SP2(J,I,K,ICOMP)*C7(N)*DTRANS*SIGMA
+     &           +PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)*SRCONC(J,I,K,ICOMP))
+     &           /TERM2
+C--if with zeroth-order reaction     
+              elseif(ireact.eq.100) then 
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+                SCTEMP=SRCONC(J,I,K,ICOMP)
+                SRCONC(J,I,K,ICOMP)=(SP2(J,I,K,ICOMP)*C7(N)*DTRANS*SIGMA
+     &           +PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)*SRCONC(J,I,K,ICOMP)
+     1                 -RC1TMP*PRSITY2(J,I,K)*DTRANS
+     1                 -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)*DTRANS)
+     &           /TERM2
+              endif         
+            ELSEIF(ICIMDRY.EQ.3) THEN
+              SIGMA=-QC7(J,I,K,8)*DTRANS/VAQSAT(J,I,K)
+C--if with no reaction or with first-order reaction            
+              if(ireact.eq.0.or.ireact.eq.1) then
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+     &           +RC1TMP*PRSITY2(J,I,K)*DTRANS
+     &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K,ICOMP)-1.)*DTRANS
+                SCTEMP=SRCONC(J,I,K,ICOMP)
+                SRCONC(J,I,K,ICOMP)=(SP2(J,I,K,ICOMP)*C7(N)*DTRANS*SIGMA
+     &           +PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)*SRCONC(J,I,K,ICOMP))
+     &           /TERM2
+C--if with zeroth-order reaction     
+              elseif(ireact.eq.100) then 
+                TERM2=PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+     &           +SP2(J,I,K,ICOMP)*DTRANS*SIGMA
+                SCTEMP=SRCONC(J,I,K,ICOMP)
+                SRCONC(J,I,K,ICOMP)=(SP2(J,I,K,ICOMP)*C7(N)*DTRANS*SIGMA
+     &           +PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)*SRCONC(J,I,K,ICOMP)
+     1                 -RC1TMP*PRSITY2(J,I,K)*DTRANS
+     1                 -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)*DTRANS)
+     &           /TERM2
+              endif         
+            ENDIF
+C                                                              !# LINE 1291 RCT
+C--CALCULATE CHANGE IN CONCENTRATION OF IMMOBILE-LIQUID PHASE
+C              DCRCT=-SP2(J,I,K,ICOMP)*(C7(N)                   !# LINE 1293 RCT
+C     &         -SRCONC(J,I,K,ICOMP))*DTRANS
+C     &         *VAQSAT(J,I,K) !*DELR(J)*DELC(I)*DH(J,I,K)
+              DCRCT=(SRCONC(J,I,K,ICOMP)-SCTEMP)*VAQSAT(J,I,K)
+     &         *PRSITY2(J,I,K)*RETA2(J,I,K,ICOMP)
+C              QCTEMP=QCTEMP+DCRCT*QTEMP/VAQSAT(J,I,K) !-DCRCT/DTRANS !VAQSAT(J,I,K)
+C              QTEMP=QTEMP+QTEMP !-VAQSAT(J,I,K)/DTRANS
+C
+C--compute mass loss/gain in each cell for all 4 phases: 
+C--mobile liquid, mobile sorbed, immobile liquid, immobile sorbed
+            VOLUME=VAQSAT(J,I,K) !DELR(J)*DELC(I)*DH(J,I,K)
+            CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
+            CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML            
+            if(ireact.eq.0) then
+              CIML=0.
+              CIMS=0.
+C--for 1st-order reaction            
+            ELSEif(ireact.eq.1) then
+              CIML=-RC1(J,I,K,ICOMP)*CIML*DTRANS
+              CIMS=-RC2(J,I,K,ICOMP)*CIMS*DTRANS
+C--for zero-order reaction
+            elseif(ireact.eq.100) then              
+              CIML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY2(J,I,K)*DTRANS
+              CIMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
+     &             *(1.-FRAC(J,I,K))
+            endif
+C
+C--CALCULATE MASS LOSS/GAIN DUE TO REACTION IN IMMOBILE DOMAIN
+            IF(CIML+CIMS.LT.0) THEN
+              RMASIO(10,2,ICOMP)=RMASIO(10,2,ICOMP)+CIML+CIMS
+            ELSE
+              RMASIO(10,1,ICOMP)=RMASIO(10,1,ICOMP)+CIML+CIMS
+            ENDIF
+C
+C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
+            IF(CIML.GT.0) THEN
+              RMASIO(121,2,ICOMP)=RMASIO(121,2,ICOMP)-CIML
+            ELSE
+              RMASIO(121,1,ICOMP)=RMASIO(121,1,ICOMP)-CIML
+            ENDIF
+            IF(CIMS.GT.0) THEN
+              RMASIO(122,2,ICOMP)=RMASIO(122,2,ICOMP)-CIMS
+            ELSE
+              RMASIO(122,1,ICOMP)=RMASIO(122,1,ICOMP)-CIMS
+            ENDIF
+            DCRCT=-DCRCT+CIML+CIMS
+C
+C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
+              IF(DCRCT.LT.0) THEN
+                RMASIO(121,2,ICOMP)=RMASIO(121,2,ICOMP)+DCRCT
+     &          /RETA2(J,I,K,ICOMP)
+                RMASIO(122,2,ICOMP)=RMASIO(122,2,ICOMP)+DCRCT
+     &          *(RETA2(J,I,K,ICOMP)-1.)/RETA2(J,I,K,ICOMP)
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)-DCRCT
+              ELSE
+                RMASIO(121,1,ICOMP)=RMASIO(121,1,ICOMP)+DCRCT
+     &          /RETA2(J,I,K,ICOMP)
+                RMASIO(122,1,ICOMP)=RMASIO(122,1,ICOMP)+DCRCT
+     &          *(RETA2(J,I,K,ICOMP)-1.)/RETA2(J,I,K,ICOMP)
+                RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)-DCRCT
+              ENDIF
+C
+          ENDIF
+          ENDIF
+        ENDIF
+C
+C        IF(ABS(QTEMP).GT.1.E-6) THEN
+C          C7(N)=QCTEMP/QTEMP
+C          IF(ICIMDRY.EQ.2) C7(N)=(QCTEMP/QTEMP+TERMB)/TERMA
+C        ENDIF
 C
       ENDDO
 C
@@ -3702,18 +3962,18 @@ C-------CALCULATE IN THE Z DIRECTION
         IF(NLAY.LT.2) GOTO 2410
 C-------TOP FACE
         IF(K.GT.1) THEN
-          IF(QC7(J,I,K,ICOMP,1).GT.0.) THEN
+          IF(QC7(J,I,K,1).GT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
-              QCTEMP=QC7(J,I,K,ICOMP,1)*C7(N)*DTRANS
+              QCTEMP=QC7(J,I,K,1)*C7(N)*DTRANS
               RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
             ENDIF
           ENDIF
         ENDIF
 C-------BOTTOM FACE
         IF(K.LT.NLAY) THEN
-          IF(QC7(J,I,K,ICOMP,6).GT.0.) THEN
+          IF(QC7(J,I,K,6).GT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
-              QCTEMP=QC7(J,I,K,ICOMP,6)*C7(N)*DTRANS
+              QCTEMP=QC7(J,I,K,6)*C7(N)*DTRANS
               RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
             ENDIF
           ENDIF
@@ -3723,18 +3983,18 @@ C-------CALCULATE IN THE Y DIRECTION
  2410   IF(NROW.LT.2) GOTO 2420    
 C---------BACK FACE
           IF(I.GT.1) THEN
-            IF(QC7(J,I,K,ICOMP,2).GT.0.) THEN
+            IF(QC7(J,I,K,2).GT.0.) THEN
               IF(ICBND2(J,I-1,K).EQ.0) THEN
-                QCTEMP=QC7(J,I,K,ICOMP,2)*C7(N)*DTRANS
+                QCTEMP=QC7(J,I,K,2)*C7(N)*DTRANS
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
               ENDIF
             ENDIF
           ENDIF
 C---------FRONT FACE
           IF(I.LT.NROW) THEN
-            IF(QC7(J,I,K,ICOMP,5).GT.0.) THEN
+            IF(QC7(J,I,K,5).GT.0.) THEN
               IF(ICBND2(J,I+1,K).EQ.0) THEN
-                QCTEMP=QC7(J,I,K,ICOMP,5)*C7(N)*DTRANS
+                QCTEMP=QC7(J,I,K,5)*C7(N)*DTRANS
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
               ENDIF
             ENDIF
@@ -3744,24 +4004,33 @@ C---------CALCULATE IN THE X DIRECTION
  2420     IF(NCOL.LT.2) GOTO 2430
 C---------LEFT FACE
           IF(J.GT.1) THEN
-            IF(QC7(J,I,K,ICOMP,3).GT.0.) THEN
+            IF(QC7(J,I,K,3).GT.0.) THEN
               IF(ICBND2(J-1,I,K).EQ.0) THEN
-                QCTEMP=QC7(J,I,K,ICOMP,3)*C7(N)*DTRANS
+                QCTEMP=QC7(J,I,K,3)*C7(N)*DTRANS
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
               ENDIF
             ENDIF
           ENDIF
 C---------RIGHT FACE      
           IF(J.LT.NCOL) THEN
-            IF(QC7(J,I,K,ICOMP,4).GT.0.) THEN
+            IF(QC7(J,I,K,4).GT.0.) THEN
               IF(ICBND2(J+1,I,K).EQ.0) THEN
-                QCTEMP=QC7(J,I,K,ICOMP,4)*C7(N)*DTRANS
+                QCTEMP=QC7(J,I,K,4)*C7(N)*DTRANS
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
               ENDIF
             ENDIF
           ENDIF
 C
  2430   CONTINUE
+C
+        IF(IDRY2.EQ.1) THEN
+C-------STORAGE AND ALL BOUNDARY CONDITIONS - HSS,CTS,LKT,SFT
+C          IF(QC7(J,I,K,8).LT.0.0) THEN
+            QCTEMP=QC7(J,I,K,9)*C7(N)*DTRANS
+            RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+C          ENDIF
+        ENDIF
+C
       ENDDO
 C
 C--RETURN
@@ -3773,15 +4042,25 @@ C
 C *********************************************************************
 C THIS SUBROUTINE STORES FLOW ACROSS DRY CELLS AND  
 C SORTS DRY CELLS IN ORDER OF FORMULATION 
+C INDEX MEANING:
+C 1 - TOP
+C 2 - BACK/NORTH
+C 3 - LEFT
+C 4 - RIGHT
+C 5 - FRONT/SOUTH
+C 6 - BOTTOM
+C 7 - INFLOW TO DRY CELL Q*C
+C 8 - INFLOW TO DRY CELL Q
+C 9 - OUTFLOW FROM DRY CELL Q
 C *********************************************************************
 C last modified: 12-15-2009
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
-     &                         RHS,CNEW !cvsb123,QSTO
+     &                         RHS,CNEW,QSTO,IDRY2,RETA
       IMPLICIT  NONE
-      INTEGER   J,I,K,N,NCR,IUPS,ICTRL !cvsb123,ICOMP
+      INTEGER   J,I,K,N,NCR,IUPS,ICTRL,ICOMP
       INTEGER   INDX,IJK,ITEMP
       INTEGER   KPER,KSTP
       REAL      WW,THKSAT,AREA,ALPHA
@@ -3790,7 +4069,7 @@ C
 C
 C--RETURN IF COEFF MATRICES ARE NOT TO BE UPDATED
 C
-C--LOOP THROUGH ALL ACTIVE CELLS
+C--LOOP THROUGH ALL INACTIVE CELLS
       NCR=NROW*NCOL
       QC7=0.
       DO K=1,NLAY
@@ -3801,7 +4080,7 @@ C--LOOP THROUGH ALL ACTIVE CELLS
             ENDIF
             N=(K-1)*NCR + (I-1)*NCOL + J
 C
-C--SKIP IF INACTIVE OR CONSTANT CELL
+C--SKIP IF ACTIVE CELL
             IF(ICBND2(J,I,K).EQ.0) CYCLE
 C
 C--------CALCULATE IN THE Z DIRECTION
@@ -3815,7 +4094,7 @@ cvsbabc              IF(ICBUND(N-NCR,1).NE.0 .OR. ICBND2(J,I,K-1).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(J,I,K)/(DH(J,I,K-1)+
      &                                      DH(J,I,K))
                 IF(NADVFD.EQ.IUPS.AND.QZ(J,I,K-1).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,1)=-QZ(J,I,K-1)*AREA
+                QC7(J,I,K,1)=-QZ(J,I,K-1)*AREA
               ENDIF
             ENDIF
 C-----------BOTTOM FACE
@@ -3826,7 +4105,7 @@ cvsbabc              IF(ICBUND(N+NCR,1).NE.0 .OR. ICBND2(J,I,K+1).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(J,I,K)/(DH(J,I,K)+
      &                                     DH(J,I,K+1))
                 IF(NADVFD.EQ.IUPS.AND.QZ(J,I,K).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,6)=QZ(J,I,K)*AREA
+                QC7(J,I,K,6)=QZ(J,I,K)*AREA
               ENDIF
             ENDIF
 C
@@ -3845,7 +4124,7 @@ cvsbabc              IF(ICBUND(N-NCOL,1).NE.0 .OR. ICBND2(J,I-1,K).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I-1)/(DELC(I-1)+DELC(I))
                 IF(NADVFD.EQ.IUPS.AND.QY(J,I-1,K).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,2)=-QY(J,I-1,K)*AREA
+                QC7(J,I,K,2)=-QY(J,I-1,K)*AREA
               ENDIF
             ENDIF
 C-----------FRONT FACE
@@ -3861,7 +4140,7 @@ cvsbabc              IF(ICBUND(N+NCOL,1).NE.0 .OR. ICBND2(J,I+1,K).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I)/(DELC(I)+DELC(I+1))
                 IF(NADVFD.EQ.IUPS.AND.QY(J,I,K).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,5)=QY(J,I,K)*AREA
+                QC7(J,I,K,5)=QY(J,I,K)*AREA
               ENDIF
             ENDIF
 C
@@ -3880,7 +4159,7 @@ cvsbabc              IF(ICBUND(N-1,1).NE.0 .OR. ICBND2(J-1,I,K).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J-1)/(DELR(J-1)+DELR(J))
                 IF(NADVFD.EQ.IUPS.AND.QX(J-1,I,K).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,3)=-QX(J-1,I,K)*AREA
+                QC7(J,I,K,3)=-QX(J-1,I,K)*AREA
               ENDIF
             ENDIF
 C-----------RIGHT FACE      
@@ -3896,15 +4175,17 @@ cvsbabc              IF(ICBUND(N+1,1).NE.0 .OR. ICBND2(J+1,I,K).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J)/(DELR(J)+DELR(J+1))
                 IF(NADVFD.EQ.IUPS.AND.QX(J,I,K).LT.0.) ALPHA=1.0
-                QC7(J,I,K,:,4)=QX(J,I,K)*AREA
+                QC7(J,I,K,4)=QX(J,I,K)*AREA
               ENDIF
             ENDIF
 C
   430       CONTINUE
 C
-C-----------STORAGE
-cvsb123            THKSAT=DH(J,I,K)
-cvsb123            QC7(J,I,K,:,7)=QSTO(J,I,K)*THKSAT*DELR(J)*DELC(I)
+C            IF(IDRY2.EQ.1) THEN
+CC-----------STORAGE
+C              QC7(J,I,K,:,7)=QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
+C     1        *RETA(J,I,K,ICOMP)
+C            ENDIF
           ENDDO
         ENDDO
       ENDDO
@@ -3924,7 +4205,7 @@ C----------CALCULATE IN THE Z DIRECTION
               IF(NLAY.LT.2) GOTO 1410
 C-------------TOP FACE
               IF(K.GT.1) THEN
-                IF(QC7(J,I,K,1,1).LT.0.) THEN
+                IF(QC7(J,I,K,1).LT.0.) THEN
                   IF(ICBND2(J,I,K-1).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3932,7 +4213,7 @@ C-------------TOP FACE
               ENDIF
 C-------------BOTTOM FACE
               IF(K.LT.NLAY) THEN
-                IF(QC7(J,I,K,1,6).LT.0.) THEN
+                IF(QC7(J,I,K,6).LT.0.) THEN
                   IF(ICBND2(J,I,K+1).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3943,7 +4224,7 @@ C----------CALCULATE IN THE Y DIRECTION
  1410         IF(NROW.LT.2) GOTO 1420    
 C-------------BACK FACE
               IF(I.GT.1) THEN
-                IF(QC7(J,I,K,1,2).LT.0.) THEN
+                IF(QC7(J,I,K,2).LT.0.) THEN
                   IF(ICBND2(J,I-1,K).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3951,7 +4232,7 @@ C-------------BACK FACE
               ENDIF
 C-------------FRONT FACE
               IF(I.LT.NROW) THEN
-                IF(QC7(J,I,K,1,5).LT.0.) THEN
+                IF(QC7(J,I,K,5).LT.0.) THEN
                   IF(ICBND2(J,I+1,K).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3962,7 +4243,7 @@ C------------CALCULATE IN THE X DIRECTION
  1420         IF(NCOL.LT.2) GOTO 1430
 C-------------LEFT FACE
               IF(J.GT.1) THEN
-                IF(QC7(J,I,K,1,3).LT.0.) THEN
+                IF(QC7(J,I,K,3).LT.0.) THEN
                   IF(ICBND2(J-1,I,K).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3970,7 +4251,7 @@ C-------------LEFT FACE
               ENDIF
 C-------------RIGHT FACE      
               IF(J.LT.NCOL) THEN
-                IF(QC7(J,I,K,1,4).LT.0.) THEN
+                IF(QC7(J,I,K,4).LT.0.) THEN
                   IF(ICBND2(J+1,I,K).EQ.1) THEN
                     ITEMP=ITEMP+1
                   ENDIF
@@ -3991,17 +4272,6 @@ C
         ENDDO
       ENDDO
 10    CONTINUE
-C
-C--SAVE COLD INTO COLD7
-cvsb123      DO ICOMP=1,MCOMP
-cvsb123        DO K=1,NLAY
-cvsb123          DO I=1,NROW
-cvsb123            DO J=1,NCOL
-cvsb123              COLD7(J,I,K,ICOMP)=CNEW(J,I,K,ICOMP)
-cvsb123            ENDDO
-cvsb123          ENDDO
-cvsb123        ENDDO
-cvsb123      ENDDO
 C
 C--RETURN
   999 RETURN

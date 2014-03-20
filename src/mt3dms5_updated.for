@@ -70,7 +70,8 @@ C
      &                         MEMDEALLOCATE,
      &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
      &                         IWCTS,IALTFM,NOCREWET,               !# V
-     &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW          !# Amended
+     &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
+     &                         IDRY2          !# Amended
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
@@ -91,11 +92,13 @@ C--ALLOCATE LOGICALS
       DRYON=.FALSE.                                            !# LINE 175 MAIN
 C
 C--Initialize variables 
-      ALLOCATE(IREACTION,IALTFM,NOCREWET)
+      ALLOCATE(IREACTION,IALTFM,NOCREWET,ICIMDRY,IDRY2)
 !      IWCTS=1
       IREACTION=0
       IALTFM=0
       NOCREWET=0
+      ICIMDRY=0
+      IDRY2=0
 C
 C--Get CPU time at the start of simulation
       Call CPU_TIME(start_time)
@@ -240,6 +243,10 @@ C--(NOTE THAT THESE ITEMS ARE READ ONLY ONCE IF FLOW MODEL
 C--IS STEADY-STATE AND HAS SINGLE STRESS PERIOD)
           IF(KPER*KSTP.GT.1.AND.ISS.NE.0.AND.NPERFL.EQ.1) GOTO 70
 C
+          IF(KPER*KSTP.EQ.1) THEN
+            IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) COLDFLW=CNEW
+          ENDIF
+C
           IF(KPER*KSTP.GT.1) THEN
             IF(iUnitTRNOP(19).GT.0) CALL SFT5AD2(N)              !# LINE 454 MAIN
           ENDIF
@@ -248,7 +255,6 @@ C
           IF(iUnitTRNOP(3).GT.0) CALL FMI5RP2(KPER,KSTP)
 C
           IF(DRYON) CALL ADVQC7RP(KPER,KSTP)                   !# LINE 467 MAIN
-          IF(IALTFM.EQ.1) COLDFLW=COLD
 C                                                              !# LINE 467 MAIN
           IF(iUnitTRNOP(19).GT.0) THEN        !# LINE 468 MAIN
             CALL FILLIASFJASF()                                !# LINE 469 MAIN
@@ -266,7 +272,7 @@ C--FOR EACH TRANSPORT STEP..............................................
             if(KPER.eq.6.and.KSTP.eq.1.and.n.ge.2) then
             continue
             endif
-            if(KPER.eq.6.and.KSTP.eq.1.and.n.ge.14) then
+            if(KPER.eq.5.and.KSTP.eq.1.and.n.ge.1) then
             continue
             endif
 C
@@ -275,6 +281,7 @@ C--ADVANCE ONE TRANSPORT STEP
 C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                       !# LINE 506 MAIN
             IF(iUnitTRNOP(18).GT.0) CALL LKT5AD(N)             !# LINE 507 MAIN
             IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(KSTP,KPER,N)   !# LINE 508 MAIN
+            IF(iUnitTRNOP(7).GT.0) CALL UZT5AD(HT1,HT2,TIME1,TIME2)
 C
 C
 C--FOR EACH COMPONENT......
@@ -332,22 +339,17 @@ C--FORMULATE MATRIX COEFFICIENTS
      &           CALL HSS5FM(ICOMP,ICBUND,time1,time2)
                 IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)    !# LINE 596 MAIN
      &           CALL CTS5FM(ICOMP)                            !# LINE 597 MAIN
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0          !# LINE 609 MAIN
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 610 MAIN
-     &           CALL ADVQC7FM(ICOMP)                          !# LINE 611 MAIN
+                IF(iUnitTRNOP(18).GT.0)                        !# LINE 622 MAIN
+     &           CALL LKT5FM(ICOMP)                            !# LINE 623 MAIN
+                IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC..                        !# LINE 627 MAIN
+     1           CALL SWF5FM(ICOMP)                            !# LINE 628 MAIN
                 IF(iUnitTRNOP(4).GT.0) 
      &           CALL RCT5FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
      &                  COLD,CNEW)                             !# LINE 620 MAIN
-                IF(iUnitTRNOP(18).GT.0)                        !# LINE 622 MAIN
-     &           CALL LKT5FM(ICOMP)                            !# LINE 623 MAIN
-
-      IF(KPER.EQ.2)THEN
-      CONTINUE
-      ENDIF
-
-                IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC..                        !# LINE 627 MAIN
-     1           CALL SWF5FM(ICOMP)                            !# LINE 628 MAIN
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0          !# LINE 609 MAIN
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 610 MAIN
+     &           CALL ADVQC7FM(ICOMP)                          !# LINE 611 MAIN
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG5AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
@@ -400,17 +402,15 @@ C
      &         CALL HSS5BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
               IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)      !# LINE 745 MAIN
      &         CALL CTS5BD(KSTP,KPER,ICOMP,DTRANS,N)           !# LINE 746 MAIN
-              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0            !# LINE 761 MAIN
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 762 MAIN
-     &           CALL ADVQC7BD(ICOMP,DTRANS)                   !# LINE 763 MAIN
-C
-              IF(iUnitTRNOP(4).GT.0) 
-     &         CALL RCT5BD(ICOMP,DTRANS)
-C
               IF(iUnitTRNOP(18).GT.0)                          !# LINE 775 MAIN
      1          CALL LKT5BD(ICOMP,KPER,KSTP,DTRANS,N)          !# LINE 776 MAIN
               IF(iUnitTRNOP(19).GT.0)                          !# LINE 780 MAIN
      1          CALL SFT5BD(ICOMP,KPER,KSTP,DTRANS,N)          !# LINE 781 MAIN
+              IF(iUnitTRNOP(4).GT.0) 
+     &         CALL RCT5BD(ICOMP,DTRANS)
+              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0            !# LINE 761 MAIN
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 762 MAIN
+     &           CALL ADVQC7BD(ICOMP)                   !# LINE 763 MAIN
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE
               CALL BTN5BD(ICOMP,DTRANS,TIME2,HT2)
@@ -450,6 +450,9 @@ C
             CALL USTOP(' ')
           ENDIF
   900     CONTINUE
+C
+C--SAVE CNEW AS COLDFLW
+          IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) CALL BTNFLW5AD !COLDFLW=CNEW
 C
 C--END OF FLOW TIME STEP LOOP
         ENDDO

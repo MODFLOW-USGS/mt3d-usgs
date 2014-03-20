@@ -62,6 +62,7 @@ C
       ALLOCATE(SATOLD(NCOL,NROW,NLAY)) 
       ALLOCATE(SATNEW(NCOL,NROW,NLAY)) 
       ALLOCATE(WC(NCOL,NROW,NLAY))     
+      ALLOCATE(THETAW(NCOL,NROW,NLAY))
       ALLOCATE(SDH(NCOL,NROW,NLAY))    
 C
 C--INITIALIZE IUZFBND ARRAY
@@ -560,3 +561,36 @@ C
 C--RETURN
 200   RETURN
       END
+C
+      SUBROUTINE UZT5AD(HT1,HT2,TIME1,TIME2)
+C ********************************************************************
+C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
+C ********************************************************************
+C
+      USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV,SATNEW,THETAW
+      USE MT3DMS_MODULE, ONLY: NLAY,NCOL,NROW,PRSITY
+C
+      INTEGER K,I,J
+      REAL HT1,HT2,TIME1,TIME2
+      REAL SAT
+C
+      DO I=1,NROW
+      DO J=1,NCOL
+        IF(IUZFBND(J,I).LE.0) CYCLE
+        DO K=1,NLAY
+C          N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
+          SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
+     1        +SATOLD(J,I,K)
+          THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
+        ENDDO
+      ENDDO
+      ENDDO
+C
+C--RETURN
+      RETURN
+      END
+
+
+
+
+

@@ -365,6 +365,7 @@ C SYSTEM TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
 C last modified: 12-16-2008
 C
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,
      &                         DH,CNEW,ISS,A,RHS,NODES,UPDLHS,
      &                         MIXELM,SS,MXSS,NCTS,KEXT,IEXT,
@@ -372,7 +373,8 @@ C
      &                         ITRTEXT,ITRTINJ,NEXT,NINJ,QINCTS,
      &                         QOUTCTS,CMCHGEXT,CMCHGINJ,CINCTS,
      &                         CNTE,MXEXT,MXINJ,MXCTS,QCTS,CCTS,
-     &                         IOUT,ICOMP,IWEXT,IWINJ,ICBUND,IFORCE
+     &                         IOUT,ICOMP,IWEXT,IWINJ,ICBUND,IFORCE,
+     &                         IDRY2
       IMPLICIT  NONE
       INTEGER ICOMP
       INTEGER I,J,IW,ICTS,KK,II,JJ,N,IQ,IWELL
@@ -424,11 +426,19 @@ C---------GET Q FROM SS ARRAY
           ENDDO
 C
 C--SKIP IF NOT ACTIVE CELL
-          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
+          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN !EXTRACTION IS FORMULATED IN SSM PACKAGE
+            IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
+                TOTQ=TOTQ+Q 
+              ENDIF
+            ENDIF
+          ELSE
 C
-          C=CNEW(JJ,II,KK,ICOMP)
-          TOTQ=TOTQ+Q 
-          TOTQC=TOTQC+(Q*C)
+            C=CNEW(JJ,II,KK,ICOMP)
+            TOTQ=TOTQ+Q 
+            TOTQC=TOTQC+(Q*C)
+          ENDIF
         ENDDO
 C--ADD EXTERNAL SOURCE
         TOTQ=TOTQ+(-QINCTS(ICTS))
@@ -496,9 +506,6 @@ C---------GET Q FROM SS ARRAY
             ENDIF
           ENDDO
 C
-C--SKIP IF NOT ACTIVE CELL
-          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
-C
           IF(ITRTINJ(ICTS).EQ.2) THEN !!!SEPARATE TREATMENT TO EACH INJ WELL
             IF(IOPTINJ(ICOMP,I,ICTS).EQ.1) THEN !PERCENT REMOVAL/ADDITION
               CINJ=CCTS(ICOMP,ICTS)*(1.0E0+CMCHGINJ(ICOMP,I,ICTS))
@@ -526,18 +533,29 @@ C
             ENDIF
           ENDIF
 C
+C--SKIP IF NOT ACTIVE CELL
+          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
+            IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
+                IF(Q.LT.0) THEN
+                  QC7(JJ,II,KK,9)=QC7(JJ,II,KK,9)-Q
+                ELSE
+                  QC7(JJ,II,KK,7)=QC7(JJ,II,KK,7)-Q*CINJ
+                  QC7(JJ,II,KK,8)=QC7(JJ,II,KK,8)-Q
+                ENDIF
+              ENDIF
+            ENDIF
+          ELSE
+C
 C--ADD CONTRIBUTIONS TO MATRICES [A] AND [RHS]        
           N=(KK-1)*NCOL*NROW+(II-1)*NCOL+JJ
-
-          IF(ICOMP.EQ.2.AND.N.EQ.552) THEN
-          CONTINUE
-          ENDIF
-
           IF(Q.LT.0) THEN
             IF(UPDLHS) A(N)=A(N)+Q !*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
           ELSE
             RHS(N)=RHS(N)-Q*CINJ !*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
           ENDIF        
+          ENDIF
         ENDDO !DO I=1,NINJ
       ENDDO !DO ICTS=1,NCTS
 C
@@ -563,6 +581,7 @@ C THIS ALSO WRITES BUDGETS FOR ALL TREATMENT SYSTEMS SIMULATED.
 C ********************************************************************
 C last modified: 12-22-2008
 C
+      USE MIN_SAT, ONLY: QC7
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,
      &                         DH,CNEW,ISS,NODES,MIXELM,SS,MXSS,NCTS,
      &                         KEXT,IEXT,JEXT,KINJ,IINJ,JINJ,IOPTEXT,
@@ -571,7 +590,8 @@ C
      &                         MXEXT,MXINJ,MXCTS,RMASIO,QCTS,
      &                         CCTS,IWEXT,IWINJ,IOUT,ICBUND,
      &                         CEXT2CTS,CGW2CTS,CADDM,CCTS2EXT,
-     &                         CCTS2GW,CREMM,ICTSOUT,IFORCE,PRTOUT
+     &                         CCTS2GW,CREMM,ICTSOUT,IFORCE,PRTOUT,
+     &                         IDRY2
       IMPLICIT  NONE
       INTEGER KPER,KSTP,ICOMP,ICTS,I,II,JJ,KK,IW,IWELL,IQ
       INTEGER NTRANS
@@ -662,19 +682,34 @@ C---------GET Q FROM SS ARRAY
           ENDDO
 C
 C--SKIP IF NOT ACTIVE CELL
-          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
+          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
+            IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                C=0.
+                Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
+                TOTQ=TOTQ+Q
+                QC7(JJ,II,KK,9)=QC7(JJ,II,KK,9)-Q
+C                RMASIO(11,2,ICOMP)=RMASIO(11,2,ICOMP)+Q*C*DTRANS
+                IF (ICTSOUT.GT.0) WRITE(ICTSOUT,7) KPER,KSTP,NTRANS,
+     &          DTRANS,ICTS,IW,KK,II,JJ,ICOMP,Q,C,Q*C
+              ENDIF
+            ENDIF
+          ELSE
 C
           C=CNEW(JJ,II,KK,ICOMP)
           TOTQ=TOTQ+Q 
           TOTQC=TOTQC+(Q*C)
           GW2CTS=GW2CTS+(Q*C)
 C
+C--IN FM FORMULATION IS DONE IN SSM; IN BD BUDGET IS DONE HERE
           RMASIO(11,2,ICOMP)=RMASIO(11,2,ICOMP)+Q*C*DTRANS
 C     &     *DELR(JJ)*DELC(II)*DH(JJ,II,KK)
 C
 C
           IF (ICTSOUT.GT.0) WRITE(ICTSOUT,7) KPER,KSTP,NTRANS,DTRANS,
      &      ICTS,IW,KK,II,JJ,ICOMP,Q,C,Q*C
+C
+          ENDIF
         ENDDO
 C--ADD EXTERNAL SOURCE
         TOTQ=TOTQ+(-QINCTS(ICTS))
@@ -744,9 +779,6 @@ C---------GET Q FROM SS ARRAY
             ENDIF
           ENDDO
 C
-C--SKIP IF NOT ACTIVE CELL
-          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
-C
 C
           IF(ITRTINJ(ICTS).EQ.2) THEN !!!SEPARATE TREATMENT TO EACH INJ WELL
             IF(IOPTINJ(ICOMP,I,ICTS).EQ.1) THEN !PERCENT REMOVAL/ADDITION
@@ -772,6 +804,27 @@ C
             ENDIF
           ENDIF
 C
+C--SKIP IF NOT ACTIVE CELL
+          IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
+            IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
+                Q2=Q2+Q
+                CTS2GW=CTS2GW+Q*CINJ
+                IF((Q*CINJ).GE.(Q*CCTS(ICOMP,ICTS)-1.0E-10)) THEN
+                  ADDM=ADDM+(Q*CINJ)-(Q*CCTS(ICOMP,ICTS))
+                ELSE
+                  REMM=REMM+(Q*CCTS(ICOMP,ICTS))-(Q*CINJ)
+                ENDIF
+                RMASIO(11,1,ICOMP)=RMASIO(11,1,ICOMP)+Q*CINJ*DTRANS
+                IF (ICTSOUT.GT.0) WRITE(ICTSOUT,7) KPER,KSTP,NTRANS,
+     &          DTRANS,ICTS,IW,KK,II,JJ,ICOMP,Q,CINJ,Q*CINJ
+C
+                QC7(JJ,II,KK,7)=QC7(JJ,II,KK,7)-Q*CINJ
+                QC7(JJ,II,KK,8)=QC7(JJ,II,KK,8)-Q
+              ENDIF
+            ENDIF
+          ELSE
 C
           Q2=Q2+Q
           CTS2GW=CTS2GW+Q*CINJ
@@ -786,6 +839,7 @@ C     &       *DELR(JJ)*DELC(II)*DH(JJ,II,KK)
 C
           IF (ICTSOUT.GT.0) WRITE(ICTSOUT,7) KPER,KSTP,NTRANS,DTRANS,
      &      ICTS,IW,KK,II,JJ,ICOMP,Q,CINJ,Q*CINJ
+          ENDIF
 C
         ENDDO !I=1,NINJ(ICTS)
         Q2=Q2+QOUTCTS(ICTS)

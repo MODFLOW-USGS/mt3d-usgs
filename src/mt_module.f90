@@ -3,9 +3,10 @@
         LOGICAL,          SAVE,                      POINTER :: DRYON
         INTEGER,          SAVE, DIMENSION(:,:,:),    POINTER :: ICBND2 
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ID2D
-        REAL,             SAVE, DIMENSION(:,:,:,:,:),POINTER :: QC7
+        REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: QC7
         REAL,             SAVE, DIMENSION(:),        POINTER :: C7
         REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: COLD7
+        REAL,             SAVE, DIMENSION(:,:,:),    POINTER :: VAQSAT
         REAL,             SAVE, DIMENSION(:,:,:),    POINTER :: TMASS2
         INTEGER,          SAVE,                      POINTER :: ICNTDRY
         INTEGER,          SAVE,                      POINTER :: NCNTDRY
@@ -15,9 +16,11 @@
         INTEGER,          SAVE,                      POINTER :: IABSMIN
         INTEGER,          SAVE,                      POINTER :: IDRYBUD
         INTEGER,          SAVE,                      POINTER :: IATS
+        INTEGER,          SAVE,                      POINTER :: ICIMDRY
     END MODULE MIN_SAT
     MODULE SFRVARS
         INTEGER,          SAVE,                      POINTER :: NSTRM
+        INTEGER,          SAVE,                      POINTER :: ISFRBC
         INTEGER,          SAVE,                      POINTER :: MXSFBC
         INTEGER,          SAVE,                      POINTER :: NSSSF
         INTEGER,          SAVE,                      POINTER :: NSFINIT
@@ -327,6 +330,7 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SATNEW     
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZFBND    
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: WC         
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: THETAW
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZFLX      
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZQSTO     
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: SDH        
@@ -358,6 +362,7 @@ CONTAINS
         IF(ASSOCIATED(SDH))       DEALLOCATE(SDH)                   !edm
         IF(ASSOCIATED(IUZFBND))   DEALLOCATE(IUZFBND)               !edm
         IF(ASSOCIATED(WC))        DEALLOCATE(WC)                    !edm
+        IF(ASSOCIATED(THETAW))        DEALLOCATE(THETAW)                    !edm
         IF(ASSOCIATED(UZFLX))     DEALLOCATE(UZFLX)                 !edm
         IF(ASSOCIATED(UZQSTO))    DEALLOCATE(UZQSTO)                !edm
         IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
@@ -533,7 +538,7 @@ MODULE MT3DMS_MODULE
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: ZP
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CNPT
 !--ADV-VIVEK
-        REAL,             SAVE, DIMENSION(:,:,:,:,:), POINTER :: QC7
+!        REAL,             SAVE, DIMENSION(:,:,:,:,:), POINTER :: QC7
 !--DSP                                                
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: ALPHAL
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: DMCOEF
@@ -590,6 +595,7 @@ MODULE MT3DMS_MODULE
         INTEGER,          SAVE,                       POINTER :: IALTFM                !# LINE 99 MAIN
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: KSSZERO               !# LINE 2 SSM
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: COLDFLW
+        INTEGER,          SAVE,                       POINTER :: IDRY2
 !--RCT
         INTEGER,          SAVE,                       POINTER :: IREACT
         INTEGER,          SAVE,                       POINTER :: IRCTOP

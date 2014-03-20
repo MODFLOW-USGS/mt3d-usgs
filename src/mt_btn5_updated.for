@@ -352,11 +352,6 @@ C--INITIALIZE VARIABLES THAT DEPEND ON OTHER PACKAGES
 	ISOTHM=0
       IF(FPRT.EQ.' ') FPRT='N'
 C
-C--PRINT PACKAGE NAME AND VERSION NUMBER
-      WRITE(IOUT,7) IN
-   7  FORMAT(1X,'BTN5 -- BASIC TRANSPORT PACKAGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
-C
 C--READ AND PRINT HEADING
       READ(IN,'(A80)') (HEADNG(I),I=1,2)
       WRITE(IOUT,10)
@@ -372,22 +367,11 @@ C  KEYWORDS MAY BE ENTERED IN ANY ORDER.
       CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,I,R,IOUT,IN)
       IF(LINE(ISTART:ISTOP).EQ.'MST') THEN
         DOMINSAT=.TRUE.
-        WRITE(IOUT,*)
-        WRITE(IOUT,'(A)')'*** MST OPTION HAS BEEN ACTIVATED BY ',
-     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
-        WRITE(IOUT,*)
         LLOCSAVE=LLOC
       ELSEIF(LINE(ISTART:ISTOP).EQ.'DRY') THEN
         DRYON=.TRUE.
-        WRITE(IOUT,*)
-        WRITE(IOUT,'(A)')'*** DRY OPTION HAS BEEN ACTIVATED BY ',
-     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
-        WRITE(IOUT,*)
         LLOCSAVE=LLOC
       ELSE
-        WRITE(IOUT,*)
-        WRITE(IOUT,'(A)')'NEITHER MST OR DRY OPTIONS SET'
-        WRITE(IOUT,*)
         BACKSPACE(IN)
         GOTO 16
       ENDIF
@@ -398,16 +382,8 @@ C--CHECK FOR SECOND KEYWORD
         CALL URWORD(LINE,LLOC,ISTART,ISTOP,1,I,R,IOUT,IN)
         IF(LINE(ISTART:ISTOP).EQ.'MST') THEN
           DOMINSAT=.TRUE.
-          WRITE(IOUT,*)
-          WRITE(IOUT,'(A)')'*** MST OPTION HAS BEEN ACTIVATED BY ',
-     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
-          WRITE(IOUT,*)
         ELSEIF(LINE(ISTART:ISTOP).EQ.'DRY') THEN
           DRYON=.TRUE.
-          WRITE(IOUT,*)
-        WRITE(IOUT,'(A)')'*** DRY OPTION HAS BEEN ACTIVATED BY ',
-     &                   'KEYWORD ON THE FIRST LINE OF THE BTN PACKAGE'
-          WRITE(IOUT,*)
         ELSE
           GOTO 16
         ENDIF
@@ -474,10 +450,19 @@ C--IGNORE TRANSPORT OPTIONS INPUT WHICH ARE DEFINED THROUGH NameFile
  1024 FORMAT(1X)
 C
 C--WRITE STATUS OF MST AND DRY FLAGS                              !# LINE 313 BTN
-      IF(DOMINSAT)                                                !# LINE 314 BTN
-     1  WRITE(IOUT,*) 'MST OPTION - TO LET MASS ENTER DRY CELLS'  !# LINE 315 BTN
-      IF(DRYON)                                                   !# LINE 316 BTN
-     1  WRITE(IOUT,*) 'DRY OPTION - TO LET MASS ENTER FROM DRY CELLS' !# LINE 317 BTN
+      IF(DOMINSAT.OR.DRYON) THEN
+        IF(DOMINSAT) WRITE(IOUT,'(A)')                                                !# LINE 314 BTN
+     1   ' MST OPTION ACTIVATED - TO LET MASS ENTER DRY CELLS'  !# LINE 315 BTN
+        IF(DRYON) WRITE(IOUT,'(A)')                                                   !# LINE 316 BTN
+     1   ' DRY OPTION ACTIVATED - TO LET MASS RE-ENTER FROM DRY CELLS' !# LINE 317 BTN
+      ELSE
+        WRITE(IOUT,'(A)')' MST OR DRY OPTIONS NOT SET'
+      ENDIF
+C
+C--PRINT PACKAGE NAME AND VERSION NUMBER
+      WRITE(IOUT,7) IN
+   7  FORMAT(1X,'BTN5 -- BASIC TRANSPORT PACKAGE,',
+     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
 C
 C--GET TOTAL NUMBER OF MODEL NODES
       NODES=NCOL*NROW*NLAY
@@ -1092,7 +1077,7 @@ C AT THE FIRST TRANSPORT STEP OF EACH TRANSPORT LOOP.
 C **********************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
+      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV,IUZFBND,THETAW
       USE MT3DMS_MODULE, ONLY: IOUT,MXTRNOP,iUnitTRNOP,iSSTrans,NSTP,
      &                         TIMPRS,DT0,MXSTRN,MIXELM,DTRACK,
      &                         DTRACK2,PERCEL,DTDISP,DTSSM,DTRCT,RFMIN,
@@ -1101,12 +1086,14 @@ C
      &                         TTSMAX,DELR,DELC,DH,PRSITY,SRCONC,
      &                         RHOB,RETA,PRSITY2,RETA2,ISOTHM,TMASIO,
      &                         RMASIO,TMASS,
-     &                         iUnitTRNOP                !edm
+     &                         iUnitTRNOP,IDRY2,COLDFLW,
+     &                         IALTFM,QSTO,ISOTHM,SP1,DZ                !edm
+      USE MIN_SAT, ONLY: ICIMDRY
 C
       IMPLICIT  NONE
       INTEGER   NTRANS,KSTP,NPS,INDEX,K,I,J,KPER
       REAL      TIME1,TIME2,HT2,DELT,DTOLD,CMML,CMMS,CIML,CIMS,
-     &          VOLUME,EPSILON,TEMP,TTMP,DTRANS
+     &          VOLUME,EPSILON,TEMP,TTMP,DTRANS,VCELL
       DIMENSION TEMP(4)
       PARAMETER (EPSILON=0.5E-6)
 C
@@ -1203,6 +1190,13 @@ C--COPY ARRAY [CNEW] TO [COLD]
             DO J=1,NCOL
               IF(ICBUND(J,I,K,INDEX).EQ.0) THEN
                 CNEW(J,I,K,INDEX)=CINACT
+                IF(ICIMDRY.EQ.1) SRCONC(J,I,K,INDEX)=0.0
+                IF(IDRY2.EQ.1) THEN
+                  COLD(J,I,K,INDEX)=CNEW(J,I,K,INDEX)
+                  IF(ABS(CINACT-COLD(J,I,K,INDEX)).LE.1.0E-3) THEN
+                    COLD(J,I,K,INDEX)=0.
+                  ENDIF
+                ENDIF
               ELSE
                 COLD(J,I,K,INDEX)=CNEW(J,I,K,INDEX)
               ENDIF
@@ -1238,24 +1232,57 @@ C
             DO J=1,NCOL
               IF(ICBUND(J,I,K,INDEX).LE.0) CYCLE
               VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
-              IF(iUnitTRNOP(7).EQ.0) THEN
+C
+              IF(iUnitTRNOP(7).GT.0)THEN
+                IF(IUZFBND(J,I).GT.0) THEN
+                  CMML=COLD(J,I,K,INDEX)*THETAW(J,I,K)*VOLUME
+                  CMMS=COLD(J,I,K,INDEX)*RHOB(J,I,K)*SP1(J,I,K,INDEX)
+     1          *VOLUME
+                  CIML=0.
+                  CIMS=0.
+                ELSE
+                IF(IALTFM.GE.1) THEN
+                  VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1        (HT2-TIME1)/PRSITY(J,I,K)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOLUME=MIN(VOLUME,VCELL)
+                ENDIF
                 CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
+                CMMS=0.
+                CIML=0.
+                CIMS=0.
+                IF(ISOTHM.EQ.1) THEN
+                  CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
+                  CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
+                ELSEIF(ISOTHM.GT.4) THEN
+                  CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                  CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
+                  CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
+                ENDIF
+                ENDIF
               ELSE
-                CMML=COLD(J,I,K,INDEX)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)
-     &                 *VOLUME
+                IF(IALTFM.GE.1) THEN
+                  VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1        (HT2-TIME1)/PRSITY(J,I,K)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOLUME=MIN(VOLUME,VCELL)
+                ENDIF
+                CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
+                CMMS=0.
+                CIML=0.
+                CIMS=0.
+                IF(ISOTHM.EQ.1) THEN
+                  CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
+                  CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
+                ELSEIF(ISOTHM.GT.4) THEN
+                  CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                  CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
+                  CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
+                ENDIF
               ENDIF
-              CMMS=0.
-              CIML=0.
-              CIMS=0.
-              IF(ISOTHM.EQ.1) THEN
-                CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
-              ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
-                CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
-              ELSEIF(ISOTHM.GT.4) THEN
-                CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
-                CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
-                CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
-              ENDIF
+C
               TEMP(1)=TEMP(1)+CMML
               TEMP(2)=TEMP(2)+CMMS
               TEMP(3)=TEMP(3)+CIML
@@ -1333,21 +1360,23 @@ C MASS BALANCE DISCREPANCY SINCE THE BEGINNING OF THE SIMULATION.
 C **********************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
+      USE UZTVARS,       ONLY: PRSITYSAV,SATOLD,IUZFBND,THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,DH,
      &                         PRSITY,RETA,CNEW,COLD,RHOB,SRCONC,
      &                         PRSITY2,RETA2,iSSTrans,ISOTHM,TMASIN,
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
      &                         ISS,iUnitTRNOP,
-     &                         IALTFM,QSTO                !edm
-      USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7                                    !# LINE 1227 BTN
+     &                         IALTFM,QSTO,ISOTHM,SP1,COLDFLW,
+     &                         IDRY2,DZ                !edm
+      USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7,
+     1  VAQSAT,ICIMDRY                                   !# LINE 1227 BTN
       USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG                   !# LINE 1228 BTN
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,K,I,J,IQ,INDX,N
       REAL      DMSTRG,SOURCE,SINK,TM1,TM2,DTRANS,
-     &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS
-      REAL TIME2,HT2
+     &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS,RF
+      REAL TIME2,HT2,VOL,VCELL
 C
 C--CALCULATE SOLUTE AND SORBED MASS STORAGE CHANGES (MOBILE-DOMAIN)
 C--FOR THE CURRENT TRANSPORT STEP
@@ -1358,10 +1387,12 @@ C--FOR THE CURRENT TRANSPORT STEP
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.EQ.2) THEN
+                VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
+     &              *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                VOL=MIN(VOL,VCELL)
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
-     &                     *PRSITY(J,I,K)*(DELR(J)*DELC(I)*DH(J,I,K)
-     &              +DELR(J)*DELC(I)*DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)
-     &              *(HT2-TIME2))
+     &           *PRSITY(J,I,K)*VOL
                 ELSE
                 DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
@@ -1375,19 +1406,53 @@ C                                                                   !# LINE 1254
                   ENDIF                                             !# LINE 1258 BTN
                 ENDIF                                               !# LINE 1259 BTN
 C                                                                   !# LINE 1260 BTN
-              ELSE
-                DMSTRG=((CNEW(J,I,K,ICOMP)*PRSITY(J,I,K))-          !edm
-     &          (COLD(J,I,K,ICOMP)*SATOLD(J,I,K)*PRSITYSAV(J,I,K)))*!edm
-     &                   DELR(J)*DELC(I)*DH(J,I,K)                  !edm
-              ENDIF
-              IF(DMSTRG.LT.0) THEN
-                RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
-                RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
+                IF(DMSTRG.LT.0) THEN
+                  RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
+                  RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
      &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
-              ELSE
-                RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
-                RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
+                ELSE
+                  RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
+                  RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
      &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+                ENDIF
+              ELSE
+                IF(IUZFBND(J,I).GT.0) THEN
+                  IF(ISOTHM.EQ.0) THEN
+                    RF=1.
+                  ELSEIF(ISOTHM.EQ.1) THEN
+                    RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
+                  ELSE
+                    RF=1.
+                  ENDIF
+                  DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))*
+     1            THETAW(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+C
+                  IF(DMSTRG.LT.0) THEN
+                    RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
+                    RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
+     &             -(RF-1.)*DMSTRG
+                  ELSE
+                    RMASIO(119,2,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
+                    RMASIO(120,2,ICOMP)=RMASIO(120,1,ICOMP)
+     &             -(RF-1.)*DMSTRG
+                  ENDIF
+                ELSE
+                 VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
+     &              *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
+     &           *RETA(J,I,K,ICOMP)*PRSITY(J,I,K)*VOL
+                  IF(DMSTRG.LT.0) THEN
+                  RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
+                  RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
+     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+                  ELSE
+                  RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
+                  RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
+     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+                  ENDIF
+                ENDIF
               ENDIF
             ENDIF
 
@@ -1407,46 +1472,46 @@ C                                                                   !# LINE 1260
 C
 C--ACCUMULATE MASS IN/OUT FOR VARIOUS SINK/SOURCE TERMS AND
 C--MASS STOAGE CHANGES SINCE THE BEGINNING OF SIMULATION
-      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
+C      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
         DO IQ=1,122
           TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
           TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
         ENDDO
-      ELSE                                                          !edm
-        DO IQ=1,117                                                 !edm
-          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
-          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
-        ENDDO                                                       !edm
-        DO IQ=119,122                                               !edm
-          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
-          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
+C      ELSE                                                          !edm
+C        DO IQ=1,117                                                 !edm
+C          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
+C          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
+C        ENDDO                                                       !edm
+C        DO IQ=119,122                                               !edm
+C          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)  !edm
+C          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)  !edm
+C        ENDDO                                                       !edm
+C      ENDIF                                                         !edm
 C
 C--DETERMINE TOTAL MASS IN AND OUT
       TMASIN(ICOMP)=0.
       TMASOT(ICOMP)=0.
-      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
+C      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                            !edm
         DO IQ=1,122
           IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY  !# LINE 1287 BTN
           IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS               !# LINE 1288 BTN
           TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
           TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
         ENDDO
-      ELSE                                                          !edm
-        DO IQ=1,117                                                 !edm
-          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
-          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
-          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
-          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
-        ENDDO                                                       !edm
-        DO IQ=119,122                                               !edm
-          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
-          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
-          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
-          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
-        ENDDO                                                       !edm
-      ENDIF                                                         !edm
+C      ELSE                                                          !edm
+C        DO IQ=1,117                                                 !edm
+C          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
+C          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
+C          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
+C          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
+C        ENDDO                                                       !edm
+C        DO IQ=119,122                                               !edm
+C          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY   !# LINE 1287 BTN
+C          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS                !# LINE 1288 BTN
+C          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)            !edm
+C          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)            !edm
+C        ENDDO                                                       !edm
+C      ENDIF                                                         !edm
 C
 C--COMPUTE ACCUMULATIVE DISCREPANCY BETWEEN MASS IN AND OUT
       ERROR(ICOMP)=0.
@@ -1468,25 +1533,77 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
-            IF(IALTFM.GE.1) THEN
-              VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
-     1        (HT2-TIME2)/PRSITY(J,I,K)
-            ENDIF
-            CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
+            CMML=0.
             CMMS=0.
             CIML=0.
             CIMS=0.
-            IF(ISOTHM.EQ.1) THEN
-              CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-            ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
-              CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
-            ELSEIF(ISOTHM.GT.4) THEN
-              CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-              CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
-              CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
+            IF(iUnitTRNOP(7).GT.0)THEN
+              IF(IUZFBND(J,I).GT.0) THEN
+                CMML=CNEW(J,I,K,ICOMP)*THETAW(J,I,K)*VOLUME
+                CMMS=CNEW(J,I,K,ICOMP)*RHOB(J,I,K)*SP1(J,I,K,ICOMP)
+     1          *VOLUME
+                CIML=0.
+                CIMS=0.
+              ELSE
+              IF(IALTFM.GE.1) THEN
+                VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1        (HT2-TIME2)/PRSITY(J,I,K)
+              ENDIF
+              CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
+              CMMS=0.
+              CIML=0.
+              CIMS=0.
+              IF(ISOTHM.EQ.1) THEN
+                CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+              ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
+                CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
+              ELSEIF(ISOTHM.GT.4) THEN
+                CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
+                CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+              ENDIF
+              ENDIF
+            ELSE
+              IF(IALTFM.GE.1) THEN
+                VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1        (HT2-TIME2)/PRSITY(J,I,K)
+              ENDIF
+              CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
+              CMMS=0.
+              CIML=0.
+              CIMS=0.
+              IF(ISOTHM.EQ.1) THEN
+                CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+              ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
+                CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
+              ELSEIF(ISOTHM.GT.4) THEN
+                CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
+                CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+              ENDIF
             ENDIF
+            ELSE
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+                IF(IDRY2.GT.0) THEN
+                  IF(ABS(QSTO(J,I,K)).GE.1.E-3) THEN
+                  CONTINUE
+                  ENDIF
+
+                  CMML=QSTO(J,I,K)
+     1            *DH(J,I,K)*DELR(J)*DELC(I)
+     1            *COLDFLW(J,I,K,ICOMP)*(HT2-TIME2)
+                  CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                ENDIF
+                IF(ICIMDRY.GE.2) THEN
+                  VOLUME=VAQSAT(J,I,K)
+                  CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
+                  CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+                ENDIF
+              ENDIF
+            ENDIF
+C
             TMASS(1,2,ICOMP)=TMASS(1,2,ICOMP)+CMML
             TMASS(2,2,ICOMP)=TMASS(2,2,ICOMP)+CMMS
             TMASS(3,2,ICOMP)=TMASS(3,2,ICOMP)+CIML
@@ -1494,17 +1611,6 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
           ENDDO
         ENDDO
       ENDDO
-C
-C--CALCULATE TOTAL MASS IN INACTIVE CELL STORAGE
-cvsb123      TMASS2=0.
-cvsb123      IF(DRYON.AND.IDRYBUD.NE.0) THEN
-cvsb123      DO INDX=1,NICBND2
-cvsb123        N=ID2D(INDX)
-cvsb123        CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-cvsb123c        TMASS2(1,1,ICOMP)=QC7(J,I,K,ICOMP,7)*COLD7(J,I,K,ICOMP)*
-cvsb123c     1                   -QC7(J,I,K,ICOMP,7)*COLD7(J,I,K,ICOMP)*
-cvsb123      ENDDO
-cvsb123      ENDIF
 C
 C--COMPUTE TOTAL SOURCE AND SINK EXCLUDING MASS
 C--FROM OR INTO FLUID-STORAGE IN TRANSIENT FLOW FIELD
@@ -1526,10 +1632,10 @@ C--GET SUM OF TOTAL SINK AND CURRENT MASS
      &   +TMASS(3,2,ICOMP)+TMASS(4,2,ICOMP)
 C
 C--CORRECT FOR NET MASS FROM/INTO FLUID-STORAGE
-      STRMAS=(TMASIO(118,1,ICOMP)+TMASIO(118,2,ICOMP))
-     &     -(TMASS(1,3,ICOMP)+TMASS(2,3,ICOMP)
-     &      +TMASS(3,3,ICOMP)+TMASS(4,3,ICOMP))
-      TM1=TM1+STRMAS
+c      STRMAS=(TMASIO(118,1,ICOMP)+TMASIO(118,2,ICOMP))
+C     &     -(TMASS(1,3,ICOMP)+TMASS(2,3,ICOMP)
+C     &      +TMASS(3,3,ICOMP)+TMASS(4,3,ICOMP))
+      TM1=TM1 !+STRMAS
 C
 C--COMPUTE ALTERNATVE MEASURE OF MASS DISCREPANCY
       ERROR2(ICOMP)=0.
@@ -1838,17 +1944,17 @@ C THIS SUBROUTINE INITIALIZES ALL MATRICES FOR THE IMPLICIT SCHEME.
 C *********************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV
+      USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV,THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
-     &                         IALTFM,QSTO,iUnitTRNOP                 !edm
+     &                         IALTFM,QSTO,iUnitTRNOP,RHOB,SP1,ISOTHM,DZ                 !edm
       USE MIN_SAT, ONLY: COLD7,DRYON
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,ICBUND,N,NRC,
      &          NSIZE
       REAL      CADV,COLD,PRSITY,DTRANS,RETA,TEMP,DH,
-     &          HT2,TIME2                                    !edm
+     &          HT2,TIME2,RF,VOL,VCELL                                    !edm
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
      &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES)
 C     &          PRSITYSAV(NODES),SATOLD(NODES)                      !edm
@@ -1860,9 +1966,6 @@ C--GET RIGHT-HAND-SIDE ARRAY [RHS]
             N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
             IF(MIXELM.EQ.0) THEN
               TEMP=COLD(N,ICOMP)
-cvsb123              IF(DRYON) THEN
-cvsb123                TEMP=COLD7(J,I,K,ICOMP)
-cvsb123              ENDIF
             ELSE
               TEMP=CADV(N,ICOMP)
             ENDIF
@@ -1874,19 +1977,37 @@ C
 C            
             ELSE
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
-  10            IF(IALTFM.EQ.2) THEN
+                IF(IALTFM.EQ.2) THEN
+                  VOL=DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
                   RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &                 *(DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+     &                 *VOL
                 ELSE
                 RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                 *DELR(J)*DELC(I)*DH(N)
                 ENDIF
 
               ELSE                                                  !edm
-                IF(IUZFBND(J,I).LE.0) GOTO 10
-                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITYSAV(J,I,K)      !edm
-     &                  *SATOLD(J,I,K)*DELR(J)*DELC(I)*DH(N)            !edm
+                IF(IUZFBND(J,I).GT.0) THEN
+                  IF(ISOTHM.EQ.0) THEN
+                    RF=1.
+                  ELSEIF(ISOTHM.EQ.1) THEN
+                    RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
+                  ELSE
+                    RF=1.
+                  ENDIF
+                  RHS(N)=-TEMP*THETAW(J,I,K)*RF/DTRANS      !edm
+     &                  *DELR(J)*DELC(I)*DH(N)            !edm
+                ELSE
+                  VOL=DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                 *VOL
+                ENDIF
               ENDIF                                                 !edm
             ENDIF
           ENDDO
@@ -1923,13 +2044,36 @@ C--IF INACTIVE OR CONSTANT CELL
             IF(ICBUND(N,ICOMP).LE.0) THEN
                A(N)=-1.
             ELSE if(iSSTrans.eq.0)  then
+              IF(iUnitTRNOP(7).GT.0) THEN
+                IF(IUZFBND(J,I).GT.0) THEN
+                  IF(ISOTHM.EQ.0) THEN
+                    RF=1.
+                  ELSEIF(ISOTHM.EQ.1) THEN
+                    RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
+                  ELSE
+                    RF=1.
+                  ENDIF
+                  A(N)=-THETAW(J,I,K)*RF*DELR(J)*DELC(I)*DH(N)/DTRANS
+                ELSE
+                  VOL=DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &              *VOL
+                ENDIF
+              ELSE
               IF(IALTFM.EQ.2) THEN
+               VOL=DELR(J)*DELC(I)*DH(N)
+     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+               VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+               VOL=MIN(VOL,VCELL)
                A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *(DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2))
+     &              *VOL
               ELSE
                A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &              *DELR(J)*DELC(I)*DH(N)
+              ENDIF
               ENDIF
             ENDIF
           ENDDO
@@ -2022,3 +2166,35 @@ C--IF ALL ELEMENTS ARE EQUAL, SET [UNIFOR] TO T
       UNIFOR=.TRUE.
       RETURN
       END
+C
+      SUBROUTINE BTNFLW5AD
+C ***************************************************
+C THIS SUBROUTINE SAVES CONCENTRATION AT THE 
+C BEGINNING OF FLOW TIME-STEP --> COLDFLW=CNEW
+C ***************************************************
+      USE MT3DMS_MODULE, ONLY: CNEW,COLD,CINACT,IDRY2,COLDFLW,                !edm
+     &                         NCOL,NROW,NLAY,NCOMP,ICBUND
+C
+      IMPLICIT  NONE
+      INTEGER K,I,J,INDEX
+C
+      DO INDEX=1,NCOMP
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              IF(ICBUND(J,I,K,INDEX).EQ.0) THEN
+                COLDFLW(J,I,K,INDEX)=CNEW(J,I,K,INDEX)
+                IF(ABS(CINACT-COLDFLW(J,I,K,INDEX)).LE.1.0E-3) THEN
+                  COLDFLW(J,I,K,INDEX)=0.
+                ENDIF
+              ELSE
+                COLDFLW(J,I,K,INDEX)=CNEW(J,I,K,INDEX)
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDDO
+C
+      RETURN
+      END
+C

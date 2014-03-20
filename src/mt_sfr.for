@@ -10,8 +10,9 @@ C***********************************************************************
       INTEGER IN
       LOGICAL OPND
 C
-      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR)!# NEW
+      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,ISFRBC)!# NEW
       ALLOCATE(NSSSF)                                             !# NEW
+      ISFRBC=0
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INSFT
@@ -20,6 +21,15 @@ C--PRINT PACKAGE NAME AND VERSION NUMBER
 C
 C--READ NUMBER OF STREAMS
       READ(INSFT,*) NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
+C
+C--IF NSFINIT>0, DO RIGOROUS TRANSPORT ROUTING THROUGH SFR
+C--IF NSFINIT<0, USE SFR ONLY AS GW BOUNDARY, ACTIVE FLAG
+      IF(NSFINIT.LT.0) THEN
+        NSFINIT=-NSFINIT
+        ISFRBC=1
+        WRITE(IOUT,*) ' SFR USED ONLY AS GW BOUNDARY CONDITION'
+      ENDIF
+C
       WRITE(IOUT,10) NSFINIT,MXSFBC
 10    FORMAT(1X,'NUMBER OF STREAMS = ',I5,
      &      /1X,'MAXIMUM NUMBER OF STREAM BOUNDARY CONDITIONS = ',I5)
@@ -149,7 +159,9 @@ C--READ LIST OF STREAM GAGES
       ENDDO
       IF(IOUTOBS.GT.0) THEN
         WRITE(IOUTOBS,*) ' STREAM OBSERVATION OUTPUT'
-        WRITE(IOUTOBS,*) ' TIME      SEGMENT     REACH    CONCENTRATION'
+        WRITE(IOUTOBS,*) 
+     1 '   TIME      SEGMENT REACH  SFR-CONCENTRATION    FLOWGW',
+     1 '          GW-CONC'
       ENDIF
       IF(NOBSSF.GT.0 .AND. IOUTOBS.LE.0) THEN
         WRITE(IOUT,*) '***STREAM-FLOW OBSERVATION WILL NOT BE OUTPUT***'
@@ -184,9 +196,9 @@ C--BASIC CHECKS ON NTMP
         WRITE(*,*) 'NTMP<0 NOT ALLOWED FOR FIRST STRESS PERIOD'
         STOP
       ENDIF
-      IF(NTMP.EQ.0) THEN
-        RETURN
-      ENDIF
+C      IF(NTMP.EQ.0) THEN
+C        RETURN
+C      ENDIF
 C
 C--RESET ARRAYS
       IF(NTMP.GE.0) THEN
@@ -268,11 +280,12 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE FORMULATES SFT PACKAGE
 C***********************************************************************
+      USE MIN_SAT, ONLY: QC7
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,A,RHS,
      &                             DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &                             MIXELM
+     &                             MIXELM,IDRY2
       IMPLICIT  NONE
       INTEGER N,K,I,J,NN
       INTEGER ICOMP
@@ -287,17 +300,31 @@ C--FILL COEFFICIENT MATRIX A - WITH GW TO SFR TERMS
         NN=(K-1)*NCOL*NROW+(I-1)*NCOL+J
         Q=0.
         Q=QSFGW(N)    !(-)VE MEANS GW TO SFR; (+)VE MEANS SFR TO GW
-        IF(Q.LT.0.) THEN
+        IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+            IF(IDRY2.EQ.1) THEN
+              IF(Q.LT.0.) THEN
+                QC7(J,I,K,9)=QC7(J,I,K,9)-Q
+              ELSE
+                CONC=CNEWSF(N,ICOMP)
+                QC7(J,I,K,7)=QC7(J,I,K,7)-Q*CONC
+                QC7(J,I,K,8)=QC7(J,I,K,8)-Q
+              ENDIF
+            ENDIF
+          ENDIF
+        ELSE
+          IF(Q.LT.0.) THEN
 C.......CONSIDER ONLY FLOW INTO STREAM
 C          CONC=CNEW(J,I,K,ICOMP)
-          IF(UPDLHS) A(NN)=A(NN)+Q
+            IF(UPDLHS) A(NN)=A(NN)+Q
 C
 C--FILL RHS WITH SFR TO GW TERMS USING CALCULATED SFR CONCS
-        ELSE
+          ELSE
 C.......CONSIDER ONLY FLOW OUT OF STREAM
 C          CONC=CNEW(J,I,K,ICOMP)
-          CONC=CNEWSF(N,ICOMP)
-          RHS(NN)=RHS(NN)-Q*CONC
+            CONC=CNEWSF(N,ICOMP)
+            RHS(NN)=RHS(NN)-Q*CONC
+          ENDIF
         ENDIF
       ENDDO
 C
@@ -309,10 +336,11 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE ASSEMBLES AND SOLVES MATRIX FOR SFR TRANSPORT
 C***********************************************************************
+      USE MIN_SAT, ONLY: QC7
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
      &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &                         iSSTrans,iUnitTRNOP
+     &                         iSSTrans,iUnitTRNOP,IDRY2
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE XMDMODULE
@@ -426,10 +454,16 @@ C
 C.......GW TO SFR
         Q=QSFGW(N)
         IF(Q.LT.0.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+C            IF(IDRY2.EQ.1) THEN
+C              RHSSF(N)=RHSSF(N)+Q*CNEW(J,I,K,ICOMP)
+C            ENDIF
+          ELSE
 C          IF(ISFSOLV.EQ.2) THEN
             RHSSF(N)=RHSSF(N)+Q*CNEW(J,I,K,ICOMP)
 C          ELSE
 C          ENDIF
+          ENDIF
         ENDIF
 C
 C.......CHECK INFLOW FROM LAKE
@@ -459,6 +493,7 @@ C.....INFLOW FROM UZF
             I=IROUTE(3,ICON)      !ROW
             J=IROUTE(4,ICON)      !COLUMN
             Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
             IF(IROUTE(7,ICON).EQ.1) THEN
               CONC=CNEW(J,I,K,ICOMP)
             ELSEIF(IROUTE(7,ICON).EQ.2) THEN
@@ -677,16 +712,16 @@ C***********************************************************************
 C     RESET STREAM CONCENTRATIONS
 C***********************************************************************
       USE SFRVARS
-      INTEGER KSTP,KPER,N
+      INTEGER KSTP,KPER,N,NN
       DOUBLE PRECISION DZERO
       DZERO=0.0D0
 C
 C--SET INITIAL CONC = 0.0 IF VOLUME IS CLOSE TO ZERO
       IF(KSTP.EQ.1.AND.KPER.EQ.1.AND.N.EQ.1) THEN
-        DO N=1,NSTRM
-          VOL=SFLEN(N)*SFNAREA(N)
+        DO NN=1,NSTRM
+          VOL=SFLEN(NN)*SFNAREA(NN)
           IF(ABS(VOL-DZERO).LE.1.0D-3) THEN
-            CNEWSF(N,:)=0.0D0
+            CNEWSF(NN,:)=0.0D0
           ENDIF
         ENDDO
       ENDIF
@@ -723,13 +758,14 @@ C     THIS SUBROUTINE CALCULATES BUDGETS FOR STREAMS
 C     THIS SUBROUTINE CALCULATES GROUNDWATER BUDGETS RELATED TO STREAMS
 C     THIS SUBROUTINE WRITES STREAM CONCENTRATIONS AT OBSERVATION LOCATIONS
 C***********************************************************************
+      USE MIN_SAT, ONLY: QC7
       USE LAKVARS
       USE SFRVARS
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
      &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
-     &                         iSSTrans
+     &                         iSSTrans,IDRY2
       IMPLICIT  NONE
       INTEGER IS,IR,ICON
       INTEGER ICOMP
@@ -748,8 +784,10 @@ C
 C--ZERO OUT TERMS
       CONC=0.
       Q=0.
-      RMASLAK=0.
-      VOUTLAK=0.
+      IF(iUnitTRNOP(18).GT.0) THEN
+        RMASLAK=0.
+        VOUTLAK=0.
+      ENDIF
 C
       FLOINSF=0.
       FLOOUTSF=0.
@@ -778,14 +816,7 @@ C--WRITE HEADER TO ICBCSF FILE
       IF(KPER.EQ.1 .AND. KSTP.EQ.1.AND.NTRANS.EQ.1.AND.NOBSSF.GT.0)THEN
       ENDIF
 C
-C--WRITE OBSERVATIONS
-      DO I=1,NOBSSF
-        IS=ISOBS(I)
-        IR=IROBS(I)
-        N=ISTRM(IR,IS)
-        CONC=CNEWSF(N,ICOMP)
-        WRITE(IOUTOBS,*) TIME2,IS,IR,CONC
-      ENDDO
+      IF(ISFRBC.NE.1) THEN
 C
 C-- CALCULATE INFLOW, STORAGE, AND OUTFLOW TERMS
 C
@@ -859,28 +890,6 @@ C
       continue
       endif
 
-C
-C.......INFLOW/OUTFLOW GW
-        Q=QSFGW(N)
-        IF(Q.LT.0.0) THEN
-          Q1=Q1+ABS(Q)*DTRANS
-          CONC=CNEW(J,I,K,ICOMP)
-          IF(IBNDSF(N).EQ.-1) THEN
-C            CCOUTSF=CCOUTSF-Q*CONC*DTRANS
-          ELSE
-            GW2SFR=GW2SFR-Q*CONC*DTRANS
-          ENDIF
-          RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
-        ELSE
-          Q2=Q2+ABS(Q)*DTRANS
-          CONC=CNEWSF(N,ICOMP)
-          IF(IBNDSF(N).EQ.-1) THEN
-C            CCINSF=CCINSF+Q*CONC*DTRANS
-          ELSE
-            GWFROMSFR=GWFROMSFR+Q*CONC*DTRANS
-          ENDIF
-          RMASIO(52,1,ICOMP)=RMASIO(52,1,ICOMP)+Q*CONC*DTRANS
-        ENDIF
 C
 C.......TOTAL FLOW OUT INCLUDING/EXCLUDING ET
         IF(IETSFR.EQ.0) THEN
@@ -1060,6 +1069,63 @@ C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
           ENDIF
         ENDDO
       ENDDO
+      ENDIF
+C
+C.......INFLOW/OUTFLOW GW
+      DO N=1,NSTRM
+        K=ISFL(N)     !LAYER
+        I=ISFR(N)     !ROW
+        J=ISFC(N)     !COLUMN
+        Q=QSFGW(N)
+        IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+            IF(IDRY2.EQ.1) THEN
+              IF(Q.LT.0.) THEN
+C                Q1=Q1+ABS(Q)*DTRANS
+C                CONC=CNEW(J,I,K,ICOMP)
+C                IF(IBNDSF(N).EQ.-1) THEN
+C                ELSE
+C                  GW2SFR=GW2SFR-Q*CONC*DTRANS
+C                ENDIF
+C                RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
+                QC7(J,I,K,9)=QC7(J,I,K,9)-Q
+              ELSE
+                Q2=Q2+ABS(Q)*DTRANS
+                CONC=CNEWSF(N,ICOMP)
+                IF(IBNDSF(N).EQ.-1) THEN
+                ELSE
+                  GWFROMSFR=GWFROMSFR+Q*CONC*DTRANS
+                ENDIF
+                RMASIO(52,1,ICOMP)=RMASIO(52,1,ICOMP)+Q*CONC*DTRANS
+                QC7(J,I,K,7)=QC7(J,I,K,7)-Q*CONC
+                QC7(J,I,K,8)=QC7(J,I,K,8)-Q
+              ENDIF
+            ENDIF
+          ENDIF
+        ELSE
+          IF(Q.LT.0.0) THEN
+            Q1=Q1+ABS(Q)*DTRANS
+            CONC=CNEW(J,I,K,ICOMP)
+            IF(IBNDSF(N).EQ.-1) THEN
+C            CCOUTSF=CCOUTSF-Q*CONC*DTRANS
+            ELSE
+              GW2SFR=GW2SFR-Q*CONC*DTRANS
+            ENDIF
+            RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
+          ELSE
+            Q2=Q2+ABS(Q)*DTRANS
+            CONC=CNEWSF(N,ICOMP)
+            IF(IBNDSF(N).EQ.-1) THEN
+C            CCINSF=CCINSF+Q*CONC*DTRANS
+            ELSE
+              GWFROMSFR=GWFROMSFR+Q*CONC*DTRANS
+            ENDIF
+            RMASIO(52,1,ICOMP)=RMASIO(52,1,ICOMP)+Q*CONC*DTRANS
+          ENDIF
+        ENDIF
+      ENDDO
+C
+      IF(ISFRBC.NE.1) THEN
 C
 C.....INFLOW FROM UZF
       IF(iUnitTRNOP(7).GT.0) THEN
@@ -1072,6 +1138,7 @@ C.....INFLOW FROM UZF
             I=IROUTE(3,ICON)      !ROW
             J=IROUTE(4,ICON)      !COLUMN
             Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
             IF(IROUTE(7,ICON).EQ.1) THEN
               CONC=CNEW(J,I,K,ICOMP)
             ELSEIF(IROUTE(7,ICON).EQ.2) THEN
@@ -1103,12 +1170,6 @@ C--CUMULATIVE TERMS
       CSTOROTSF(ICOMP)=CSTOROTSF(ICOMP)+STOROTSF
       CCCOUTSF(ICOMP)=CCCOUTSF(ICOMP)+CCOUTSF
       CCCINSF(ICOMP)=CCCINSF(ICOMP)+CCINSF
-
-      IF(KPER.EQ.13)THEN
-      CONTINUE
-      ENDIF
-
-
 C
 C--CALCULATE TOTAL
       TOTINSF=GW2SFR+LAK2SFR+PRECSF+RUNOFSF+STORINSF+FLOINSF+CCINSF+
@@ -1199,6 +1260,24 @@ C--WRITE SFR MASS BALANCE TO OUTPUT FILE
 98    FORMAT(16X,' DISCREPANCY (PERCENT) =',G15.7,
      &       16X,' DISCREPANCY (PERCENT) =',G15.7)
 99    FORMAT(46X,'FLOW ERR (QIN-QOUT-DV) =',G15.7,' [L3/T]',/)
+C
+      ENDIF !ISFRBC
+C
+C--WRITE OBSERVATIONS
+      DO II=1,NOBSSF
+        IS=ISOBS(II)
+        IR=IROBS(II)
+        N=ISTRM(IR,IS)
+        CONC=CNEWSF(N,ICOMP)
+C
+        K=ISFL(N)     !LAYER
+        I=ISFR(N)     !ROW
+        J=ISFC(N)     !COLUMN
+        Q=QSFGW(N)
+C
+        WRITE(IOUTOBS,220) TIME2,IS,IR,CONC,Q,CNEW(J,I,K,ICOMP)
+      ENDDO
+220   FORMAT(1X,G15.7,I5,2X,I5,5(5X,G15.7))
 C
       RETURN
       END

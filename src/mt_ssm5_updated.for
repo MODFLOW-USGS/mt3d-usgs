@@ -360,6 +360,8 @@ C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: IUZFBND,THETAW
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,
      &                         DELC,DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,
      &                         MXSS,NTSS,SS,SSMC,SSG,QSTO,CNEW,ISS,A,
@@ -368,12 +370,21 @@ C
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
      &                         FSWT,FSFR,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
-     &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW   !# LINE 348-349 SSM
+     &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,   !# LINE 348-349 SSM
+     &                         IDRY2
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
      &          MHOST,KHOST,IHOST,JHOST
       REAL      CTMP,QSS,QCTMP
+C
+C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
+C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
+      IF(DRYON.and.IDRY2.EQ.1) THEN
+        QC7(:,:,:,7)=0.0 !Qin*Cin
+        QC7(:,:,:,8)=0.0 !Qin
+        QC7(:,:,:,9)=0.0 !Qout
+      ENDIF
 C
 C--DETERMINE AVERAGE CONCENTRATION FOR LINKED SINK/SOURCE GROUPS
       CALL CGROUP(NCOL,NROW,NLAY,NCOMP,ICOMP,MXSS,NTSS,
@@ -387,8 +398,17 @@ C--TRANSIENT FLUID STORAGE TERM
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
               IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
-                N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+              IF(iUnitTRNOP(7).GT.0)THEN
+                IF(IUZFBND(J,I).GT.0) THEN
+                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1                  COLD(J,I,K,ICOMP)
+                ELSE
+                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                ENDIF
+              ELSE
 !                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)     
 !CDL--SEAWAT: This seems to fix the problem with storage
 CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD  !# LINE 390-396 SSM
@@ -411,6 +431,19 @@ CEDM--IS WRONG                                                      !# LINE 390-
 !     1                 *RETA(N,ICOMP)
                 ENDIF
               ENDIF
+              ELSE
+                IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+                  IF(IDRY2.EQ.1) THEN
+CC-----------STORAGE
+                  QC7(J,I,K,7)=-QSTO(J,I,K)
+     1            *DH(J,I,K)*DELR(J)*DELC(I)
+     1            *RETA(J,I,K,ICOMP)*COLDFLW(J,I,K,ICOMP)
+                  QC7(J,I,K,8)=-QSTO(J,I,K)
+     1            *DH(J,I,K)*DELR(J)*DELC(I)
+     1            *RETA(J,I,K,ICOMP)
+                  ENDIF
+                ENDIF
+              ENDIF
             ENDDO
           ENDDO
         ENDDO
@@ -430,6 +463,21 @@ C--(RECHARGE)
               RHS(N)=RHS(N)
      &         -RECH(J,I)*CRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
+          ELSE
+            IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                IF(RECH(J,I).LT.0) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSE
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CRCH(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -448,6 +496,22 @@ C--(EVAPOTRANSPIRATION)
               RHS(N)=RHS(N)
      &         -EVTR(J,I)*CEVT(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
+          ELSE
+            IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
+     &          CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSEIF(CEVT(J,I,ICOMP).GT.0) THEN
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CEVT(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -461,7 +525,6 @@ C--POINT SINK/SOURCE TERMS
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
         QSS=SS(5,NUM)
         IQ=SS(6,NUM)
-        IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 450 SSM
         IF(iUnitTRNOP(6).GT.0) THEN                                    !# LINE 451 SSM
@@ -498,6 +561,22 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)      
         ENDIF
 C
+        IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+            IF(IDRY2.EQ.1) THEN
+              IF(QSS.LT.0) THEN
+                QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ELSE
+                QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))*CTMP
+                QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ENDIF        
+            ENDIF
+          ENDIF
+        ELSE
+C
 C--ADD CONTRIBUTIONS TO MATRICES [A] AND [RHS]        
         N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
         IF(QSS.LT.0) THEN
@@ -505,6 +584,9 @@ C--ADD CONTRIBUTIONS TO MATRICES [A] AND [RHS]
         ELSE
           RHS(N)=RHS(N)-QSS*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
         ENDIF        
+C
+        ENDIF
+C
       ENDDO
 C
 C--DONE WITH EULERIAN SCHEMES
@@ -525,6 +607,21 @@ C--(RECHARGE)
             IF(UPDLHS) A(N)=A(N)-RECH(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
             RHS(N)=RHS(N)
      &       -RECH(J,I)*CRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
+          ELSE
+            IF(K.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                IF(RECH(J,I).LT.0) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSE
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CRCH(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -544,6 +641,22 @@ C--(EVAPOTRANSPIRATION)
               RHS(N)=RHS(N)
      &         -EVTR(J,I)*CEVT(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
+          ELSE
+            IF(K.GT.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
+     &          CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSEIF(CEVT(J,I,ICOMP).GT.0) THEN
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CEVT(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -557,12 +670,6 @@ C--POINT SINK/SOURCE TERMS
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
         QSS=SS(5,NUM)
         IQ=SS(6,NUM)
-C
-C--SKIP IF NOT ACTIVE CELL      
-        IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
-C
-C--SKIP IF SINK CELL
-        IF(QSS.LE.0.AND.IQ.NE.15) CYCLE
 C
 C--COMPUTE PRODUCT OF Q*C
         QCTMP=QSS*CTMP        
@@ -599,10 +706,31 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           QCTMP=QSS*CTMP                                    
         ENDIF
 C
+C--SKIP IF NOT ACTIVE CELL      
+        IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+            IF(IDRY2.EQ.1) THEN
+              IF(QSS.LT.0) THEN
+                QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ELSE
+                QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1          QCTMP*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ENDIF        
+            ENDIF
+          ENDIF
+        ELSE
+C
+C--SKIP IF SINK CELL
+        IF(QSS.LE.0.AND.IQ.NE.15) CYCLE
+C
 C--ADD CONTRIBUTIONS TO MATRICES [A] AND [RHS]
         N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
         IF(UPDLHS) A(N)=A(N)-QSS*DELR(J)*DELC(I)*DH(J,I,K)
         RHS(N)=RHS(N)-QCTMP*DELR(J)*DELC(I)*DH(J,I,K)        
+        ENDIF
       ENDDO
 C
 C--DONE WITH EULERIAN-LAGRANGIAN SCHEMES
@@ -620,6 +748,8 @@ C SOURCE TERMS.
 C ********************************************************************
 C last modified: 02-20-2010
 C
+      USE UZTVARS,       ONLY: IUZFBND,THETAW
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,
      &                        DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,MXSS,
      &                        NTSS,SS,SSMC,SSG,QSTO,CNEW,RETA,ISS,
@@ -628,11 +758,19 @@ C
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT, !# LINE 607 SSM
-     &                        iUnitTRNOP,DELT,COLDFLW
+     &                        iUnitTRNOP,DELT,COLDFLW,IDRY2
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
       REAL      DTRANS,CTMP,QSS
+C
+C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
+C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
+      IF(DRYON.and.IDRY2.EQ.1) THEN
+        QC7(:,:,:,7)=0.0 !Qin*Cin
+        QC7(:,:,:,8)=0.0 !Qin
+        QC7(:,:,:,9)=0.0 !Qout
+      ENDIF
 C
 C--DETERMINE AVERAGE CONCENTRATION FOR LINKED SINK/SOURCE GROUPS
       CALL CGROUP(NCOL,NROW,NLAY,NCOMP,ICOMP,MXSS,NTSS,
@@ -645,10 +783,34 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            IF(iUnitTRNOP(7).GT.0)THEN
+              IF(IUZFBND(J,I).GT.0) THEN
+                IF(QSTO(J,I,K).GT.0) THEN
+                  RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)+
+     1          QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1                  COLD(J,I,K,ICOMP)*DTRANS
+                ELSE
+                  RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)+
+     1          QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1                  COLD(J,I,K,ICOMP)*DTRANS
+                ENDIF
+              ELSE
+                CTMP=COLD(J,I,K,ICOMP)
+                IF(QSTO(J,I,K).GT.0) THEN
+                RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
+                ELSE
+                RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
+     &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
+                ENDIF
+              ENDIF
+            ELSE
 CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
 CEDM--WAS WRONG.
-            IF(IALTFM.GE.1) THEN
+10          IF(IALTFM.GE.1) THEN
               IF(IALTFM.EQ.1) CTMP=COLDFLW(J,I,K,ICOMP)
               IF(IALTFM.EQ.2) CTMP=COLD(J,I,K,ICOMP)
               !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).LE.1.0E-3) then
@@ -674,6 +836,30 @@ CEDM--WAS WRONG.
      &           +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
               ENDIF
             ENDIF
+            ENDIF
+            ELSE
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+                IF(IDRY2.EQ.1) THEN
+CC-----------STORAGE
+                  CTMP=COLDFLW(J,I,K,ICOMP)
+C                  IF(QSTO(J,I,K).GT.0) THEN
+                  RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &             +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+     &             *RETA(J,I,K,ICOMP)
+                  QC7(J,I,K,7)=-QSTO(J,I,K)
+     1            *DH(J,I,K)*DELR(J)*DELC(I)
+     1            *RETA(J,I,K,ICOMP)*CTMP
+                  QC7(J,I,K,8)=-QSTO(J,I,K)
+     1            *DH(J,I,K)*DELR(J)*DELC(I)
+     1            *RETA(J,I,K,ICOMP)
+C                  ELSE
+C                  RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+C     &             +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+C     &             *RETA(J,I,K,ICOMP)
+C                  ENDIF
+                ENDIF
+              ENDIF
+            ENDIF
           ENDDO
         ENDDO
       ENDDO
@@ -685,7 +871,8 @@ C
       DO I=1,NROW
         DO J=1,NCOL
           K=IRCH(J,I)
-          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0) THEN
+C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
           CTMP=CRCH(J,I,ICOMP)
           IF(RECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
           IF(RECH(J,I).GT.0) THEN
@@ -694,6 +881,29 @@ C
           ELSE
             RMASIO(7,2,ICOMP)=RMASIO(7,2,ICOMP)+RECH(J,I)*CTMP*DTRANS*
      &       DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+C        
+          ELSE
+            IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                CTMP=CRCH(J,I,ICOMP)
+                IF(RECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
+                IF(RECH(J,I).LT.0) THEN
+                  RMASIO(7,2,ICOMP)=RMASIO(7,2,ICOMP)+RECH(J,I)*CTMP
+     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSE
+                  RMASIO(7,1,ICOMP)=RMASIO(7,1,ICOMP)+RECH(J,I)*CTMP
+     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CRCH(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -704,7 +914,8 @@ C
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
-          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0) THEN
+C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
           CTMP=CEVT(J,I,ICOMP)
           IF(EVTR(J,I).LT.0.AND.(CTMP.LT.0 .or.
      &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
@@ -718,6 +929,34 @@ C
           ELSE
             RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+EVTR(J,I)*CTMP*DTRANS*
      &       DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+C
+          ELSE
+            IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(IDRY2.EQ.1) THEN
+                CTMP=CEVT(J,I,ICOMP)
+                IF(EVTR(J,I).LT.0.AND.(CTMP.LT.0 .or.
+     &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+                  CTMP=CNEW(J,I,K,ICOMP)
+                ELSEIF(CTMP.LT.0) THEN        
+                  CTMP=0.
+                ENDIF
+                IF(EVTR(J,I).LT.0) THEN
+                  RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+EVTR(J,I)*CTMP
+     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ELSE
+                  RMASIO(8,1,ICOMP)=RMASIO(8,1,ICOMP)+EVTR(J,I)*CTMP
+     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            CEVT(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                ENDIF
+              ENDIF
+            ENDIF
           ENDIF
         ENDDO
       ENDDO
@@ -740,7 +979,9 @@ C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 729 SSM
         ENDIF                                                  !# LINE 734 SSM
 C
 C--SKIP IF NOT ACTIVE CELL
-        IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
+        IF(IDRY2.EQ.0) THEN
+          IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
+        ENDIF
 C
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)
         IF(IQ.EQ.15) THEN
@@ -778,6 +1019,24 @@ C
           ELSE
             RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+QSS*CTMP*DTRANS*
      &       DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+        ELSE
+          IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
+            IF(IDRY2.EQ.1) THEN
+              IF(QSS.LT.0) THEN
+                RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+QSS*CTMP*DTRANS*
+     &          DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ELSE
+                RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+QSS*CTMP*DTRANS*
+     &          DELR(J)*DELC(I)*ABS(DH(J,I,K))
+                QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))*CTMP
+                QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+              ENDIF        
+            ENDIF
           ENDIF
         ENDIF
 C

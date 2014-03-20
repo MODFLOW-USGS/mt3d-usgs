@@ -11,7 +11,8 @@ C
      &                         PRSITY2,RETA2,ISOTHM,RFMIN,DTRCT,
      &                         IREACT,IRCTOP,IGETSC,IFMTRF,FRAC,SP1,SP2,
      &                         RC1,RC2,
-     &                         SAVUCN                          !# LINE 261 RCT
+     &                         SAVUCN,IUCN2                          !# LINE 261 RCT
+      USE MIN_SAT, ONLY: ICIMDRY                        !# LINE 11 ADV
 C
       USE RCTMOD                                               !# LINE 33 RCT
 C
@@ -19,7 +20,7 @@ C
       INTEGER   IN,J,I,K,JR,IR,KR,INDEX,IERR
       INTEGER   NODES                                          !# LINE 271 RCT
       REAL      TR,TINY,EPSILON,TOTPOR
-      CHARACTER ANAME*24
+      CHARACTER ANAME*24,FLNAME*50,FINDEX*30
       PARAMETER (TINY=1.E-30,EPSILON=0.5E-6)
       LOGICAL   EXISTED                                        !# LINE 283 RCT
 C
@@ -217,10 +218,29 @@ C--ALLOCATE SP1IM                                              !# LINE 213 RCT
         ENDIF                                                  !# LINE 220 RCT
       ENDIF                                                    !# LINE 222 RCT
 C                                                              !# LINE 223 RCT
-
+      IF(ISOTHM.NE.5.AND.ISOTHM.NE.6) THEN
+        IF(ICIMDRY.GE.2) THEN
+          ICIMDRY=0
+          WRITE(IOUT,*) ' ICIMDRY ONLY ACTIVE WITH DUAL-DOMAIN'
+          WRITE(IOUT,*) ' ICIMDRY RESET TO 0'
+        ENDIF
+      ENDIF
 
 CLANGEVIN--NEED TO OPEN UCN2 FILES HERE INSTEAD OF IN BTN5AR
-
+      IF(SAVUCN) THEN
+        IF(ISOTHM.GT.0) THEN
+          WRITE(IOUT,2046) IUCN2+1
+          FLNAME='MT3DnnnS.UCN'
+          DO INDEX=1,NCOMP
+            WRITE(FLNAME(5:7),'(I3.3)') INDEX
+            CALL OPENFL(-(IUCN2+INDEX),0,FLNAME,1,FINDEX)
+          ENDDO
+        ENDIF
+      ENDIF
+ 2046 FORMAT(1X,'SAVE SORBED/IMMOBILE PHASE CONCENTRATIONS ',
+     & 'IN UNFORMATTED FILES [MT3DnnnS.UCN]'/1X,' FOR EACH SPECIES ',
+     & 'ON UNITS ',I3,' AND ABOVE, ',
+     & 'IF SORPTION/MASS TRANSFER SIMULATED')
 
 C
 C--PRINT A HEADER
@@ -290,6 +310,26 @@ C
         ENDIF
       ENDDO
   333 CONTINUE
+C                                                                       !# LINE 391 RCT
+      DO INDEX=1,NCOMP
+        ANAME='1ST SORP. COEF. COMP. NO'
+        WRITE(ANAME(22:24),'(I3.2)') INDEX
+        IF(IRCTOP.EQ.2) THEN
+          DO K=1,NLAY
+            CALL RARRAY(SP1(1:NCOL,1:NROW,K,INDEX),ANAME,NROW,NCOL,
+     &                  K,IN,IOUT)
+          ENDDO
+        ELSEIF(IRCTOP.EQ.1) THEN
+          CALL RARRAY(BUFF(1:NCOL,1:NROW,1:NLAY),ANAME,1,NLAY,0,IN,IOUT)
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                SP1(J,I,K,INDEX)=BUFF(1,1,K)
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDIF
+      ENDDO
 C
 C-----IMMOBILE DOMAIN SORPTION COEFFICIENT                              !# LINE 370 RCT
       IF(ISP1IM.GE.1) THEN                                              !# LINE 371 RCT
@@ -312,26 +352,6 @@ C-----IMMOBILE DOMAIN SORPTION COEFFICIENT                              !# LINE 
           ENDIF                                                         !# LINE 388 RCT
         ENDDO                                                           !# LINE 389 RCT
       ENDIF                                                             !# LINE 390 RCT
-C                                                                       !# LINE 391 RCT
-      DO INDEX=1,NCOMP
-        ANAME='1ST SORP. COEF. COMP. NO'
-        WRITE(ANAME(22:24),'(I3.2)') INDEX
-        IF(IRCTOP.EQ.2) THEN
-          DO K=1,NLAY
-            CALL RARRAY(SP1(1:NCOL,1:NROW,K,INDEX),ANAME,NROW,NCOL,
-     &                  K,IN,IOUT)
-          ENDDO
-        ELSEIF(IRCTOP.EQ.1) THEN
-          CALL RARRAY(BUFF(1:NCOL,1:NROW,1:NLAY),ANAME,1,NLAY,0,IN,IOUT)
-          DO K=1,NLAY
-            DO I=1,NROW
-              DO J=1,NCOL
-                SP1(J,I,K,INDEX)=BUFF(1,1,K)
-              ENDDO
-            ENDDO
-          ENDDO
-        ENDIF
-      ENDDO
 C
       DO INDEX=1,NCOMP
         ANAME='2ND SORP. COEF. COMP. NO'
@@ -1111,6 +1131,7 @@ C THIS SUBROUTINE CALCULATES MASS BUDGET ASSOCIATED WITH REACTIONS.
 C **********************************************************************
 C last modified: 10-01-2005
 C
+      USE MIN_SAT, ONLY: VAQSAT,ICIMDRY
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         DELR,DELC,DH,ISOTHM,IREACT,RHOB,SP1,SP2,
      &                         SRCONC,RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,
@@ -1226,6 +1247,9 @@ C--CALCULATE CHANGE IN CONCENTRATION OF MOBILE-LIQUID PHASE
               DCRCT=-SP2(J,I,K,ICOMP)*(CTMP !CNEW(J,I,K,ICOMP) !# LINE 1293 RCT
      &         -SRCONC(J,I,K,ICOMP))*DTRANS
      &         *DELR(J)*DELC(I)*DH(J,I,K)
+C
+C--SAVE LATEST SATURATED VOLUME OF AQUIFER TO HANDLE IMMOBILE DOMAIN IN DRY CELLS
+              IF(ICIMDRY.GE.2) VAQSAT(J,I,K)=DELR(J)*DELC(I)*DH(J,I,K)
 C
 C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
               IF(DCRCT.LT.0) THEN
