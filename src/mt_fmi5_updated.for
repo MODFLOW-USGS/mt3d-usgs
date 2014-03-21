@@ -700,6 +700,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))    !edm
               ENDIF                                                 !edm
             ENDIF
+            IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
           ENDDO
         ENDDO
       ENDDO
@@ -1021,6 +1022,7 @@ C
           ELSE
             RECH(J,I)=RECH(J,I)/VOLAQU
           ENDIF
+          IF(ABS(VOLAQU-0.).LT.1.0E-5) RECH(J,I)=0.
           IF(RECH(J,I).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
           TM=PRSITY(J,I,K)/RECH(J,I)
           IF(ABS(TM).LT.DTSSM) THEN
@@ -1070,6 +1072,7 @@ C
           ELSE
             EVTR(J,I)=EVTR(J,I)/VOLAQU
           ENDIF
+          IF(ABS(VOLAQU-0.).LT.1.0E-5) EVTR(J,I)=0.
           IF(EVTR(J,I).EQ.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
             TM=PRSITY(J,I,K)/EVTR(J,I)
             IF(ABS(TM).LT.DTSSM) THEN
@@ -1143,6 +1146,7 @@ C
         ELSE
           SS(5,NUM)=SS(5,NUM)/VOLAQU
         ENDIF
+        IF(ABS(VOLAQU-0.).LT.1.0E-5) SS(5,NUM)=0.
         IF(SS(5,NUM).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
         TM=PRSITY(J,I,K)/SS(5,NUM)
         IF(ABS(TM).LT.DTSSM) THEN
