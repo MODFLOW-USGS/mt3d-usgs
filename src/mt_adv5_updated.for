@@ -372,10 +372,10 @@ C
      &                         iUnitTRNOP  
 C
       IMPLICIT  NONE
-      INTEGER   ICOMP,J,I,K
-      REAL      SADV1Q,QCTMP,DTRANS,
-     &          PRSYTMP                
-      DIMENSION PRSYTMP(NCOL,NROW,NLAY)
+      INTEGER   ICOMP,J,I,K,ierr
+      REAL      SADV1Q,QCTMP,DTRANS
+      REAL, ALLOCATABLE, DIMENSION(:,:,:) :: PRSYTMP         
+      ALLOCATE(PRSYTMP(NCOL,NROW,NLAY),stat=ierr)
 C
 C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
       IF(MIXELM.EQ.0) THEN
