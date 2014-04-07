@@ -1,8 +1,9 @@
 C
-      SUBROUTINE UZT5AR(INUZT)
+      SUBROUTINE UZT1AR(INUZT)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR UZT VARIABLES
 C***********************************************************************
+C last modified 10-01-2014
       USE UZTVARS
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,NCOL,NROW,DZ,DH,ICBUND,PRSITY,
      &                         NLAY,NCOL,NROW,iUnitTRNOP
@@ -10,12 +11,12 @@ C
       IMPLICIT NONE
       INTEGER         INUZT,IET,I,J,K,IERR
       CHARACTER       LINE*180,ANAME*24,BNAME*24
-      LOGICAL         IUZFBND_CHK                                   !edm
+      LOGICAL         IUZFBND_CHK
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INUZT
- 1030 FORMAT(1X,'UZT -- UNSATURATED-ZONE TRANSPORT PACKAGE,',
-     & ' VERSION 1, AUGUST 2013, INPUT READ FROM UNIT',I3)
+ 1030 FORMAT(1X,'UZT1 -- UNSATURATED-ZONE TRANSPORT PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--ALLOCATE VARIABLES USED IN FMI
       ALLOCATE(MXUZCON,NCON,ICBCUZ,IETFLG,IUZFOPTG)
@@ -134,7 +135,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE UZT5RP(KPER)
+      SUBROUTINE UZT1RP(KPER)
 C***********************************************************************
 C     THIS SUBROUTINE READS UZT VARIABLES - INITIAL CONCS
 C***********************************************************************
@@ -259,7 +260,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE UZT5FM(ICOMP)
+      SUBROUTINE UZT1FM(ICOMP)
 C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE UZT SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
@@ -444,7 +445,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE UZT5BD(ICOMP,DTRANS)
+      SUBROUTINE UZT1BD(ICOMP,DTRANS)
 C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH UZT SINK/
 C SOURCE TERMS.
@@ -562,7 +563,7 @@ C--RETURN
 200   RETURN
       END
 C
-      SUBROUTINE UZT5AD(HT1,HT2,TIME1,TIME2)
+      SUBROUTINE UZT1AD(HT1,HT2,TIME1,TIME2)
 C ********************************************************************
 C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
 C ********************************************************************
@@ -575,15 +576,15 @@ C
       REAL SAT
 C
       DO I=1,NROW
-      DO J=1,NCOL
-        IF(IUZFBND(J,I).LE.0) CYCLE
-        DO K=1,NLAY
-C          N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
-          SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
-     1        +SATOLD(J,I,K)
-          THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
+        DO J=1,NCOL
+          IF(IUZFBND(J,I).LE.0) CYCLE
+          DO K=1,NLAY
+C            N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
+            SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
+     1          +SATOLD(J,I,K)
+            THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
+          ENDDO
         ENDDO
-      ENDDO
       ENDDO
 C
 C--RETURN

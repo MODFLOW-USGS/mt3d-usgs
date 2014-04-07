@@ -16,15 +16,16 @@ C              Web site: http://hydro.geo.ua.edu/mt3d                  %
 C                                                                      %
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-C MT3DMS is based on MT3D originally developed by Chunmiao Zheng
+C MT3D-USGS is based on MT3DMS v5.3 originally developed by Chunmiao Zheng
 C at S.S. Papadopulos & Associates, Inc. and documented for
 C the United States Environmental Protection Agency.
-C MT3DMS is written by Chunmiao Zheng and P. Patrick Wang
+C MT3D-USGS is written by authors at S.S. Papadopulos & Associates, Inc., 
+C and the U.S. Geological Survey
 C with the iterative solver routine by Tsun-Zee Mai.
-C Funding for MT3DMS development is provided, in part, by
-C U.S. Army Corps of Engineers, Research and Development Center.
+C Funding for MT3D-USGS development is provided, in part, by
+C U.S. Geological Survey's Office of Groundwater Resources.
 C
-C Copyright, 1998-2010, The University of Alabama. All rights reserved.
+C Copyright, 2014, . All rights reserved.
 C
 C This program is provided without any warranty.
 C No author or distributor accepts any responsibility
@@ -35,27 +36,18 @@ C but ONLY under the condition that the above copyright notice
 C and this notice remain intact.
 C
 C=======================================================================
-C Version history: 06-23-1998 (3.00.A)
-C                  05-10-1999 (3.00.B)
-C                  11-15-1999 (3.50.A)
-C                  08-15-2000 (3.50.B)
-C                  08-12-2001 (4.00)
-C                  05-27-2003 (4.50)
-C                  02-15-2005 (5.00)   
-C                  10-25-2005 (5.10)
-C                  10-30-2006 (5.20)
-C                  02-20-2010 (5.30)
+C Version history: xx-xx-2014 (1.00)
 C
 C  =====================================================================
 C
 C
-C--There appears to be a bug when PERCEL (ADV input file) is set    !edm
-C--to something that causes sub-time stepping.  Mass is not         !edm
-C--conserved in this scenario and may need to be addressed before   !edm
-C--code is distributed.                                             !edm
+C--There appears to be a bug when PERCEL (ADV input file) is set 
+C--to something that causes sub-time stepping.  Mass is not      
+C--conserved in this scenario and may need to be addressed before
+C--code is distributed.                                          
 C
-      USE RCTMOD                                                    !# LINE 57 MAIN
-      USE MIN_SAT                                                   !# LINE 58 MAIN
+      USE RCTMOD                                                 
+      USE MIN_SAT                                                
       USE SFRVARS
       USE LAKVARS
       USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
@@ -68,28 +60,28 @@ C
      &                         ISOTHM,UPDLHS,MXITER,FMNW,HT1,HT2,DTRANS,
      &                         DELT,TIME1,TIME2,NPS,
      &                         MEMDEALLOCATE,
-     &                         INRTR,INTSO,INRTR,INLKT,INSFT,       !# V
-     &                         IWCTS,IALTFM,NOCREWET,               !# V
+     &                         INRTR,INTSO,INRTR,INLKT,INSFT,
+     &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
-     &                         IDRY2          !# Amended
+     &                         IDRY2
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
       CHARACTER FLNAME*50
-      CHARACTER COMLIN*200                              !# LINE 115 MAIN
-      CHARACTER CMST*3                                  !# LINE 116 MAIN
-      CHARACTER CDRY*3                                  !# LINE 116 MAIN
-      INTEGER II,NN,I,J,K,OperFlag,IEDEA                !# LINE 117 MAIN (and amended)
-      REAL DT00                                         !# LINE 119 MAIN
+      CHARACTER COMLIN*200               
+      CHARACTER CMST*3                   
+      CHARACTER CDRY*3                   
+      INTEGER II,NN,I,J,K,OperFlag,IEDEA 
+      REAL DT00                          
       REAL START_TIME,TOTAL_TIME,
      &     END_TIME
       LOGICAL existed
-      CHARACTER,PARAMETER :: VID*30='[Version 5.40-beta 07/27/2010]'
+      CHARACTER,PARAMETER :: VID*30='[Version 1.00-beta 0x/xx/2014]'
 C
 C--ALLOCATE LOGICALS
-      ALLOCATE(DOMINSAT,DRYON)                                 !# NEW
-      DOMINSAT=.FALSE.                                         !# LINE 174 MAIN
-      DRYON=.FALSE.                                            !# LINE 175 MAIN
+      ALLOCATE(DOMINSAT,DRYON)
+      DOMINSAT=.FALSE.        
+      DRYON=.FALSE.           
 C
 C--Initialize variables 
       ALLOCATE(IREACTION,IALTFM,NOCREWET,ICIMDRY,IDRY2)
@@ -116,25 +108,25 @@ C--The following statement should be uncommented in order to use
 C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
-      CALL GETARG(1,COMLIN)                                    !# LINE 170 MAIN
-cvsb                                                           !# LINE 171 MAIN
-      CALL GETARG(2,CMST)                                      !# LINE 172 MAIN
-      CALL GETARG(3,CDRY)                                      !# LINE 173 MAIN
-      IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.       !# LINE 176 MAIN
-      IF(CDRY.EQ.'DRY'.OR.CDRY.EQ.'dry') DRYON=.TRUE.          !# LINE 177 MAIN
-      IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.                    !# LINE 178 MAIN
-c      CALL GETCL(FLNAME)                                      !# LINE 179 MAIN
-C                                                              !# LINE 180 MAIN
-      IF(COMLIN.NE.' ') THEN                                   !# LINE 181 MAIN
-        flname=COMLIN                                          !# LINE 182 MAIN
-      ELSE                                                     !# LINE 183 MAIN
+      CALL GETARG(1,COMLIN)
+cvsb                       
+      CALL GETARG(2,CMST)  
+      CALL GETARG(3,CDRY)  
+      IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.
+      IF(CDRY.EQ.'DRY'.OR.CDRY.EQ.'dry') DRYON=.TRUE.
+      IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.
+c      CALL GETCL(FLNAME)                  
+C                                          
+      IF(COMLIN.NE.' ') THEN               
+        flname=COMLIN                      
+      ELSE                                 
 C--Get Name of NAME File from Screen
         IF(FLNAME.EQ.' ') THEN
           write(*,102)
   102     format(1x,'Enter Name of the MT3DMS NAME File: ')
           read(*,'(a)') flname
         ENDIF
-      ENDIF                                                    !# NEW
+      ENDIF
 C
 C-Open files using the Name File method as in MODFLOW-2000      
       iflen=index(flname,' ')-1
@@ -153,7 +145,7 @@ C-Open files using the Name File method as in MODFLOW-2000
   104 FORMAT(1x,'Using NAME File: ',a)
       iNameFile=99
       OPEN(iNameFile,file=flname,status='old')
-      CALL BTN5OPEN(iNameFile)
+      CALL BTN1OPEN(iNameFile)
       CLOSE (iNameFile)
 C
 C--WRITE PROGRAM TITLE TO OUTPUT FILE
@@ -168,21 +160,21 @@ C--WRITE PROGRAM TITLE TO OUTPUT FILE
      &  /30X,'+',69X,'+'/30X,71('+')/)
 C
 C--DEFINE PROBLEM DIMENSION AND SIMULATION OPTIONS
-      CALL BTN5AR(INBTN)
+      CALL BTN1AR(INBTN)
 C
 C--ALLOCATE STORAGE SPACE FOR DATA ARRAYS
-      CALL FMI5AR()
-      IF(iUnitTRNOP(1).GT.0) CALL ADV5AR(iUnitTRNOP(1))
-      IF(iUnitTRNOP(2).GT.0) CALL DSP5AR(iUnitTRNOP(2))
-      IF(iUnitTRNOP(3).GT.0) CALL SSM5AR(iUnitTRNOP(3))
-      IF(iUnitTRNOP(4).GT.0) CALL RCT5AR(iUnitTRNOP(4))
-      IF(iUnitTRNOP(5).GT.0) CALL GCG5AR(iUnitTRNOP(5))
-      IF(iUnitTRNOP(6).GT.0) CALL CTS5AR(iUnitTRNOP(6))        !# LINE 263 MAIN
-      IF(iUnitTRNOP(7).GT.0) CALL UZT5AR(iUnitTRNOP(7))
-      IF(iUnitTRNOP(11).GT.0) CALL TOB5AR(iUnitTRNOP(11))     
-      IF(iUnitTRNOP(13).GT.0) CALL HSS5AR(iUnitTRNOP(13))
-      IF(iUnitTRNOP(18).GT.0) CALL LKT5AR(iUnitTRNOP(18))      !# LINE 280 MAIN
-      IF(iUnitTRNOP(19).GT.0) CALL SFT5AR(iUnitTRNOP(19))      !# LINE 282 MAIN
+      CALL FMI1AR()
+      IF(iUnitTRNOP(1).GT.0) CALL ADV1AR(iUnitTRNOP(1))
+      IF(iUnitTRNOP(2).GT.0) CALL DSP1AR(iUnitTRNOP(2))
+      IF(iUnitTRNOP(3).GT.0) CALL SSM1AR(iUnitTRNOP(3))
+      IF(iUnitTRNOP(7).GT.0) CALL UZT1AR(iUnitTRNOP(7))
+      IF(iUnitTRNOP(4).GT.0) CALL RCT1AR(iUnitTRNOP(4))
+      IF(iUnitTRNOP(5).GT.0) CALL GCG1AR(iUnitTRNOP(5))
+      IF(iUnitTRNOP(6).GT.0) CALL CTS1AR(iUnitTRNOP(6))
+      IF(iUnitTRNOP(11).GT.0) CALL TOB1AR(iUnitTRNOP(11))
+      IF(iUnitTRNOP(13).GT.0) CALL HSS1AR(iUnitTRNOP(13))
+      IF(iUnitTRNOP(18).GT.0) CALL LKT1AR(iUnitTRNOP(18))
+      IF(iUnitTRNOP(19).GT.0) CALL SFT1AR(iUnitTRNOP(19))
 C
 C--INITIALIZE VARIABLES.      
       IF(iUnitTRNOP(5).EQ.0) THEN
@@ -193,8 +185,8 @@ C--INITIALIZE VARIABLES.
       IMPSOL=1
       ISPD=1
       IF(MIXELM.EQ.0) ISPD=0
-      IF(iUnitTRNOP(18).GT.0) CALL LKT5RP(KPER)
-      IF(iUnitTRNOP(19).GT.0) CALL SFT5RP(KPER)
+      IF(iUnitTRNOP(18).GT.0) CALL LKT1RP(KPER)
+      IF(iUnitTRNOP(19).GT.0) CALL SFT1RP(KPER)
 C
 C--FOR EACH STRESS PERIOD***********************************************
       HT1=0.
@@ -211,16 +203,16 @@ C--WRITE AN INDENTIFYING MESSAGE
    51   FORMAT(//35X,62('+')/55X,'STRESS PERIOD NO.',I5.3/35X,62('+'))
 C
 C--GET STRESS TIMING INFORMATION
-        CALL BTN5ST(KPER)                                      !# Amended (LINE 850 BTN)
+        CALL BTN1ST(KPER)
 C
 C--READ AND PREPARE INPUT INFORMATION WHICH IS CONSTANT
 C--WITHIN EACH STRESS PERIOD
-        IF(iUnitTRNOP(3).GT.0) CALL SSM5RP(KPER)
-        IF(iUnitTRNOP(6).GT.0) CALL CTS5RP(KPER)               !# LINE 418 MAIN
-        IF(iUnitTRNOP(7).GT.0) CALL UZT5RP(KPER)
-C--READ LAK AND SFR BOUNDARY CONDITIONS                        !# LINE 427 MAIN
-        IF(iUnitTRNOP(18).GT.0) CALL LKT5SS(KPER)              !# LINE 429 MAIN
-        IF(iUnitTRNOP(19).GT.0) CALL SFT5SS(KPER)              !# LINE 431 MAIN
+        IF(iUnitTRNOP(3).GT.0) CALL SSM1RP(KPER)
+        IF(iUnitTRNOP(6).GT.0) CALL CTS1RP(KPER)
+        IF(iUnitTRNOP(7).GT.0) CALL UZT1RP(KPER)
+C--READ LAK AND SFR BOUNDARY CONDITIONS
+        IF(iUnitTRNOP(18).GT.0) CALL LKT1SS(KPER)
+        IF(iUnitTRNOP(19).GT.0) CALL SFT1SS(KPER)
 C
 C--FOR EACH FLOW TIME STEP----------------------------------------------
         DO KSTP=1,NSTP
@@ -248,21 +240,21 @@ C
           ENDIF
 C
           IF(KPER*KSTP.GT.1) THEN
-            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD2(N)              !# LINE 454 MAIN
+            IF(iUnitTRNOP(19).GT.0) CALL SFT1AD2(N)
           ENDIF
 C
-          CALL FMI5RP1(KPER,KSTP)
-          IF(iUnitTRNOP(3).GT.0) CALL FMI5RP2(KPER,KSTP)
+          CALL FMI1RP1(KPER,KSTP)
+          IF(iUnitTRNOP(3).GT.0) CALL FMI1RP2(KPER,KSTP)
 C
-          IF(DRYON) CALL ADVQC7RP(KPER,KSTP)                   !# LINE 467 MAIN
-C                                                              !# LINE 467 MAIN
-          IF(iUnitTRNOP(19).GT.0) THEN        !# LINE 468 MAIN
-            CALL FILLIASFJASF()                                !# LINE 469 MAIN
-            IF(KPER*KSTP.EQ.1) CALL XMD7AR()                   !# LINE 470 MAIN
-          ENDIF                                                !# LINE 471 MAIN
+          IF(DRYON) CALL ADVQC1RP(KPER,KSTP)
+C                                           
+          IF(iUnitTRNOP(19).GT.0) THEN      
+            CALL FILLIASFJASF()             
+            IF(KPER*KSTP.EQ.1) CALL XMD7AR()
+          ENDIF                             
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
-          IF(iUnitTRNOP(2).GT.0) CALL DSP5CF(KSTP,KPER)
+          IF(iUnitTRNOP(2).GT.0) CALL DSP1CF(KSTP,KPER)
 C
    70     CONTINUE
 C
@@ -277,28 +269,28 @@ C--FOR EACH TRANSPORT STEP..............................................
             endif
 C
 C--ADVANCE ONE TRANSPORT STEP
-            CALL BTN5AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
-C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                       !# LINE 506 MAIN
-            IF(iUnitTRNOP(18).GT.0) CALL LKT5AD(N)             !# LINE 507 MAIN
-            IF(iUnitTRNOP(19).GT.0) CALL SFT5AD(KSTP,KPER,N)   !# LINE 508 MAIN
-            IF(iUnitTRNOP(7).GT.0) CALL UZT5AD(HT1,HT2,TIME1,TIME2)
+            CALL BTN1AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
+C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                    
+            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD(N)          
+            IF(iUnitTRNOP(19).GT.0) CALL SFT1AD(KSTP,KPER,N)
+            IF(iUnitTRNOP(7).GT.0) CALL UZT1AD(HT1,HT2,TIME1,TIME2)
 C
 C
 C--FOR EACH COMPONENT......
             DO ICOMP=1,NCOMP
 C
-C--TAKE CARE OF Fe3+                                           !# LINE 513 MAIN
-              IF(IREACTION.EQ.2) THEN                          !# LINE 514 MAIN
-                IF(ICOMP==NCOMP.AND.IFESLD>0)GOTO 1001         !# LINE 515 MAIN
-              ENDIF                                            !# LINE 516 MAIN
+C--TAKE CARE OF Fe3+                                   
+              IF(IREACTION.EQ.2) THEN                  
+                IF(ICOMP==NCOMP.AND.IFESLD>0)GOTO 1001 
+              ENDIF                                    
 C
 C--SOLVE TRANSPORT TERMS WITH EXPLICIT SCHEMES
               IF(MIXELM.EQ.0) GOTO 1500
 C
 C--FORMULATE AND SOLVE
-              CALL BTN5SV(ICOMP)
+              CALL BTN1SV(ICOMP)
               IF(iUnitTRNOP(1).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL ADV5SV(ICOMP,DTRANS)
+     &         CALL ADV1SV(ICOMP,DTRANS)
 C     
  1500         CONTINUE
 C
@@ -312,54 +304,59 @@ C--ALWAYS UPDATE MATRIX IF NONLINEAR SORPTION OR MULTICOMPONENT
               IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.1) UPDLHS=.TRUE.
               IF(NCOMP.GT.1) UPDLHS=.TRUE.
               IF(IALTFM.EQ.2) UPDLHS=.TRUE.
-              IF(iUnitTRNOP(6).GT.0 .OR.                       !# LINE 545 MAIN
-     1           iUnitTRNOP(18).GT.0 .OR.                      !# LINE 546 MAIN
-     1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.            !# LINE 547 MAIN
+              IF(iUnitTRNOP(6).GT.0 .OR.
+     1           iUnitTRNOP(18).GT.0 .OR.
+     1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.
 C
 C--FOR EACH OUTER ITERATION...
               DO ITO=1,MXITER
 C
 C--UPDATE COEFFICIENTS THAT VARY WITH ITERATIONS
-                IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.1)
-     &           CALL RCT5CF(ICOMP,DTRANS)
-C
-C--FORMULATE MATRIX COEFFICIENTS
-                CALL BTN5FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
-     &                      DTRANS,HT2,TIME2)                !edm
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
-     &           .AND. ICOMP.LE.MCOMP)
-     &           CALL ADV5FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
-                IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL DSP5FM(ICOMP,ICBUND,A,CNEW)
-                IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL SSM5FM(ICOMP)
-                IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL UZT5FM(ICOMP)
-                IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL HSS5FM(ICOMP,ICBUND,time1,time2)
-                IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)    !# LINE 596 MAIN
-     &           CALL CTS5FM(ICOMP)                            !# LINE 597 MAIN
-                IF(iUnitTRNOP(18).GT.0)                        !# LINE 622 MAIN
-     &           CALL LKT5FM(ICOMP)                            !# LINE 623 MAIN
-                IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC..                        !# LINE 627 MAIN
-     1           CALL SWF5FM(ICOMP)                            !# LINE 628 MAIN
-                IF(iUnitTRNOP(4).GT.0) 
-     &           CALL RCT5FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
-     &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
-     &                  COLD,CNEW)                             !# LINE 620 MAIN
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0          !# LINE 609 MAIN
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 610 MAIN
-     &           CALL ADVQC7FM(ICOMP)                          !# LINE 611 MAIN
-                IF(iUnitTRNOP(5).GT.0)
-     &            CALL GCG5AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
-     &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
-C
-                IF(IREACTION.EQ.2) THEN !# LINE 645 MAIN
-                IF(ICOMP.LE.NED+NEA) THEN !# LINE 645 MAIN
-                  IF(SPECIAL(ICOMP)=="MAXEC") THEN           !# LINE 646 MAIN
-                    !CALL DTS(ICOMP)
+                IF(iUnitTRNOP(4).GT.0) THEN
+                  IF(iUnitTRNOP(7).EQ.0) THEN
+                    CALL RCT1CF1(ICOMP,DTRANS)
+                  ELSE
+                    CALL RCT1CF2(ICOMP,DTRANS)
                   ENDIF
                 ENDIF
+C
+C--FORMULATE MATRIX COEFFICIENTS
+                CALL BTN1FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
+     &                      DTRANS,HT2,TIME2)
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
+     &           .AND. ICOMP.LE.MCOMP)
+     &           CALL ADV1FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
+                IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL DSP1FM(ICOMP,ICBUND,A,CNEW)
+                IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL SSM1FM(ICOMP)
+                IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL UZT1FM(ICOMP)
+                IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL HSS1FM(ICOMP,ICBUND,time1,time2)
+                IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)
+     &           CALL CTS1FM(ICOMP)                        
+                IF(iUnitTRNOP(18).GT.0)                    
+     &           CALL LKT1FM(ICOMP)                        
+                IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC
+     1           CALL SWF1FM(ICOMP)                        
+                IF(iUnitTRNOP(4).GT.0) 
+     &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
+     &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
+     &                  COLD,CNEW)                          
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0       
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)
+     &           CALL ADVQC1FM(ICOMP)                       
+                IF(iUnitTRNOP(5).GT.0)
+     &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
+     &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
+C
+                IF(IREACTION.EQ.2) THEN
+                  IF(ICOMP.LE.NED+NEA) THEN 
+                    IF(SPECIAL(ICOMP)=="MAXEC") THEN
+                      !CALL DTS(ICOMP)
+                    ENDIF
+                  ENDIF
                 ENDIF
 C
 C--IF CONVERGED, GO TO NEXT OUTER ITERATION
@@ -369,21 +366,21 @@ C--END OF OUTER ITERATION LOOP
               ENDDO
   110         CONTINUE
 C
-C-------------TAKE CARE OF Fe2+                                    !# LINE 687 MAIN
- 1001         IF(IREACTION.EQ.2) THEN                              !# LINE 688 MAIN
-                IF(ICOMP.EQ.NCOMP.AND.IFESLD.GT.0) THEN            !# Modified
+C-------------TAKE CARE OF Fe2+                        
+ 1001         IF(IREACTION.EQ.2) THEN                  
+                IF(ICOMP.EQ.NCOMP.AND.IFESLD.GT.0) THEN
                   CALL KINETIC_SOLID(ICOMP,DTRANS)
-                ENDIF                                              !# Modified
-              ENDIF                                                !# Modified
-C                                                                  !# LINE 709 MAIN
+                ENDIF                                  
+              ENDIF                                    
+C                                                      
 C--END OF COMPONENT LOOP
             ENDDO
 C
-C--APPLY ED/EA REACTION AS A FLASH CALCULATION                 !# LINE 713 MAIN
-            IF(IREACTION.EQ.1) THEN                            !# LINE 714 MAIN
-              CALL FLASHREACT(ICOMP)                           !# LINE 715 MAIN (Modified)
-            ENDIF                                              !# LINE 716 MAIN
-C                                                              !# LINE 717 MAIN
+C--APPLY ED/EA REACTION AS A FLASH CALCULATION 
+            IF(IREACTION.EQ.1) THEN            
+              CALL FLASHREACT(ICOMP)           
+            ENDIF                              
+C                                              
 C--CALCULATE MASS BUDGETS AND SAVE RESULTS FOR ALL COMPONENTS
             DO ICOMP=1,NCOMP
 C
@@ -391,44 +388,44 @@ C--CALCULATE MASS BUDGETS FOR IMPLICIT SCHEMES
 C
               IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
      &         .AND. ICOMP.LE.MCOMP)
-     &         CALL ADV5BD(ICOMP,DTRANS,N,KPER,KSTP)           !# Amended (LINE 728 MAIN)
+     &         CALL ADV1BD(ICOMP,DTRANS,N,KPER,KSTP)
               IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL DSP5BD(ICOMP,DTRANS)
+     &         CALL DSP1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL SSM5BD(ICOMP,DTRANS)
+     &         CALL SSM1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL UZT5BD(ICOMP,DTRANS)
+     &         CALL UZT1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
-     &         CALL HSS5BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
-              IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)      !# LINE 745 MAIN
-     &         CALL CTS5BD(KSTP,KPER,ICOMP,DTRANS,N)           !# LINE 746 MAIN
-              IF(iUnitTRNOP(18).GT.0)                          !# LINE 775 MAIN
-     1          CALL LKT5BD(ICOMP,KPER,KSTP,DTRANS,N)          !# LINE 776 MAIN
-              IF(iUnitTRNOP(19).GT.0)                          !# LINE 780 MAIN
-     1          CALL SFT5BD(ICOMP,KPER,KSTP,DTRANS,N)          !# LINE 781 MAIN
+     &         CALL HSS1BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
+              IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)
+     &         CALL CTS1BD(KSTP,KPER,ICOMP,DTRANS,N)     
+              IF(iUnitTRNOP(18).GT.0)                    
+     1         CALL LKT1BD(ICOMP,KPER,KSTP,DTRANS,N)    
+              IF(iUnitTRNOP(19).GT.0)                    
+     1         CALL SFT1BD(ICOMP,KPER,KSTP,DTRANS,N)    
               IF(iUnitTRNOP(4).GT.0) 
-     &         CALL RCT5BD(ICOMP,DTRANS)
-              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0            !# LINE 761 MAIN
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)   !# LINE 762 MAIN
-     &           CALL ADVQC7BD(ICOMP)                   !# LINE 763 MAIN
+     &         CALL RCT1BD(ICOMP,DTRANS)
+              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0         
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)
+     &           CALL ADVQC1BD(ICOMP)      
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE
-              CALL BTN5BD(ICOMP,DTRANS,TIME2,HT2)
+              CALL BTN1BD(ICOMP,DTRANS,TIME2,HT2)
 C
-C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY !# LINE 792 MAIN
-              IF(IREACTION.EQ.2) THEN                          !# LINE 793 MAIN
-                IF(ICOMP<=NED+NEA)THEN                         !# LINE 794 MAIN
-                  IF(SPECIAL(ICOMP)=="STORE")THEN              !# LINE 795 MAIN
-                    CALL Stor_Add_Methane(CNEW(:,:,:,ICOMP),   !# LINE 796 MAIN
-     &                                    ICOMP,DTRANS)        !# LINE 796 MAIN
-                  ENDIF                                        !# LINE 799 MAIN
-                ENDIF                                          !# LINE 800 MAIN
-              ENDIF                                            !# LINE 801 MAIN
+C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY
+              IF(IREACTION.EQ.2) THEN                       
+                IF(ICOMP<=NED+NEA)THEN                      
+                  IF(SPECIAL(ICOMP)=="STORE")THEN           
+                    CALL Stor_Add_Methane(CNEW(:,:,:,ICOMP),
+     &                                    ICOMP,DTRANS)     
+                  ENDIF                                     
+                ENDIF                                       
+              ENDIF                                         
 C
 C--SAVE OUTPUTS
-              CALL BTN5OT(KPER,KSTP,N,ICOMP,TIME2)   
-              IF(FMNW) CALL SSM5OT(KPER,KSTP,N,TIME2)
-              IF(iUnitTRNOP(11).GT.0) CALL TOB5OT(KPER,KSTP,N,
+              CALL BTN1OT(KPER,KSTP,N,ICOMP,TIME2)   
+              IF(FMNW) CALL SSM1OT(KPER,KSTP,N,TIME2)
+              IF(iUnitTRNOP(11).GT.0) CALL TOB1OT(KPER,KSTP,N,
      &                                            TIME1,TIME2)
 C              
             ENDDO !done with budget and output
@@ -452,7 +449,7 @@ C
   900     CONTINUE
 C
 C--SAVE CNEW AS COLDFLW
-          IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) CALL BTNFLW5AD !COLDFLW=CNEW
+          IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) CALL BTNFLW1AD
 C
 C--END OF FLOW TIME STEP LOOP
         ENDDO
@@ -468,12 +465,12 @@ C--PROGRAM COMPLETED
  1225 FORMAT(1X,'| M T |'
      &      /1X,'| 3 D | END OF MODEL OUTPUT')
 C
-C--CLOSE FILES                                                 !# LINE 858 MAIN
-      IF(IREACTION.EQ.2) THEN                                  !# LINE 859 MAIN
-        IF(NSTORE.NE.0 .and. SAVUCN)THEN                       !# LINE 860 MAIN
-          CLOSE(IUMETH)                                        !# LINE 861 MAIN
-        ENDIF                                                  !# LINE 862 MAIN
-      ENDIF                                                    !# LINE 863 MAIN
+C--CLOSE FILES                          
+      IF(IREACTION.EQ.2) THEN           
+        IF(NSTORE.NE.0 .and. SAVUCN)THEN
+          CLOSE(IUMETH)                 
+        ENDIF                           
+      ENDIF                             
 C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE()
       CALL MEMDEALLOCATE2()

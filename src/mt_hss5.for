@@ -1,5 +1,5 @@
 C
-      SUBROUTINE HSS5AR(IN)
+      SUBROUTINE HSS1AR(IN)
 C ********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE HSSM-MT3DMS
 C INTERFACE (HSS) PACKAGE.
@@ -11,15 +11,15 @@ C
      &                         MaxHSSSource,MaxHSSCells,MaxHSSStep,
      &                         nHSSSource,iRunHSSM,faclength,factime,
      &                         facmass,iHSSLoc,HSSData,HSSNAM,
-     &                         IHSSGEN,P                       !# LINE 4 HSS
+     &                         IHSSGEN,P 
 C
       IMPLICIT  NONE
       INTEGER   IN,LLOC,ISTART,ISTOP,ITMP,inam1,inam2
       REAL      R
-      REAL      YMAX                                           !# LINE 118 HSS
+      REAL      YMAX
       CHARACTER LINE*200
-C      integer,parameter :: nPoint=51, nSubGrid=25             !# Amended (LINE 109 HSS)
-      INTEGER   nPoint,nSubGrid,IPNTPOLY                       !# LINE 110 HSS
+C      integer,parameter :: nPoint=51, nSubGrid=25
+      INTEGER   nPoint,nSubGrid,IPNTPOLY
       INTEGER   N,IU,
      &          IFLEN,inHSSFile,i,j,k,
      &          it,iHSSComp,num,
@@ -28,10 +28,10 @@ C      integer,parameter :: nPoint=51, nSubGrid=25             !# Amended (LINE 
      &          sourcemassflux,r_distance,
      &          area_cell,area_source,area_total,degree
       CHARACTER SourceName*12,HSSFileName*200
-C      DIMENSION p(2,nPoint)                                   !# Amended (LINE 124 HSS)
-      DOUBLE PRECISION PI                                      !# LINE 125 HSS
-      PARAMETER (PI=3.141592653589793238D0)                    !# LINE 126 HSS
-C     REAL, ALLOCATABLE :: P(:,:)                              !# LINE 127 HSS
+C      DIMENSION p(2,nPoint)                
+      DOUBLE PRECISION PI                   
+      PARAMETER (PI=3.141592653589793238D0) 
+C     REAL, ALLOCATABLE :: P(:,:)           
 C
       INHSS=IN
 C
@@ -41,8 +41,8 @@ C--ALLOCATE
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INHSS
- 1030 FORMAT(1X,'HSS5 -- MT3DMS-HSSM INTERFACE PACAKGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT ',I5)
+ 1030 FORMAT(1X,'HSS1 -- MT3DMS-HSSM INTERFACE PACAKGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT ',I5)
 C
 C--READ INPUT LINE AS A TEXT STRING
     2 READ(INHSS,'(A)') LINE
@@ -66,33 +66,33 @@ C--DECODE THE INPUT VARIABLES
       ELSE
         iRunHSSM=0
       ENDIF
-      IHSSGEN=0                                                !# LINE 47 HSS
-      ITMP=0                                                   !# LINE 48 HSS
-      CALL URWORD(LINE,LLOC,inam1,inam2, 1,ITMP,R,IOUT,INHSS)  !# LINE 49 HSS
-      IF(LINE(inam1:inam2).EQ.'POLYGON') THEN                  !# LINE 50 HSS
-        IHSSGEN=1                                              !# LINE 51 HSS
-      ELSEIF(LINE(inam1:inam2).EQ.'IRREGULAR') THEN            !# LINE 52 HSS
-        IHSSGEN=2                                              !# LINE 53 HSS
-      ENDIF                                                    !# LINE 54 HSS
+      IHSSGEN=0 
+      ITMP=0    
+      CALL URWORD(LINE,LLOC,inam1,inam2, 1,ITMP,R,IOUT,INHSS)
+      IF(LINE(inam1:inam2).EQ.'POLYGON') THEN
+        IHSSGEN=1                            
+      ELSEIF(LINE(inam1:inam2).EQ.'IRREGULAR') THEN 
+        IHSSGEN=2
+      ENDIF      
 C
 C--ECHO INPUT VARIABLES
       WRITE(IOUT,9) MaxHSSSource,MaxHSSCells,MaxHSSStep
     9 FORMAT(1X,'MAXIMUM NO. OF HSS SOURCES =',I4,
      &      /1X,'MAXIMUM NO. OF MODEL CELLS FOR A HSS SOURCE =',I4,
      &      /1X,'MAXIMUM NO. OF TIME STEPS DEFINING A HSS SOURCE =',I4)
-      IF(IHSSGEN.EQ.0) THEN                                    !# LINE 61 HSS
-        WRITE(IOUT,*) 'SOURCE SHAPE IS AN APPROXIMATE CIRCLE'  !# LINE 62 HSS
-      ELSEIF(IHSSGEN.EQ.1) THEN                                !# LINE 63 HSS
-        WRITE(IOUT,*) 'SOURCE SHAPE IS A REGULAR POLYGON'      !# LINE 64 HSS
-      ELSEIF(IHSSGEN.EQ.2) THEN                                !# LINE 65 HSS
-        WRITE(IOUT,*) 'SOURCE SHAPE IS AN IRREGULAR POLYGON'   !# LINE 66 HSS
-      ELSE                                                     !# LINE 67 HSS
-        WRITE(IOUT,*) 'ERROR IN HSS PACKAGE: IHSSGEN'          !# LINE 68 HSS
-        WRITE(*,*) 'ERROR IN HSS PACKAGE: IHSSGEN'             !# LINE 69 HSS
-        READ(*,*)                                              !# LINE 70 HSS
-        STOP                                                   !# LINE 71 HSS
-      ENDIF                                                    !# LINE 72 HSS
-C                                                              !# LINE 73 HSS
+      IF(IHSSGEN.EQ.0) THEN                                  
+        WRITE(IOUT,*) 'SOURCE SHAPE IS AN APPROXIMATE CIRCLE'
+      ELSEIF(IHSSGEN.EQ.1) THEN                              
+        WRITE(IOUT,*) 'SOURCE SHAPE IS A REGULAR POLYGON'    
+      ELSEIF(IHSSGEN.EQ.2) THEN                              
+        WRITE(IOUT,*) 'SOURCE SHAPE IS AN IRREGULAR POLYGON' 
+      ELSE                                                   
+        WRITE(IOUT,*) 'ERROR IN HSS PACKAGE: IHSSGEN'        
+        WRITE(*,*) 'ERROR IN HSS PACKAGE: IHSSGEN'           
+        READ(*,*)                                            
+        STOP                                                 
+      ENDIF                                                  
+C                                                            
 C--ALLOCATE AND INITIALIZE
       ALLOCATE(iHSSLoc(MaxHSSCells,MaxHSSStep,MaxHSSSource))
       ALLOCATE(HSSData(4+MaxHSSCells,MaxHSSStep,MaxHSSSource))
@@ -107,21 +107,21 @@ C--READ INPUT DATA
       write(iout,12) nHSSSource
    10 format(//1x,'INPUT DATA FOR HSS LNAPL SOURCES',
      & /1x,       '--------------------------------',
-     &//1x,'LENGTH UNIT CONVERSION FACTOR FROM HSSM TO MT3DMS =',G12.4,
-     & /1x,'TIME UNIT CONVERSION FACTOR FROM HSSM TO MT3DMS   =',G12.4,
-     & /1x,'MASS UNIT CONVERSION FACTOR FROM HSSM TO MT3DMS   =',G12.4)
+     &//1x,'LNTH UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4,
+     & /1x,'TIME UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4,
+     & /1x,'MASS UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4)
    12 format(/1x,'TOTAL NUMBER OF HSS SOURCES IN THIS SIMULATION =',I4)
 C   
       if(nHSSSource.gt.MaxHSSSource) then
         call ustop ('[MaxHSSSource] exceeded!')
       endif   
 C   
-      IF(IHSSGEN.EQ.2) THEN                                    !# LINE 145 HSS
-        YMAX=0.                                                !# LINE 146 HSS
-        DO I=1,NROW                                            !# LINE 147 HSS
-          YMAX=YMAX+DELC(I)                                    !# LINE 148 HSS
-        ENDDO                                                  !# LINE 149 HSS
-      ENDIF                                                    !# LINE 150 HSS
+      IF(IHSSGEN.EQ.2) THEN 
+        YMAX=0.             
+        DO I=1,NROW         
+          YMAX=YMAX+DELC(I) 
+        ENDDO               
+      ENDIF                 
 C
       DO n=1,nHSSSource     !go over each HSS source
 C
@@ -145,55 +145,55 @@ C--ECHO INPUT DATA
      &         /1x,'Source Definition File Read from Unit: ',i4)
 C
 C--GET HSS SOURCE LOCATION AND NAME
-        IF(IHSSGEN.EQ.1) THEN                                         !# LINE 174 HSS
-          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename, !# Amended (LINE 175 HSS)
-     &    nPoint,nSubGrid                                             !# LINE 176 HSS
-        ELSEIF(IHSSGEN.EQ.2) THEN                                     !# LINE 177 HSS
-          READ(inhss,*)  ksource,iHSSComp,sourcename,                 !# LINE 178 HSS
-     &    nPoint,nSubGrid                                             !# LINE 179 HSS
-        ELSE                                                          !# LINE 180 HSS
-          nPoint=51                                                   !# LINE 181 HSS
-          nSubGrid=25                                                 !# LINE 182 HSS
-          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename  !# LINE 183 HSS
-        ENDIF                                                         !# LINE 184 HSS
-        ALLOCATE (P(2,NPOINT))                                        !# LINE 185 HSS
+        IF(IHSSGEN.EQ.1) THEN                                        
+          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename,
+     &    nPoint,nSubGrid                                            
+        ELSEIF(IHSSGEN.EQ.2) THEN                                    
+          READ(inhss,*)  ksource,iHSSComp,sourcename,                
+     &    nPoint,nSubGrid                                            
+        ELSE                                                         
+          nPoint=51                                                  
+          nSubGrid=25                                                
+          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename 
+        ENDIF                                                        
+        ALLOCATE (P(2,NPOINT))                                       
 C 
         HSSNAM(n)=sourcename
-C                                                                     !# LINE 188 HSS
-        IPNTPOLY=0                                                    !# LINE 189 HSS
-        IF(nSubGrid.LT.0) THEN                                        !# LINE 190 HSS
-          nSubGrid=-nSubGrid                                          !# LINE 191 HSS
-          IPNTPOLY=1                                                  !# LINE 192 HSS
-        ENDIF                                                         !# LINE 193 HSS
-C                                                                     !# LINE 194 HSS
-        IF(IHSSGEN.EQ.1) THEN                                         !# LINE 195 HSS
-        write(iout,31) ksource,isource,jsource,iHSSComp,sourcename,   !# LINE 196 HSS
-     &    nPoint,nSubGrid                                             !# LINE 197 HSS
-   31   format(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,          !# LINE 198 HSS
-     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3) !# LINE 199 HSS
-        ELSEIF(IHSSGEN.EQ.2) THEN                                     !# LINE 200 HSS
-        write(iout,32) ksource,iHSSComp,sourcename,                   !# LINE 201 HSS
-     &    nPoint,nSubGrid                                             !# LINE 202 HSS
-   32   format(1x,'[Layer]:',i5,'; Species:',i3,                      !# LINE 203 HSS
-     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3) !# LINE 204 HSS
-        ELSE                                                          !# LINE 205 HSS
+C                              
+        IPNTPOLY=0             
+        IF(nSubGrid.LT.0) THEN 
+          nSubGrid=-nSubGrid   
+          IPNTPOLY=1           
+        ENDIF                  
+C                              
+        IF(IHSSGEN.EQ.1) THEN  
+        write(iout,31) ksource,isource,jsource,iHSSComp,sourcename,
+     &    nPoint,nSubGrid                                   
+   31   format(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
+     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
+        ELSEIF(IHSSGEN.EQ.2) THEN                   
+        write(iout,32) ksource,iHSSComp,sourcename, 
+     &    nPoint,nSubGrid                           
+   32   format(1x,'[Layer]:',i5,'; Species:',i3,    
+     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
+        ELSE
           write(iout,30) ksource,isource,jsource,iHSSComp,sourcename
    30     format(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
      &          /1x,'Source Name: ',A)                 
-        ENDIF                                                         !# LINE 209 HSS
-C                                                                     !# LINE 210 HSS
-C-----READ POLYGON VERTICES 1:nPoint                                  !# LINE 211 HSS
-        IF(IHSSGEN.EQ.2) THEN                                         !# LINE 212 HSS
-          WRITE(iout,*) 'X Y MODEL COORDINATES (Y REVERSED)'          !# LINE 213 HSS
-          DO nr=1,nPoint                                              !# LINE 214 HSS
-            READ(inhss,*) p(1,nr),p(2,nr)                             !# LINE 215 HSS
-C                                                                     !# LINE 216 HSS
-C-----------REVERSE Y                                                 !# LINE 217 HSS
-            p(2,nr)=YMAX-p(2,nr)                                      !# LINE 218 HSS
-C                                                                     !# LINE 219 HSS
-            WRITE(iout,*) p(1,nr),p(2,nr)                             !# LINE 220 HSS
-          ENDDO                                                       !# LINE 221 HSS
-        ENDIF                                                         !# LINE 222 HSS
+        ENDIF                         
+C                                     
+C-----READ POLYGON VERTICES 1:nPoint  
+        IF(IHSSGEN.EQ.2) THEN         
+          WRITE(iout,*) 'X Y MODEL COORDINATES (Y REVERSED)' 
+          DO nr=1,nPoint                 
+            READ(inhss,*) p(1,nr),p(2,nr)
+C                                        
+C-----------REVERSE Y                    
+            p(2,nr)=YMAX-p(2,nr)         
+C                                        
+            WRITE(iout,*) p(1,nr),p(2,nr)
+          ENDDO                          
+        ENDIF                            
 C
 C--Run external HSSMKO DLL if necessary (uncomment to activate)
         IF(iRunHSSM.eq.1) then     
@@ -239,28 +239,28 @@ c compute source area
           if(radius_lnapl.le.0) then
             area_source=-999.
           else
-            IF(IHSSGEN.EQ.1) THEN                              !# LINE 268 HSS
-              area_source=radius_lnapl*radius_lnapl*nPoint*    !# LINE 269 HSS
-     &        sin(2.0*PI/nPoint)/2.0                           !# LINE 270 HSS
-            ELSEIF(IHSSGEN.EQ.2) THEN                          !# LINE 271 HSS
-              area_source=0.                                   !# LINE 272 HSS
-              DO nr=1,nPoint                                   !# LINE 273 HSS
-                IF(nr.EQ.nPoint) THEN                          !# LINE 274 HSS
-                  area_source=area_source+                     !# LINE 275 HSS
-     &            p(1,nr)*p(2,1)-p(2,nr)*p(1,1)                !# LINE 276 HSS
-                ELSE                                           !# LINE 277 HSS
-                  area_source=area_source+                     !# LINE 278 HSS
-     &            p(1,nr)*p(2,nr+1)-p(2,nr)*p(1,nr+1)          !# LINE 279 HSS
-                ENDIF                                          !# LINE 280 HSS
-              ENDDO                                            !# LINE 281 HSS
-              area_source=ABS(area_source/2.0)                 !# LINE 282 HSS
-            ELSE                                               !# LINE 283 HSS
-              area_source=PI*radius_lnapl**2                   !# Amended (LINE 284 HSS)
-            ENDIF                                              !# LINE 285 HSS
-          ENDIF                                                !# LINE 286 HSS
+            IF(IHSSGEN.EQ.1) THEN                          
+              area_source=radius_lnapl*radius_lnapl*nPoint*
+     &        sin(2.0*PI/nPoint)/2.0                       
+            ELSEIF(IHSSGEN.EQ.2) THEN                      
+              area_source=0.                               
+              DO nr=1,nPoint                               
+                IF(nr.EQ.nPoint) THEN                      
+                  area_source=area_source+                 
+     &            p(1,nr)*p(2,1)-p(2,nr)*p(1,1)            
+                ELSE                                       
+                  area_source=area_source+                 
+     &            p(1,nr)*p(2,nr+1)-p(2,nr)*p(1,nr+1)      
+                ENDIF                                      
+              ENDDO                                        
+              area_source=ABS(area_source/2.0)             
+            ELSE                                           
+              area_source=PI*radius_lnapl**2               
+            ENDIF                                          
+          ENDIF                                            
 c
 c distribute to starting source cell
-          IF(IHSSGEN.NE.2) THEN                                !# LINE 289 HSS
+          IF(IHSSGEN.NE.2) THEN
             num=1
             iHSSLoc(num,iStep,n)=
      &        (ksource-1)*ncol*nrow+(isource-1)*ncol+jsource
@@ -274,27 +274,27 @@ c distribute to starting source cell
 c
 c distribute to multiple cells            
             do nr=1,nPoint     !discretize source perimeter into polygon
-              degree=(nr-1)*2.*PI/nPoint                      !# Amended (LINE 289 HSS)
+              degree=(nr-1)*2.*PI/nPoint                    
               p(1,nr)=xbc(jsource)+radius_lnapl*cos(degree)            
               p(2,nr)=ybc(isource)+radius_lnapl*sin(degree)
             ENDDO
-          ENDIF                                               !# LINE 307 HSS
+          ENDIF
 c                            
           num=0
           area_total=0	    
           do i=1,nrow
             do j=1,ncol
-              IF(I.EQ.16.AND.J.EQ.15) THEN                    !# LINE 313 HSS
-                CONTINUE                                      !# LINE 314 HSS
-              ENDIF                                           !# LINE 315 HSS
-              IF(IHSSGEN.NE.2) THEN                           !# LINE 316 HSS
+              IF(I.EQ.16.AND.J.EQ.15) THEN
+                CONTINUE                  
+              ENDIF                       
+              IF(IHSSGEN.NE.2) THEN       
                 R=
      &          sqrt((xbc(j)-xbc(jsource))**2+(ybc(i)-ybc(isource))**2)
                 R=R-0.5*sqrt(delr(j)**2+delc(i)**2)
                 if(R.gt.1.5*radius_lnapl) cycle  !1.5 is a safety factor
-              ENDIF                                           !# LINE 321 HSS
+              ENDIF 
               call GetArea(ncol,nrow,nPoint,p,nSubGrid,delr,xbc,
-     &         delc,ybc,j,i,area_cell,IPNTPOLY)               !# Amended (LINE 323 HSS)
+     &         delc,ybc,j,i,area_cell,IPNTPOLY)    
 c            
               if(area_cell.le.0) cycle
               num=num+1              
@@ -321,7 +321,7 @@ c
 c
         ENDDO
   120   FORMAT(1x,g12.4,3i6,4x,g15.7)
-        DEALLOCATE (p)                                         !# LINE 350 HSS
+        DEALLOCATE (p) 
 C        
       ENDDO         !done with all HSS sources
 C
@@ -331,7 +331,7 @@ C--normal return
       END
 C
 C  
-      Subroutine HSS5FM(ICOMP,ICBUND,time1,time2)
+      Subroutine HSS1FM(ICOMP,ICBUND,time1,time2)
 C **********************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE HSS SOURCE
 C TERM UNDER THE IMPLICIT FINITE-DIFFERENCE METHOD.
@@ -359,7 +359,7 @@ c
 c        
   666   DO icell=1,MaxHSSCells                   
           N=iHSSLoc(icell,1,is)
-          IF(N.EQ.0) CYCLE                                     !# LINE 387 HSS
+          IF(N.EQ.0) CYCLE
 c          
           CALL TVSource(NCOL,NROW,NLAY,iStep,iCell,is,
      &     MaxHSSSource,MaxHSSStep,MaxHSSCells,time1,time2,
@@ -390,7 +390,7 @@ C--RETURN
       END
 C
 C  
-      Subroutine HSS5BD(ICOMP,ICBUND,IQ,time1,time2,DTRANS)
+      Subroutine HSS1BD(ICOMP,ICBUND,IQ,time1,time2,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH THE HSS
 C SOURCE TERM.
@@ -419,7 +419,7 @@ c
   666     DO icell=1,MaxHSSCells                
 c  
             N=iHSSLoc(icell,1,is)
-            IF(N.EQ.0) CYCLE                                   !# LINE 437 HSS
+            IF(N.EQ.0) CYCLE 
 C            IF(ICBUND(N,icomp).le.0) cycle
 c            
             CALL TVSource(NCOL,NROW,NLAY,iStep,iCell,is,
@@ -544,7 +544,7 @@ C--RETURN
 C
 C
       subroutine GetArea(ncol,nrow,nPoint,p,nSubGrid,
-     & delr,xbc,delc,ybc,j,i,area,IPNTPOLY)                    !# LINE 552 HSS
+     & delr,xbc,delc,ybc,j,i,area,IPNTPOLY) 
 c **********************************************************************
 c This subroutine calculates the portion of a finite-difference cell 
 C that is intersected by a polygon defined in array P of dimension 
@@ -555,10 +555,10 @@ c last modified: 01-10-2006
 c
       implicit  none
       integer   ncol,nrow,nPoint,nSubgrid,j,i,nx,ny,nsub
-      INTEGER   IPNTPOLY,INOUT                                 !# LINE 568 HSS
+      INTEGER   IPNTPOLY,INOUT
       real      delr,delc,xbc,ybc,area,pmin,pmax,p,subpoint,
      &          x0,y0,dx,dy
-      logical   inside,l1,l2                                   !# LINE 565 HSS
+      logical   inside,l1,l2  
       dimension delr(ncol),delc(nrow),xbc(ncol),ybc(nrow), 
      &		p(2,npoint),subpoint(2),pmin(2),pmax(2)
 c
@@ -576,18 +576,18 @@ c
         subpoint(1)=x0+nx*dx
         do ny=1,nSubgrid
           subpoint(2)=y0+ny*dy
-          IF(IPNTPOLY.EQ.1) THEN                                !# LINE 594 HSS 
-            CALL PNPOLY(subpoint(1),subpoint(2),P,npoint,INOUT) !# LINE 595 HSS 
-            L1=.FALSE.                                          !# LINE 596 HSS 
-            IF(INOUT.GT.0)L1=.TRUE.                             !# LINE 597 HSS 
-            L2=.TRUE.                                           !# LINE 598 HSS 
-          ELSE                                                  !# LINE 599 HSS 
-            l1=inside(npoint,p,subpoint,pmin)                   !# LINE 600 HSS 
-            l2=inside(npoint,p,subpoint,pmax)                   !# LINE 601 HSS 
-          ENDIF                                                 !# LINE 602 HSS 
-c          if(inside(npoint,p,subpoint,pmin) .and.              !# Amended (LINE 603 HSS) 
-c     &     inside(npoint,p,subpoint,pmax)) then                !# Amended (LINE 604 HSS) 
-          if(l1.and.l2) then                                    !# LINE 605 HSS
+          IF(IPNTPOLY.EQ.1) THEN                               
+            CALL PNPOLY(subpoint(1),subpoint(2),P,npoint,INOUT)
+            L1=.FALSE.                                         
+            IF(INOUT.GT.0)L1=.TRUE.                            
+            L2=.TRUE.                                          
+          ELSE                                                 
+            l1=inside(npoint,p,subpoint,pmin)                  
+            l2=inside(npoint,p,subpoint,pmax)                  
+          ENDIF                                                
+c          if(inside(npoint,p,subpoint,pmin) .and.             
+c     &     inside(npoint,p,subpoint,pmax)) then               
+          if(l1.and.l2) then
              nsub=nsub+1
 	    endif
         enddo
@@ -612,7 +612,7 @@ C it returns .FAUSE.
 C .........................................................
 C last modified: 01-10-2006
 C
-      REAL P,P1,P2,PL1,PL2                                     !# LINE 630 HSS
+      REAL P,P1,P2,PL1,PL2
       DIMENSION P(2,NP),P1(2),P2(2),PL1(2),PL2(2)
       LOGICAL CROSS
 C
@@ -620,7 +620,7 @@ C--COUNT THE THE NUMBER OF INTERSECTION
 C--BETWEEN THE LINE (P1,P2)
 C--AND EACH LINE SEGMENT ALONG THE POLYGON
       NCOUNT=0
-      NN=NP                                                    !# LINE 638 HSS
+      NN=NP       
       DO 140 N=1,NP
       PL1(1)=P(1,N)
       PL1(2)=P(2,N)
@@ -653,8 +653,8 @@ C
 C
       LOGICAL FUNCTION CROSS(PL1,PL2,PL3,PL4)
 C...................................................
-      REAL SAME                                                !# LINE 671 HSS
-      REAL PL1,PL2,PL3,PL4                                     !# LINE 672 HSS
+      REAL SAME           
+      REAL PL1,PL2,PL3,PL4
       DIMENSION PL1(2),PL2(2),PL3(2),PL4(2)
 C
       IF(SAME(PL1,PL2,PL3,PL4).lt.0. .AND.   
@@ -668,9 +668,9 @@ C
       END
 C
 C
-      REAL FUNCTION SAME(PL1,PL2,P1,P2)                        !# Amended 686 HSS
+      REAL FUNCTION SAME(PL1,PL2,P1,P2) 
 C...................................................
-      REAL PL1,PL2,P1,P2                                       !# LINE 688 HSS
+      REAL PL1,PL2,P1,P2
       DIMENSION PL1(2),PL2(2),P1(2),P2(2)
 C
       DX=PL2(1)-PL1(1)
@@ -742,7 +742,7 @@ C      OUTPUT UNIT FOR PRINTED MESSAGES
       IF(N.LE.MAXDIM)GO TO 6                                            
       WRITE(O,7)                                                        
    7  FORMAT('0WARNING:',I5,' TOO GREAT FOR THIS VERSION OF PNPOLY.     
-     &          1RESULTS INVALID') 
+     &          1 RESULTS INVALID') 
       RETURN                                                            
    6  DO 1 I=1,N                                                        
       X(I)=P(1,I)-PX

@@ -1,6 +1,6 @@
 C
 C
-      SUBROUTINE SFT5AR(IN)
+      SUBROUTINE SFT1AR(IN)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR SFR VARIABLES
 C***********************************************************************
@@ -10,14 +10,14 @@ C***********************************************************************
       INTEGER IN
       LOGICAL OPND
 C
-      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,ISFRBC)!# NEW
-      ALLOCATE(NSSSF)                                             !# NEW
+      ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,ISFRBC)
+      ALLOCATE(NSSSF)
       ISFRBC=0
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INSFT
- 1030 FORMAT(1X,'SFT -- STREAM TRANSPORT PACKAGE,',
-     & ' VERSION 1, AUGUST 2012, INPUT READ FROM UNIT',I3)
+ 1030 FORMAT(1X,'SFT1 -- STREAM TRANSPORT PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--READ NUMBER OF STREAMS
       READ(INSFT,*) NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
@@ -61,8 +61,8 @@ C--ALLOCATE INITIAL AND BOUNDARY CONDITION ARRAYS
       ALLOCATE(CNEWSF(NSFINIT,NCOMP),COLDSF(NSFINIT,NCOMP),
      1  COLDSF2(NSFINIT,NCOMP),CNEWSFTMP(NSFINIT,NCOMP),
      1  DISPSF(NSFINIT,NCOMP),IBNDSF(NSFINIT))
-      ALLOCATE(ISEGBC(MXSFBC),IRCHBC(MXSFBC),ISFBCTYP(MXSFBC))    !# MOVED
-      ALLOCATE(CBCSF(MXSFBC,NCOMP))                               !# MOVED
+      ALLOCATE(ISEGBC(MXSFBC),IRCHBC(MXSFBC),ISFBCTYP(MXSFBC))
+      ALLOCATE(CBCSF(MXSFBC,NCOMP))                           
       CBCSF=0.
 C
 C--IF LAKE PACKAGE NOT ACTIVE, NLKINIT WILL BE UNDEFINED.  
@@ -101,7 +101,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SFT5RP(KPER)
+      SUBROUTINE SFT1RP(KPER)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES READS LAK VARIABLES - INITIAL CONCS
 C***********************************************************************
@@ -172,7 +172,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5SS(KPER)
+      SUBROUTINE SFT1SS(KPER)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SFR BOUNDARY CONDITIONS
 C***********************************************************************
@@ -276,7 +276,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5FMGW(ICOMP)
+      SUBROUTINE SFT1FMGW(ICOMP)
 C***********************************************************************
 C     THIS SUBROUTINE FORMULATES SFT PACKAGE
 C***********************************************************************
@@ -332,7 +332,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5FM(ICOMP)
+      SUBROUTINE SFT1FM(ICOMP)
 C***********************************************************************
 C     THIS SUBROUTINE ASSEMBLES AND SOLVES MATRIX FOR SFR TRANSPORT
 C***********************************************************************
@@ -707,7 +707,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5AD(KSTP,KPER,N)
+      SUBROUTINE SFT1AD(KSTP,KPER,N)
 C***********************************************************************
 C     RESET STREAM CONCENTRATIONS
 C***********************************************************************
@@ -734,7 +734,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5AD2(N)
+      SUBROUTINE SFT1AD2(N)
 C***********************************************************************
 C     SAVE OLD STREAM FLOW PARAMETERS
 C***********************************************************************
@@ -752,7 +752,7 @@ C
       END
 C
 C
-      SUBROUTINE SFT5BD(ICOMP,KPER,KSTP,DTRANS,NTRANS)
+      SUBROUTINE SFT1BD(ICOMP,KPER,KSTP,DTRANS,NTRANS)
 C***********************************************************************
 C     THIS SUBROUTINE CALCULATES BUDGETS FOR STREAMS
 C     THIS SUBROUTINE CALCULATES GROUNDWATER BUDGETS RELATED TO STREAMS

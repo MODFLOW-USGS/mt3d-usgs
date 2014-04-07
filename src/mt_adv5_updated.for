@@ -1,10 +1,10 @@
 C
-      SUBROUTINE ADV5AR(IN)
+      SUBROUTINE ADV1AR(IN)
 C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE ADVECTION
 C (ADV) PACKAGE.
 C **********************************************************************
-C last modified: 02-20-2010
+C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,MXPART,
      &                         PERCEL,INADV,
@@ -12,9 +12,9 @@ C
      &                         NPMAX,INTERP,NLSINK,NPSINK,WD,DCEPS,
      &                         SRMULT,DCHMOC,NCOUNT,NPCHEK,INDEXX,
      &                         INDEXY,INDEXZ,XP,YP,ZP,CNPT,
-     &                         IALTFM,NOCREWET,COLDFLW,NCOMP,IDRY2                  !# LINE 4 ADV
+     &                         IALTFM,NOCREWET,COLDFLW,NCOMP,IDRY2 
       USE MIN_SAT, ONLY: DOMINSAT,DRYON,NICBND2,ICBND2,QC7,ID2D,C7,
-     &  COLD7,TMASS2,ICIMDRY,VAQSAT                        !# LINE 11 ADV
+     &  COLD7,TMASS2,ICIMDRY,VAQSAT 
 C
       IMPLICIT  NONE
       INTEGER   IN,INDEX,IERR
@@ -38,20 +38,20 @@ C--ALLOCATE
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,7) INADV
-    7 FORMAT(1X,'ADV5 -- ADVECTION PACKAGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
+    7 FORMAT(1X,'ADV1 -- ADVECTION PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--READ ADVECTION SOLUTION OPTION AND MAXIMUM PARTICLES ALLOWED
       MIXELM=0
       PERCEL=0
       MXPART=0
       NADVFD=0
-      IALTFM=0                                                 !# LINE 29 ADV
-      NOCREWET=0                                               !# LINE 30 ADV
+      IALTFM=0   
+      NOCREWET=0 
       ICIMDRY=0
       IDRY2=0
-      READ(INADV,'(I10,F10.0,6I10)',ERR=10,IOSTAT=IERR)        !# Amended
-     & MIXELM,PERCEL,MXPART,NADVFD,IALTFM,NOCREWET,ICIMDRY,IDRY2             !# Amended
+      READ(INADV,'(I10,F10.0,6I10)',ERR=10,IOSTAT=IERR) 
+     & MIXELM,PERCEL,MXPART,NADVFD,IALTFM,NOCREWET,ICIMDRY,IDRY2 
    10 IF(IERR.NE.0) THEN
         REWIND(INADV)
         READ(INADV,'(I10,F10.0,I10)')
@@ -67,8 +67,8 @@ C
       IF(MIXELM.EQ.3) WRITE(IOUT,2004)
       IF(MIXELM.EQ.0.AND.NADVFD.EQ.1) WRITE(IOUT,2006)
       IF(MIXELM.EQ.0.AND.NADVFD.EQ.2) WRITE(IOUT,3007)
-      IF(IALTFM.GE.1) WRITE(IOUT,1054) IALTFM                         !# LINE 48 ADV
-      IF(NOCREWET.EQ.1) WRITE(IOUT,1056)                       !# LINE 49 ADV
+      IF(IALTFM.GE.1) WRITE(IOUT,1054) IALTFM
+      IF(NOCREWET.EQ.1) WRITE(IOUT,1056)     
       IF(MIXELM.EQ.-1) WRITE(IOUT,2007)
       IF(MIXELM.LT.-1.OR.MIXELM.GT.3) THEN
         WRITE(*,2008) MIXELM
@@ -142,9 +142,9 @@ C
  2052 FORMAT(/1X,'ERROR: MAXIMUM NUMBER OF PARTICLES MUST BE >0 ',
      & ' FOR MOC/HMOC SOLUTION OPTION',
      & /1X,'ENTER A VALID VALUE FOR [MXPART] IN ADVECTION INPUT FILE')
-1054  FORMAT(1X,'ALTERNATE FORMULATION IS USED, 'I2)                      !# LINE 96 ADV
-1056  FORMAT(1X,'FUNCTION CREWET IS DEACTIVATED: ZERO CONCENTRATION', !# LINE 97 ADV
-     1       ' ASSIGNED TO REWET CELLS')                              !# LINE 98 ADV
+1054  FORMAT(1X,'ALTERNATE FORMULATION IS USED, 'I2)                 
+1056  FORMAT(1X,'FUNCTION CREWET IS DEACTIVATED: ZERO CONCENTRATION',
+     1       ' ASSIGNED TO REWET CELLS')                             
 1065  FORMAT(1X,'NON-EQUILIBRIUM CONCENTRATION WILL NOT CHANGE ',
      1       'IN DRY CELLS')
 1061  FORMAT(1X,'NON-EQUILIBRIUM CONCENTRATION WILL BE SET TO ZERO ',
@@ -154,18 +154,18 @@ C
      1 ' THROUGH DRY CELLS')
 1064  FORMAT(1X,'IMMOBILE CONC IN DRY CELLS SOLVED USING ONLY BOUNDARY',
      1 ' FLOW AND STORAGE CHANGE IN DRY CELLS')
-C                                                                     !# LINE 99 ADV
-C-----MST AND DRY OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM=0) !# LINE 100 ADV
-      IF(DOMINSAT.OR.DRYON) THEN                                      !# LINE 101 ADV
-        IF(MIXELM.GT.0) THEN                                          !# LINE 102 ADV
-          WRITE(IOUT,'(2A)')                                          !# LINE 103 ADV
-     &    '*** MST AND DRY OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'   !# LINE 104 ADV
-          WRITE(*,'(2A)')                                             !# LINE 105 ADV
-     &    '*** MST AND DRY OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'   !# LINE 106 ADV
-          STOP                                                        !# LINE 107 ADV
-        ENDIF                                                         !# LINE 108 ADV
-      ENDIF                                                           !# LINE 109 ADV
-C                                                                     !# LINE 110 ADV
+C 
+C-----MST AND DRY OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM=0)
+      IF(DOMINSAT.OR.DRYON) THEN                                   
+        IF(MIXELM.GT.0) THEN                                       
+          WRITE(IOUT,'(2A)')                                       
+     &    '*** MST AND DRY OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'
+          WRITE(*,'(2A)')                                          
+     &    '*** MST AND DRY OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'
+          STOP                                                     
+        ENDIF                                                      
+      ENDIF                                                        
+C                                                                  
 C-----ALLOCATE ONLY IF IALTFM=1
       IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) 
      1 ALLOCATE(COLDFLW(NCOL,NROW,NLAY,NCOMP))
@@ -352,14 +352,14 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE ADV5SV(ICOMP,DTRANS)
+      SUBROUTINE ADV1SV(ICOMP,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES CONCENTRATIONS AT THE INTERMEDIATE TIME
 C LEVEL DUE TO ADVECTION WITH THE MIXED EULERIAN-LAGRANGIAN SCHEMES.
 C ALSO INCLUDED ARE EXPLICIT UPSTREAM FINITE DIFFERENCE AND THIRD-ORDER
 C TVD (ULTIMATE) SCHEMES.
 C **********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,
@@ -369,38 +369,38 @@ C
      &                         RETA,COLD,CWGT,CNEW,CADV,BUFF,
      &                         IMPSOL,NADVFD,RMASIO,
      &                         NPL,NPH,WD,
-     &                         iUnitTRNOP                           !edm
+     &                         iUnitTRNOP  
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K
-      REAL      SADV5Q,QCTMP,DTRANS,
-     &          PRSYTMP                                             !edm
-      DIMENSION PRSYTMP(NCOL,NROW,NLAY)                             !edm
+      REAL      SADV1Q,QCTMP,DTRANS,
+     &          PRSYTMP                
+      DIMENSION PRSYTMP(NCOL,NROW,NLAY)
 C
 C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
       IF(MIXELM.EQ.0) THEN
-        CALL SADV5F(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
+        CALL SADV1F(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
      &   PRSITY,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),QX,QY,QZ,
      &   RETA(:,:,:,ICOMP),DTRANS,RMASIO(:,:,ICOMP))
       ELSEIF(MIXELM.EQ.-1) THEN
-        IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                          !edm
-        CALL SADV5U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
+        IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
+        CALL SADV1U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
      &   PRSITY,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),CADV(:,:,:,ICOMP),
      &   BUFF,QX,QY,QZ,RETA(:,:,:,ICOMP),DTRANS,
      &   RMASIO(:,:,ICOMP))
-        ELSE                                                        !edm
-          DO K=1,NLAY                                               !edm
-            DO I=1,NROW                                             !edm
-              DO J=1,NCOL                                           !edm
-                PRSYTMP(J,I,K)=SATOLD(J,I,K)*PRSITYSAV(J,I,K)       !edm
-              ENDDO                                                 !edm
-            ENDDO                                                   !edm
-          ENDDO                                                     !edm
-          CALL SADV5U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
+        ELSE             
+          DO K=1,NLAY    
+            DO I=1,NROW  
+              DO J=1,NCOL
+                PRSYTMP(J,I,K)=SATOLD(J,I,K)*PRSITYSAV(J,I,K)
+              ENDDO
+            ENDDO  
+          ENDDO    
+          CALL SADV1U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
      &    PRSYTMP,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),CADV(:,:,:,ICOMP),
      &    BUFF,QX,QY,QZ,RETA(:,:,:,ICOMP),DTRANS,
      &    RMASIO(:,:,ICOMP))
-        ENDIF                                                       !edm
+        ENDIF  
       ENDIF
 C
 C--IF [MOC] OR [HMOC] IS USED
@@ -423,7 +423,7 @@ C--IN THE [DC] ARRAY, AND DELET/INSERT PARTICLES AS NECESSARY
      &   CNPT(:,1,ICOMP),COLD(:,:,:,ICOMP),CADV(:,:,:,ICOMP),BUFF)
 C
 C--CALCULATE CNEW WITH FORWARD TRACKING PROCEDURE
-        CALL SADV5M(NCOL,NROW,NLAY,MXPART,NCOUNT(ICOMP),
+        CALL SADV1M(NCOL,NROW,NLAY,MXPART,NCOUNT(ICOMP),
      &   NPCHEK(:,:,:,ICOMP),XP(:,ICOMP),YP(:,ICOMP),ZP(:,ICOMP),
      &   INDEXX(:,ICOMP),INDEXY(:,ICOMP),INDEXZ(:,ICOMP),
      &   CNPT(:,1,ICOMP),ICBUND(:,:,:,ICOMP),DELR,DELC,DZ,XBC,YBC,ZBC,
@@ -435,7 +435,7 @@ C
 C--IF [MMOC] OR [HMOC] IS USED
 C--CALCULATE CNEW WITH BACKWARD TRACKING PROCEDURE
       IF(MIXELM.EQ.2 .OR. MIXELM.EQ.3) THEN
-        CALL SADV5B(NCOL,NROW,NLAY,MIXELM,
+        CALL SADV1B(NCOL,NROW,NLAY,MIXELM,
      &   ICBUND(:,:,:,ICOMP),DELR,DELC,DZ,XBC,YBC,ZBC,DH,
      &   PRSITY,QX,QY,QZ,RETA(:,:,:,ICOMP),COLD(:,:,:,ICOMP),
      &   CNEW(:,:,:,ICOMP),BUFF,DTRANS)
@@ -450,7 +450,7 @@ C
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).GE.0) CYCLE
             CNEW(J,I,K,ICOMP)=COLD(J,I,K,ICOMP)
-            QCTMP=SADV5Q(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP),
+            QCTMP=SADV1Q(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP),
      &       DELR,DELC,DH,COLD(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD)
             IF(QCTMP.GT.0) THEN
               RMASIO(6,1,ICOMP)=RMASIO(6,1,ICOMP)+QCTMP
@@ -482,14 +482,14 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SADV5M(NCOL,NROW,NLAY,MXPART,NCOUNT,NPCHEK,XP,YP,ZP,
+      SUBROUTINE SADV1M(NCOL,NROW,NLAY,MXPART,NCOUNT,NPCHEK,XP,YP,ZP,
      & INDEXX,INDEXY,INDEXZ,CNPT,ICBUND,DELR,DELC,DZ,XBC,YBC,ZBC,DH,
      & PRSITY,QX,QY,QZ,RETA,COLD,CNEW,CADV,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES CONCENTRATIONS AT THE INTERMEDIATE TIME
 C LEVEL DUE TO ADVECTION USING THE FORWARD TRACKING MOC PROCEDURE.
 C **********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,NCOUNT,NPCHEK,NP,ICBUND,
@@ -791,13 +791,13 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SADV5B(NCOL,NROW,NLAY,MIXELM,ICBUND,DELR,DELC,DZ,
+      SUBROUTINE SADV1B(NCOL,NROW,NLAY,MIXELM,ICBUND,DELR,DELC,DZ,
      & XBC,YBC,ZBC,DH,PRSITY,QX,QY,QZ,RETA,COLD,CNEW,BUFF,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES CONCENTRATIONS AT THE INTERMEDIATE TIME
 C LEVEL DUE TO ADVECTION WITH THE BACKWARD TRACKING MMOC PROCEDURE.
 C **********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NMAX,NCOL,NROW,NLAY,NP,ICBUND,MIXELM,
@@ -1174,7 +1174,7 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES THE RELATIVE CELL CONCENTRATION GRADIENT
 C FOR EACH ACTIVE CELL IN THE GRID.
 C ********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,J,I,K,JM1,JP1,IM1,IP1,KM1,KP1,
@@ -1246,7 +1246,7 @@ C **********************************************************************
 C THIS SUBROUTINE MANAGES THE DISTRIBUTION OF MOVING PARTICLES,
 C DELETING OR INSERTING PARTICLES AS NECESSARY.
 C **********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   IOUT,NCOL,NROW,NLAY,NCOUNT,MXPART,ICBUND,NPCHEK,
@@ -1406,7 +1406,7 @@ C ********************************************************************
 C THIS SUBROUTINE INSERTS [NADD] NEW PARTICLES AT CELL (JJ,II,KK)
 C RANDOMLY INSIDE THE CELL BLOCK.
 C ********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,JJ,II,KK,N,NP,NCOUNT,MXPART,NPCHEK,
@@ -1448,7 +1448,7 @@ C THIS FUNCTION RETURNS A RANDOM NUMBER BETWEEN 0.0 AND 1.0.
 C SET IDUM TO ANY NONZERO INTEGER TO INITIALIZE THE SEQUENCE.
 C [MODIFIED FROM PRESS ET AL. (1992)].
 C ******************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   IDUM,IA,IM,IQ,IR,MASK,K
@@ -1474,7 +1474,7 @@ C ********************************************************************
 C THIS SUBROUTINE INSERTS NEW PARTICLES AT CELL (JJ,II,KK) WITH
 C A FIXED PATTERN BASED ON THE VALUES OF [NADD] AND [NPLANE].
 C ********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,JJ,II,KK,N,NP,NCOUNT,MXPART,NPCHEK,
@@ -1638,7 +1638,7 @@ C--NORMAL RETURN
       END
 C
 C
-      FUNCTION SADV5Q(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
+      FUNCTION SADV1Q(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
      & COLD,QX,QY,QZ,DTRANS,NADVFD)
 C *******************************************************************
 C THIS FUNCTION COMPUTES ADVECTIVE MASS FLUX BETWEEN CELL (JJ,II,KK)
@@ -1647,12 +1647,12 @@ C MOVING OUT OF THE CELL IF SADV5Q > 0, INTO THE CELL IF SADV5Q < 0.
 C NADVFD=1 IS FOR THE UPSTREAM SCHEME; NADVFD=2 IS FOR THE CENTRAL
 C WEIGHTING SCHEME.
 C *******************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
-      USE       MIN_SAT                                        !# LINE 1589 ADV
+      USE       MIN_SAT 
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,JJ,II,KK,NADVFD
-      REAL      SADV5Q,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
+      REAL      SADV1Q,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
      &          WW,THKSAT,ALPHA,CTMP
       DIMENSION ICBUND(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
      &          QX(NCOL,NROW,NLAY),QY(NCOL,NROW,NLAY),
@@ -1695,9 +1695,9 @@ C--BACK FACE
         IF(ICBUND(JJ,II-1,KK).NE.0) THEN
           WW=DELC(II)/(DELC(II)+DELC(II-1))
           THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1635 ADV
-            THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW) !# LINE 1636 ADV
-          ENDIF                                                     !# LINE 1637 ADV
+          IF(DOMINSAT.EQ..TRUE.) THEN  
+            THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
+          ENDIF               
           AREA=DELR(JJ)*THKSAT
           ALPHA=0.
           IF(QY(JJ,II-1,KK).GT.0) ALPHA=1.
@@ -1711,9 +1711,9 @@ C--FRONT FACE
         IF(ICBUND(JJ,II+1,KK).NE.0) THEN
           WW=DELC(II+1)/(DELC(II+1)+DELC(II))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1651 ADV
-            THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW) !# LINE 1652 ADV
-          ENDIF                                                     !# LINE 1653 ADV
+          IF(DOMINSAT.EQ..TRUE.) THEN                              
+            THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
+          ENDIF                                                    
           AREA=DELR(JJ)*THKSAT
           ALPHA=0.
           IF(QY(JJ,II,KK).GT.0) ALPHA=1.
@@ -1730,9 +1730,9 @@ C--LEFT FACE
         IF(ICBUND(JJ-1,II,KK).NE.0) THEN
           WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
           THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1670 ADV
-            THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW) !# LINE 1671 ADV
-          ENDIF                                                     !# LINE 1672 ADV
+          IF(DOMINSAT.EQ..TRUE.) THEN                              
+            THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
+          ENDIF                                                    
           AREA=DELC(II)*THKSAT
           ALPHA=0.
           IF(QX(JJ-1,II,KK).GT.0) ALPHA=1.
@@ -1746,9 +1746,9 @@ C--RIGHT FACE
         IF(ICBUND(JJ+1,II,KK).NE.0) THEN
           WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1686
-            THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW) !# LINE 1687
-          ENDIF                                                     !# LINE 1688
+          IF(DOMINSAT.EQ..TRUE.) THEN                              
+            THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
+          ENDIF                                                    
           AREA=DELC(II)*THKSAT
           ALPHA=0.
           IF(QX(JJ,II,KK).GT.0) ALPHA=1.
@@ -1759,13 +1759,13 @@ C--RIGHT FACE
       ENDIF
 C
 C--ASSIGN QCTMP TO THE FUNCTION AND RETURN
-  430 SADV5Q=QCTMP
+  430 SADV1Q=QCTMP
 C
       RETURN
       END
 C
 C
-      SUBROUTINE SADV5F(NCOL,NROW,NLAY,ICBUND,DELR,DELC,DH,PRSITY,
+      SUBROUTINE SADV1F(NCOL,NROW,NLAY,ICBUND,DELR,DELC,DH,PRSITY,
      & CNEW,COLD,QX,QY,QZ,RETA,DTRANS,RMASIO)
 C *********************************************************************
 C THIS SUBROUTINE SOLVES THE ADVECTION TERM WITH THE UPSTREAM WEIGHTING
@@ -1773,7 +1773,7 @@ C FINITE DIFFERENCE SCHEME.
 C *********************************************************************
 C last modified: 02-15-2005
 C
-      USE       MIN_SAT                                        !# LINE 1713 ADV
+      USE       MIN_SAT   
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,JJ,II,KK
       REAL      COLD,QX,QY,QZ,DELR,DELC,DH,CNEW,PRSITY,
@@ -1825,9 +1825,9 @@ C--BACK FACE
           IF(ICBUND(JJ,II-1,KK).NE.0) THEN
             WW=DELC(II)/(DELC(II)+DELC(II-1))
             THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1760 ADV
-              THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW) !# LINE 1761 ADV
-            ENDIF                                                     !# LINE 1762 ADV
+            IF(DOMINSAT.EQ..TRUE.) THEN  
+              THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
+            ENDIF 
             AREA=DELR(JJ)*THKSAT
             IF(QY(JJ,II-1,KK).GT.0) THEN
               QCTMP=QCTMP-QY(JJ,II-1,KK)*COLD(JJ,II-1,KK)*AREA*DTRANS
@@ -1841,9 +1841,9 @@ C--FRONT FACE
           IF(ICBUND(JJ,II+1,KK).NE.0) THEN
             WW=DELC(II+1)/(DELC(II+1)+DELC(II))
             THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1774 ADV
-              THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW) !# LINE 1775 ADV
-            ENDIF                                                     !# LINE 1776 ADV
+            IF(DOMINSAT.EQ..TRUE.) THEN  
+              THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
+            ENDIF 
             AREA=DELR(JJ)*THKSAT
             IF(QY(JJ,II,KK).GT.0) THEN
               QCTMP=QCTMP+QY(JJ,II,KK)*COLD(JJ,II,KK)*AREA*DTRANS
@@ -1860,9 +1860,9 @@ C--LEFT FACE
           IF(ICBUND(JJ-1,II,KK).NE.0) THEN
             WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
             THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1791 ADV
-              THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW) !# LINE 1792 ADV
-            ENDIF                                                     !# LINE 1793 ADV
+            IF(DOMINSAT.EQ..TRUE.) THEN  
+              THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
+            ENDIF 
             AREA=DELC(II)*THKSAT
             IF(QX(JJ-1,II,KK).GT.0) THEN
               QCTMP=QCTMP-QX(JJ-1,II,KK)*COLD(JJ-1,II,KK)*AREA*DTRANS
@@ -1876,9 +1876,9 @@ C--RIGHT FACE
           IF(ICBUND(JJ+1,II,KK).NE.0) THEN
             WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
             THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN                               !# LINE 1805 ADV
-              THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW) !# LINE 1806 ADV
-            ENDIF                                                     !# LINE 1807 ADV
+            IF(DOMINSAT.EQ..TRUE.) THEN    
+              THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
+            ENDIF   
             AREA=DELC(II)*THKSAT
             IF(QX(JJ,II,KK).GT.0) THEN
               QCTMP=QCTMP+QX(JJ,II,KK)*COLD(JJ,II,KK)*AREA*DTRANS
@@ -1917,7 +1917,7 @@ C *******************************************************************
 C THIS SUBROUTINE CALCULATES WEIGHTED VELOCITY NEEDED FOR MOVING
 C PARTICLE P OVER DT USING THE 4TH-ORDER RUNGE-KUTTA SOLUTION.
 C *******************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,JP,IP,KP,J0,I0,K0,J,I,K,N
@@ -2190,18 +2190,18 @@ C--NORMAL EXIT
       END
 C
 C
-      SUBROUTINE ADV5FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
+      SUBROUTINE ADV1FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
 C *********************************************************************
 C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE UZTVARS,       ONLY: IUZFBND
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,NODES,
      &                         UPDLHS,NADVFD
-      USE MIN_SAT                                                   !# LINE 2127 ADV
+      USE MIN_SAT 
 C
       IMPLICIT  NONE
       INTEGER   ICBUND,ICOMP,J,I,K,N,NCR,IUPS,ICTRL
@@ -2229,7 +2229,7 @@ C--------CALCULATE IN THE Z DIRECTION
 C-----------TOP FACE
             IF(K.GT.1) THEN
                 ALPHA = 0.
-                IF(DH(N-NCR).EQ.0.AND.DH(N).EQ.0) GOTO 405          !edm
+                IF(DH(N-NCR).EQ.0.AND.DH(N).EQ.0) GOTO 405 
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(N-NCR)/(DH(N-NCR)+DH(N))
                 IF(NADVFD.EQ.IUPS.AND.QZ(N-NCR).LT.0.) ALPHA=1.0
                 A(N,1)=A(N,1)+ALPHA*QZ(N-NCR)*AREA
@@ -2238,7 +2238,7 @@ C-----------TOP FACE
 C-----------BOTTOM FACE
   405       IF(K.LT.NLAY) THEN
                 ALPHA = 0.
-                IF(DH(N).EQ.0.AND.DH(N+NCR).EQ.0) GOTO 410          !edm
+                IF(DH(N).EQ.0.AND.DH(N+NCR).EQ.0) GOTO 410 
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(N)/(DH(N)+DH(N+NCR))
                 IF(NADVFD.EQ.IUPS.AND.QZ(N).LT.0.) ALPHA=1.0
                 A(N,1)=A(N,1)-(1.-ALPHA)*QZ(N)*AREA
@@ -2251,9 +2251,9 @@ C-----------BACK FACE
             IF(I.GT.1) THEN
                 WW=DELC(I)/(DELC(I)+DELC(I-1))
                 THKSAT=DH(N-NCOL)*WW+DH(N)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                    !# LINE 2179 ADV
-                  THKSAT=ABS(DH(N-NCOL))*WW+ABS(DH(N))*(1.-WW) !# LINE 2180 ADV
-                ENDIF                                          !# LINE 2181 ADV
+                IF(DOMINSAT.EQ..TRUE.) THEN                    
+                  THKSAT=ABS(DH(N-NCOL))*WW+ABS(DH(N))*(1.-WW) 
+                ENDIF                                          
                 AREA=DELR(J)*THKSAT
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I-1)/(DELC(I-1)+DELC(I))
@@ -2265,9 +2265,9 @@ C-----------FRONT FACE
             IF(I.LT.NROW) THEN
                 WW=DELC(I+1)/(DELC(I+1)+DELC(I))
                 THKSAT=DH(N)*WW+DH(N+NCOL)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                    !# LINE 2193 ADV
-                  THKSAT=ABS(DH(N))*WW+ABS(DH(N+NCOL))*(1.-WW) !# LINE 2194 ADV
-                ENDIF                                          !# LINE 2195 ADV
+                IF(DOMINSAT.EQ..TRUE.) THEN                   
+                  THKSAT=ABS(DH(N))*WW+ABS(DH(N+NCOL))*(1.-WW)
+                ENDIF                                         
                 AREA=DELR(J)*THKSAT
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I)/(DELC(I)+DELC(I+1))
@@ -2282,9 +2282,9 @@ C-----------LEFT FACE
             IF(J.GT.1) THEN
                 WW=DELR(J)/(DELR(J)+DELR(J-1))
                 THKSAT=DH(N-1)*WW+DH(N)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                    !# LINE 2210 ADV
-                  THKSAT=ABS(DH(N-1))*WW+ABS(DH(N))*(1.-WW)    !# LINE 2211 ADV
-                ENDIF                                          !# LINE 2212 ADV
+                IF(DOMINSAT.EQ..TRUE.) THEN                
+                  THKSAT=ABS(DH(N-1))*WW+ABS(DH(N))*(1.-WW)
+                ENDIF                                      
                 AREA=DELC(I)*THKSAT
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J-1)/(DELR(J-1)+DELR(J))
@@ -2296,9 +2296,9 @@ C-----------RIGHT FACE
             IF(J.LT.NCOL) THEN
                 WW=DELR(J+1)/(DELR(J+1)+DELR(J))
                 THKSAT=DH(N)*WW+DH(N+1)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                    !# LINE 2224 ADV
-                  THKSAT=ABS(DH(N))*WW+ABS(DH(N+1))*(1.-WW)    !# LINE 2225 ADV
-                ENDIF                                          !# LINE 2226 ADV 
+                IF(DOMINSAT.EQ..TRUE.) THEN                 
+                  THKSAT=ABS(DH(N))*WW+ABS(DH(N+1))*(1.-WW) 
+                ENDIF                                       
                 AREA=DELC(I)*THKSAT
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J)/(DELR(J)+DELR(J+1))
@@ -2317,32 +2317,32 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE ADV5BD(ICOMP,DTRANS,NTRANS,KPER,KSTP)              !# Amended (LINE 2247 ADV)
+      SUBROUTINE ADV1BD(ICOMP,DTRANS,NTRANS,KPER,KSTP) 
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGET OF CONSTANT-CONCENTRATION NODES
 C DUE TO ADVECTION.
 C **********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY:IOUT,NCOL,NROW,NLAY,MCOMP,NADVFD,ICBUND,
      &                        DELR,DELC,DH,QX,QY,QZ,CNEW,RMASIO,
-     &                        PRTOUT,TIME2                          !# LINE 2247 ADV
-      USE MIN_SAT                                                   !# LINE 2254 ADV
+     &                        PRTOUT,TIME2 
+      USE MIN_SAT                          
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K
-      REAL      DTRANS,SADV5Q,QCTMP
-      REAL      SADV5Q2,SADV5Q3,QCTMP2,QCTMP3                       !# LINE 2259 ADV
-      INTEGER   IDIR3                                               !# LINE 2260 ADV
+      REAL      DTRANS,SADV1Q,QCTMP
+      REAL      SADV1Q2,SADV1Q3,QCTMP2,QCTMP3
+      INTEGER   IDIR3                        
 C
-      REAL, ALLOCATABLE :: C2DRY(:,:,:,:)                           !# LINE 2265 ADV
-      REAL CTMPMAX                                                  !# LINE 2266 ADV
-      INTEGER JMAX,IMAX,KMAX,ICNT0                                  !# LINE 2267 ADV
-      CHARACTER*16 TEXT                                             !# LINE 2268 ADV
-      CHARACTER FINDEX*30,FLNAME*50                                 !# LINE 2269 ADV
-      INTEGER NTRANS,KSTP,KPER,IU                                   !# LINE 2270 ADV
-C      REAL TIME2                                                    !# LINE 2271 ADV
-      LOGICAL LOP                                                   !# LINE 2272 ADV
+      REAL, ALLOCATABLE :: C2DRY(:,:,:,:)
+      REAL CTMPMAX                       
+      INTEGER JMAX,IMAX,KMAX,ICNT0       
+      CHARACTER*16 TEXT                  
+      CHARACTER FINDEX*30,FLNAME*50      
+      INTEGER NTRANS,KSTP,KPER,IU        
+C      REAL TIME2                        
+      LOGICAL LOP                        
 C
 C--LOOP OVER ALL MODEL CELLS
       DO K=1,NLAY
@@ -2351,7 +2351,7 @@ C--LOOP OVER ALL MODEL CELLS
 C
 C--SKIP IF NOT CONSTANT-CONCENTRATION CELLS
             IF(ICBUND(J,I,K,ICOMP).LT.0) THEN
-              QCTMP=SADV5Q(NCOL,NROW,NLAY,J,I,K,
+              QCTMP=SADV1Q(NCOL,NROW,NLAY,J,I,K,
      &         ICBUND(1:NCOL,1:NROW,1:NLAY,ICOMP),
      &         DELR,DELC,DH,CNEW(1:NCOL,1:NROW,1:NLAY,ICOMP),
      &         QX,QY,QZ,DTRANS,NADVFD)
@@ -2360,92 +2360,92 @@ C--SKIP IF NOT CONSTANT-CONCENTRATION CELLS
               ELSE
                 RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)+QCTMP
               ENDIF
-C                                                                      !# LINE 2288 ADV
-C-----CALCULATE CELL-TO-CELL MASS FOR ALL ACTIVE CELLS                 !# LINE 2289 ADV
-            ELSEIF(ICBUND(J,I,K,ICOMP).GT.0) THEN                      !# LINE 2290 ADV
-              QCTMP3=0.                                                !# LINE 2291 ADV
-              QCTMP2=0.                                                !# LINE 2292 ADV
-C.............CALCULATE FLOW QCTMP2 OR FLOW INTO CELL; SET IDIR3=1     !# LINE 2293 ADV
-              IDIR3=1                                                  !# LINE 2294 ADV
-              QCTMP2=SADV5Q3(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP), !# LINE 2295 ADV
-     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD,  !# LINE 2296 ADV
-     &         IDIR3)                                                  !# LINE 2297 ADV
-C.............CALCULATE FLOW QCTMP3 OR FLOW OUT OF CELL; SET IDIR3=2   !# LINE 2298 ADV
-              IDIR3=2                                                  !# LINE 2299 ADV
-              QCTMP3=SADV5Q3(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP), !# LINE 2300 ADV
-     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD,  !# LINE 2301 ADV
-     &         IDIR3)                                                  !# LINE 2302 ADV
-              RMASIO(14,1,ICOMP)=RMASIO(14,1,ICOMP)+QCTMP3             !# LINE 2303 ADV
-              RMASIO(14,2,ICOMP)=RMASIO(14,2,ICOMP)+QCTMP2             !# LINE 2304 ADV
+C                                                                     
+C-----CALCULATE CELL-TO-CELL MASS FOR ALL ACTIVE CELLS                
+            ELSEIF(ICBUND(J,I,K,ICOMP).GT.0) THEN                     
+              QCTMP3=0.                                               
+              QCTMP2=0.                                               
+C.............CALCULATE FLOW QCTMP2 OR FLOW INTO CELL; SET IDIR3=1    
+              IDIR3=1                                                 
+              QCTMP2=SADV1Q3(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP),
+     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD, 
+     &         IDIR3)                                                 
+C.............CALCULATE FLOW QCTMP3 OR FLOW OUT OF CELL; SET IDIR3=2  
+              IDIR3=2                                                 
+              QCTMP3=SADV1Q3(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP),
+     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD, 
+     &         IDIR3)                                                 
+              RMASIO(14,1,ICOMP)=RMASIO(14,1,ICOMP)+QCTMP3            
+              RMASIO(14,2,ICOMP)=RMASIO(14,2,ICOMP)+QCTMP2            
             ENDIF
 C
           ENDDO
         ENDDO
       ENDDO
 C
-C--CALCULATE MASS LOST TO ICBND=0 CELLS                                !# LINE 2311 ADV
-      IF(DOMINSAT.EQ..TRUE.) THEN                                      !# LINE 2312 ADV
-      CTMPMAX=0.                                                       !# LINE 2313 ADV
-      ICNT0=0                                                          !# LINE 2314 ADV
-      IF(IC2DRY.EQ.1) THEN                                             !# LINE 2315 ADV
-        IF(.NOT.ALLOCATED(C2DRY)) ALLOCATE(C2DRY(NCOL,NROW,NLAY,MCOMP)) !# LINE 2316 ADV
-        C2DRY=0.                                                       !# LINE 2317 ADV
-        TEXT='MASS TO DRY'                                             !# LINE 2318 ADV
-        IU=198                                                         !# LINE 2319 ADV
-        FLNAME='c2dry.ucn'                                             !# LINE 2320 ADV
-        INQUIRE(UNIT=IU,OPENED=LOP)                                    !# LINE 2321 ADV
-        IF(.not.LOP) CALL OPENFL(-(198),0,FLNAME,1,FINDEX)             !# LINE 2322 ADV
-      ENDIF                                                            !# LINE 2323 ADV
-c                                                                      !# LINE 2324 ADV
-      DO K=1,NLAY                                                      !# LINE 2325 ADV
-        DO I=1,NROW                                                    !# LINE 2326 ADV
-          DO J=1,NCOL                                                  !# LINE 2327 ADV
-            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN                          !# LINE 2328 ADV
-              QCTMP=SADV5Q2(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP),  !# LINE 2329 ADV
-     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD)  !# LINE 2330 ADV
-C                                                                      !# LINE 2331 ADV
-              IF(DRYON.EQ..FALSE.) THEN                                !# LINE 2332 ADV
-                IF(QCTMP.GT.0) THEN                                    !# LINE 2333 ADV
-                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTMP          !# LINE 2334 ADV
-                ELSE                                                   !# LINE 2335 ADV
-                  RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTMP          !# LINE 2336 ADV
-                ENDIF                                                  !# LINE 2337 ADV
-              ENDIF                                                    !# LINE 2338 ADV
-C                                                                      !# LINE 2339 ADV
-              IF(IC2DRY.EQ.1) C2DRY(J,I,K,ICOMP)=QCTMP                 !# LINE 2340 ADV
-C                                                                      !# LINE 2341 ADV
-              IF(ABS(QCTMP).GT.1.) THEN                                !# LINE 2342 ADV
-                ICNT0=ICNT0+1                                          !# LINE 2343 ADV
-                !write(199,*) k,i,j,QCTMP                              !# LINE 2344 ADV
-              ENDIF                                                    !# LINE 2345 ADV
-              IF(CTMPMAX.LT.ABS(QCTMP)) THEN                           !# LINE 2346 ADV
-                KMAX=K                                                 !# LINE 2347 ADV
-                IMAX=I                                                 !# LINE 2348 ADV
-                JMAX=J                                                 !# LINE 2349 ADV
-                CTMPMAX=ABS(QCTMP)                                     !# LINE 2350 ADV
-              ENDIF                                                    !# LINE 2351 ADV
-            ENDIF                                                      !# LINE 2352 ADV
-          ENDDO                                                        !# LINE 2353 ADV
-        ENDDO                                                          !# LINE 2354 ADV
-      ENDDO                                                            !# LINE 2355 ADV
-c                                                                      !# LINE 2356 ADV
-      IF(IC2DRY.EQ.1) THEN                                             !# LINE 2357 ADV
-        if(PRTOUT) then                                                !# LINE 2358 ADV
-          DO K=1,NLAY                                                  !# LINE 2359 ADV
-            WRITE(iu) NTRANS,KSTP,KPER,TIME2,TEXT,NCOL,NROW,K          !# LINE 2360 ADV
-            WRITE(iu) ((c2dry(J,I,K,ICOMP),J=1,NCOL),I=1,NROW)         !# LINE 2361 ADV
-          ENDDO                                                        !# LINE 2362 ADV
-        ENDIF                                                          !# LINE 2363 ADV
-      ENDIF                                                            !# LINE 2364 ADV
-C                                                                      !# LINE 2365 ADV
-      ENDIF                                                            !# LINE 2366 ADV
-C                                                                      !# LINE 2367 ADV
+C--CALCULATE MASS LOST TO ICBND=0 CELLS                               
+      IF(DOMINSAT.EQ..TRUE.) THEN                                     
+      CTMPMAX=0.                                                      
+      ICNT0=0                                                         
+      IF(IC2DRY.EQ.1) THEN                                            
+        IF(.NOT.ALLOCATED(C2DRY)) ALLOCATE(C2DRY(NCOL,NROW,NLAY,MCOMP))
+        C2DRY=0.                                                      
+        TEXT='MASS TO DRY'                                            
+        IU=198                                                        
+        FLNAME='c2dry.ucn'                                            
+        INQUIRE(UNIT=IU,OPENED=LOP)                                   
+        IF(.not.LOP) CALL OPENFL(-(198),0,FLNAME,1,FINDEX)            
+      ENDIF                                                           
+c                                                                     
+      DO K=1,NLAY                                                     
+        DO I=1,NROW                                                   
+          DO J=1,NCOL                                                 
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN                         
+              QCTMP=SADV1Q2(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP), 
+     &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD) 
+C                                                                     
+              IF(DRYON.EQ..FALSE.) THEN                               
+                IF(QCTMP.GT.0) THEN                                   
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTMP         
+                ELSE                                                  
+                  RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTMP         
+                ENDIF                                                 
+              ENDIF                                                   
+C                                                                     
+              IF(IC2DRY.EQ.1) C2DRY(J,I,K,ICOMP)=QCTMP                
+C                                                                     
+              IF(ABS(QCTMP).GT.1.) THEN                               
+                ICNT0=ICNT0+1                                         
+                !write(199,*) k,i,j,QCTMP                      
+              ENDIF                                            
+              IF(CTMPMAX.LT.ABS(QCTMP)) THEN                   
+                KMAX=K                                         
+                IMAX=I                                         
+                JMAX=J                                         
+                CTMPMAX=ABS(QCTMP)                             
+              ENDIF                                            
+            ENDIF                                              
+          ENDDO                                                
+        ENDDO                                                  
+      ENDDO                                                    
+c                                                              
+      IF(IC2DRY.EQ.1) THEN                                     
+        if(PRTOUT) then                                        
+          DO K=1,NLAY                                          
+            WRITE(iu) NTRANS,KSTP,KPER,TIME2,TEXT,NCOL,NROW,K  
+            WRITE(iu) ((c2dry(J,I,K,ICOMP),J=1,NCOL),I=1,NROW) 
+          ENDDO                                                
+        ENDIF                                                  
+      ENDIF                                                    
+C                                                              
+      ENDIF                                                    
+C                                                              
 C--RETURN
       RETURN
       END
 C
 C
-      SUBROUTINE SADV5U(NCOL,NROW,NLAY,ICBUND,DELR,DELC,DH,PRSITY,
+      SUBROUTINE SADV1U(NCOL,NROW,NLAY,ICBUND,DELR,DELC,DH,PRSITY,
      & CNEW,COLD,CTOP,CBCK,QX,QY,QZ,RETA,DTRANS,RMASIO)
 C *********************************************************************
 C THIS SUBROUTINE SOLVES THE ADVECTION TERM WITH THE 3RD ORDER TVD
@@ -2453,13 +2453,13 @@ C SCHEME (ULTIMATE).
 C *********************************************************************
 C last modified: 02-15-2005
 C
-      USE       MIN_SAT                                        !# LINE 2383 ADV
+      USE       MIN_SAT 
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IX,IY,IZ
-      INTEGER   K2,N,NRC                                       !# LINE 2385 ADV
+      INTEGER   K2,N,NRC
       REAL      COLD,QX,QY,QZ,DELR,DELC,DH,CNEW,PRSITY,RETA,DTRANS,
      &          CBCK,CTMP,WW,CTOP,CRGT,CTOTAL,CFACE,RMASIO
-      REAL      CTOTAL2,CMAS2                                  !# LINE 2387 ADV
+      REAL      CTOTAL2,CMAS2  
       DIMENSION ICBUND(NCOL,NROW,NLAY),QX(NCOL,NROW,NLAY),
      &          QY(NCOL,NROW,NLAY),QZ(NCOL,NROW,NLAY),DELR(NCOL),
      &          DELC(NROW),DH(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
@@ -2479,15 +2479,15 @@ C--CLEAR TEMPORARY ARRAYS
         ENDDO
       ENDDO
 C
-      IF(DRYON) C7=0.                                          !# LINE 2407 ADV
-      NRC=NROW*NCOL                                            !# LINE 2408 ADV
-C                                                              !# LINE 2409 ADV
+      IF(DRYON) C7=0.
+      NRC=NROW*NCOL  
+C                    
 C--LOOP THROUGH ALL CELLS
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
             CTOTAL=0.
-            CTOTAL2=0.                                         !# LINE 2421 ADV
+            CTOTAL2=0.
 C
 C--SKIP IF CELL IS INACTIVE
             IF(ICBUND(J,I,K).EQ.0) CYCLE
@@ -2498,44 +2498,44 @@ C  ====================================
 C
 C--TOP FACE...
 C--THE TOP FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS BOTTOM FACE
-            IF(K.GT.1) THEN                                         !edm
-              IF(DOMINSAT) THEN                                     !# LINE 2433 ADV
-                IF(ICBUND(J,I,K-1).NE.0) THEN                       !edm
+            IF(K.GT.1) THEN                                         
+              IF(DOMINSAT) THEN                                     
+                IF(ICBUND(J,I,K-1).NE.0) THEN                       
                   CTOTAL=CTOTAL-CTOP(J,I,K-1)*QZ(J,I,K-1)/DH(J,I,K)
-                ELSE                                                !# LINE 2436 ADV
-                  IF(QZ(J,I,K-1).LT.0.) THEN                        !# LINE 2437 ADV
-                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QZ(J,I,K-1)/DH(J,I,K) !# LINE 2438 ADV
-                  ELSE                                              !# LINE 2439 ADV
-                    CTOTAL2=CTOTAL2-0.*QZ(J,I,K-1)/DH(J,I,K)        !# LINE 2440 ADV
-                  ENDIF                                             !# LINE 2441 ADV
-                ENDIF                                               !# LINE 2442 ADV
-              ELSE                                                  !# LINE 2443 ADV
-                IF(ICBUND(J,I,K-1).NE.0)                            !# LINE 2444 ADV
-     &            CTOTAL=CTOTAL-CTOP(J,I,K-1)*QZ(J,I,K-1)/DH(J,I,K) !# LINE 2445 ADV
-              ENDIF                                                 !# LINE 2446 ADV
-            ENDIF                                                   !edm
+                ELSE                                                
+                  IF(QZ(J,I,K-1).LT.0.) THEN                        
+                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QZ(J,I,K-1)/DH(J,I,K)
+                  ELSE                                             
+                    CTOTAL2=CTOTAL2-0.*QZ(J,I,K-1)/DH(J,I,K)       
+                  ENDIF                                            
+                ENDIF                                              
+              ELSE                                                 
+                IF(ICBUND(J,I,K-1).NE.0)                           
+     &            CTOTAL=CTOTAL-CTOP(J,I,K-1)*QZ(J,I,K-1)/DH(J,I,K)
+              ENDIF                                                
+            ENDIF                                                  
 C
 C--BOTTOM FACE...
-            IF(K.LT.NLAY) THEN                                      !edm
-              IF(DOMINSAT) THEN                                     !# LINE 2451 ADV
-                IF(ICBUND(J,I,K+1).NE.0) THEN                       !edm
-C                                                                   !# LINE 2453 ADV
-C--CALCULATE THE FACE VALUE AT (J,I,K+1/2)                          !# LINE 2454 ADV
-                  CTMP=CFACE(NCOL,NROW,NLAY,J,I,K+1,IZ,DELR,DELC,DH, !# LINE 2455 ADV
-     &               COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)            !# LINE 2456 ADV
-                  CTOTAL=CTOTAL+CTMP*QZ(J,I,K)/DH(J,I,K)            !# LINE 2457 ADV
-C                                                                   !# LINE 2458 ADV
-C--SAVE THE FACE VALUE FOR NEXT CELL                                !# LINE 2459 ADV
-                  CTOP(J,I,K)=CTMP                                  !# LINE 2460 ADV
-                ELSE                                                !# LINE 2461 ADV
-                  IF(QZ(J,I,K).GE.0.) THEN                          !# LINE 2462 ADV
-                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QZ(J,I,K)/DH(J,I,K) !# LINE 2463 ADV
-                  ELSE                                              !# LINE 2464 ADV
-                    CTOTAL2=CTOTAL2+0.*QZ(J,I,K)/DH(J,I,K)          !# LINE 2465 ADV
-                  ENDIF                                             !# LINE 2466 ADV
-                ENDIF                                               !# LINE 2467 ADV
-              ELSE                                                  !# LINE 2468 ADV
-                IF(ICBUND(J,I,K+1).NE.0) THEN                       !# LINE 2468 ADV
+            IF(K.LT.NLAY) THEN                                     
+              IF(DOMINSAT) THEN                                    
+                IF(ICBUND(J,I,K+1).NE.0) THEN                      
+C                                                                  
+C--CALCULATE THE FACE VALUE AT (J,I,K+1/2)                         
+                  CTMP=CFACE(NCOL,NROW,NLAY,J,I,K+1,IZ,DELR,DELC,DH,
+     &               COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)            
+                  CTOTAL=CTOTAL+CTMP*QZ(J,I,K)/DH(J,I,K)            
+C                                                                   
+C--SAVE THE FACE VALUE FOR NEXT CELL                                
+                  CTOP(J,I,K)=CTMP                                  
+                ELSE                                                
+                  IF(QZ(J,I,K).GE.0.) THEN                          
+                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QZ(J,I,K)/DH(J,I,K) 
+                  ELSE                                              
+                    CTOTAL2=CTOTAL2+0.*QZ(J,I,K)/DH(J,I,K)          
+                  ENDIF                                             
+                ENDIF                                               
+              ELSE                                                  
+                IF(ICBUND(J,I,K+1).NE.0) THEN                       
 C
 C--CALCULATE THE FACE VALUE AT (J,I,K+1/2)
                   CTMP=CFACE(NCOL,NROW,NLAY,J,I,K+1,IZ,DELR,DELC,DH,
@@ -2544,9 +2544,9 @@ C--CALCULATE THE FACE VALUE AT (J,I,K+1/2)
 C
 C--SAVE THE FACE VALUE FOR NEXT CELL
                   CTOP(J,I,K)=CTMP
-                ENDIF                                               !# LINE 2478 ADV
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
+                ENDIF
+              ENDIF  
+            ENDIF    
 C
 C--CALCULATE FACE VALUES IN Y DIRECTION
 C  ====================================
@@ -2555,111 +2555,111 @@ C
 C
 C--BACK FACE...
 C--THE BACK FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS FRONT FACE
-            IF(I.GT.1) THEN                                          !# edm
-              IF(DOMINSAT) THEN                                      !# LINE 2490 ADV
-                IF(ICBUND(J,I-1,K).NE.0) THEN                        !# edm
-                  WW=DH(J,I-1,K)/DH(J,I,K)                           !# LINE 2492 ADV
-              !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K)) !# LINE 2493 ADV
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  !# LINE 2494 ADV
-CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                   !# LINE 2495 ADV
-                  CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I) !# LINE 2496 ADV
-                ELSE                                                 !# LINE 2497 ADV
-                  IF(QY(J,I-1,K).LT.0.) THEN                         !# LINE 2498 ADV
-                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QY(J,I-1,K)/DELC(I)  !# LINE 2499 ADV
-                    IF(DRYON) THEN                                   !# LINE 2500 ADV
-                      CMAS2=-COLD(J,I,K)*QY(J,I-1,K)/DELC(I)         !# LINE 2501 ADV
-                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K)) !# LINE 2502 ADV
-                      CMAS2=CMAS2*RETA(J,I,K)*                       !# LINE 2503 ADV
-     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)        !# LINE 2504 ADV
-                      K2=0                                           !# LINE 2505 ADV
-                      IF(QZ(J,I-1,K).GT.0.) THEN                     !# LINE 2506 ADV
-                        IF(K.LT.NLAY) K2=K+1                         !# LINE 2507 ADV
-                      ELSEIF(QZ(J,I-1,K-1).LT.0.) THEN               !# LINE 2508 ADV
-                        IF(K.GT.1) K2=K-1                            !# LINE 2509 ADV
-                      ELSE                                           !# LINE 2510 ADV
-                        K2=0                                         !# LINE 2511 ADV
-                      ENDIF                                          !# LINE 2512 ADV
-                      IF(K2.GT.0) THEN                               !# LINE 2513 ADV
-                        IF(ICBUND(J,I-1,K2).GT.0) THEN               !# LINE 2514 ADV
-                          RMASIO(12,1)=RMASIO(12,1)+CMAS2            !# LINE 2515 ADV
-                          CMAS2=CMAS2/(RETA(J,I-1,K2)*               !# LINE 2516 ADV
-     &                          DELR(J)*DELC(I-1)*DH(J,I-1,K2)*      !# LINE 2517 ADV
-     &                          PRSITY(J,I-1,K2))                    !# LINE 2517 ADV
-                          IF(K2.LT.K) THEN                           !# LINE 2518 ADV
-                            CNEW(J,I-1,K2)=CNEW(J,I-1,K2)+CMAS2      !# LINE 2519 ADV
-                          ELSE                                       !# LINE 2520 ADV
-                            N=(K2-1)*NRC+(I-1-1)*NCOL+J              !# LINE 2521 ADV
-                            C7(N)=C7(N)+CMAS2                        !# LINE 2522 ADV
-                          ENDIF                                      !# LINE 2523 ADV
-                        ELSEIF(ICBUND(J,I-1,K2).LT.0) THEN           !# LINE 2524 ADV
-                          RMASIO(6,2)=RMASIO(6,2)-CMAS2              !# LINE 2525 ADV
-                        ENDIF                                        !# LINE 2526 ADV
-                      ENDIF                                          !# LINE 2527 ADV
-                    ENDIF                                            !# LINE 2528 ADV
-                  ELSE                                               !# LINE 2529 ADV
-                    CTOTAL2=CTOTAL2-0.*QY(J,I-1,K)/DELC(I)           !# LINE 2530 ADV
-                  ENDIF                                              !# LINE 2531 ADV
-                ENDIF                                                !# LINE 2532 ADV
-              ELSE                                                   !# LINE 2533 ADV
-                IF(ICBUND(J,I-1,K).NE.0) THEN                        !# LINE 2534 ADV
-                  WW=DH(J,I-1,K)/DH(J,I,K)                           !# LINE 2535 ADV
-              !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K)) !# LINE 2536 ADV
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  !# LINE 2537 ADV
-                  CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I) !# LINE 2538 ADV
-                ENDIF                                                !# LINE 2539 ADV
-              ENDIF                                                  !# LINE 2540 ADV
-            ENDIF                                                    !edm
+            IF(I.GT.1) THEN                   
+              IF(DOMINSAT) THEN               
+                IF(ICBUND(J,I-1,K).NE.0) THEN 
+                  WW=DH(J,I-1,K)/DH(J,I,K)    
+              !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K))
+                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                 
+CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                  
+                  CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I)
+                ELSE                                                
+                  IF(QY(J,I-1,K).LT.0.) THEN                        
+                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QY(J,I-1,K)/DELC(I) 
+                    IF(DRYON) THEN                                  
+                      CMAS2=-COLD(J,I,K)*QY(J,I-1,K)/DELC(I)        
+                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+                      CMAS2=CMAS2*RETA(J,I,K)*                      
+     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
+                      K2=0                                          
+                      IF(QZ(J,I-1,K).GT.0.) THEN                    
+                        IF(K.LT.NLAY) K2=K+1                        
+                      ELSEIF(QZ(J,I-1,K-1).LT.0.) THEN              
+                        IF(K.GT.1) K2=K-1                           
+                      ELSE                                          
+                        K2=0                                        
+                      ENDIF                                         
+                      IF(K2.GT.0) THEN                              
+                        IF(ICBUND(J,I-1,K2).GT.0) THEN              
+                          RMASIO(12,1)=RMASIO(12,1)+CMAS2           
+                          CMAS2=CMAS2/(RETA(J,I-1,K2)*              
+     &                          DELR(J)*DELC(I-1)*DH(J,I-1,K2)*     
+     &                          PRSITY(J,I-1,K2))                   
+                          IF(K2.LT.K) THEN                          
+                            CNEW(J,I-1,K2)=CNEW(J,I-1,K2)+CMAS2     
+                          ELSE                                      
+                            N=(K2-1)*NRC+(I-1-1)*NCOL+J             
+                            C7(N)=C7(N)+CMAS2                       
+                          ENDIF                                     
+                        ELSEIF(ICBUND(J,I-1,K2).LT.0) THEN          
+                          RMASIO(6,2)=RMASIO(6,2)-CMAS2             
+                        ENDIF                                       
+                      ENDIF                                         
+                    ENDIF                                           
+                  ELSE                                              
+                    CTOTAL2=CTOTAL2-0.*QY(J,I-1,K)/DELC(I)          
+                  ENDIF                                             
+                ENDIF                                               
+              ELSE                                                  
+                IF(ICBUND(J,I-1,K).NE.0) THEN                       
+                  WW=DH(J,I-1,K)/DH(J,I,K)                          
+              !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K))
+                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  
+                  CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I) 
+                ENDIF                                                
+              ENDIF                                                  
+            ENDIF                                                    
 C
 C--FRONT FACE...
-            IF(I.LT.NROW) THEN                                       !edm
-              IF(DOMINSAT) THEN                                      !# LINE2545 ADV
-                IF(ICBUND(J,I+1,K).NE.0) THEN                        !edm
-C                                                                    !# LINE 2547 ADV
-C--CALCULATE THE FACE VALUE AT (J,I+1/2,K)                           !# LINE 2548 ADV
-                  CTMP=CFACE(NCOL,NROW,NLAY,J,I+1,K,IY,DELR,DELC,DH, !# LINE 2549 ADV
-     &             COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)               !# LINE 2550 ADV
-                  CTOTAL=CTOTAL+CTMP*QY(J,I,K)/DELC(I)               !# LINE 2551 ADV
-C                                                                    !# LINE 2552 ADV
-C--SAVE THE FACE VALUE FOR NEXT CELL                                 !# LINE 2553 ADV
-                  CBCK(J,I,K)=CTMP                                   !# LINE 2554 ADV
-                ELSE                                                 !# LINE 2555 ADV
-                  IF(QY(J,I,K).GT.0.) THEN                           !# LINE 2556 ADV
-                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QY(J,I,K)/DELC(I)    !# LINE 2557 ADV
-                    IF(DRYON) THEN                                   !# LINE 2558 ADV
-                      CMAS2=COLD(J,I,K)*QY(J,I,K)/DELC(I)            !# LINE 2559 ADV
-                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K)) !# LINE 2560 ADV
-                      CMAS2=CMAS2*RETA(J,I,K)*                       !# LINE 2561 ADV
-     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)        !# LINE 2562 ADV
-                      K2=0                                           !# LINE 2563 ADV
-                      IF(QZ(J,I+1,K).GT.0.) THEN                     !# LINE 2564 ADV
-                        IF(K.LT.NLAY) K2=K+1                         !# LINE 2565 ADV
-                      ELSEIF(QZ(J,I+1,K-1).LT.0.) THEN               !# LINE 2566 ADV
-                        IF(K.GT.1) K2=K-1                            !# LINE 2567 ADV
-                      ELSE                                           !# LINE 2568 ADV
-                        K2=0                                         !# LINE 2569 ADV
-                      ENDIF                                          !# LINE 2570 ADV
-                      IF(K2.GT.0) THEN                               !# LINE 2571 ADV
-                        IF(ICBUND(J,I+1,K2).GT.0) THEN               !# LINE 2572 ADV
-                          RMASIO(12,1)=RMASIO(12,1)+CMAS2            !# LINE 2573 ADV
-                          CMAS2=CMAS2/(RETA(J,I+1,K2)*               !# LINE 2574 ADV
-     &                  DELR(J)*DELC(I+1)*DH(J,I+1,K2)*PRSITY(J,I+1,K2)) !# LINE 2575 ADV
-                          IF(K2.LT.K) THEN                           !# LINE 2576 ADV
-                            CNEW(J,I+1,K2)=CNEW(J,I+1,K2)+CMAS2      !# LINE 2577 ADV
-                          ELSE                                       !# LINE 2578 ADV
-                            N=(K2-1)*NRC+(I+1-1)*NCOL+J              !# LINE 2579 ADV
-                            C7(N)=C7(N)+CMAS2                        !# LINE 2580 ADV
-                          ENDIF                                      !# LINE 2581 ADV
-                        ELSEIF(ICBUND(J,I+1,K2).LT.0) THEN           !# LINE 2582 ADV
-                          RMASIO(6,2)=RMASIO(6,2)-CMAS2              !# LINE 2583 ADV
-                        ENDIF                                        !# LINE 2584 ADV
-                      ENDIF                                          !# LINE 2585 ADV
-                    ENDIF                                            !# LINE 2586 ADV
-                  ELSE                                               !# LINE 2587 ADV
-                    CTOTAL2=CTOTAL2+0.*QY(J,I,K)/DELC(I)             !# LINE 2588 ADV
-                  ENDIF                                              !# LINE 2589 ADV
-                ENDIF                                                !# LINE 2590 ADV
-              ELSE                                                   !# LINE 2591 ADV
-                IF(ICBUND(J,I+1,K).NE.0) THEN                        !# LINE 2592 ADV
+            IF(I.LT.NROW) THEN                 
+              IF(DOMINSAT) THEN                
+                IF(ICBUND(J,I+1,K).NE.0) THEN  
+C                                              
+C--CALCULATE THE FACE VALUE AT (J,I+1/2,K)     
+                  CTMP=CFACE(NCOL,NROW,NLAY,J,I+1,K,IY,DELR,DELC,DH, 
+     &             COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)
+                  CTOTAL=CTOTAL+CTMP*QY(J,I,K)/DELC(I)
+C                                                     
+C--SAVE THE FACE VALUE FOR NEXT CELL                  
+                  CBCK(J,I,K)=CTMP                    
+                ELSE                                  
+                  IF(QY(J,I,K).GT.0.) THEN            
+                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QY(J,I,K)/DELC(I)
+                    IF(DRYON) THEN                               
+                      CMAS2=COLD(J,I,K)*QY(J,I,K)/DELC(I)        
+                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+                      CMAS2=CMAS2*RETA(J,I,K)*                      
+     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
+                      K2=0                                          
+                      IF(QZ(J,I+1,K).GT.0.) THEN                    
+                        IF(K.LT.NLAY) K2=K+1                        
+                      ELSEIF(QZ(J,I+1,K-1).LT.0.) THEN              
+                        IF(K.GT.1) K2=K-1                           
+                      ELSE                                          
+                        K2=0                                        
+                      ENDIF                                         
+                      IF(K2.GT.0) THEN                              
+                        IF(ICBUND(J,I+1,K2).GT.0) THEN              
+                          RMASIO(12,1)=RMASIO(12,1)+CMAS2           
+                          CMAS2=CMAS2/(RETA(J,I+1,K2)*              
+     &                  DELR(J)*DELC(I+1)*DH(J,I+1,K2)*PRSITY(J,I+1,K2))
+                          IF(K2.LT.K) THEN                     
+                            CNEW(J,I+1,K2)=CNEW(J,I+1,K2)+CMAS2
+                          ELSE                                 
+                            N=(K2-1)*NRC+(I+1-1)*NCOL+J        
+                            C7(N)=C7(N)+CMAS2                  
+                          ENDIF                                
+                        ELSEIF(ICBUND(J,I+1,K2).LT.0) THEN     
+                          RMASIO(6,2)=RMASIO(6,2)-CMAS2        
+                        ENDIF                                  
+                      ENDIF                                    
+                    ENDIF                                      
+                  ELSE                                         
+                    CTOTAL2=CTOTAL2+0.*QY(J,I,K)/DELC(I)       
+                  ENDIF                                        
+                ENDIF                                          
+              ELSE                                             
+                IF(ICBUND(J,I+1,K).NE.0) THEN                  
 C                                                           
 C--CALCULATE THE FACE VALUE AT (J,I+1/2,K)
                   CTMP=CFACE(NCOL,NROW,NLAY,J,I+1,K,IY,DELR,DELC,DH,
@@ -2668,9 +2668,9 @@ C--CALCULATE THE FACE VALUE AT (J,I+1/2,K)
 C
 C--SAVE THE FACE VALUE FOR NEXT CELL
                   CBCK(J,I,K)=CTMP
-                ENDIF                                                !# LINE 2601 ADV
-              ENDIF                                                 !edm
-            ENDIF                                                   !edm
+                ENDIF
+              ENDIF  
+            ENDIF    
 C
 C--CALCULATE IN THE X DIRECTION
 C  ============================
@@ -2679,135 +2679,135 @@ C
 C
 C--LEFT FACE...
 C--THE LEFT FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS RIGHT FACE
-            IF(J.GT.1) THEN                                          !edm
-              IF(DOMINSAT) THEN                                      !# LINE 2613 ADV
-                IF(ICBUND(J-1,I,K).NE.0) THEN                        !edm
-                  WW=DH(J-1,I,K)/DH(J,I,K)                           !# LINE 2615 ADV
-              !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K)) !# LINE 2616 ADV
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  !# LINE 2617 ADV
-CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                   !# LINE 2618 ADV
-                  CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)          !# LINE 2619 ADV
-                ELSE                                                 !# LINE 2620 ADV
-                  IF(QX(J-1,I,K).LT.0.) THEN                         !# LINE 2621 ADV
-                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QX(J-1,I,K)/DELR(J)  !# LINE 2622 ADV
-                    IF(DRYON) THEN                                   !# LINE 2623 ADV
-                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELC(I)         !# LINE 2624 ADV
-                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K)) !# LINE 2625 ADV
-                      CMAS2=CMAS2*RETA(J,I,K)*                       !# LINE 2626 ADV
-     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)        !# LINE 2627 ADV
-                      K2=0                                           !# LINE 2628 ADV
-                      IF(QZ(J-1,I,K).GT.0.) THEN                     !# LINE 2629 ADV
-                        IF(K.LT.NLAY) K2=K+1                         !# LINE 2630 ADV
-                      ELSEIF(QZ(J-1,I,K-1).LT.0.) THEN               !# LINE 2631 ADV
-                        IF(K.GT.1) K2=K-1                            !# LINE 2632 ADV
-                      ELSE                                           !# LINE 2633 ADV
-                        K2=0                                         !# LINE 2634 ADV
-                      ENDIF                                          !# LINE 2635 ADV
-                      IF(K2.GT.0) THEN                               !# LINE 2636 ADV
-                        IF(ICBUND(J-1,I,K2).GT.0) THEN               !# LINE 2637 ADV
-                          RMASIO(12,1)=RMASIO(12,1)+CMAS2            !# LINE 2638 ADV
-                          CMAS2=CMAS2/(RETA(J-1,I,K2)*               !# LINE 2639 ADV
-     &                  DELR(J-1)*DELC(I)*DH(J-1,I,K2)*PRSITY(J-1,I,K2)) !# LINE 2640 ADV
-                          IF(K2.LT.K) THEN                           !# LINE 2641 ADV
-                            CNEW(J-1,I,K2)=CNEW(J-1,I,K2)+CMAS2      !# LINE 2642 ADV
-                          ELSE                                       !# LINE 2643 ADV
-                            N=(K2-1)*NRC+(I-1)*NCOL+J-1              !# LINE 2644 ADV
-                            C7(N)=C7(N)+CMAS2                        !# LINE 2645 ADV
-                          ENDIF                                      !# LINE 2646 ADV
-                        ELSEIF(ICBUND(J-1,I,K2).LT.0) THEN           !# LINE 2647 ADV
-                          RMASIO(6,2)=RMASIO(6,2)-CMAS2              !# LINE 2648 ADV
-                        ENDIF                                        !# LINE 2649 ADV
-                      ENDIF                                          !# LINE 2650 ADV
-                    ENDIF                                            !# LINE 2651 ADV
-                  ELSE                                               !# LINE 2652 ADV
-                    CTOTAL2=CTOTAL2-0.*QX(J-1,I,K)/DELR(J)           !# LINE 2653 ADV
-                  ENDIF                                              !# LINE 2654 ADV
-                ENDIF                                                !# LINE 2655 ADV
-              ELSE                                                   !# LINE 2656 ADV
-                IF(ICBUND(J-1,I,K).NE.0) THEN                        !# LINE 2657 ADV
-                  WW=DH(J-1,I,K)/DH(J,I,K)                           !# LINE 2658 ADV
-              !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K)) !# LINE 2659
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  !# LINE 2659 ADV
-                  CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)          !# LINE 2660 ADV
-                ENDIF                                                !# LINE 2661 ADV
-              ENDIF                                                  !# LINE 2662 ADV
-            ENDIF                                                    !edm
+            IF(J.GT.1) THEN                   
+              IF(DOMINSAT) THEN               
+                IF(ICBUND(J-1,I,K).NE.0) THEN 
+                  WW=DH(J-1,I,K)/DH(J,I,K)    
+              !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K))
+                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                 
+CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                  
+                  CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)         
+                ELSE                                                
+                  IF(QX(J-1,I,K).LT.0.) THEN                        
+                    CTOTAL2=CTOTAL2-COLD(J,I,K)*QX(J-1,I,K)/DELR(J) 
+                    IF(DRYON) THEN                                  
+                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELC(I)        
+                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+                      CMAS2=CMAS2*RETA(J,I,K)*                      
+     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
+                      K2=0                                          
+                      IF(QZ(J-1,I,K).GT.0.) THEN                    
+                        IF(K.LT.NLAY) K2=K+1                        
+                      ELSEIF(QZ(J-1,I,K-1).LT.0.) THEN              
+                        IF(K.GT.1) K2=K-1                           
+                      ELSE                                          
+                        K2=0                                        
+                      ENDIF                                         
+                      IF(K2.GT.0) THEN                              
+                        IF(ICBUND(J-1,I,K2).GT.0) THEN              
+                          RMASIO(12,1)=RMASIO(12,1)+CMAS2           
+                          CMAS2=CMAS2/(RETA(J-1,I,K2)*              
+     &                  DELR(J-1)*DELC(I)*DH(J-1,I,K2)*PRSITY(J-1,I,K2))
+                          IF(K2.LT.K) THEN                     
+                            CNEW(J-1,I,K2)=CNEW(J-1,I,K2)+CMAS2
+                          ELSE                                 
+                            N=(K2-1)*NRC+(I-1)*NCOL+J-1        
+                            C7(N)=C7(N)+CMAS2                  
+                          ENDIF                                
+                        ELSEIF(ICBUND(J-1,I,K2).LT.0) THEN     
+                          RMASIO(6,2)=RMASIO(6,2)-CMAS2        
+                        ENDIF                                  
+                      ENDIF                                    
+                    ENDIF                                      
+                  ELSE                                         
+                    CTOTAL2=CTOTAL2-0.*QX(J-1,I,K)/DELR(J)     
+                  ENDIF                                        
+                ENDIF                                          
+              ELSE                                             
+                IF(ICBUND(J-1,I,K).NE.0) THEN                  
+                  WW=DH(J-1,I,K)/DH(J,I,K)                     
+              !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K))
+                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)        
+                  CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)
+                ENDIF                                      
+              ENDIF                                        
+            ENDIF                                          
 C
 C--RIGHT FACE...
-            IF(J.LT.NCOL) THEN                                       !edm
-              IF(DOMINSAT) THEN                                      !# LINE 2668 ADV
-                IF(ICBUND(J+1,I,K).NE.0) THEN                        !edm
-C                                                                    !# LINE 2670 ADV
-C--CALCULATE FACE VALUE AT (J+1/2,I,K)                               !# LINE 2671 ADV
-                  CRGT=CFACE(NCOL,NROW,NLAY,J+1,I,K,IX,DELR,DELC,DH, !# LINE 2672 ADV
-     &              COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)              !# LINE 2673 ADV
-                  CTOTAL=CTOTAL+CRGT*QX(J,I,K)/DELR(J)               !# LINE 2674 ADV
-                ELSE                                                 !# LINE 2675 ADV
-                  IF(QX(J,I,K).GT.0)THEN                             !# LINE 2676 ADV
-                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QX(J,I,K)/DELR(J)    !# LINE 2677 ADV
-                    IF(DRYON) THEN                                   !# LINE 2678 ADV
-                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELC(I)            !# LINE 2679 ADV
-                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K)) !# LINE 2680 ADV
-                      CMAS2=CMAS2*RETA(J,I,K)*                       !# LINE 2681 ADV
-     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)        !# LINE 2682 ADV
-                      K2=0                                           !# LINE 2683 ADV
-                      IF(QZ(J+1,I,K).GT.0.) THEN                     !# LINE 2684 ADV
-                        IF(K.LT.NLAY) K2=K+1                         !# LINE 2685 ADV
-                      ELSEIF(QZ(J+1,I,K-1).LT.0.) THEN               !# LINE 2686 ADV
-                        IF(K.GT.1) K2=K-1                            !# LINE 2687 ADV
-                      ELSE                                           !# LINE 2688 ADV
-                        K2=0                                         !# LINE 2689 ADV
-                      ENDIF                                          !# LINE 2690 ADV
-                      IF(K2.GT.0) THEN                               !# LINE 2691 ADV
-                        IF(ICBUND(J+1,I,K2).GT.0) THEN               !# LINE 2692 ADV
-                          RMASIO(12,1)=RMASIO(12,1)+CMAS2            !# LINE 2693 ADV
-                          CMAS2=CMAS2/(RETA(J+1,I,K2)*               !# LINE 2694 ADV
-     &                  DELR(J+1)*DELC(I)*DH(J+1,I,K2)*PRSITY(J+1,I,K2)) !# LINE 2695 ADV
-                          IF(K2.LT.K) THEN                           !# LINE 2696 ADV
-                            CNEW(J+1,I,K2)=CNEW(J+1,I,K2)+CMAS2      !# LINE 2697 ADV
-                          ELSE                                       !# LINE 2698 ADV
-                            N=(K2-1)*NRC+(I-1)*NCOL+J+1              !# LINE 2699 ADV
-                            C7(N)=C7(N)+CMAS2                        !# LINE 2700 ADV
-                          ENDIF                                      !# LINE 2701 ADV
-                        ELSEIF(ICBUND(J+1,I,K2).LT.0) THEN           !# LINE 2702 ADV
-                          RMASIO(6,2)=RMASIO(6,2)-CMAS2              !# LINE 2703 ADV
-                        ENDIF                                        !# LINE 2704 ADV
-                      ENDIF                                          !# LINE 2705 ADV
-                    ENDIF                                            !# LINE 2706 ADV
-                  ELSE                                               !# LINE 2707 ADV
-                    CTOTAL2=CTOTAL2+0.*QX(J,I,K)/DELR(J)             !# LINE 2708 ADV
-                  ENDIF                                              !# LINE 2709 ADV
-                ENDIF                                                !# LINE 2710 ADV
-              ELSE                                                   !# LINE 2711 ADV
-                IF(ICBUND(J+1,I,K).NE.0) THEN                        !# LINE 2712 ADV
+            IF(J.LT.NCOL) THEN                
+              IF(DOMINSAT) THEN               
+                IF(ICBUND(J+1,I,K).NE.0) THEN 
+C                                             
+C--CALCULATE FACE VALUE AT (J+1/2,I,K)        
+                  CRGT=CFACE(NCOL,NROW,NLAY,J+1,I,K,IX,DELR,DELC,DH,
+     &              COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)             
+                  CTOTAL=CTOTAL+CRGT*QX(J,I,K)/DELR(J)              
+                ELSE                                                
+                  IF(QX(J,I,K).GT.0)THEN                            
+                    CTOTAL2=CTOTAL2+COLD(J,I,K)*QX(J,I,K)/DELR(J)   
+                    IF(DRYON) THEN                                  
+                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELC(I)           
+                      CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+                      CMAS2=CMAS2*RETA(J,I,K)*                      
+     &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
+                      K2=0                                          
+                      IF(QZ(J+1,I,K).GT.0.) THEN                    
+                        IF(K.LT.NLAY) K2=K+1                        
+                      ELSEIF(QZ(J+1,I,K-1).LT.0.) THEN              
+                        IF(K.GT.1) K2=K-1                           
+                      ELSE                                          
+                        K2=0                                        
+                      ENDIF                                         
+                      IF(K2.GT.0) THEN                              
+                        IF(ICBUND(J+1,I,K2).GT.0) THEN              
+                          RMASIO(12,1)=RMASIO(12,1)+CMAS2           
+                          CMAS2=CMAS2/(RETA(J+1,I,K2)*              
+     &                  DELR(J+1)*DELC(I)*DH(J+1,I,K2)*PRSITY(J+1,I,K2))
+                          IF(K2.LT.K) THEN                     
+                            CNEW(J+1,I,K2)=CNEW(J+1,I,K2)+CMAS2
+                          ELSE                                 
+                            N=(K2-1)*NRC+(I-1)*NCOL+J+1        
+                            C7(N)=C7(N)+CMAS2                  
+                          ENDIF                                
+                        ELSEIF(ICBUND(J+1,I,K2).LT.0) THEN     
+                          RMASIO(6,2)=RMASIO(6,2)-CMAS2        
+                        ENDIF                                  
+                      ENDIF                                    
+                    ENDIF                                      
+                  ELSE                                         
+                    CTOTAL2=CTOTAL2+0.*QX(J,I,K)/DELR(J)       
+                  ENDIF                                        
+                ENDIF                                          
+              ELSE                                             
+                IF(ICBUND(J+1,I,K).NE.0) THEN                  
 C
 C--CALCULATE FACE VALUE AT (J+1/2,I,K)
                   CRGT=CFACE(NCOL,NROW,NLAY,J+1,I,K,IX,DELR,DELC,DH,
      &                  COLD,PRSITY,DTRANS,QX,QY,QZ,ICBUND)
                   CTOTAL=CTOTAL+CRGT*QX(J,I,K)/DELR(J)
-                ENDIF                                                !# LINE 2718 ADV
-              ENDIF                                                  !edm
-            ENDIF                                                    !edm
+                ENDIF 
+              ENDIF   
+            ENDIF     
 C
 C--TOTAL CHANGES            
   430       CTOTAL=CTOTAL*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
-            CTOTAL2=CTOTAL2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))       !# LINE 2728 ADV
+            CTOTAL2=CTOTAL2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
 C
 C--UPDATE CONCENTRATION AT ACTIVE CELL AND
 C--SAVE MASS INTO OR OUT OF CONSTANT-CONCENTRATION CELL
             IF(ICBUND(J,I,K).GT.0) THEN
-              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2                 !# Amended (LINE 2733 ADV)
-              N=(K-1)*NRC+(I-1)*NCOL+J                               !# LINE 2734 ADV
-              IF(DRYON) CNEW(J,I,K)=CNEW(J,I,K)+C7(N)                !# LINE 2735 ADV
-              IF(DOMINSAT) THEN                                      !# LINE 2736 ADV
-                IF(CTOTAL2.LT.0) THEN                                !# LINE 2737 ADV
-                  RMASIO(12,1)=RMASIO(12,1)-CTOTAL2*RETA(J,I,K)*     !# LINE 2738 ADV
-     &             DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)           !# LINE 2739 ADV
-                ELSE                                                 !# LINE 2740 ADV
-                  RMASIO(12,2)=RMASIO(12,2)-CTOTAL2*RETA(J,I,K)*     !# LINE 2741 ADV
-     &             DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)           !# LINE 2742 ADV
-                ENDIF                                                !# LINE 2743 ADV
-              ENDIF                                                  !# LINE 2744 ADV
+              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2  
+              N=(K-1)*NRC+(I-1)*NCOL+J                
+              IF(DRYON) CNEW(J,I,K)=CNEW(J,I,K)+C7(N) 
+              IF(DOMINSAT) THEN                       
+                IF(CTOTAL2.LT.0) THEN                 
+                  RMASIO(12,1)=RMASIO(12,1)-CTOTAL2*RETA(J,I,K)*
+     &             DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)      
+                ELSE                                            
+                  RMASIO(12,2)=RMASIO(12,2)-CTOTAL2*RETA(J,I,K)*
+     &             DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)      
+                ENDIF                                           
+              ENDIF                                             
             ELSEIF(ICBUND(J,I,K).LT.0) THEN
               IF(CTOTAL.GT.0) THEN
                 RMASIO(6,1)=RMASIO(6,1)+CTOTAL*RETA(J,I,K)*
@@ -3244,20 +3244,20 @@ C--NORMAL RETURN
       END
 C--------------------------------------------------------------------
 C--------------------------------------------------------------------
-      FUNCTION SADV5Q2(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
+      FUNCTION SADV1Q2(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
      & COLD,QX,QY,QZ,DTRANS,NADVFD)
 C *******************************************************************
 C THIS FUNCTION COMPUTES ADVECTIVE MASS FLUX TO ICBND=0 CELLS. MASS IS
-C MOVING OUT OF THE CELL IF SADV5Q > 0, INTO THE CELL IF SADV5Q < 0.
+C MOVING OUT OF THE CELL IF SADV1Q > 0, INTO THE CELL IF SADV1Q < 0.
 C NADVFD=1 IS FOR THE UPSTREAM SCHEME; NADVFD=2 IS FOR THE CENTRAL
 C WEIGHTING SCHEME.
 C *******************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE MIN_SAT
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,JJ,II,KK,NADVFD
-      REAL      SADV5Q2,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
+      REAL      SADV1Q2,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
      &          WW,THKSAT,ALPHA,CTMP
       DIMENSION ICBUND(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
      &          QX(NCOL,NROW,NLAY),QY(NCOL,NROW,NLAY),
@@ -3376,19 +3376,19 @@ C--RIGHT FACE
       ENDIF
 C
 C--ASSIGN QCTMP TO THE FUNCTION AND RETURN
-  430 SADV5Q2=QCTMP
+  430 SADV1Q2=QCTMP
 C
       RETURN
       END
 C
 C
-      SUBROUTINE ADVQC7FM(ICOMP)
+      SUBROUTINE ADVQC1FM(ICOMP)
 C *********************************************************************
 C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -3661,13 +3661,13 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE ADVQC7BD(ICOMP)
+      SUBROUTINE ADVQC1BD(ICOMP)
 C *********************************************************************
 C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -4038,7 +4038,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE ADVQC7RP(KPER,KSTP)
+      SUBROUTINE ADVQC1RP(KPER,KSTP)
 C *********************************************************************
 C THIS SUBROUTINE STORES FLOW ACROSS DRY CELLS AND  
 C SORTS DRY CELLS IN ORDER OF FORMULATION 
@@ -4053,7 +4053,7 @@ C 7 - INFLOW TO DRY CELL Q*C
 C 8 - INFLOW TO DRY CELL Q
 C 9 - OUTFLOW FROM DRY CELL Q
 C *********************************************************************
-C last modified: 12-15-2009
+C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -4294,12 +4294,12 @@ C
       END
 C
 C
-      FUNCTION SADV5Q3(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
+      FUNCTION SADV1Q3(NCOL,NROW,NLAY,JJ,II,KK,ICBUND,DELR,DELC,DH,
      & COLD,QX,QY,QZ,DTRANS,NADVFD,IDIR3)
 C *******************************************************************
 C THIS FUNCTION COMPUTES ADVECTIVE MASS FLUX BETWEEN CELL (JJ,II,KK)
 C AND THE SURROUNDING CELLS DURING TIME INCREMENT DTRANS.  MASS IS
-C MOVING OUT OF THE CELL IF SADV5Q > 0, INTO THE CELL IF SADV5Q < 0.
+C MOVING OUT OF THE CELL IF SADV1Q > 0, INTO THE CELL IF SADV5Q < 0.
 C NADVFD=1 IS FOR THE UPSTREAM SCHEME; NADVFD=2 IS FOR THE CENTRAL
 C WEIGHTING SCHEME.
 C
@@ -4307,13 +4307,13 @@ C IDIR3=1 RECORD MASS MOVING IN INTO QCTMP2
 C IDIR3=2 RECORD MASS MOVING OUT INTO QCTMP3
 C
 C *******************************************************************
-C last modified: 02-15-2005
+C last modified: 10-01-2014
 C
       USE MIN_SAT
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,JJ,II,KK,NADVFD
-      REAL      SADV5Q,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
-     &          WW,THKSAT,ALPHA,CTMP,SADV5Q3
+      REAL      SADV1Q,COLD,QX,QY,QZ,DELR,DELC,DH,AREA,DTRANS,QCTMP,
+     &          WW,THKSAT,ALPHA,CTMP,SADV1Q3
       DIMENSION ICBUND(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
      &          QX(NCOL,NROW,NLAY),QY(NCOL,NROW,NLAY),
      &          QZ(NCOL,NROW,NLAY),DELR(NCOL),DELC(NROW),
@@ -4461,9 +4461,9 @@ C
 C--ASSIGN QCTMP TO THE FUNCTION AND RETURN
   430 CONTINUE
       IF(IDIR3.EQ.1) THEN
-        SADV5Q3=QCTMP2
+        SADV1Q3=QCTMP2
       ELSEIF(IDIR3.EQ.2)THEN
-        SADV5Q3=QCTMP3
+        SADV1Q3=QCTMP3
       ELSE
         STOP 'SET IDIR3 TO 1 OR 2'
       ENDIF

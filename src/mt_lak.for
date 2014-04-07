@@ -1,16 +1,17 @@
 C
-      SUBROUTINE LKT5AR(IN)
+      SUBROUTINE LKT1AR(IN)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR LAK VARIABLES
 C***********************************************************************
+C last modified: 10-01-2014
       USE LAKVARS
       USE MT3DMS_MODULE, ONLY: INLKT,IOUT,NCOMP
       INTEGER IN
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INLKT
- 1030 FORMAT(1X,'LKT -- LAKE TRANSPORT PACKAGE,',
-     & ' VERSION 1, AUGUST 2012, INPUT READ FROM UNIT',I3)
+ 1030 FORMAT(1X,'LKT1 -- LAKE TRANSPORT PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--ALLOCATE VARIABLES USED IN FMI
       ALLOCATE(NLAKES,LKNODE,NSFRLAK,NSSLK)
@@ -60,7 +61,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE LKT5RP(KPER)
+      SUBROUTINE LKT1RP(KPER)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES READS LAK VARIABLES - INITIAL CONCS
 C***********************************************************************
@@ -90,7 +91,7 @@ C
       END
 C
 C
-      SUBROUTINE LKT5SS(KPER)
+      SUBROUTINE LKT1SS(KPER)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES LAK BOUNDARY CONDITIONS
 C***********************************************************************
@@ -187,7 +188,7 @@ C
       END
 C
 C
-      SUBROUTINE LKT5FM(ICOMP)
+      SUBROUTINE LKT1FM(ICOMP)
 C***********************************************************************
 C     THIS SUBROUTINE FORMULATES LKT PACKAGE
 C***********************************************************************
@@ -408,7 +409,7 @@ C
       END
 C
 C
-      SUBROUTINE LKT5BD(ICOMP,KPER,KSTP,DTRANS,NTRANS)
+      SUBROUTINE LKT1BD(ICOMP,KPER,KSTP,DTRANS,NTRANS)
 C***********************************************************************
 C     THIS SUBROUTINE CALCULATES BUDGETS FOR LAKE
 C     THIS SUBROUTINE CALCULATES GROUNDWATER BUDGETS RELATED TO LAKES
@@ -839,7 +840,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE LKT5AD(N)
+      SUBROUTINE LKT1AD(N)
 C***********************************************************************
 C     RESET LAKE CONCENTRATIONS AND VOLUMES
 C***********************************************************************

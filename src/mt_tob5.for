@@ -1,5 +1,5 @@
 C
-      SUBROUTINE TOB5AR(IN)
+      SUBROUTINE TOB1AR(IN)
 C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE TRANSPORT
 C OBSERVATION (TOB) PACKAGE.
@@ -32,8 +32,8 @@ C--ALLOCATE
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INTOB
- 1030 FORMAT(1X,'TOB5 -- TRANSPORT OBSERVATION PACKAGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
+ 1030 FORMAT(1X,'TOB1 -- TRANSPORT OBSERVATION PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--READ INPUT LINE AS A TEXT STRING
     1 READ(INTOB,'(A)') LINE
@@ -289,7 +289,7 @@ C--normal return
       END
 C
 C  
-      SUBROUTINE TOB5OT(KPER,KSTP,NTRANS,TIME1,TIME2)
+      SUBROUTINE TOB1OT(KPER,KSTP,NTRANS,TIME1,TIME2)
 C **********************************************************************
 C This subroutine calls the sconcobs and smassfluxobs subroutines
 C to compute observed residuals between observed and simulated 

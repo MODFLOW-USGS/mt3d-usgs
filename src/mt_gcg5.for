@@ -1,14 +1,14 @@
 C
-      SUBROUTINE GCG5AR(IN)
+      SUBROUTINE GCG1AR(IN)
 C ********************************************************************
 C ALLOCATE STORAGE IN THE X AND IX ARRAYS FOR GCG ARRAYS
 C ********************************************************************
-C last modified: 02-20-2010
+C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INGCG,IOUT,NCOL,NROW,NLAY,NODES,
      &                         MXITER,ITER1,ISOLVE,NCRS,IPRGCG,ACCL,
      &                         CCLOSE,LRCH,A,Q,WK,CNCG,RHS,L,
-     &                         INOCROSS                        !# LINE 3 GCG
+     &                         INOCROSS
 C
       IMPLICIT NONE
       INTEGER  IN
@@ -20,8 +20,8 @@ C--ALLOCATE
 C
 C--PRINT A MESSAGE IDENTIFYING GCG PACKAGE
       WRITE(IOUT,1) INGCG
-    1 FORMAT(1X,'GCG5 -- GENERALIZED CONJUGATE GRADIENT SOLVER PACKAGE',
-     & ', VERSION 5, FEBRUARY 2010',' INPUT READ FROM UNIT',I3)
+    1 FORMAT(1X,'GCG1 -- GENERALIZED CONJUGATE GRADIENT SOLVER PACKAGE',
+     & ', VERSION 1, OCTOBER 2010',' INPUT READ FROM UNIT',I3)
 C
 C--READ AND PRINT MXITER AND ISOLVE
       READ(INGCG,*) MXITER,ITER1,ISOLVE,NCRS
@@ -52,12 +52,12 @@ C--READ AND PRINT MXITER AND ISOLVE
    33 FORMAT(1X,'THE PRECONDITIONING TYPE SELECTED IS ',
      &          'MODIFIED INCOMPLETE CHOLESKY (MIC).')
    43 FORMAT(1X,'ERROR: INVALID PRECONDITIONING TYPE.')
-C                                                              !# LINE 48 GCG
-      INOCROSS=0                                               !# LINE 49 GCG
-      IF(NCRS.GE.10) THEN                                      !# LINE 50 GCG
-        INOCROSS=1                                             !# LINE 51 GCG
-        NCRS=NCRS-10                                           !# LINE 52 GCG
-      ENDIF                                                    !# LINE 53 GCG
+C                         
+      INOCROSS=0          
+      IF(NCRS.GE.10) THEN 
+        INOCROSS=1        
+        NCRS=NCRS-10      
+      ENDIF               
 C
       IF(NCRS.GT.0) THEN
         WRITE(IOUT,50)
@@ -67,9 +67,9 @@ C
    50 FORMAT(1X,'FULL DISPERSION TENSOR INCLUDED IN IMPLICIT SOLUTION')
    52 FORMAT(1X,'DISPERSION CROSS TERMS LUMPED INTO RIGHT-HAND-SIDE')
 C
-      IF(INOCROSS.EQ.1) WRITE(IOUT,54)                         !# LINE 63 GCG
-   54 FORMAT(1X,'CROSS DISPERSION WILL NOT BE SIMULATED (INOCROSS=1)') !# LINE 64 GCG
-C                                                              !# LINE 65 GCG
+      IF(INOCROSS.EQ.1) WRITE(IOUT,54)
+   54 FORMAT(1X,'CROSS DISPERSION WILL NOT BE SIMULATED (INOCROSS=1)')
+C       
 C--SET NCRS TO 0 FOR 1D PROBLEMS
       IF(NCOL*NROW.EQ.1 .OR. NCOL*NLAY.EQ.1 .OR. NROW*NLAY.EQ.1) NCRS=0
 C
@@ -128,7 +128,7 @@ C--NORMAL RETURN
       END
 C
 C
-      SUBROUTINE SGCG5P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
+      SUBROUTINE SGCG1P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
 C******************************************************************
 C PRINT MAXIMUM CONCENTRATION CHANGES FOR EACH ITERATION DURING
 C A TRANSPORT TIME STEP
@@ -150,7 +150,7 @@ C
       END
 C
 C
-      SUBROUTINE GCG5AP(IOUT,ITO,ITP,ICNVG,NTRANS,KSTP,KPER,TIME2,
+      SUBROUTINE GCG1AP(IOUT,ITO,ITP,ICNVG,NTRANS,KSTP,KPER,TIME2,
      & HT2,ICBUND,CNEW)
 C **********************************************************************
 C SOLUTION BY THE GENERALIZED CONJUGATE GRADIENT METHODS,
@@ -445,7 +445,7 @@ C--LOCAL CONVERGENCE NOT MET, LOOP BACK
      & /1X,I5,' TOTAL ITERATIONS')
 C
       IF(ICNVG.EQ.0 .OR. TIME2.GE.HT2 .OR. MOD(NTRANS,IPRGCG).EQ.0)
-     & CALL SGCG5P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
+     & CALL SGCG1P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
 C
   600 CONTINUE
 C

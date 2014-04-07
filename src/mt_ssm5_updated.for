@@ -1,47 +1,47 @@
 C
-      SUBROUTINE SSM5AR(IN)
+      SUBROUTINE SSM1AR(IN)
 C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED IN THE SINK & SOURCE
 C MIXING (SSM) PACKAGE.
 C **********************************************************************
-C last modified: 02-20-2010
+C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                         FSFR,IVER,iUnitTRNOP,
      &                         ISSGOUT,MXSS,NSS,NTSS,RECH,IRCH,CRCH,
-     &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,KSSZERO   !# LINE 14 SSM
-      USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,   !# NEW
-     &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,      !# NEW
-     &                         CRNTSF,NOBSSF,NJASF,INFLWNOD         !# NEW
-      USE UZTVARS,       ONLY: CUZINF,UZET,CUZET,GWET,CGWET,IETFLG, !edm
-     &                         FINFIL,UZFLX,UZQSTO,                 !edm
-     &                         IETFLG,IUZFOPT,IUZFBND,              !edm
-     &                         IUZFOPTG                             !edm
+     &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,KSSZERO  
+      USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,  
+     &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,
+     &                         CRNTSF,NOBSSF,NJASF,INFLWNOD        
+      USE UZTVARS,       ONLY: CUZINF,UZET,CUZET,GWET,CGWET,IETFLG,
+     &                         FINFIL,UZFLX,UZQSTO,                
+     &                         IETFLG,IUZFOPT,IUZFBND,             
+     &                         IUZFOPTG                            
 C
       IMPLICIT  NONE
-      INTEGER   ISTART, ISTOP, LLOC,I,J                             !edm
+      INTEGER   ISTART, ISTOP, LLOC,I,J                            
       INTEGER   IERR,IN,
-     &          NUZTOP,IRUNFLG                                      !edm
-      REAL      R                                                   !edm
+     &          NUZTOP,IRUNFLG                                     
+      REAL      R                                                  
       CHARACTER VERSION*11,LINE*72,BNAME*24
-      CHARACTER(LEN=*),PARAMETER :: FMT2="(3I8,I7)"                 !edm
+      CHARACTER(LEN=*),PARAMETER :: FMT2="(3I8,I7)"                
 C
       INSSM=IN
 C
 C--ALLOCATE
-      ALLOCATE(ISSGOUT,MXSS,NSS,NTSS)                               !edm
-      IF(FSFR) THEN                                                 !# NEW
-        ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                         !# NEW
-        ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)             !# NEW
-        ALLOCATE(NOBSSF,NJASF)                                      !# NEW
-      ENDIF                                                         !# NEW
+      ALLOCATE(ISSGOUT,MXSS,NSS,NTSS)                              
+      IF(FSFR) THEN                                                
+        ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                        
+        ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)       
+        ALLOCATE(NOBSSF,NJASF)                                     
+      ENDIF                                                        
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INSSM
- 1000 FORMAT(1X,'SSM5 -- SINK & SOURCE MIXING PACKAGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
+ 1000 FORMAT(1X,'SSM1 -- SINK & SOURCE MIXING PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--READ AND PRINT FLAGS INDICATING WHICH SINK/SOURCE OPTIONS
 C--ARE USED IN FLOW MODEL
@@ -126,11 +126,11 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(IEVT(1,1))
         ALLOCATE(CEVT(1,1,1))
       ENDIF
-      ALLOCATE(SS(8,MXSS))                                          !# Amended (LINE 154 SSM)
+      ALLOCATE(SS(8,MXSS))
       ALLOCATE(SSMC(NCOMP,MXSS))
       ALLOCATE(SSG(5,MXSS))
-      ALLOCATE(KSSZERO(MXSS))                                       !# LINE 96 SSM
-      KSSZERO=0                                                     !# LINE 97 SSM
+      ALLOCATE(KSSZERO(MXSS))
+      KSSZERO=0              
       RECH=0.
       IRCH=0
       CRCH=0.
@@ -145,7 +145,7 @@ C--NORMAL RETURN
   100 RETURN
       END
 C
-      SUBROUTINE SSM5RP(KPER)
+      SUBROUTINE SSM1RP(KPER)
 C ********************************************************************
 C THIS SUBROUTINE READS CONCENTRATIONS OF SOURCES OR SINKS NEEDED BY
 C THE SINK AND SOURCE MIXING (SSM) PACKAGE.
@@ -158,11 +158,11 @@ C
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                         FSFR,
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
-     &                         KSSZERO                              !# LINE 146 SSM
+     &                         KSSZERO
 C
       IMPLICIT  NONE
       INTEGER   IN,KPER,JJ,II,KK,NUM,IQ,INCRCH,INCEVT,NTMP,INDEX,
-     &          INCUZINF,INCUZET,INCGWET,INCSRFLK                   !edm
+     &          INCUZINF,INCUZET,INCGWET,INCSRFLK 
       REAL      CSS
       CHARACTER ANAME*24,TYPESS(-1:100)*15
 C
@@ -256,7 +256,7 @@ C--RESET OLD CONCENTRATIONS IF REUSE OPTION NOT IN EFFECT
           DO INDEX=1,NCOMP
             SSMC(INDEX,NUM)=0.
           ENDDO
-          KSSZERO=0                                                 !# LINE 249 SSM
+          KSSZERO=0
         ENDDO
       ENDIF
 C
@@ -286,21 +286,21 @@ C
         ENDIF
 C
         IF(IQ.EQ.-1) THEN
-          IF(KK.EQ.0) THEN                                              !# LINE 279 SSM
-            KSSZERO(NUM)=1                                              !# LINE 280 SSM
-            IF(.NOT.FRCH) THEN                                          !# LINE 281 SSM
-              WRITE(*,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0'    !# LINE 282 SSM
-              WRITE(IOUT,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0' !# LINE 283 SSM
-              CALL USTOP(' ')                                           !# LINE 284 SSM
+          IF(KK.EQ.0) THEN    
+            KSSZERO(NUM)=1    
+            IF(.NOT.FRCH) THEN
+              WRITE(*,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0'
+              WRITE(IOUT,*) 'RECHARGE BOUNDARY NEEDED IF K IS SET TO 0'
+              CALL USTOP(' ')
             ENDIF
-          ELSE                                                          !# LINE 286 SSM
-            DO INDEX=1,NCOMP                                            !# LINE 287 SSM
-              IF(SSMC(INDEX,NUM).GE.0) THEN                             !# LINE 288 SSM
-                CNEW(JJ,II,KK,INDEX)=SSMC(INDEX,NUM)                    !# LINE 289 SSM
-                ICBUND(JJ,II,KK,INDEX)=-ABS(ICBUND(JJ,II,KK,INDEX))     !# LINE 290 SSM
-              ENDIF                                                     !# LINE 291 SSM
-            ENDDO                                                       !# LINE 292 SSM
-          ENDIF                                                         !# LINE 293 SSM
+          ELSE                                      
+            DO INDEX=1,NCOMP                        
+              IF(SSMC(INDEX,NUM).GE.0) THEN         
+                CNEW(JJ,II,KK,INDEX)=SSMC(INDEX,NUM)
+                ICBUND(JJ,II,KK,INDEX)=-ABS(ICBUND(JJ,II,KK,INDEX))
+              ENDIF
+            ENDDO  
+          ENDIF    
         ELSEIF(IQ.EQ.15) THEN
           SS(5,NUM)=0.
         ELSEIF(IQ.EQ.2.AND.CSS.LT.0) THEN
@@ -321,12 +321,12 @@ C
 C
         DO INDEX=1,NCOMP
           CSS=SSMC(INDEX,NUM)
-          IF(IQ.EQ.-1.AND.KK.EQ.0) THEN                        !# LINE 314 SSM
-            WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX   !# LINE 315 SSM
-          ELSE                                                 !# LINE 316 SSM
+          IF(IQ.EQ.-1.AND.KK.EQ.0) THEN                     
+            WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
+          ELSE                                              
             IF(CSS.NE.0 .OR. ICBUND(JJ,II,KK,INDEX).LT.0)
      &       WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
-          ENDIF                                                !# LINE 319 SSM
+          ENDIF
           IF(CSS.LT.0 .AND. IQ.EQ.2)
      &     WRITE(IOUT,71) -INT(CSS)                
         ENDDO
@@ -353,7 +353,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SSM5FM(ICOMP)
+      SUBROUTINE SSM1FM(ICOMP)
 C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
@@ -370,7 +370,7 @@ C
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
      &                         FSWT,FSFR,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
-     &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,   !# LINE 348-349 SSM
+     &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,
      &                         IDRY2
 C
       IMPLICIT  NONE
@@ -411,8 +411,8 @@ C--TRANSIENT FLUID STORAGE TERM
               ELSE
 !                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)     
 !CDL--SEAWAT: This seems to fix the problem with storage
-CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD  !# LINE 390-396 SSM
-CEDM--IS WRONG                                                      !# LINE 390-396 SSM
+CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD
+CEDM--IS WRONG  
                 IF(IALTFM.EQ.1) THEN
                   !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
                   !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
@@ -526,14 +526,14 @@ C--POINT SINK/SOURCE TERMS
         QSS=SS(5,NUM)
         IQ=SS(6,NUM)
 C
-C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 450 SSM
-        IF(iUnitTRNOP(6).GT.0) THEN                                    !# LINE 451 SSM
-          IF(SS(8,NUM).GT.0) THEN                              !# LINE 452 SSM
-            CONTINUE                                           !# LINE 453 SSM
-CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                 !# LINE 454 SSM
-          ENDIF                                                !# LINE 455 SSM
-        ENDIF                                                  !# LINE 456 SSM
-C                                                              !# LINE 457 SSM
+C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
+        IF(iUnitTRNOP(6).GT.0) THEN               
+          IF(SS(8,NUM).GT.0) THEN                 
+            CONTINUE                              
+CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE    
+          ENDIF                                   
+        ENDIF                                     
+C                                                 
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
           QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
@@ -741,7 +741,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SSM5BD(ICOMP,DTRANS)
+      SUBROUTINE SSM1BD(ICOMP,DTRANS)
 C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH ALL SINK/
 C SOURCE TERMS.
@@ -757,7 +757,7 @@ C
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,
-     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT, !# LINE 607 SSM
+     &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT,
      &                        iUnitTRNOP,DELT,COLDFLW,IDRY2
 C
       IMPLICIT  NONE
@@ -842,7 +842,6 @@ CEDM--WAS WRONG.
                 IF(IDRY2.EQ.1) THEN
 CC-----------STORAGE
                   CTMP=COLDFLW(J,I,K,ICOMP)
-C                  IF(QSTO(J,I,K).GT.0) THEN
                   RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
      &             +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
      &             *RETA(J,I,K,ICOMP)
@@ -852,11 +851,6 @@ C                  IF(QSTO(J,I,K).GT.0) THEN
                   QC7(J,I,K,8)=-QSTO(J,I,K)
      1            *DH(J,I,K)*DELR(J)*DELC(I)
      1            *RETA(J,I,K,ICOMP)
-C                  ELSE
-C                  RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
-C     &             +QSTO(J,I,K)*CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
-C     &             *RETA(J,I,K,ICOMP)
-C                  ENDIF
                 ENDIF
               ENDIF
             ENDIF
@@ -971,12 +965,12 @@ C--POINT SINK/SOURCE TERMS
         CTMP=SS(4,NUM)
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
 C
-C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM              !# LINE 729 SSM
-        IF(iUnitTRNOP(6).GT.0) THEN                                    !# LINE 730 SSM
-          IF(SS(8,NUM).GT.0) THEN                              !# LINE 731 SSM
-            IF(IWCTS(SS(8,NUM)).GT.0) CYCLE                    !# LINE 732 SSM
-          ENDIF                                                !# LINE 733 SSM
-        ENDIF                                                  !# LINE 734 SSM
+C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
+        IF(iUnitTRNOP(6).GT.0) THEN              
+          IF(SS(8,NUM).GT.0) THEN                
+            IF(IWCTS(SS(8,NUM)).GT.0) CYCLE      
+          ENDIF                                  
+        ENDIF                                    
 C
 C--SKIP IF NOT ACTIVE CELL
         IF(IDRY2.EQ.0) THEN
@@ -1050,7 +1044,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SSM5OT(KPER,KSTP,NTRANS,TIME2)
+      SUBROUTINE SSM1OT(KPER,KSTP,NTRANS,TIME2)
 C ******************************************************************
 C THIS SUBROUTINE SAVES INFORMATION FOR MULTI-NODE WELLS.
 C ******************************************************************
@@ -1138,7 +1132,7 @@ c
         i=ss(2,num)
         j=ss(3,num)
         ctmp=ss(4,num)
-        if(ncomp.gt.1) ctmp=ssmc(icomp,num)                    !# LINE 875 SSM
+        if(ncomp.gt.1) ctmp=ssmc(icomp,num) 
         qss=ss(5,num)
         IQ=ss(6,num)
         iGroup=ss(7,num)

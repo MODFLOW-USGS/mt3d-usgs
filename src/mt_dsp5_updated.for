@@ -1,5 +1,5 @@
 C
-      SUBROUTINE DSP5AR(IN)
+      SUBROUTINE DSP1AR(IN)
 C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED IN THE DISPERSION
 C (DSP) PACKAGE.
@@ -48,8 +48,8 @@ C--ALLOCATE DSP ARRAYS AND INITIALIZE TO ZERO
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INDSP
- 1030 FORMAT(1X,'DSP5 -- DISPERSION PACKAGE,',
-     & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT',I3)
+ 1030 FORMAT(1X,'DSP1 -- DISPERSION PACKAGE,',
+     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--PRINT A HEADER
       WRITE(IOUT,1000)
@@ -132,7 +132,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE DSP5CF(KSTP,KPER)
+      SUBROUTINE DSP1CF(KSTP,KPER)
 C***********************************************************************
 C THIS SUBROUTINE CALCULATES COMPONENTS OF THE HYDRODYNAMIC DISPERSION
 C COEFFICIENT (Dij) AT CELL INTERFACES.
@@ -147,7 +147,7 @@ C
      &                         NPERFL,
      &                         ALPHAL,TRPT,TRPV,DMCOEF,DXX,DXY,DXZ,DYX,
      &                         DYY,DYZ,DZX,DZY,DZZ,
-     &                         INOCROSS                        !# LINE 164 DSP
+     &                         INOCROSS 
 C
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,K,I,J,KM1,IM1,JM1,
@@ -210,13 +210,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DXX(J,I,K,ICOMP)=
      &         AL*VX*VX/V/PF+AT*VY*VY/V/PF+AV*VZ*VZ/V/PF+DM
-              IF(INOCROSS.EQ.1) THEN                        !# LINE 248 DSP
-                IF(NROW.GT.1) DXY(J,I,K)=0.                 !# LINE 249 DSP
-                IF(NLAY.GT.1) DXZ(J,I,K)=0.                 !# LINE 250 DSP
-              ELSE                                          !# LINE 251 DSP
+              IF(INOCROSS.EQ.1) THEN       
+                IF(NROW.GT.1) DXY(J,I,K)=0.
+                IF(NLAY.GT.1) DXZ(J,I,K)=0.
+              ELSE                         
                 IF(NROW.GT.1) DXY(J,I,K)=(AL-AT)*VX*VY/V/PF
                 IF(NLAY.GT.1) DXZ(J,I,K)=(AL-AV)*VX*VZ/V/PF
-              ENDIF                                         !# LINE 254 DSP
+              ENDIF 
             ENDIF            
           ENDDO
         ENDDO
@@ -268,13 +268,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DYY(J,I,K,ICOMP)=
      &         AL*VY*VY/V/PF+AT*VX*VX/V/PF+AV*VZ*VZ/V/PF+DM
-              IF(INOCROSS.EQ.1) THEN                        !# LINE 306 DSP
-                IF(NCOL.GT.1) DYX(J,I,K)=0.                 !# LINE 307 DSP
-                IF(NLAY.GT.1) DYZ(J,I,K)=0.                 !# LINE 308 DSP
-              ELSE                                          !# LINE 309 DSP
+              IF(INOCROSS.EQ.1) THEN       
+                IF(NCOL.GT.1) DYX(J,I,K)=0.
+                IF(NLAY.GT.1) DYZ(J,I,K)=0.
+              ELSE                         
                 IF(NCOL.GT.1) DYX(J,I,K)=(AL-AT)*VY*VX/V/PF
                 IF(NLAY.GT.1) DYZ(J,I,K)=(AL-AV)*VY*VZ/V/PF
-              ENDIF                                         !# LINE 310 DSP
+              ENDIF 
             ENDIF
           ENDDO
         ENDDO
@@ -328,13 +328,13 @@ C--CALCULATE DISPERSION COEFFICIENTS
             ELSE
               DZZ(J,I,K,ICOMP)=
      &         AL*VZ*VZ/V/PF+AV*VX*VX/V/PF+AV*VY*VY/V/PF+DM
-              IF(INOCROSS.EQ.1) THEN                           !# LINE 366 DSP
-                IF(NCOL.GT.1) DZX(J,I,K)=0.                    !# LINE 367 DSP
-                IF(NROW.GT.1) DZY(J,I,K)=0.                    !# LINE 368 DSP
-              ELSE                                             !# LINE 369 DSP
+              IF(INOCROSS.EQ.1) THEN       
+                IF(NCOL.GT.1) DZX(J,I,K)=0.
+                IF(NROW.GT.1) DZY(J,I,K)=0.
+              ELSE                         
                 IF(NCOL.GT.1) DZX(J,I,K)=(AL-AV)*VZ*VX/V/PF
                 IF(NROW.GT.1) DZY(J,I,K)=(AL-AV)*VZ*VY/V/PF
-              ENDIF                                            !# LINE 372 DSP
+              ENDIF  
             ENDIF
           ENDDO
         ENDDO
@@ -611,7 +611,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE DSP5FM(ICOMP,ICBUND,A,CNEW)
+      SUBROUTINE DSP1FM(ICOMP,ICBUND,A,CNEW)
 C **********************************************************************
 C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX FOR THE DISPERSION
 C TERM USING THE IMPLICIT FINITE-DIFFERENCE SCHEME.
@@ -665,20 +665,20 @@ C--CALCULATE CELL INTERFACE WEIGHTING FACTORS
             WYM=DELC(I)/(DELC(IM1)+DELC(I))
             IF(I.EQ.1) WYM=1.
 C
-C...........TAKE CARE OF DRY CELLS                              !# LINE 705
-            IF(DH(J,I,KP1).LE.0.) THEN                          !# LINE 706
-              WZP=0                                             !# LINE 707
-            ELSE                                                !# LINE 708
-              IF(DH(J,I,K).EQ.0.AND.DH(J,I,KP1).EQ.0) GOTO 10   !edm
+C...........TAKE CARE OF DRY CELLS    
+            IF(DH(J,I,KP1).LE.0.) THEN
+              WZP=0                   
+            ELSE                      
+              IF(DH(J,I,K).EQ.0.AND.DH(J,I,KP1).EQ.0) GOTO 10 
                 WZP=DH(J,I,KP1)/(DH(J,I,K)+DH(J,I,KP1))
-            ENDIF                                               !# LINE 710
-C...........TAKE CARE OF DRY CELLS                              !# LINE 711
-  10        IF(DH(J,I,KM1).LE.0.) THEN                          !# LINE 712
-              WZM=1                                             !# LINE 713
-            ELSE                                                !# LINE 714
-              IF(DH(J,I,KM1).EQ.0.AND.DH(J,I,K).EQ.0) GOTO 20   !edm
+            ENDIF                     
+C...........TAKE CARE OF DRY CELLS    
+  10        IF(DH(J,I,KM1).LE.0.) THEN
+              WZM=1                   
+            ELSE                      
+              IF(DH(J,I,KM1).EQ.0.AND.DH(J,I,K).EQ.0) GOTO 20 
                 WZM=DH(J,I,K)/(DH(J,I,KM1)+DH(J,I,K))
-            ENDIF                                               !# LINE 716
+            ENDIF
   20        IF(K.EQ.1) WZM=1.
 C      
 C--COEF. FOR (J,I,K)
@@ -871,7 +871,7 @@ C--NORMAL RETURN
       END
 C
 C
-      SUBROUTINE DSP5BD(ICOMP,DTRANS)
+      SUBROUTINE DSP1BD(ICOMP,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGET OF CONSTANT-CONCENTRATION NODES
 C DUE TO DISPERSION.
