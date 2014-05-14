@@ -230,11 +230,18 @@ C
 C
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)
       IF(FUZF) THEN 
-        IF(IUZFOPTG.GT.0) THEN
-          TEXT='WATER CONTENT   '
-          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &                WC,FPRT)                                
-        ENDIF
+!        IF(IUZFOPTG.GT.0) THEN
+!          TEXT='WATER CONTENT   '
+!          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+!     &                WC,FPRT)                                
+!        ENDIF
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              WC(J,I,K)=PRSITY(J,I,K)
+            ENDDO
+          ENDDO
+        ENDDO
 C                                                             
 C--READ UPPER-FACE FLUX TERMS                                 
         TEXT='UZ FLUX         '                               
@@ -1213,6 +1220,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
+      WRITE(*,'(13hReadHQ REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1383,6 +1391,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
+      WRITE(*,'(13hReadPS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1502,6 +1511,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
+      WRITE(*,'(13hReadGS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1788,6 +1798,7 @@ C
       ENDIF
 C
 C--CHECK INTERFACE
+      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -1972,6 +1983,7 @@ C--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
       ALLOCATE(VOLNLAK(NLAKES),VOLOLAK(NLAKES),DELVOLLAK(NLAKES))
 C
 C--CHECK INTERFACE
+      WRITE(*,'(14hReadLAK REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -2097,9 +2109,10 @@ C
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
      &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
      &          KK,II,JJ,ITEMP,IGROUP,NCOMP
-      INTEGER   ISTSG,NREACH,ILAK
+      INTEGER   ISTSG,NREACH,ILAK,LK
       REAL      Q,LENFRAC
-      CHARACTER LABEL*16,TEXT*16
+      !CHARACTER LABEL*16,TEXT*16
+      CHARACTER LABEL16*16,LABEL*4,TEXT*4
 C      COMMON /FTL/IFTLFMT
 C
 C--WRITE IDENTIFYING INFORMATION
@@ -2111,10 +2124,13 @@ C--PRINT FORMATS
 C
 C--READ IDENTIFYING RECORD
       IF(IFTLFMT.EQ.0) THEN
-        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+        !READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
       ELSEIF(IFTLFMT.EQ.1) THEN
-        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+        !READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
+        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
       ENDIF
+      WRITE(*,'(14hReadUZF REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
 C
 C--CLEAN AND INITIALIZE TO ZERO
       DO II=1,MXUZCON
@@ -2127,20 +2143,24 @@ C--CLEAN AND INITIALIZE TO ZERO
       NCONSF=0
 C
 C--READ CONNECTIONS INFORMATION
-      IF(IFTLFMT.EQ.0) THEN
-        READ(INUF) LABEL
-      ELSEIF(IFTLFMT.EQ.1) THEN
-        READ(INUF,*) LABEL
-      ENDIF
-      BACKSPACE (INUF)
+      DO I=1,NCON
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) LABEL,TEXT
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) LABEL,TEXT
+          BACKSPACE(INUF)
+        ENDIF
+      !BACKSPACE (INUF)
 C
 C--LOOP THROUGH EACH CONNECTION
-      DO I=1,NCON
+      !DO I=1,NCON
 C
 C--IF UZF -> SFR, READ 9 VALUES
-        IF(LABEL.EQ.'SFR') THEN
+        ! IF(LABEL.EQ.'SFR') THEN
+        IF(LABEL.EQ.'SFR ') THEN
           IF(IFTLFMT.EQ.0) THEN
-            READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
+            !READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
+            READ(INUF) KK,II,JJ,ISTSG,NREACH,Q
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
           ENDIF
@@ -2150,20 +2170,22 @@ C--IF UZF -> SFR, READ 9 VALUES
           IROUTE(4,I)=JJ
           IROUTE(5,I)=ISTSG
           IROUTE(6,I)=NREACH
-          IF(TEXT.EQ.'GRW') THEN
+          IF(TEXT.EQ.'GRW ') THEN
             IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC') THEN
+          ELSEIF(TEXT.EQ.'EXC ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ') THEN
+          ELSEIF(TEXT.EQ.'REJ ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
           ENDIF
           UZQ(I)=Q
           NCONSF=NCONSF+1
 C
 C--IF UZF -> LAK, READ 7 VALUES
-        ELSEIF(LABEL.EQ.'LAK') THEN
+        !ELSEIF(LABEL.EQ.'LAK') THEN
+        ELSEIF(LABEL.EQ.'LAK ') THEN
           IF(IFTLFMT.EQ.0) THEN
-            READ(INUF) LABEL,TEXT,KK,II,JJ,ILAK,Q
+            !READ(INUF) LABEL,TEXT,KK,II,JJ,ILAK,Q
+            READ(INUF) KK,II,JJ,ILAK,Q
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
           ENDIF
@@ -2173,22 +2195,37 @@ C--IF UZF -> LAK, READ 7 VALUES
           IROUTE(4,I)=JJ
           IROUTE(5,I)=ILAK
           !IROUTE(6,I) ALREADY EQUALS ZERO
-          IF(TEXT.EQ.'GRW') THEN
+          IF(TEXT.EQ.'GRW ') THEN
             IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC') THEN
+          ELSEIF(TEXT.EQ.'EXC ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ') THEN
+          ELSEIF(TEXT.EQ.'REJ ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
           ENDIF
           UZQ(I)=Q
           NCONLK=NCONLK+1
 C
 C--IF UZF -> SNK, READ 6 VALUES
-        ELSEIF(LABEL.EQ.'SNK') THEN
+        ! ELSEIF(LABEL.EQ.'SNK') THEN
+        ELSEIF(LABEL.EQ.'SNK ') THEN
           IF(IFTLFMT.EQ.0) THEN
-            READ(INUF) LABEL,TEXT,KK,II,JJ,Q
+            !READ(INUF) LABEL,TEXT,KK,II,JJ,Q
+            READ(INUF) KK,II,JJ
+            IF(TEXT.EQ.'GRW ') THEN
+              READ(INUF) Q
+            ELSEIF(TEXT.EQ.'EXC ') THEN
+              READ(INUF) Q
+            ELSEIF(TEXT.EQ.'REJ ') THEN
+              READ(INUF) LK,Q
+            ENDIF
           ELSEIF(IFTLFMT.EQ.1) THEN
-            READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+            IF(TEXT.EQ.'GRW ') THEN
+              READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+            ELSEIF(TEXT.EQ.'EXC ') THEN
+              READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+            ELSEIF(TEXT.EQ.'REJ ') THEN
+              READ(INUF,*) LABEL,TEXT,KK,II,JJ,LK,Q
+            ENDIF
           ENDIF
           IROUTE(1,I)=3  !1:SFR, 2:LAK, 3:SNK
           IROUTE(2,I)=KK
@@ -2196,11 +2233,11 @@ C--IF UZF -> SNK, READ 6 VALUES
           IROUTE(4,I)=JJ
           !IROUTE(5,I) ALREADY EQUALS ZERO
           !IROUTE(6,I) ALREADY EQUALS ZERO
-          IF(TEXT.EQ.'GRW') THEN
+          IF(TEXT.EQ.'GRW ') THEN
             IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC') THEN
+          ELSEIF(TEXT.EQ.'EXC ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ') THEN
+          ELSEIF(TEXT.EQ.'REJ ') THEN
             IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
           ENDIF
           UZQ(I)=Q
@@ -2209,5 +2246,6 @@ C--IF UZF -> SNK, READ 6 VALUES
 C        
       ENDDO
 C
+      WRITE(*,*) I,LABEL,TEXT
       RETURN
       END

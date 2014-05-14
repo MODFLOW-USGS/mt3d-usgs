@@ -236,7 +236,17 @@ C--IS STEADY-STATE AND HAS SINGLE STRESS PERIOD)
           IF(KPER*KSTP.GT.1.AND.ISS.NE.0.AND.NPERFL.EQ.1) GOTO 70
 C
           IF(KPER*KSTP.EQ.1) THEN
-            IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) COLDFLW=CNEW
+            IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) THEN
+              DO ICOMP=1,NCOMP
+                DO K=1,NLAY
+                  DO I=1,NROW
+                    DO J=1,NCOL
+                      COLDFLW(J,I,K,ICOMP)=CNEW(J,I,K,ICOMP)
+                    ENDDO
+                  ENDDO
+                ENDDO
+              ENDDO
+            ENDIF
           ENDIF
 C
           IF(KPER*KSTP.GT.1) THEN
