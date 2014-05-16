@@ -1020,6 +1020,7 @@ C
           K=IRCH(J,I)
           IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             IF(IDRY2.EQ.1) THEN
               RECH(J,I)=RECH(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
@@ -1029,7 +1030,7 @@ C
           ELSE
             RECH(J,I)=RECH(J,I)/VOLAQU
           ENDIF
-          IF(ABS(VOLAQU-0.).LT.1.0E-5) RECH(J,I)=0.
+C          IF(ABS(VOLAQU-0.).LT.1.0E-5) RECH(J,I)=0.
           IF(RECH(J,I).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
           TM=PRSITY(J,I,K)/RECH(J,I)
           IF(ABS(TM).LT.DTSSM) THEN
@@ -1048,6 +1049,7 @@ C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL
           IF(FINFIL(J,I).EQ.0) CYCLE        
           K=ABS(IUZFBND(J,I))
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)            
+          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             FINFIL(J,I)=0.                            
           ELSE                                        
@@ -1070,6 +1072,7 @@ C
           K=IEVT(J,I)
           IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             IF(IDRY2.EQ.1) THEN
               EVTR(J,I)=EVTR(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
@@ -1079,7 +1082,7 @@ C
           ELSE
             EVTR(J,I)=EVTR(J,I)/VOLAQU
           ENDIF
-          IF(ABS(VOLAQU-0.).LT.1.0E-5) EVTR(J,I)=0.
+C          IF(ABS(VOLAQU-0.).LT.1.0E-5) EVTR(J,I)=0.
           IF(EVTR(J,I).EQ.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
             TM=PRSITY(J,I,K)/EVTR(J,I)
             IF(ABS(TM).LT.DTSSM) THEN
@@ -1099,6 +1102,7 @@ C--(UZET)
         DO I=1,NROW           
           DO J=1,NCOL         
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+            IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
               UZET(J,I,K)=0                             
             ELSE                                        
@@ -1121,6 +1125,7 @@ C--(GWET)
         DO I=1,NROW                     
           DO J=1,NCOL                   
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)             
+            IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN 
               GWET(J,I,K)=0                              
             ELSE                                         
@@ -1144,6 +1149,7 @@ C
         I=SS(2,NUM)
         J=SS(3,NUM)
         VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+        IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
         IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
           IF(IDRY2.EQ.1) THEN
             SS(5,NUM)=SS(5,NUM)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
@@ -1153,7 +1159,7 @@ C
         ELSE
           SS(5,NUM)=SS(5,NUM)/VOLAQU
         ENDIF
-        IF(ABS(VOLAQU-0.).LT.1.0E-5) SS(5,NUM)=0.
+C        IF(ABS(VOLAQU-0.).LT.1.0E-5) SS(5,NUM)=0.
         IF(SS(5,NUM).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
         TM=PRSITY(J,I,K)/SS(5,NUM)
         IF(ABS(TM).LT.DTSSM) THEN
@@ -1220,7 +1226,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-      WRITE(*,'(13hReadHQ REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(13hReadHQ REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1391,7 +1397,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-      WRITE(*,'(13hReadPS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(13hReadPS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1511,7 +1517,7 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-      WRITE(*,'(13hReadGS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(13hReadGS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1798,7 +1804,7 @@ C
       ENDIF
 C
 C--CHECK INTERFACE
-      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -1983,7 +1989,7 @@ C--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
       ALLOCATE(VOLNLAK(NLAKES),VOLOLAK(NLAKES),DELVOLLAK(NLAKES))
 C
 C--CHECK INTERFACE
-      WRITE(*,'(14hReadLAK REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(14hReadLAK REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -2130,7 +2136,7 @@ C--READ IDENTIFYING RECORD
         !READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
         READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
       ENDIF
-      WRITE(*,'(14hReadUZF REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+C      WRITE(*,'(14hReadUZF REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
 C
 C--CLEAN AND INITIALIZE TO ZERO
       DO II=1,MXUZCON

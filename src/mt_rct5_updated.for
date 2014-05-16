@@ -2057,12 +2057,46 @@ C
 C
 C--THIS SUBROUTINE CALCULATES A STABLE TIME-STEP SIZE
 C
-      DO K=1,NLAY    
-        DO I=1,NROW  
-          DO J=1,NCOL
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE 
-            IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN 
-              CNEW=COLD              
+      DO K=1,NLAY                              !# Modified
+        DO I=1,NROW                            !# Modified
+          DO J=1,NCOL                          !# Modified
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE !# Modified
+            IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN !# Modified
+              CNEW=COLD                        !# Modified
+                            !N=N-1                             !# Added by Vivek? (See email 2-22-13)
+                            !CYCLE TRANSPORT TIME-STEP LOOP    !# Added by Vivek? (See email 2-22-13)
+CEDM                  DO NN=1,NODES                            !# LINE 647 MAIN
+CEDM                    IF(IX(LCIB+NN-1)<=0)CYCLE              !# LINE 648 MAIN
+CEDM                    IF(X(LCCNEW+(ICOMP-1)*NODES+NN-1).GT.  !# LINE 649 MAIN
+CEDM 1                     MAXEC(ICOMP))THEN                   !# LINE 650 MAIN
+                          !concentration is over the maximum EFC !# LINE 651 MAIN
+CVSB                          OperFlag=2                       !# LINE 652 MAIN 
+                          !time1=time1-DTRANS                  !# LINE 653 MAIN
+CVSB                          IF(PRTOUT)NPS=NPS-1              !# LINE 654 MAIN
+CVSB                          TIME2=TIME1                      !# LINE 655 MAIN
+                          !2-DTRANS                            !# LINE 656 MAIN
+CVSB                          CALL TimeStep_adjust(OperFlag,   !# LINE 657 MAIN
+CVSB     &                    X(LCCOLD+(ICOMP-1)*NODES+NN-1),  !# LINE 658 MAIN
+CVSB     &                    X(LCCNEW+(ICOMP-1)*NODES+NN-1),MAXEC(ICOMP),  !# LINE 659 MAIN
+CVSB     &                    DTRANS,ICOMP)                    !# LINE 660 MAIN
+CVSB                          IF(DTRANS<DT0)THEN               !# LINE 661 MAIN
+CVSB                            DT0=DTRANS                     !# LINE 662 MAIN
+CVSB                          ENDIF                            !# LINE 663 MAIN
+CEDM                      X(LCCNEW:LCCNEW+NCOMP*NODES-1)=      !# LINE 664 MAIN
+CEDM &                    X(LCCOLD:LCCOLD+NCOMP*NODES-1)       !# LINE 665 MAIN
+CEDM                      DO III=0,NCOMP*NODES-1               !# LINE 666 MAIN
+CEDM                        X(LCCNEW+III)=X(LCCOLD+III)        !# LINE 667 MAIN
+CEDM                      ENDDO                                !# LINE 668 MAIN
+CVSB                          N=N-1                            !# LINE 669 MAIN
+CVSB                          cycle mstrans_loop               !# LINE 670 MAIN
+CEDM                    ELSEIF(X(LCCNEW+(ICOMP-1)*NODES+NN-1)- !# LINE 671 MAIN
+CEDM &                        MAXEC(ICOMP)<1.E-6)THEN          !# LINE 672 MAIN
+CVSB                          ! restore the default time step for mass transport  !# LINE 673 MAIN
+CVSB                          IF(DT0<DT00)DT0=DT00             !# LINE 674 MAIN
+CEDM                    ENDIF                                  !# LINE 675 MAIN
+CEDM                  ENDDO                                    !# LINE 676 MAIN
+CEDM                ENDIF                                      !# LINE 677 MAIN
+CEDM              ENDIF                                        !# LINE 678 MAIN
             ENDIF
           ENDDO
         ENDDO  

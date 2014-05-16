@@ -376,7 +376,7 @@ C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
      &          MHOST,KHOST,IHOST,JHOST
-      REAL      CTMP,QSS,QCTMP
+      REAL      CTMP,QSS,QCTMP,VOLAQU
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
@@ -466,15 +466,17 @@ C--(RECHARGE)
           ELSE
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(IDRY2.EQ.1) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(RECH(J,I).LT.0) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ELSE
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            RECH(J,I)*ABS(VOLAQU)*
      1            CRCH(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -499,16 +501,18 @@ C--(EVAPOTRANSPIRATION)
           ELSE
             IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(IDRY2.EQ.1) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
      &          CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ELSEIF(CEVT(J,I,ICOMP).GT.0) THEN
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            EVTR(J,I)*ABS(VOLAQU)*
      1            CEVT(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -564,14 +568,16 @@ C
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(IDRY2.EQ.1) THEN
+              VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN
                 QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ELSE
                 QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))*CTMP
+     1          QSS*ABS(VOLAQU)*CTMP
                 QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ENDIF        
             ENDIF
           ENDIF
@@ -610,15 +616,17 @@ C--(RECHARGE)
           ELSE
             IF(K.GT.0) THEN
               IF(IDRY2.EQ.1) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(RECH(J,I).LT.0) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ELSE
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            RECH(J,I)*ABS(VOLAQU)*
      1            CRCH(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -644,16 +652,18 @@ C--(EVAPOTRANSPIRATION)
           ELSE
             IF(K.GT.0) THEN
               IF(IDRY2.EQ.1) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
      &          CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ELSEIF(CEVT(J,I,ICOMP).GT.0) THEN
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            EVTR(J,I)*ABS(VOLAQU)*
      1            CEVT(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -710,14 +720,16 @@ C--SKIP IF NOT ACTIVE CELL
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(IDRY2.EQ.1) THEN
+              VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN
                 QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ELSE
                 QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1          QCTMP*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QCTMP*ABS(VOLAQU)
                 QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ENDIF        
             ENDIF
           ENDIF
@@ -762,7 +774,7 @@ C
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
-      REAL      DTRANS,CTMP,QSS
+      REAL      DTRANS,CTMP,QSS,VOLAQU
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
@@ -882,19 +894,21 @@ C
               IF(IDRY2.EQ.1) THEN
                 CTMP=CRCH(J,I,ICOMP)
                 IF(RECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(RECH(J,I).LT.0) THEN
                   RMASIO(7,2,ICOMP)=RMASIO(7,2,ICOMP)+RECH(J,I)*CTMP
-     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ELSE
                   RMASIO(7,1,ICOMP)=RMASIO(7,1,ICOMP)+RECH(J,I)*CTMP
-     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            RECH(J,I)*ABS(VOLAQU)*
      1            CRCH(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            RECH(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            RECH(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -935,19 +949,21 @@ C
                 ELSEIF(CTMP.LT.0) THEN        
                   CTMP=0.
                 ENDIF
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(EVTR(J,I).LT.0) THEN
                   RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+EVTR(J,I)*CTMP
-     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ELSE
                   RMASIO(8,1,ICOMP)=RMASIO(8,1,ICOMP)+EVTR(J,I)*CTMP
-     &              *DTRANS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))*
+     1            EVTR(J,I)*ABS(VOLAQU)*
      1            CEVT(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            EVTR(J,I)*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1            EVTR(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -1020,18 +1036,20 @@ C
         ELSE
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(IDRY2.EQ.1) THEN
+              VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN
                 RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+QSS*CTMP*DTRANS*
-     &          DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &          ABS(VOLAQU)
                 QC7(J,I,K,9)=QC7(J,I,K,9)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ELSE
                 RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+QSS*CTMP*DTRANS*
-     &          DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     &          ABS(VOLAQU)
                 QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))*CTMP
+     1          QSS*ABS(VOLAQU)*CTMP
                 QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1          QSS*DELR(J)*DELC(I)*ABS(DH(J,I,K))
+     1          QSS*ABS(VOLAQU)
               ENDIF        
             ENDIF
           ENDIF

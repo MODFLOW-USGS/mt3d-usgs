@@ -105,11 +105,11 @@ C
 C-----WRITE OUTPUT
       IF(IDRY2.GT.0) WRITE(IOUT,1062)
 C
-      WRITE(IOUT,*) ' ICIMDRY = ',ICIMDRY
       IF(ICIMDRY.EQ.0) WRITE(IOUT,1065)
       IF(ICIMDRY.EQ.1) WRITE(IOUT,1061)
       IF(ICIMDRY.EQ.2) WRITE(IOUT,1063)
       IF(ICIMDRY.EQ.3) WRITE(IOUT,1064)
+      WRITE(IOUT,'(A,I2)') ' ICIMDRY = ',ICIMDRY
       IF(ICIMDRY.GE.2) THEN
         ALLOCATE(VAQSAT(NCOL,NROW,NLAY))
         VAQSAT=1.0E-02
@@ -375,7 +375,8 @@ C
       INTEGER   ICOMP,J,I,K,ierr
       REAL      SADV1Q,QCTMP,DTRANS
       REAL, ALLOCATABLE, DIMENSION(:,:,:) :: PRSYTMP         
-      ALLOCATE(PRSYTMP(NCOL,NROW,NLAY),stat=ierr)
+      IF(.NOT.ALLOCATED(PRSYTMP))
+     1  ALLOCATE(PRSYTMP(NCOL,NROW,NLAY),stat=ierr)
 C
 C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
       IF(MIXELM.EQ.0) THEN
@@ -4075,7 +4076,7 @@ C--LOOP THROUGH ALL INACTIVE CELLS
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF(K.EQ.1 .AND. I.EQ.59 .AND. J.EQ.181)THEN
+            IF(J.EQ.3)THEN
             CONTINUE
             ENDIF
             N=(K-1)*NCR + (I-1)*NCOL + J
@@ -4088,32 +4089,32 @@ C--------CALCULATE IN THE Z DIRECTION
             AREA=DELR(J)*DELC(I)
 C-----------TOP FACE
             IF(K.GT.1) THEN
-              IF(ICBUND(J,I,K-1,1).NE.0) THEN
+cvsb              IF(ICBUND(J,I,K-1,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N-NCR,1).NE.0 .OR. ICBND2(J,I,K-1).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(J,I,K)/(DH(J,I,K-1)+
      &                                      DH(J,I,K))
                 IF(NADVFD.EQ.IUPS.AND.QZ(J,I,K-1).LT.0.) ALPHA=1.0
                 QC7(J,I,K,1)=-QZ(J,I,K-1)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C-----------BOTTOM FACE
             IF(K.LT.NLAY) THEN
-              IF(ICBUND(J,I,K+1,1).NE.0) THEN
+cvsb              IF(ICBUND(J,I,K+1,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N+NCR,1).NE.0 .OR. ICBND2(J,I,K+1).NE.0) THEN
                 ALPHA = 0.
                 IF(NADVFD.EQ.ICTRL) ALPHA=DH(J,I,K)/(DH(J,I,K)+
      &                                     DH(J,I,K+1))
                 IF(NADVFD.EQ.IUPS.AND.QZ(J,I,K).LT.0.) ALPHA=1.0
                 QC7(J,I,K,6)=QZ(J,I,K)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C
 C--------CALCULATE IN THE Y DIRECTION
   410       IF(NROW.LT.2) GOTO 420    
 C-----------BACK FACE
             IF(I.GT.1) THEN
-              IF(ICBUND(J,I-1,K,1).NE.0) THEN
+cvsb              IF(ICBUND(J,I-1,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N-NCOL,1).NE.0 .OR. ICBND2(J,I-1,K).NE.0) THEN
                 WW=DELC(I)/(DELC(I)+DELC(I-1))
                 THKSAT=DH(J,I-1,K)*WW+DH(J,I,K)*(1.-WW)
@@ -4125,11 +4126,11 @@ cvsbabc              IF(ICBUND(N-NCOL,1).NE.0 .OR. ICBND2(J,I-1,K).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I-1)/(DELC(I-1)+DELC(I))
                 IF(NADVFD.EQ.IUPS.AND.QY(J,I-1,K).LT.0.) ALPHA=1.0
                 QC7(J,I,K,2)=-QY(J,I-1,K)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C-----------FRONT FACE
             IF(I.LT.NROW) THEN
-              IF(ICBUND(J,I+1,K,1).NE.0) THEN
+cvsb              IF(ICBUND(J,I+1,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N+NCOL,1).NE.0 .OR. ICBND2(J,I+1,K).NE.0) THEN
                 WW=DELC(I+1)/(DELC(I+1)+DELC(I))
                 THKSAT=DH(J,I,K)*WW+DH(J,I+1,K)*(1.-WW)
@@ -4141,14 +4142,14 @@ cvsbabc              IF(ICBUND(N+NCOL,1).NE.0 .OR. ICBND2(J,I+1,K).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELC(I)/(DELC(I)+DELC(I+1))
                 IF(NADVFD.EQ.IUPS.AND.QY(J,I,K).LT.0.) ALPHA=1.0
                 QC7(J,I,K,5)=QY(J,I,K)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C
 C----------CALCULATE IN THE X DIRECTION
   420       IF(NCOL.LT.2) GOTO 430
 C-----------LEFT FACE
             IF(J.GT.1) THEN
-              IF(ICBUND(J-1,I,K,1).NE.0) THEN
+cvsb              IF(ICBUND(J-1,I,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N-1,1).NE.0 .OR. ICBND2(J-1,I,K).NE.0) THEN
                 WW=DELR(J)/(DELR(J)+DELR(J-1))
                 THKSAT=DH(J-1,I,K)*WW+DH(J,I,K)*(1.-WW)
@@ -4160,11 +4161,11 @@ cvsbabc              IF(ICBUND(N-1,1).NE.0 .OR. ICBND2(J-1,I,K).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J-1)/(DELR(J-1)+DELR(J))
                 IF(NADVFD.EQ.IUPS.AND.QX(J-1,I,K).LT.0.) ALPHA=1.0
                 QC7(J,I,K,3)=-QX(J-1,I,K)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C-----------RIGHT FACE      
             IF(J.LT.NCOL) THEN
-              IF(ICBUND(J+1,I,K,1).NE.0) THEN
+cvsb              IF(ICBUND(J+1,I,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N+1,1).NE.0 .OR. ICBND2(J+1,I,K).NE.0) THEN
                 WW=DELR(J+1)/(DELR(J+1)+DELR(J))
                 THKSAT=DH(J,I,K)*WW+DH(J+1,I,K)*(1.-WW)
@@ -4176,7 +4177,7 @@ cvsbabc              IF(ICBUND(N+1,1).NE.0 .OR. ICBND2(J+1,I,K).NE.0) THEN
                 IF(NADVFD.EQ.ICTRL) ALPHA=DELR(J)/(DELR(J)+DELR(J+1))
                 IF(NADVFD.EQ.IUPS.AND.QX(J,I,K).LT.0.) ALPHA=1.0
                 QC7(J,I,K,4)=QX(J,I,K)*AREA
-              ENDIF
+cvsb              ENDIF
             ENDIF
 C
   430       CONTINUE
