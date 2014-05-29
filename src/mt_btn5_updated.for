@@ -1436,17 +1436,17 @@ C
                     RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
      &             -(RF-1.)*DMSTRG
                   ELSE
-                    RMASIO(119,2,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
-                    RMASIO(120,2,ICOMP)=RMASIO(120,1,ICOMP)
+                    RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
+                    RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
      &             -(RF-1.)*DMSTRG
                   ENDIF
                 ELSE
                  VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
-     &              *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+     &              *QSTO(J,I,K)/PRSITYSAV(J,I,K)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
-     &           *RETA(J,I,K,ICOMP)*PRSITY(J,I,K)*VOL
+     &           *RETA(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOL
                   IF(DMSTRG.LT.0) THEN
                   RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                   RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)

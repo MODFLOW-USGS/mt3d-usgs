@@ -230,18 +230,11 @@ C
 C
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)
       IF(FUZF) THEN 
-!        IF(IUZFOPTG.GT.0) THEN
-!          TEXT='WATER CONTENT   '
-!          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-!     &                WC,FPRT)                                
-!        ENDIF
-        DO K=1,NLAY
-          DO I=1,NROW
-            DO J=1,NCOL
-              WC(J,I,K)=PRSITY(J,I,K)
-            ENDDO
-          ENDDO
-        ENDDO
+        IF(IUZFOPTG.GT.0) THEN
+          TEXT='WATER CONTENT   '
+          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                WC,FPRT)                                
+        ENDIF
 C                                                             
 C--READ UPPER-FACE FLUX TERMS                                 
         TEXT='UZ FLUX         '                               
