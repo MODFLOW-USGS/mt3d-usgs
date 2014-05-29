@@ -3395,7 +3395,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
      &                         RHS,CNEW,IDRY2,DTRANS,
-     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
       INTEGER   INDX
@@ -3431,7 +3431,9 @@ C---------TOP FACE
         IF(K.GT.1) THEN
           IF(QC7(J,I,K,1).LT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
+              IF(ICBUND(J,I,K-1,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,1)*C7(N-NCR)
             ENDIF
@@ -3442,7 +3444,9 @@ C-------BOTTOM FACE
         IF(K.LT.NLAY) THEN
           IF(QC7(J,I,K,6).LT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
+              IF(ICBUND(J,I,K+1,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,6)*C7(N+NCR)
             ENDIF
@@ -3456,7 +3460,9 @@ C---------BACK FACE
         IF(I.GT.1) THEN
           IF(QC7(J,I,K,2).LT.0.) THEN
             IF(ICBND2(J,I-1,K).EQ.0) THEN
+              IF(ICBUND(J,I-1,K,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,2)*C7(N-NCOL)
             ENDIF
@@ -3467,7 +3473,9 @@ C-------FRONT FACE
         IF(I.LT.NROW) THEN
           IF(QC7(J,I,K,5).LT.0.) THEN
             IF(ICBND2(J,I+1,K).EQ.0) THEN
+              IF(ICBUND(J,I+1,K,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,5)*C7(N+NCOL)
             ENDIF
@@ -3481,7 +3489,9 @@ C---------LEFT FACE
         IF(J.GT.1) THEN
           IF(QC7(J,I,K,3).LT.0.) THEN
             IF(ICBND2(J-1,I,K).EQ.0) THEN
+              IF(ICBUND(J-1,I,K,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,3)*C7(N-1)
             ENDIF
@@ -3492,7 +3502,9 @@ C-------RIGHT FACE
         IF(J.LT.NCOL) THEN
           IF(QC7(J,I,K,4).LT.0.) THEN
             IF(ICBND2(J+1,I,K).EQ.0) THEN
+              IF(ICBUND(J+1,I,K,ICOMP).NE.0) THEN
               QCTEMP=QCTEMP+QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)
+              ENDIF
             ELSE
               QCTEMP=QCTEMP+QC7(J,I,K,4)*C7(N+1)
             ENDIF
@@ -3674,7 +3686,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
      &                         RHS,CNEW,RMASIO,IDRY2,DTRANS,
-     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND
       IMPLICIT  NONE
       INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
       INTEGER   INDX
@@ -3710,9 +3722,11 @@ C-----TOP FACE
           IF(K.GT.1) THEN
             IF(QC7(J,I,K,1).LT.0.) THEN
               IF(ICBND2(J,I,K-1).EQ.0) THEN
+                IF(ICBUND(J,I,K-1,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)
                 QCTEMP2=QC7(J,I,K,1)*CNEW(J,I,K-1,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,1)*C7(N-NCR)
                 QCTEMP2=QC7(J,I,K,1)*C7(N-NCR)*DTRANS
@@ -3725,9 +3739,11 @@ C-----------BOTTOM FACE
           IF(K.LT.NLAY) THEN
             IF(QC7(J,I,K,6).LT.0.) THEN
               IF(ICBND2(J,I,K+1).EQ.0) THEN
+                IF(ICBUND(J,I,K+1,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)
                 QCTEMP2=QC7(J,I,K,6)*CNEW(J,I,K+1,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,6)*C7(N+NCR)
                 QCTEMP2=QC7(J,I,K,6)*C7(N+NCR)*DTRANS
@@ -3743,9 +3759,11 @@ C--------BACK FACE
           IF(I.GT.1) THEN
             IF(QC7(J,I,K,2).LT.0.) THEN
               IF(ICBND2(J,I-1,K).EQ.0) THEN
+                IF(ICBUND(J,I-1,K,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)
                 QCTEMP2=QC7(J,I,K,2)*CNEW(J,I-1,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,2)*C7(N-NCOL)
                 QCTEMP2=QC7(J,I,K,2)*C7(N-NCOL)*DTRANS
@@ -3758,9 +3776,11 @@ C---------FRONT FACE
           IF(I.LT.NROW) THEN
             IF(QC7(J,I,K,5).LT.0.) THEN
               IF(ICBND2(J,I+1,K).EQ.0) THEN
+                IF(ICBUND(J,I+1,K,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)
                 QCTEMP2=QC7(J,I,K,5)*CNEW(J,I+1,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,5)*C7(N+NCOL)
                 QCTEMP2=QC7(J,I,K,5)*C7(N+NCOL)*DTRANS
@@ -3776,9 +3796,11 @@ C---------LEFT FACE
           IF(J.GT.1) THEN
             IF(QC7(J,I,K,3).LT.0.) THEN
               IF(ICBND2(J-1,I,K).EQ.0) THEN
+                IF(ICBUND(J-1,I,K,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)
                 QCTEMP2=QC7(J,I,K,3)*CNEW(J-1,I,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,3)*C7(N-1)
                 QCTEMP2=QC7(J,I,K,3)*C7(N-1)*DTRANS
@@ -3791,9 +3813,11 @@ C---------RIGHT FACE
           IF(J.LT.NCOL) THEN
             IF(QC7(J,I,K,4).LT.0.) THEN
               IF(ICBND2(J+1,I,K).EQ.0) THEN
+                IF(ICBUND(J+1,I,K,ICOMP).NE.0) THEN
                 QCTEMP=QCTEMP+QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)
                 QCTEMP2=QC7(J,I,K,4)*CNEW(J+1,I,K,ICOMP)*DTRANS
                 RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+                ENDIF
               ELSE
                 QCTEMP=QCTEMP+QC7(J,I,K,4)*C7(N+1)
                 QCTEMP2=QC7(J,I,K,4)*C7(N+1)*DTRANS
@@ -4182,25 +4206,21 @@ cvsb              ENDIF
 C
   430       CONTINUE
 C
-C            IF(IDRY2.EQ.1) THEN
-CC-----------STORAGE
-C              QC7(J,I,K,:,7)=QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
-C     1        *RETA(J,I,K,ICOMP)
-C            ENDIF
           ENDDO
         ENDDO
       ENDDO
 C
-C-----IDENTIFY DRY TO DRY FLOW AND SORT CELLS
+C-----IDENTIFY DRY TO DRY FLOW AND INDEX THEM INTO TIERS
       INDX=0
       ID2D=0
-      DO IJK=1,NICBND2 !NLAY*NROW*NCOL
+      DO IJK=1,NICBND2
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
               ITEMP=0
               N=(K-1)*NCR + (I-1)*NCOL + J
               IF(ICBND2(J,I,K).EQ.0) CYCLE
+              IF(ICBND2(J,I,K).EQ.2) CYCLE
 C      
 C----------CALCULATE IN THE Z DIRECTION
               IF(NLAY.LT.2) GOTO 1410
@@ -4209,6 +4229,7 @@ C-------------TOP FACE
                 IF(QC7(J,I,K,1).LT.0.) THEN
                   IF(ICBND2(J,I,K-1).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4217,6 +4238,7 @@ C-------------BOTTOM FACE
                 IF(QC7(J,I,K,6).LT.0.) THEN
                   IF(ICBND2(J,I,K+1).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4228,6 +4250,7 @@ C-------------BACK FACE
                 IF(QC7(J,I,K,2).LT.0.) THEN
                   IF(ICBND2(J,I-1,K).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4236,6 +4259,7 @@ C-------------FRONT FACE
                 IF(QC7(J,I,K,5).LT.0.) THEN
                   IF(ICBND2(J,I+1,K).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4247,6 +4271,7 @@ C-------------LEFT FACE
                 IF(QC7(J,I,K,3).LT.0.) THEN
                   IF(ICBND2(J-1,I,K).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4255,6 +4280,7 @@ C-------------RIGHT FACE
                 IF(QC7(J,I,K,4).LT.0.) THEN
                   IF(ICBND2(J+1,I,K).EQ.1) THEN
                     ITEMP=ITEMP+1
+                    CYCLE
                   ENDIF
                 ENDIF
               ENDIF
@@ -4273,6 +4299,15 @@ C
         ENDDO
       ENDDO
 10    CONTINUE
+C
+C--RESET ICBND2
+      DO K=1,NLAY
+      DO I=1,NROW
+      DO J=1,NCOL
+        IF(ICBND2(J,I,K).EQ.2) ICBND2(J,I,K)=1
+      ENDDO
+      ENDDO
+      ENDDO
 C
 C--RETURN
   999 RETURN
