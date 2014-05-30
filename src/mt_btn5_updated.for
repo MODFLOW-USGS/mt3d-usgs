@@ -1532,9 +1532,9 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
               ELSE
                 IF(IALTFM.GE.1) THEN
                   VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
-     1                   (HT2-TIME2)/PRSITY(J,I,K)
+     1                   (HT2-TIME2)/PRSITYSAV(J,I,K)
                 ENDIF
-                CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
+                CMML=CNEW(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOLUME
                 CMMS=0.
                 CIML=0.
                 CIMS=0.
