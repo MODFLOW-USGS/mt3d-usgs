@@ -413,18 +413,17 @@ C--TRANSIENT FLUID STORAGE TERM
 !CDL--SEAWAT: This seems to fix the problem with storage
 CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD
 CEDM--IS WRONG  
-                IF(IALTFM.EQ.1) THEN
+                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
                   !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
                   !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
-                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-     1            *RETA(J,I,K,ICOMP)*COLDFLW(J,I,K,ICOMP) !*DELT/DTRANS
                   !ENDIF
-                ELSEIF(IALTFM.EQ.2) THEN
-                  !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
-                  !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
+                  IF(IALTFM.EQ.2) THEN
                   RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
      1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
-                  !ENDIF
+                  ELSEIF(IALTFM.EQ.3) THEN
+                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1            *COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                  ENDIF
                 ELSE
                   IF(UPDLHS)
      1            A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
@@ -774,7 +773,7 @@ C
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
-      REAL      DTRANS,CTMP,QSS,VOLAQU
+      REAL      DTRANS,CTMP,QSS,VOLAQU,RMULT
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
@@ -822,21 +821,25 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
             ELSE
 CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
 CEDM--WAS WRONG.
-10          IF(IALTFM.GE.1) THEN
-              IF(IALTFM.EQ.1) CTMP=COLDFLW(J,I,K,ICOMP)
-              IF(IALTFM.EQ.2) CTMP=COLD(J,I,K,ICOMP)
+10          IF(IALTFM.GE.2) THEN
+              IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) CTMP=COLD(J,I,K,ICOMP)
               !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).LE.1.0E-3) then
               !IF(COLD(J,I,K,ICOMP).LE.1.0E-6) then
               !  CTMP=0.
               !endif
+              IF(IALTFM.EQ.2) THEN
+                RMULT=RETA(J,I,K,ICOMP)
+              ELSEIF(IALTFM.EQ.3) THEN
+                RMULT=1.0
+              ENDIF
               IF(QSTO(J,I,K).GT.0) THEN
                 RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
      &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
-     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
+     1                 *RMULT*DTRANS !*DELT
               ELSE
                 RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
      &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
-     1                 *RETA(J,I,K,ICOMP)*DTRANS !*DELT
+     1                 *RMULT*DTRANS !*DELT
               ENDIF
             ELSE
               CTMP=CNEW(J,I,K,ICOMP)

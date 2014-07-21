@@ -13,22 +13,22 @@ C
      &                         ITRTEXT,ITRTINJ,QINCTS,QOUTCTS,NEXT,NINJ,
      &                         QCTS,CCTS,IWEXT,IWINJ,MXWEL,IWCTS,IFORCE,
      &                         NCTS,NCTSOLD,CEXT2CTS,CGW2CTS,CADDM,
-     &                         CCTS2EXT,CCTS2GW,CREMM
+     &                         CCTS2EXT,CCTS2GW,CREMM,ICTSPKG
       INTEGER        ISOLD,ISOLD2 
       INTEGER        INUNIT,I
       LOGICAL        OPND
       CHARACTER*5000 FNM
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INCTS
- 1000 FORMAT(1X,'CTS1 -- CONTAMINANT TREATMENT SYSTEM,',
+ 1000 FORMAT(1X/,'CTS1 -- CONTAMINANT TREATMENT SYSTEM,',
      & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--ALLOCATE
-      ALLOCATE(MXCTS,ICTSOUT,MXEXT,MXINJ,MXWEL,IFORCE)
+      ALLOCATE(MXCTS,ICTSOUT,MXEXT,MXINJ,MXWEL,IFORCE,ICTSPKG)
 C
 C--READ AND PRINT MAXIMUM NUMBER OF TREATMENT SYSTEMS 
-      READ(INCTS,'(6I10)',ERR=1,IOSTAT=IERR) MXCTS,ICTSOUT,MXEXT,MXINJ,
-     &  MXWEL,IFORCE
+      READ(INCTS,'(7I10)',ERR=1,IOSTAT=IERR) MXCTS,ICTSOUT,MXEXT,MXINJ,
+     &  MXWEL,IFORCE,ICTSPKG
     1 IF(IERR.NE.0) THEN
         BACKSPACE (INCTS)
         READ(INCTS,'(I10)') MXCTS
@@ -65,6 +65,13 @@ C
 1040  FORMAT(1X,'MAXIMUM NUMBER OF INJECTION WELLS  =',I10)
       WRITE(IOUT,1050) MXWEL
 1050  FORMAT(1X,'MAXIMUM NUMBER OF WELLS  =',I10)
+      IF(ICTSPKG.EQ.0) THEN
+        WRITE(IOUT,1060)
+      ELSEIF(ICTSPKG.EQ.1) THEN
+        WRITE(IOUT,1061)
+      ENDIF
+1060  FORMAT(1X,'CTS PACKAGE WILL WORK WITH MODFLOW''S MNW2 PACAKGE')
+1061  FORMAT(1X,'CTS PACKAGE WILL WORK WITH MODFLOW''S WEL PACAKGE')
 C
 C--ALLOCATE CUMULATIVE MASS BUDGET TERMS
 CEDM-VIVEK, IS THIS PART OF THE CODE STILL PENDING?
@@ -378,7 +385,7 @@ C
       IMPLICIT  NONE
       INTEGER ICOMP
       INTEGER I,J,IW,ICTS,KK,II,JJ,N,IQ,IWELL
-      REAL CTEMP,TOTQ,TOTQC,Q,C,CEXT,CINJ
+      REAL CTEMP,TOTQ,TOTQC,Q,C,CEXT,CINJ,VOLAQU
 C
 C--FORMULATE [A] AND [RHS] MATRICES FOR EULERIAN SCHEMES
 CCC      IF(MIXELM.GT.0) GOTO 1000
@@ -409,7 +416,19 @@ C---------GET Q FROM SS ARRAY
                 WRITE(IOUT,*) 'MISMATCH IN CTS WELL AND WEL FILE'
                 CALL USTOP(' ')
               ENDIF
-              Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+C
+              VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
+                IF(IDRY2.EQ.1) THEN
+                  Q=SS(5,IWELL)*ABS(VOLAQU)
+                ELSE
+                  Q=0.
+                ENDIF
+              ELSE
+                Q=SS(5,IWELL)*VOLAQU
+              ENDIF
+C              
               IQ=SS(6,IWELL)
               IF(Q.GT.0.0E0) THEN
                 WRITE(IOUT,'(4I10)') KK,II,JJ,IW
@@ -490,7 +509,19 @@ C---------GET Q FROM SS ARRAY
                 WRITE(IOUT,*) 'MISMATCH IN CTS WELL AND WEL FILE'
                 CALL USTOP(' ')
               ENDIF
-              Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+C
+              VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
+                IF(IDRY2.EQ.1) THEN
+                  Q=SS(5,IWELL)*ABS(VOLAQU)
+                ELSE
+                  Q=0.
+                ENDIF
+              ELSE
+                Q=SS(5,IWELL)*VOLAQU
+              ENDIF
+C              
               IQ=SS(6,IWELL)
               IF(Q.LT.0.0E0) THEN
                 WRITE(IOUT,'(4I10)') KK,II,JJ,IW
@@ -599,7 +630,7 @@ C
       REAL    CTEMP,TOTQ,TOTQC,Q,C,CEXT,CINJ,Q1,Q2,COUTCTS
       REAL    EXT2CTS,GW2CTS,ADDM,CTS2EXT,CTS2GW,REMM
       REAL    CTOTINCTS,TOTINCTS,CTOTOUTCTS,TOTOUTCTS,CDIFF,
-     &        DIFF,CPERC,PERC
+     &        DIFF,CPERC,PERC,VOLAQU
 C
 C--ZERO OUT ARRAYS
       QCTS=0.0E0
@@ -665,7 +696,19 @@ C---------GET Q FROM SS ARRAY
                 WRITE(IOUT,*) 'MISMATCH IN CTS WELL AND WEL FILE'
                 CALL USTOP(' ')
               ENDIF
-              Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+C
+              VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
+                IF(IDRY2.EQ.1) THEN
+                  Q=SS(5,IWELL)*ABS(VOLAQU)
+                ELSE
+                  Q=0.
+                ENDIF
+              ELSE
+                Q=SS(5,IWELL)*VOLAQU
+              ENDIF
+C              
               IQ=SS(6,IWELL)
               IF(Q.GT.0.0E0) THEN
                 WRITE(IOUT,'(4I10)') KK,II,JJ,IW
@@ -763,7 +806,19 @@ C---------GET Q FROM SS ARRAY
                 WRITE(IOUT,*) 'MISMATCH IN CTS WELL AND WEL FILE'
                 CALL USTOP(' ')
               ENDIF
-              Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+C
+              VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
+              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
+                IF(IDRY2.EQ.1) THEN
+                  Q=SS(5,IWELL)*ABS(VOLAQU)
+                ELSE
+                  Q=0.
+                ENDIF
+              ELSE
+                Q=SS(5,IWELL)*VOLAQU
+              ENDIF
+C              
               IQ=SS(6,IWELL)
               IF(Q.LT.0.0E0) THEN
                 WRITE(IOUT,'(4I10)') KK,II,JJ,IW

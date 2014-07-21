@@ -610,6 +610,7 @@ MODULE MT3DMS_MODULE
         INTEGER,          SAVE,                       POINTER :: MXCTS                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXEXT                 !# LINE 91-95 MAIN
         INTEGER,          SAVE,                       POINTER :: MXINJ                 !# LINE 91-95 MAIN
+        INTEGER,          SAVE,                       POINTER :: ICTSPKG
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: KEXT                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IEXT                  !# LINE 91-95 MAIN
         INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: JEXT                  !# LINE 91-95 MAIN

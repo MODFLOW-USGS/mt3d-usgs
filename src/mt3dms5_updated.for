@@ -112,8 +112,8 @@ C--be commented out for compilers that do not support it.
 cvsb                       
       CALL GETARG(2,CMST)  
       CALL GETARG(3,CDRY)  
-      IF(CMST.EQ.'MST'.OR.CMST.EQ.'mst') DOMINSAT=.TRUE.
-      IF(CDRY.EQ.'DRY'.OR.CDRY.EQ.'dry') DRYON=.TRUE.
+      IF(CMST.EQ.'DRY1'.OR.CMST.EQ.'dry1') DOMINSAT=.TRUE.
+      IF(CDRY.EQ.'DRY2'.OR.CDRY.EQ.'dry2') DRYON=.TRUE.
       IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.
 c      CALL GETCL(FLNAME)                  
 C                                          
@@ -236,7 +236,7 @@ C--IS STEADY-STATE AND HAS SINGLE STRESS PERIOD)
           IF(KPER*KSTP.GT.1.AND.ISS.NE.0.AND.NPERFL.EQ.1) GOTO 70
 C
           IF(KPER*KSTP.EQ.1) THEN
-            IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) THEN
+            IF(IDRY2.EQ.1) THEN
               DO ICOMP=1,NCOMP
                 DO K=1,NLAY
                   DO I=1,NROW
@@ -459,7 +459,7 @@ C
   900     CONTINUE
 C
 C--SAVE CNEW AS COLDFLW
-          IF(IALTFM.EQ.1.OR.IDRY2.EQ.1) CALL BTNFLW1AD
+          IF(IDRY2.EQ.1) CALL BTNFLW1AD
 C
 C--END OF FLOW TIME STEP LOOP
         ENDDO

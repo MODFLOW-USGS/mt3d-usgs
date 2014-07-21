@@ -1369,7 +1369,7 @@ C FLOW TERMS FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *********************************************************************
 C last modified: 02-15-2005
 C
-      USE MT3DMS_MODULE, ONLY: IFTLFMT
+      USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
@@ -1428,7 +1428,7 @@ C--STORE FLOW RATE QSTEMP
           IF(ABS(QSS).GT.0) CYCLE                   
           SS(5,ITEMP)=QSTEMP
           SS(7,ITEMP)=0
-          IF(LABEL.EQ.'WEL             ') SS(8,ITEMP)=N 
+          IF(LABEL.EQ.'WEL             '.AND.ICTSPKG.EQ.1)SS(8,ITEMP)=N
 C
 C--MARK CELLS NEAR THE SINK/SOURCE                   
           IF(QSTEMP.LT.0 .AND. ICBUND(J,I,K).GT.0) THEN                
@@ -1449,7 +1449,7 @@ C--OTHERWISE, ADD TO THE SS ARRAY
         SS(5,NTSS)=QSTEMP
         SS(6,NTSS)=IQ
         SS(7,NTSS)=0.
-        IF(LABEL.EQ.'WEL             ') SS(8,NTSS)=N
+        IF(LABEL.EQ.'WEL             '.AND.ICTSPKG.EQ.1) SS(8,NTSS)=N
         IF(QSTEMP.LT.0 .AND. ICBUND(J,I,K).GT.0) THEN                   
           ICBUND(J,I,K)=1000+IQ
         ELSEIF(ICBUND(J,I,K).GT.0) THEN
@@ -1489,7 +1489,7 @@ C THAT ARE CONNECTED FROM THE FLOW-TRANSPORT LINK FILE
 C *********************************************************************
 C last modified: 02-15-2005
 C
-      USE MT3DMS_MODULE, ONLY: IFTLFMT
+      USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
@@ -1548,7 +1548,7 @@ C--STORE FLOW RATE QSTEMP
           IF(ABS(QSS).GT.0) CYCLE                      
           SS(5,ITEMP)=QSTEMP
           SS(7,ITEMP)=IGROUP
-          IF(LABEL.EQ.'MNW             ') SS(8,ITEMP)=N
+          IF(LABEL.EQ.'MNW             '.AND.ICTSPKG.EQ.0) SS(8,ITEMP)=N
 C
 C--MAKR CELLS NEAR THE SINK/SOURCE                   
           IF(QSTEMP.LT.0 .AND. ICBUND(J,I,K).GT.0 ) THEN
@@ -1569,7 +1569,7 @@ C--OTHERWISE, ADD TO THE SS ARRAY
         SS(5,NTSS)=QSTEMP
         SS(6,NTSS)=IQ
         SS(7,NTSS)=IGROUP
-        IF(LABEL.EQ.'MNW             ') SS(8,NTSS)=N
+        IF(LABEL.EQ.'MNW             '.AND.ICTSPKG.EQ.0) SS(8,NTSS)=N
         IF(QSTEMP.LT.0 .AND. ICBUND(J,I,K).GT.0) THEN                 
           ICBUND(J,I,K)=1000+IQ
         ELSEIF(ICBUND(J,I,K).GT.0) THEN                       

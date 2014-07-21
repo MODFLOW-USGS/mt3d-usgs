@@ -1160,6 +1160,8 @@ C
       REAL      CTMP,DCRCTX,DCRCTX2 
       INTEGER   M,N                 
 C
+      DCRCT=0.
+C
 C--UPDATE RETARDATION FACTOR AND SORBED/IMMOBILE-PHASE CONCENTRATION
 C
       IF(ISOTHM.GT.0) THEN
@@ -1570,7 +1572,7 @@ CVSB                ENDIF
               ENDIF
               ENDIF
 
-              DCRCT=0.0                                          
+              DCRCT=0.0
               DO M=1,NED                                         
                 IF(COLD(J,I,K,M)>0)THEN                          
                 DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*COLD(J,I,K,M)
@@ -1596,7 +1598,7 @@ CVSB                ENDIF
               ENDIF
               ENDIF
             !IF(ICOMP==9.AND.DCRCT>0.)PAUSE              
-            IF(DCRCT<0)THEN                              
+            IF(DCRCT<0.)THEN                              
               RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT
             ELSE                                         
               RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+DCRCT
@@ -1765,10 +1767,14 @@ C
       WRITE(IOUT,'(2(A,I2))') 'ELECTRON ACCEPTERS: SPECIES ',NED+1,
      1' - ',NEA+NED
 C
-      ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NED+NEA))
-      ALLOCATE(MAXEC(NED+NEA),SWITCH(NED+NEA),INHIB(NED+NEA),
-     1  DECAY(NED,NEA))
-      ALLOCATE(YIELDC(NED,NED+NEA),DEA_ED_DT(NED),DCDT(NED+NEA))
+CCC      ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NED+NEA))
+CCC      ALLOCATE(MAXEC(NED+NEA),SWITCH(NED+NEA),INHIB(NED+NEA),
+CCC     1  DECAY(NED,NEA))
+CCC      ALLOCATE(YIELDC(NED,NED+NEA),DEA_ED_DT(NED),DCDT(NED+NEA))
+      ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NCOMP))
+      ALLOCATE(MAXEC(NCOMP),SWITCH(NCOMP),INHIB(NCOMP),
+     1  DECAY(NED,NCOMP-NED))
+      ALLOCATE(YIELDC(NED,NCOMP),DEA_ED_DT(NED),DCDT(NCOMP))
 C
       ALLOCATE(MASS_NEG(NCOMP),CON_NEG(NCOMP))
       MASS_NEG=0.0
@@ -1862,7 +1868,8 @@ C
           ENDIF
         ENDIF
 C
-      ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))
+CCC      ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))
+      ALLOCATE(DCDT_FE(NODES,NCOMP-NED,NED),DCDT_S(NODES,NCOMP))
 C
 C--ADD CODE FOR SOME BASIC QA
 C      IF() THEN
