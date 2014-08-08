@@ -16,14 +16,13 @@ C              Web site: http://hydro.geo.ua.edu/mt3d                  %
 C                                                                      %
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-C MT3D-USGS is based on MT3DMS v5.3 originally developed by Chunmiao Zheng
-C at S.S. Papadopulos & Associates, Inc. and documented for
-C the United States Environmental Protection Agency.
-C MT3D-USGS is written by authors at S.S. Papadopulos & Associates, Inc., 
-C and the U.S. Geological Survey
-C with the iterative solver routine by Tsun-Zee Mai.
-C Funding for MT3D-USGS development is provided, in part, by
-C U.S. Geological Survey's Office of Groundwater Resources.
+C MT3D-USGS is based on MT3DMS v5.3 originally developed by Chunmiao 
+C Zheng at S.S. Papadopulos & Associates, Inc. and documented for
+C the United States Environmental Protection Agency.  MT3D-USGS is
+C written by authors at S.S. Papadopulos & Associates, Inc. and the 
+C U.S. Geological Survey with the iterative solver routine by Tsun-Zee 
+C Mai.  Funding for MT3D-USGS development is provided, in part, by
+C U.S. Geological Survey's Groundwater Resources Program.
 C
 C Copyright, 2014, . All rights reserved.
 C
@@ -218,7 +217,7 @@ C--FOR EACH FLOW TIME STEP----------------------------------------------
         DO KSTP=1,NSTP
           DELT=TSLNGH(KSTP)
           HT1=HT2
-          HT2=HT2+DELT
+          HT2=HT2+DELT    
 C
 C--WRITE AN INDENTIFYING MESSAGE
           WRITE(*,60) KSTP,HT1,HT2

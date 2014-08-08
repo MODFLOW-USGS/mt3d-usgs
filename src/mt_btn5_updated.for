@@ -1992,15 +1992,15 @@ C
             ELSE
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
-                  VOL=DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)*
+     &                QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                     *VOL
                 ELSE
-                RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &                 *DELR(J)*DELC(I)*DH(N)
+                  RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                   *DELR(J)*DELC(I)*DH(N)
                 ENDIF
               ELSE
                 IF(IUZFBND(J,I).GT.0) THEN
@@ -2014,8 +2014,8 @@ C
                   RHS(N)=-TEMP*THETAW(J,I,K)*RETA(N,ICOMP)/DTRANS
      &                  *DELR(J)*DELC(I)*DH(N)
                 ELSE
-                  VOL=DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)
+     &                 *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
@@ -2068,25 +2068,25 @@ C--IF INACTIVE OR CONSTANT CELL
                   ENDIF
                   A(N)=-THETAW(J,I,K)*RF*DELR(J)*DELC(I)*DH(N)/DTRANS
                 ELSE
-                  VOL=DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)
+     &                *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *VOL
+     &                 *VOL
                 ENDIF
               ELSE
-              IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
-               VOL=DELR(J)*DELC(I)*DH(N)
-     &         +DELR(J)*DELC(I)*DH(N)*QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
-               VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
-               VOL=MIN(VOL,VCELL)
-               A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *VOL
-              ELSE
-               A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
-     &              *DELR(J)*DELC(I)*DH(N)
-              ENDIF
+                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
+                  VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)
+     &                *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                  *VOL
+                ELSE
+                 A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
+     &                *DELR(J)*DELC(I)*DH(N)
+                ENDIF
               ENDIF
             ENDIF
           ENDDO

@@ -400,46 +400,36 @@ C--TRANSIENT FLUID STORAGE TERM
             DO J=1,NCOL
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
               IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
-              IF(iUnitTRNOP(7).GT.0)THEN
-                IF(IUZFBND(J,I).GT.0) THEN
-                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
-     1                  COLD(J,I,K,ICOMP)
-                ELSE
-                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-     1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
-                ENDIF
-              ELSE
-!                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)     
-!CDL--SEAWAT: This seems to fix the problem with storage
-CEDM--HAVE PURPOSELY OMITTED VIVEK'S IALTFM OPTION, THE OLD METHOD
-CEDM--IS WRONG  
-                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
-                  !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).GT.1E-3) then
-                  !IF(COLD(J,I,K,ICOMP).GT.1.0E-6) then
-                  !ENDIF
-                  IF(IALTFM.EQ.2) THEN
-                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-     1            *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
-                  ELSEIF(IALTFM.EQ.3) THEN
-                  RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-     1            *COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                IF(iUnitTRNOP(7).GT.0)THEN
+                  IF(IUZFBND(J,I).GT.0) THEN
+                    RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
+     1                     COLD(J,I,K,ICOMP)
+                  ELSE
+                    RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                     *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
                   ENDIF
                 ELSE
-                  IF(UPDLHS)
-     1            A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
-!     1                 *RETA(N,ICOMP)
+                  IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
+                    IF(IALTFM.EQ.2) THEN
+                     RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                       *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                    ELSEIF(IALTFM.EQ.3) THEN
+                     RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                       *COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                    ENDIF
+                  ELSE
+                    IF(UPDLHS)
+     1                A(N)=A(N)+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+                  ENDIF
                 ENDIF
-              ENDIF
               ELSE
                 IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
                   IF(IDRY2.EQ.1) THEN
 CC-----------STORAGE
-                  QC7(J,I,K,7)=-QSTO(J,I,K)
-     1            *DH(J,I,K)*DELR(J)*DELC(I)
-     1            *RETA(J,I,K,ICOMP)*COLDFLW(J,I,K,ICOMP)
-                  QC7(J,I,K,8)=-QSTO(J,I,K)
-     1            *DH(J,I,K)*DELR(J)*DELC(I)
-     1            *RETA(J,I,K,ICOMP)
+                    QC7(J,I,K,7)=-QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
+     1                           *RETA(J,I,K,ICOMP)*COLDFLW(J,I,K,ICOMP)
+                    QC7(J,I,K,8)=-QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
+     1                           *RETA(J,I,K,ICOMP)
                   ENDIF
                 ENDIF
               ENDIF
@@ -472,10 +462,9 @@ C--(RECHARGE)
      1            RECH(J,I)*ABS(VOLAQU)
                 ELSE
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
-     1            RECH(J,I)*ABS(VOLAQU)*
-     1            CRCH(J,I,ICOMP)
+     1                             RECH(J,I)*ABS(VOLAQU)*CRCH(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
-     1            RECH(J,I)*ABS(VOLAQU)
+     1                             RECH(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
