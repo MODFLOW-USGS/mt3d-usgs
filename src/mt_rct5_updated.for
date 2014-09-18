@@ -622,7 +622,7 @@ C last modified: 10-01-2005
 C
       USE RCTMOD
       USE UZTVARS,       ONLY: THETAW
-      USE MT3DMS_MODULE, ONLY: iUnitTRNOP
+      USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2
 C                     
       IMPLICIT     NONE
       INTEGER      NCOL,NROW,NLAY,ICBUND,ISOTHM,IREACT,J,I,K,
@@ -656,6 +656,8 @@ C--1. LINEAR EQUILIBRIUM...
                 ENDIF
               ELSE
                 RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
+                IF(IALTFM.EQ.3)
+     1          RETA(J,I,K)=1.+RHOB(J,I,K)/THETAW2(J,I,K)*SP1(J,I,K)
               ENDIF            
               RFMIN=MIN(RFMIN,RETA(J,I,K))
               SRCONC(J,I,K)=SP1(J,I,K)*CNEW(J,I,K)
@@ -1658,6 +1660,33 @@ C
 C
       IF(ISOTHM.EQ.1.OR.ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
         CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),THETAW,
+     &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
+     &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
+     &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &   SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+      ENDIF
+C
+C--RETURN
+      RETURN
+      END
+C
+      SUBROUTINE RCT1CF3(ICOMP,DTRANS)
+C ********************************************************************
+C THIS SUBROUTINE UPDATES NONLINEAR REACTION COEFFICIENTS.
+C ********************************************************************
+C last modified: 02-15-2005
+C
+      USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
+     &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
+     &                         RETA2,FRAC,SRCONC,ISOTHM,IREACT,
+     &                         CNEW,THETAW2                                 !edm
+C
+      IMPLICIT  NONE
+      INTEGER   ICOMP
+      REAL      DTRANS
+C
+      IF(ISOTHM.EQ.1.OR.ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
+        CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),THETAW2,
      &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
      &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,

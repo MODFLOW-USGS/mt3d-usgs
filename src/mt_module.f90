@@ -1,3 +1,50 @@
+    MODULE DSSL
+        INTEGER,          SAVE,                      POINTER :: IHSSOUT
+        INTEGER,          SAVE,                      POINTER :: MAXDSSL
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSL
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSLCOMP
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: NSLDPHS
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISA
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: CONVMOL
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSLDOM
+        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: MANION
+        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: MCATION
+        REAL,             SAVE, DIMENSION(:),        POINTER :: ALDSSL
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: SOLU
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: RNEUTRATE
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: SSA
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: WGHTMOL
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: POWR
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: POWR2
+        REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: CRESNEW
+        REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: CRESOLD
+        REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: CRESINIT
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CSOLNEW
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CSOLOLD
+      CONTAINS
+      SUBROUTINE MEMDEALLOCATE_DSSL()
+        IF(ASSOCIATED(IDSSL))       DEALLOCATE(IDSSL)
+        IF(ASSOCIATED(IDSSLCOMP))   DEALLOCATE(IDSSLCOMP)
+        IF(ASSOCIATED(NSLDPHS))     DEALLOCATE(NSLDPHS)
+        IF(ASSOCIATED(ISA))         DEALLOCATE(ISA)
+        IF(ASSOCIATED(CONVMOL))     DEALLOCATE(CONVMOL)
+        IF(ASSOCIATED(IDSSLDOM))    DEALLOCATE(IDSSLDOM)
+        IF(ASSOCIATED(MANION))      DEALLOCATE(MANION)
+        IF(ASSOCIATED(MCATION))     DEALLOCATE(MCATION)
+        IF(ASSOCIATED(ALDSSL))      DEALLOCATE(ALDSSL)
+        IF(ASSOCIATED(SOLU))        DEALLOCATE(SOLU)
+        IF(ASSOCIATED(RNEUTRATE))   DEALLOCATE(RNEUTRATE)
+        IF(ASSOCIATED(SSA))         DEALLOCATE(SSA)
+        IF(ASSOCIATED(WGHTMOL))     DEALLOCATE(WGHTMOL)
+        IF(ASSOCIATED(POWR))        DEALLOCATE(POWR)
+        IF(ASSOCIATED(POWR2))       DEALLOCATE(POWR2)
+        IF(ASSOCIATED(CRESNEW))     DEALLOCATE(CRESNEW)
+        IF(ASSOCIATED(CRESOLD))     DEALLOCATE(CRESOLD)
+        IF(ASSOCIATED(CRESINIT))    DEALLOCATE(CRESINIT)
+        IF(ASSOCIATED(CSOLNEW))     DEALLOCATE(CSOLNEW)
+        IF(ASSOCIATED(CSOLOLD))     DEALLOCATE(CSOLOLD)
+      END SUBROUTINE MEMDEALLOCATE_DSSL
+    END MODULE DSSL
     MODULE MIN_SAT             !# This module comes from mt_mst.for of Vivek's code
         LOGICAL,          SAVE,                      POINTER :: DOMINSAT
         LOGICAL,          SAVE,                      POINTER :: DRYON
@@ -362,7 +409,7 @@ CONTAINS
         IF(ASSOCIATED(SDH))       DEALLOCATE(SDH)                   !edm
         IF(ASSOCIATED(IUZFBND))   DEALLOCATE(IUZFBND)               !edm
         IF(ASSOCIATED(WC))        DEALLOCATE(WC)                    !edm
-        IF(ASSOCIATED(THETAW))        DEALLOCATE(THETAW)                    !edm
+        IF(ASSOCIATED(THETAW))    DEALLOCATE(THETAW)                !edm
         IF(ASSOCIATED(UZFLX))     DEALLOCATE(UZFLX)                 !edm
         IF(ASSOCIATED(UZQSTO))    DEALLOCATE(UZQSTO)                !edm
         IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
@@ -593,6 +640,8 @@ MODULE MT3DMS_MODULE
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: SSG
 !--SSM-Vivek
         INTEGER,          SAVE,                       POINTER :: IALTFM                !# LINE 99 MAIN
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: THETAW2
+        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: SORBMASS
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: KSSZERO               !# LINE 2 SSM
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: COLDFLW
         INTEGER,          SAVE,                       POINTER :: IDRY2

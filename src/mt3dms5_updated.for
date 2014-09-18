@@ -63,6 +63,7 @@ C
      &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
      &                         IDRY2
+      USE DSSL
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
@@ -278,11 +279,12 @@ C--FOR EACH TRANSPORT STEP..............................................
             endif
 C
 C--ADVANCE ONE TRANSPORT STEP
-            CALL BTN1AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS)
+            CALL BTN1AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS,HT1)
 C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                    
             IF(iUnitTRNOP(18).GT.0) CALL LKT1AD(N)          
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD(KSTP,KPER,N)
             IF(iUnitTRNOP(7).GT.0) CALL UZT1AD(HT1,HT2,TIME1,TIME2)
+            IF(IALTFM.EQ.3) CALL THETA2AD(HT2,TIME2)
 C
 C
 C--FOR EACH COMPONENT......
@@ -312,7 +314,7 @@ C
 C--ALWAYS UPDATE MATRIX IF NONLINEAR SORPTION OR MULTICOMPONENT
               IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.1) UPDLHS=.TRUE.
               IF(NCOMP.GT.1) UPDLHS=.TRUE.
-              IF(IALTFM.EQ.2) UPDLHS=.TRUE.
+              IF(IALTFM.GE.2) UPDLHS=.TRUE.
               IF(iUnitTRNOP(6).GT.0 .OR.
      1           iUnitTRNOP(18).GT.0 .OR.
      1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.
@@ -323,7 +325,11 @@ C
 C--UPDATE COEFFICIENTS THAT VARY WITH ITERATIONS
                 IF(iUnitTRNOP(4).GT.0) THEN
                   IF(iUnitTRNOP(7).EQ.0) THEN
-                    CALL RCT1CF1(ICOMP,DTRANS)
+                    IF(IALTFM.EQ.3) THEN
+                      CALL RCT1CF3(ICOMP,DTRANS)
+                    ELSE
+                      CALL RCT1CF1(ICOMP,DTRANS)
+                    ENDIF
                   ELSE
                     CALL RCT1CF2(ICOMP,DTRANS)
                   ENDIF
@@ -338,11 +344,11 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL DSP1FM(ICOMP,ICBUND,A,CNEW)
                 IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL SSM1FM(ICOMP)
+     &           CALL SSM1FM(ICOMP,HT2,TIME1,TIME2)
                 IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL UZT1FM(ICOMP)
                 IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL HSS1FM(ICOMP,ICBUND,time1,time2)
+     &           CALL HSS1FM(ICOMP,ICBUND,time1,time2,DTRANS)
                 IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL CTS1FM(ICOMP)                        
                 IF(iUnitTRNOP(18).GT.0)                    
@@ -401,7 +407,7 @@ C
               IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL DSP1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(3).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL SSM1BD(ICOMP,DTRANS)
+     &         CALL SSM1BD(ICOMP,DTRANS,HT2,TIME1,TIME2)
               IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL UZT1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
@@ -485,6 +491,7 @@ C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE2()
       CALL MEMDEALLOCATE4()
       CALL MEMDEALLOCATE5()
+      CALL MEMDEALLOCATE_DSSL()
 C
 C--Get CPU time at the end of simulation
 C--and print out total elapsed time in seconds

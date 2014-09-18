@@ -6,6 +6,7 @@ C INTERFACE (HSS) PACKAGE.
 C ********************************************************************
 C Last modified: 02-20-2010
 C
+      USE DSSL
       USE MT3DMS_MODULE, ONLY: INHSS,IOUT,NCOL,NROW,NLAY,NCOMP,ICBUND,
      &                         DELR,DELC,XBC,YBC,
      &                         MaxHSSSource,MaxHSSCells,MaxHSSStep,
@@ -37,7 +38,7 @@ C
 C
 C--ALLOCATE
       ALLOCATE(MaxHSSSource,MaxHSSCells,MaxHSSStep,nHSSSource,iRunHSSM,
-     &         faclength,factime,facmass,IHSSGEN)
+     &         faclength,factime,facmass,IHSSGEN,MAXDSSL,IHSSOUT)
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INHSS
@@ -60,6 +61,8 @@ C--DECODE THE INPUT VARIABLES
       MaxHSSCells=ITMP
       CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,ITMP,R,IOUT,INHSS)
       MaxHSSStep=ITMP
+      CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,ITMP,R,IOUT,INHSS)
+      MAXDSSL=ITMP
       CALL URWORD(LINE,LLOC,inam1,inam2, 1,ITMP,R,IOUT,INHSS)  
       IF(LINE(inam1:inam2).EQ.'RUNHSSM') THEN
         iRunHSSM=1
@@ -97,8 +100,10 @@ C--ALLOCATE AND INITIALIZE
       ALLOCATE(iHSSLoc(MaxHSSCells,MaxHSSStep,MaxHSSSource))
       ALLOCATE(HSSData(4+MaxHSSCells,MaxHSSStep,MaxHSSSource))
       ALLOCATE(HSSNAM(MaxHSSSource))
+      ALLOCATE(IDSSL(MaxHSSSource),IDSSLCOMP(MaxHSSSource))
       iHSSLoc=0
       HSSData=0.
+      IDSSL=0
 C
 C--READ INPUT DATA
       read(inhss,*)  faclength,factime,facmass
@@ -137,12 +142,44 @@ C
 C--DECODE SOURCE DEFINITION FILE INPUT UNIT
         CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INHSS)
         inHSSFile=IU
+C--DSSL OUTPUT FILE UNIT
+        CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INHSS)
+        IHSSOUT=IU
+C
+C--DECODE THE DISSOLUTION PACKAGE OPTION
+        READ(LINE(ISTOP+1:200),*,ERR=13) IDSSL(N),IDSSLCOMP(N)
+13      CONTINUE
 C
 C--ECHO INPUT DATA
-        write(iout,20) n,HSSFileName(1:IFLEN),inHSSFile
+        write(iout,20) n,HSSFileName(1:IFLEN),inHSSFile,IHSSOUT
    20   format(/1x,'HSS Source No. ',I4.4,
      &         /1x,'Source Definition File Name: ',a,
-     &         /1x,'Source Definition File Read from Unit: ',i4)
+     &         /1x,'Source Definition File Read from Unit: ',i4,
+     &         /1x,'Output will be wrtten on Unit: ',i4)
+        IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
+21    FORMAT(1X,'DISSOLUTION FORMULATION IS INVOKED FOR FOLLOWING ',I4,
+     &           ' CELLS, ASSOCIATED WITH SPECIES ',I4)
+C
+C--GET SOURCE LOCATION FOR DISSOLUTION OPTION
+        IF(IDSSL(N).GT.0) THEN
+          IF(IDSSL(N).GT.MaxHSSCells) THEN
+            WRITE(*,*) 'IDSSL EXCEEDS MaxHSSCells',N
+            WRITE(IOUT,*) 'IDSSL EXCEEDS MaxHSSCells',N
+            STOP
+          ENDIF
+          DO NUM=1,IDSSL(N)
+            READ(inhss,*)  ksource,isource,jsource
+            iHSSLoc(num,1,n)=
+     &        (ksource-1)*ncol*nrow+(isource-1)*ncol+jsource
+            write(iout,22) ksource,isource,jsource
+          ENDDO
+C--READ DSSL INPUT FILE
+          OPEN(inHSSFile,file=HSSFileName(1:IFLEN),STATUS='OLD')
+          CALL DSSL1AR(inHSSFile,N,MaxHSSStep,nHSSSource,IOUT)
+          CLOSE(inHSSFile)
+          CYCLE
+   22   format(1x,'[Layer,Row,Column]:',3i5) !,'; Species:',i3)
+        ELSE
 C
 C--GET HSS SOURCE LOCATION AND NAME
         IF(IHSSGEN.EQ.1) THEN                                        
@@ -156,6 +193,7 @@ C--GET HSS SOURCE LOCATION AND NAME
           nSubGrid=25                                                
           READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename 
         ENDIF                                                        
+        ENDIF
         ALLOCATE (P(2,NPOINT))                                       
 C 
         HSSNAM(n)=sourcename
@@ -331,28 +369,31 @@ C--normal return
       END
 C
 C  
-      Subroutine HSS1FM(ICOMP,ICBUND,time1,time2)
+      Subroutine HSS1FM(ICOMP,ICBUND,time1,time2,DTRANS)
 C **********************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE HSS SOURCE
 C TERM UNDER THE IMPLICIT FINITE-DIFFERENCE METHOD.
 C **********************************************************************          
 C last modified: 02-20-2010
 C
+      USE DSSL
       USE MIN_SAT, ONLY : QC7
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,MIXELM,UPDLHS,
      &                        MaxHSSSource,MaxHSSStep,MaxHSSCells,
      &                        nHSSSource,HSSData,iHSSLoc,
-     &                        A,RHS,NODES,IDRY2
+     &                        A,RHS,NODES,IDRY2,DELR,DELC,DH,PRSITY,
+     &                        COLD,CNEW
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,ICBUND,is,it,icell,IGRID,
      &          N,iStep,iHSSComp
-      INTEGER K,I,J
-      REAL      ctmp,ctmp1,ctmp2,tstart,tend,time1,time2
+      INTEGER K,I,J,NUM
+      REAL      ctmp,ctmp1,ctmp2,tstart,tend,time1,time2,DTRANS,RSOL
       DIMENSION ICBUND(NODES,NCOMP)
 C
 C--FORMULATE [RHS] MATRIX FOR EULERIAN & EULERIAN-LAGRANGIAN SCHEMES     
       DO is=1,nHSSSource     
+        IF(IDSSL(is).EQ.0) THEN
 c
         iHSSComp=int(HSSData(4,1,is))
         if(iHSSComp.ne.ICOMP) cycle               
@@ -382,6 +423,19 @@ c--add contribution to [RHS] if ctmp is positive
 C
           ENDIF
         ENDDO         
+        ELSE
+C
+C--DISSOLUTION FORMULATION
+          iHSSComp=IDSSLCOMP(is)
+          if(iHSSComp.ne.ICOMP) cycle               
+          DO NUM=1,IDSSL(is)
+            N=iHSSLoc(num,1,is)
+            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+            IF(ICBUND(N,ICOMP).le.0) CYCLE
+            CALL DSSL1FM(DTRANS,RSOL,IS,NUM,ICOMP)
+            RHS(N)=RHS(N)-RSOL*(DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K))
+          ENDDO
+        ENDIF
 C
       ENDDO        
 C
@@ -397,21 +451,25 @@ C SOURCE TERM.
 C **********************************************************************          
 C last modified: 02-20-2010
 C
+      USE DSSL
       USE MIN_SAT, ONLY: QC7
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,NODES,RMASIO,
      &                         MaxHSSSource,MaxHSSCells,MaxHSSStep,
      &                         nHSSSource,iRunHSSM,faclength,factime,
-     &                         facmass,iHSSLoc,HSSData,HSSNAM,IDRY2
+     &                         facmass,iHSSLoc,HSSData,HSSNAM,IDRY2,
+     &                         DELR,DELC,DH,PRSITY,
+     &                        COLD,CNEW
 C
       IMPLICIT  NONE      
       INTEGER   ICOMP,ICBUND,is,it,icell,N,iStep,IGRID,
      &          iHSSComp,IQ    !IQ is iSSType for HSS source
-      INTEGER K,I,J
-      REAL      DTRANS,ctmp,ctmp1,ctmp2,tstart,tend,time1,time2
+      INTEGER K,I,J,NUM,IPHS,II
+      REAL      DTRANS,ctmp,ctmp1,ctmp2,tstart,tend,time1,time2,RSOL
       DIMENSION ICBUND(NODES,NCOMP)
 C
 C--LOOP over all HSS_LNAPL sources
         DO is=1,nHSSSource               
+          IF(IDSSL(is).EQ.0) THEN
 c	  
           iHSSComp=int(HSSData(4,1,is))
 	        if(iHSSComp.ne.ICOMP) cycle            
@@ -443,7 +501,31 @@ c
             ENDIF
           ENDDO
 C
+          ELSE
+C
+C--DISSOLUTION FORMULATION
+          iHSSComp=IDSSLCOMP(is)
+          if(iHSSComp.ne.ICOMP) cycle               
+          DO NUM=1,IDSSL(is)
+            N=iHSSLoc(num,1,is)
+            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+            IF(ICBUND(N,ICOMP).GT.0) THEN
+              CALL DSSL1BD(DTRANS,RSOL,IS,NUM,time2,ICOMP)
+              RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+
+     1        RSOL*DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)*DTRANS
+            ENDIF
+C
+C--WRITE MINERAL, CATION, AND ANION CONC
+            IF(IHSSOUT.GT.0) 
+     &      WRITE(IHSSOUT,10) time2,IS,K,I,J,
+     &      ((CRESNEW(IPHS,II,NUM,IS),IPHS=1,NSLDPHS(IS)),
+     &      II=1,2),CSOLNEW(NUM,IS)
+          ENDDO
+          CRESOLD(:,:,:,IS)=CRESNEW(:,:,:,IS)
+          CSOLOLD(:,IS)=CSOLNEW(:,IS)
+          ENDIF
         ENDDO  
+10    FORMAT(1X,1PG13.5,1X,4(I4,1X),100(1PG13.5,2X))
 C
 C--RETURN
       RETURN
@@ -765,4 +847,278 @@ C      OUTPUT UNIT FOR PRINTED MESSAGES
    2  CONTINUE                                                          
       RETURN                                                            
       END                                                               
-
+C
+C
+      SUBROUTINE DSSL1AR(IN,N,MaxHSSStep,nHSSSource,IOUT)
+C***********************************************************************
+C ALLOCATE DISSOLUTION RELATED PARAMETERS
+C***********************************************************************
+      USE DSSL
+      USE MT3DMS_MODULE, ONLY: iHSSLoc,NLAY,NROW,NCOL
+      INTEGER IN,N,MaxHSSStep,nHSSSource
+      CHARACTER*13, ALLOCATABLE :: TEXT(:),TEXT2(:),TEXT3(:)
+      CHARACTER*13 DASH
+C
+      DASH='-------------'
+C
+      IF(.NOT.ASSOCIATED(NSLDPHS)) THEN
+        ALLOCATE(NSLDPHS(nHSSSource),ISA(nHSSSource),
+     &  CONVMOL(nHSSSource),IDSSLDOM(nHSSSource),ALDSSL(nHSSSource))
+        ALLOCATE(SOLU(MaxHSSStep,nHSSSource),
+     &  RNEUTRATE(MaxHSSStep,nHSSSource),SSA(MaxHSSStep,nHSSSource),
+     &  WGHTMOL(MaxHSSStep,nHSSSource))
+        ALLOCATE(POWR(MaxHSSStep,nHSSSource),
+     &  POWR2(MaxHSSStep,nHSSSource))
+        ALLOCATE(CRESNEW(MaxHSSStep,3,MAXDSSL,nHSSSource),
+     &  CRESOLD(MaxHSSStep,3,MAXDSSL,nHSSSource),
+     &  CRESINIT(MaxHSSStep,3,MAXDSSL,nHSSSource),
+     &  CSOLNEW(MAXDSSL,nHSSSource),CSOLOLD(MAXDSSL,nHSSSource))
+        ALLOCATE(MANION(MaxHSSStep,nHSSSource),
+     &  MCATION(MaxHSSStep,nHSSSource))
+        ALLOCATE(TEXT(MaxHSSStep),TEXT2(MaxHSSStep),TEXT3(MaxHSSStep))
+        DO I=1,MaxHSSStep
+          WRITE(TEXT(I),'(A8,I5)') 'SPECIES ',I
+        ENDDO
+        CRESOLD=0.
+        CRESNEW=0.
+        CSOLNEW=0.
+        CSOLOLD=0.
+      ENDIF
+C
+C--READ DISSOLUTION PARAMETERS
+      READ(IN,*) NSLDPHS(N),ISA(N),CONVMOL(N),IDSSLDOM(N),ALDSSL(N)
+      NS=NSLDPHS(N)
+      IF(NS.GT.MaxHSSStep) THEN
+        WRITE(*,*) 'NSLDPHS EXCEEDS MaxHSSStep'
+        WRITE(IOUT,*) 'NSLDPHS EXCEEDS MaxHSSStep'
+        STOP
+      ENDIF
+      READ(IN,*) (MCATION(I,N),I=1,NS)
+      READ(IN,*) (MANION(I,N),I=1,NS)
+      READ(IN,*) (WGHTMOL(I,N),I=1,NS)
+      READ(IN,*) (SOLU(I,N),I=1,NS)
+      READ(IN,*) (RNEUTRATE(I,N),I=1,NS)
+      READ(IN,*) (SSA(I,N),I=1,NS)
+      READ(IN,*) (POWR(I,N),I=1,NS)
+      READ(IN,*) (POWR2(I,N),I=1,NS)
+      DO II=1,3
+        DO NUM=1,IDSSL(N)
+          READ(IN,*) (CRESOLD(I,II,NUM,N),I=1,NS)
+          IF(II.EQ.3) THEN
+            DO I=1,NS
+              CSOLOLD(NUM,N)=CSOLOLD(NUM,N)+CRESOLD(I,II,NUM,N)
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDDO
+      CRESINIT(:,:,:,N)=CRESOLD(:,:,:,N)
+      CRESNEW(:,:,:,N)=CRESOLD(:,:,:,N)
+      CSOLNEW(:,N)=CSOLOLD(:,N)
+C
+C--PERFORM CHECKS
+      IF(IDSSLDOM(N).LT.1.OR.IDSSLDOM(N).GT.2) THEN
+        WRITE(IOUT,*) 'IDSSLDOM(N) MUST BE 1 OR 2'
+        WRITE(*,*) 'IDSSLDOM(N) MUST BE 1 OR 2'
+        READ(*,*)
+        STOP
+      ENDIF
+C
+C--ECHO TO OUTPUT FILE
+      WRITE(IOUT,12) NSLDPHS(N),ISA(N),CONVMOL(N),IDSSLDOM(N),ALDSSL(N)
+      WRITE(IOUT,10) 'DISSOLUTION PARAMETERS',(TEXT(I),I=1,NS)
+      WRITE(IOUT,11) (DASH,I=1,NS)
+      WRITE(IOUT,13) '     NUMBER OF CATIONS',(MCATION(I,N),I=1,NS)
+      WRITE(IOUT,13) '      NUMBER OF ANIONS',(MANION(I,N),I=1,NS)
+      WRITE(IOUT,14) 'MOLECULAR WGHT (g/mol)',(WGHTMOL(I,N),I=1,NS)
+      WRITE(IOUT,14) 'EQUILIB CONST. (mol/l)',(SOLU(I,N),I=1,NS)
+      WRITE(IOUT,14) '  NEUT RATE (mol/L2/T)',(RNEUTRATE(I,N),I=1,NS)
+      WRITE(IOUT,14) 'SPEC SURFACE AREA (L2)',(SSA(I,N),I=1,NS)
+      WRITE(IOUT,14) ' SURFACE AREA EXPONENT',(POWR(I,N),I=1,NS)
+      WRITE(IOUT,14) '  EQUILIBRIUM EXPONENT',(POWR2(I,N),I=1,NS)
+      WRITE(IOUT,*) 'INITIAL CONCENTRATION (mol/l):'
+      DO NUM=1,IDSSL(N)
+        NODE=iHSSLoc(num,1,n)
+        CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+        WRITE(IOUT,15) 'MINERAL CONC [K,I,J] ',K,I,J,
+     &  (CRESOLD(I,1,NUM,N),I=1,NS)
+      ENDDO
+      DO NUM=1,IDSSL(N)
+        NODE=iHSSLoc(num,1,n)
+        CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+        WRITE(IOUT,15) ' CATION CONC [K,I,J] ',K,I,J,
+     &  (CRESOLD(I,2,NUM,N),I=1,NS)
+      ENDDO
+      DO NUM=1,IDSSL(N)
+        NODE=iHSSLoc(num,1,n)
+        CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+        WRITE(IOUT,15) '  ANION CONC [K,I,J] ',K,I,J,
+     &  (CRESOLD(I,3,NUM,N),I=1,NS)
+      ENDDO
+10    FORMAT(/9X,A,7X,100(A,2X))
+11    FORMAT(1X,30('-'),7X,100(A,2X))
+12    FORMAT(/1X,'NUMBER OF SPECIES:                   ',I3,
+     &       /1X,'OPTION FOR SURFACE AREA CALCULATION: ',I3,
+     &       /1X,'MOLES TO MASS UNITS MULTIPLIER:      ',1PG13.5,
+     &       /1X,'MASS FORMULATION OPTION (IDSSLDOM):  ',I3,
+     &       /1X,' = 1 DIRECT IMPLEMENTATION INTO MOBILE DOMAIN',
+     &       /1X,' = 2 MASS TRANSFER RATE',
+     &       /1X,'MASS TRANSFER RATE COEFFICIENT:      ',1PG13.5,
+     &       /1X,' (READ BUT USED ONLY IF IDSSLDOM=1)')
+13    FORMAT(9X,A,7X,100(I13,2X))
+14    FORMAT(9X,A,7X,100(1PG13.5,2X))
+15    FORMAT(1X,A,'[',I4,',',I4,',',I4,']',100(1PG13.5,2X))
+C
+C--WRITE HEADER AND INITIAL CONDITIONS TO HSS OUTPUT FILE
+      TEXT=''
+      TEXT2=''
+      TEXT3=''
+      DO IPHS=1,NSLDPHS(N)
+        WRITE(TEXT(IPHS),'(A9,I0)') 'MINERAL_C',IPHS
+        WRITE(TEXT2(IPHS),'(A9,I0)') 'CATION_C',IPHS
+        WRITE(TEXT3(IPHS),'(A9,I0)') 'ANION_C',IPHS
+      ENDDO
+      IF(IHSSOUT.GT.0) THEN
+        WRITE(IHSSOUT,21) ' TIME','SRC#','LAY','ROW','COL',
+     &  (TRIM(TEXT(I)),I=1,NS),(TRIM(TEXT2(I)),I=1,NS),
+     &  'RESERVOIR_CON'
+C     &  (TRIM(TEXT3(I)),I=1,NS)
+      DO NUM=1,IDSSL(N)
+        NODE=iHSSLoc(NUM,1,n)
+        CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+        WRITE(IHSSOUT,20) 0.0,N,K,I,J,
+     &  ((CRESOLD(IPHS,II,NUM,N),IPHS=1,NSLDPHS(N)),
+     &  II=1,2),CSOLOLD(NUM,N)
+      ENDDO
+      ENDIF
+20    FORMAT(1X,1PG13.5,1X,4(I4,1X),100(1PG13.5,2X))
+21    FORMAT(1X,A13,1X,4(A5),100(A13,2X))
+C
+      RETURN
+      END SUBROUTINE
+C
+C
+      SUBROUTINE DSSL1FM(DT,RSOL,N,IC,ICOMP)
+C***********************************************************************
+C FORMULATE FOR DISSOLUTION
+C***********************************************************************
+! SOLU            = equilibrium constant (moles/liter)
+! RNEUTRATE       = neutral reaction rate (moles/m^2/day) --> use consistent time units with DT
+! SSA             = specific surface area (m^2)
+! WGHTMOL         = molecular weight (grams/mole)
+! POWR            = exponent for a power function (-)
+! DT              = time step length (day)
+! CRESNEW(iphs,i) = reservoir concentration for species iphs
+!                   index i=1 is the species concentration, eg. BaCrO4
+!                   index i=2 is the cation concentration, eg. Ba++
+!                   index i=3 is the anion concentration, eg. CrO4--
+      USE DSSL
+      USE MT3DMS_MODULE, ONLY: iHSSLoc,NLAY,NROW,NCOL,CNEW,COLD
+      REAL DT,DC,RSOL
+!
+      NODE=iHSSLoc(IC,1,N)
+      CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+      IF(IDSSLDOM(N).EQ.1) THEN
+        CTOT=COLD(J,I,K,ICOMP)/CONVMOL(N)
+      ELSEIF(IDSSLDOM(N).EQ.2) THEN
+        CTOT=CSOLOLD(IC,N)/CONVMOL(N)
+      ENDIF
+      DC=0.
+      DO IPHS=1,NSLDPHS(N)
+        Q=(CRESOLD(IPHS,2,IC,N)**MCATION(IPHS,N))*(CTOT**MANION(IPHS,N))
+        SR=Q/SOLU(IPHS,N)
+        RN=RNEUTRATE(IPHS,N)*(1.-(SR**POWR2(IPHS,N)))
+        IF(RN.LT.0.) RN=0.
+        IF(ISA(N).EQ.1) THEN
+          SA=SSA(IPHS,N)*WGHTMOL(IPHS,N)*
+     &    (CRESOLD(IPHS,1,IC,N)**POWR(IPHS,N))
+        ELSE
+          IF(CRESINIT(IPHS,1,IC,N).LE.1.0E-6) THEN
+            SA=0.
+          ELSE
+           SA=SSA(IPHS,N)*
+     &     ((CRESOLD(IPHS,1,IC,N)/CRESINIT(IPHS,1,IC,N))**POWR(IPHS,N))
+          ENDIF
+        ENDIF
+        R=SA*RN
+        DEL=R*DT
+        DC=DC+MIN(CRESOLD(IPHS,1,IC,N),DEL)*MANION(IPHS,N)
+      ENDDO
+!
+!-- moles/l CONVERT TO CONC UNITS
+      IF(IDSSLDOM(N).EQ.1) THEN
+        RSOL=DC*CONVMOL(N)/DT
+      ELSEIF(IDSSLDOM(N).EQ.2) THEN
+        CSOLTMP=CSOLOLD(IC,N)+DC*CONVMOL(N)
+        RSOL=ALDSSL(N)*(CSOLTMP-COLD(J,I,K,ICOMP))
+        IF(RSOL.LT.0.) RSOL=0.
+      ENDIF
+!
+      RETURN
+      END
+!---------------------------------------------------------------
+      SUBROUTINE DSSL1BD(DT,RSOL,N,IC,time2,ICOMP)
+C***********************************************************************
+C CALCULATE BUDGET FOR DISSOLUTION
+C***********************************************************************
+! SOLU            = equilibrium constant (moles/liter)
+! RNEUTRATE       = neutral reaction rate (moles/m^2/day) --> use consistent time units with DT
+! SSA             = specific surface area (m^2)
+! WGHTMOL         = molecular weight (grams/mole)
+! POWR            = exponent for a power function (-)
+! DT              = time step length (day)
+! CRESNEW(iphs,i) = reservoir concentration for species iphs
+!                   index i=1 is the species concentration, eg. BaCrO4
+!                   index i=2 is the cation concentration, eg. Ba++
+!                   index i=3 is the anion concentration, eg. CrO4--
+      USE DSSL
+      USE MT3DMS_MODULE, ONLY: iHSSLoc,NLAY,NROW,NCOL,CNEW,COLD
+      REAL DT,DC,RSOL
+!
+      NODE=iHSSLoc(IC,1,N)
+      CALL NODE2KIJ(NODE,NLAY,NROW,NCOL,K,I,J)
+      IF(IDSSLDOM(N).EQ.1) THEN
+        CTOT=COLD(J,I,K,ICOMP)/CONVMOL(N)
+      ELSEIF(IDSSLDOM(N).EQ.2) THEN
+        CTOT=CSOLOLD(IC,N)/CONVMOL(N)
+      ENDIF
+      DC=0.
+      DO IPHS=1,NSLDPHS(N)
+        Q=(CRESOLD(IPHS,2,IC,N)**MCATION(IPHS,N))*(CTOT**MANION(IPHS,N))
+        SR=Q/SOLU(IPHS,N)
+        RN=RNEUTRATE(IPHS,N)*(1.-(SR**POWR2(IPHS,N)))
+        IF(RN.LT.0.) RN=0.
+        IF(ISA(N).EQ.1) THEN
+          SA=SSA(IPHS,N)*WGHTMOL(IPHS,N)*
+     &    (CRESOLD(IPHS,1,IC,N)**POWR(IPHS,N))
+        ELSE
+          IF(CRESINIT(IPHS,1,IC,N).LE.1.0E-6) THEN
+            SA=0.
+          ELSE
+           SA=SSA(IPHS,N)*
+     &     ((CRESOLD(IPHS,1,IC,N)/CRESINIT(IPHS,1,IC,N))**POWR(IPHS,N))
+          ENDIF
+        ENDIF
+        R=SA*RN
+        DEL=R*DT
+        DC=DC+MIN(CRESOLD(IPHS,1,IC,N),DEL)*MANION(IPHS,N)
+        DC2=MIN(CRESOLD(IPHS,1,IC,N),DEL)*MCATION(IPHS,N)
+        DC3=MIN(CRESOLD(IPHS,1,IC,N),DEL)*MANION(IPHS,N)
+        CRESNEW(IPHS,1,IC,N)=CRESOLD(IPHS,1,IC,N)-
+     &  MIN(CRESOLD(IPHS,1,IC,N),DEL)
+        CRESNEW(IPHS,2,IC,N)=CRESOLD(IPHS,2,IC,N)+DC2
+!        CRESNEW(IPHS,3,IC,N)=CRESOLD(IPHS,3,IC,N)+DC3
+      ENDDO
+!
+!-- moles/l CONVERT TO CONC UNITS
+      IF(IDSSLDOM(N).EQ.1) THEN
+        RSOL=DC*CONVMOL(N)/DT
+      ELSEIF(IDSSLDOM(N).EQ.2) THEN
+        CSOLTMP=CSOLOLD(IC,N)+DC*CONVMOL(N)
+        RSOL=ALDSSL(N)*(CSOLTMP-COLD(J,I,K,ICOMP))
+        IF(RSOL.LT.0.) RSOL=0.
+        CSOLNEW(IC,N)=CSOLOLD(IC,N)+DC*CONVMOL(N)-RSOL*DT
+      ENDIF
+!
+      RETURN
+      END
+!---------------------------------------------------------------

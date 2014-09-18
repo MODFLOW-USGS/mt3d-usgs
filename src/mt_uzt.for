@@ -590,6 +590,37 @@ C
 C--RETURN
       RETURN
       END
+C
+      SUBROUTINE THETA2AD(HT,TIME)
+C ********************************************************************
+C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
+C ********************************************************************
+C
+      USE MT3DMS_MODULE, ONLY: NLAY,NCOL,NROW,PRSITY,THETAW2,ICBUND,
+     1  DELR,DELC,DH,QSTO,DZ
+C
+      INTEGER K,I,J
+      REAL HT,TIME
+      REAL SAT
+C
+      DO K=1,NLAY
+        DO I=1,NROW
+          DO J=1,NCOL
+            N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
+            IF(ICBUND(J,I,K,1).LE.0) CYCLE
+            VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
+     &                *QSTO(J,I,K)/PRSITY(J,I,K)*(HT-TIME)
+            VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+            VOL=MIN(VOL,VCELL)
+C
+            THETAW2(J,I,K)=VOL*PRSITY(J,I,K)/VCELL
+          ENDDO
+        ENDDO
+      ENDDO
+C
+C--RETURN
+      RETURN
+      END
 
 
 

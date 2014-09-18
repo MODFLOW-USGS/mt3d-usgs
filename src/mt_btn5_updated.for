@@ -1093,7 +1093,7 @@ C
 C
 C
       SUBROUTINE BTN1AD(NTRANS,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,
-     &                  NPS)
+     &                  NPS,HT1)
 C **********************************************************************
 C THIS SUBROUTINE ADVANCES THE TRANSPORT SIMULATION ONE STEP,
 C DETERMINING THE STEPSIZE TO BE USED AND WHETHER PRINTOUT IS REQUIRED
@@ -1112,13 +1112,14 @@ C
      &                         RHOB,RETA,PRSITY2,RETA2,ISOTHM,TMASIO,
      &                         RMASIO,TMASS,
      &                         iUnitTRNOP,IDRY2,COLDFLW,
-     &                         IALTFM,QSTO,ISOTHM,SP1,DZ
+     &                         IALTFM,QSTO,ISOTHM,SP1,DZ,THETAW2,
+     &                         SORBMASS
       USE MIN_SAT, ONLY: ICIMDRY
 C
       IMPLICIT  NONE
       INTEGER   NTRANS,KSTP,NPS,INDEX,K,I,J,KPER
       REAL      TIME1,TIME2,HT2,DELT,DTOLD,CMML,CMMS,CIML,CIMS,
-     &          VOLUME,EPSILON,TEMP,TTMP,DTRANS,VCELL
+     &          VOLUME,EPSILON,TEMP,TTMP,DTRANS,VCELL,HT1
       DIMENSION TEMP(4)
       PARAMETER (EPSILON=0.5E-6)
 C
@@ -1241,6 +1242,16 @@ C--AT NEXT TRANSPORT STEP
 C
 C--CALCAULTE TOTAL MASS IN AQUIFER AT THE FIRST TRANSPORT STEP
       IF(NTRANS.GT.1) GOTO 9999
+      IF(IALTFM.EQ.3) CALL THETA2AD(HT2,TIME1)
+      DO INDEX=1,NCOMP
+        IF(iUnitTRNOP(4).GT.0) THEN
+          IF(iUnitTRNOP(7).EQ.0) THEN
+            IF(IALTFM.EQ.3) THEN
+              CALL RCT1CF3(INDEX,DTRANS)
+            ENDIF
+          ENDIF
+        ENDIF
+      ENDDO
 C
 C--1: MOBILE-LIQUID   (MML) PHASE
 C--2: MOBILE-SORBED   (MMS) PHASE
@@ -1282,12 +1293,23 @@ C
                   CIMS=0.
                   IF(ISOTHM.EQ.1) THEN
                     CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                   *COLD(J,I,K,INDEX)*VCELL
                   ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                     CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
+                    IF(IALTFM.EQ.3)
+     1              CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VCELL
                   ELSEIF(ISOTHM.GT.4) THEN
                     CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                   *COLD(J,I,K,INDEX)*VCELL
                     CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
                     CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
+                  ENDIF
+                  IF(IALTFM.EQ.5) THEN
+                    CMMS=CMMS+SORBMASS(J,I,K,INDEX)
                   ENDIF
                 ENDIF
               ELSE
@@ -1303,12 +1325,23 @@ C
                 CIMS=0.
                 IF(ISOTHM.EQ.1) THEN
                   CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                   *COLD(J,I,K,INDEX)*VCELL
                 ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                   CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
+                    IF(IALTFM.EQ.3)
+     1              CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VCELL
                 ELSEIF(ISOTHM.GT.4) THEN
                   CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                   *COLD(J,I,K,INDEX)*VCELL
                   CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
                   CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
+                ENDIF
+                IF(IALTFM.EQ.5) THEN
+                  CMMS=CMMS+SORBMASS(J,I,K,INDEX)
                 ENDIF
               ENDIF
 C
@@ -1396,7 +1429,7 @@ C
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
      &                         ISS,iUnitTRNOP,
      &                         IALTFM,QSTO,ISOTHM,SP1,COLDFLW,
-     &                         IDRY2,DZ 
+     &                         IDRY2,DZ,THETAW2,SORBMASS
       USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7,
      1  VAQSAT,ICIMDRY    
       USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG 
@@ -1416,7 +1449,7 @@ C--FOR THE CURRENT TRANSPORT STEP
           DO J=1,NCOL
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
-                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
+                IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
                 VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
      &              *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
                 VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
@@ -1572,12 +1605,23 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
                 CIMS=0.
                 IF(ISOTHM.EQ.1) THEN
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
+     1                   *CNEW(J,I,K,ICOMP)*VCELL
                 ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                   CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
+                    IF(IALTFM.EQ.3)
+     1              CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VCELL
                 ELSEIF(ISOTHM.GT.4) THEN
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
+     1                   *CNEW(J,I,K,ICOMP)*VCELL
                   CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
                   CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+                ENDIF
+                IF(IALTFM.EQ.5) THEN
+                  CMMS=CMMS+SORBMASS(J,I,K,ICOMP)
                 ENDIF
               ENDIF
             ELSE
@@ -1591,12 +1635,23 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
               CIMS=0.
               IF(ISOTHM.EQ.1) THEN
                 CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
+     1                   *CNEW(J,I,K,ICOMP)*VCELL
               ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                 CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
+                    IF(IALTFM.EQ.3)
+     1              CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VCELL
               ELSEIF(ISOTHM.GT.4) THEN
                 CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
+                    IF(IALTFM.EQ.3)
+     1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
+     1                   *CNEW(J,I,K,ICOMP)*VCELL
                 CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
                 CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+              ENDIF
+              IF(IALTFM.EQ.5) THEN
+                CMMS=CMMS+SORBMASS(J,I,K,ICOMP)
               ENDIF
             ENDIF
             ELSE
@@ -1991,7 +2046,7 @@ C
 C            
             ELSE
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
-                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
+                IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
                   VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)*
      &                QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
@@ -2076,7 +2131,7 @@ C--IF INACTIVE OR CONSTANT CELL
      &                 *VOL
                 ENDIF
               ELSE
-                IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
+                IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
                   VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)
      &                *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)

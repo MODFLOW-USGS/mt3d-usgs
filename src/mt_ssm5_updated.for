@@ -353,7 +353,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SSM1FM(ICOMP)
+      SUBROUTINE SSM1FM(ICOMP,HT2,TIME1,TIME2)
 C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
@@ -371,12 +371,14 @@ C
      &                         FSWT,FSFR,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
      &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,
-     &                         IDRY2
+     &                         IDRY2,PRSITY,DZ,SORBMASS
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
      &          MHOST,KHOST,IHOST,JHOST
-      REAL      CTMP,QSS,QCTMP,VOLAQU
+      REAL      CTMP,QSS,QCTMP,VOLAQU,VOL1,VOL2,VCELL,VUNSAT1,VUNSAT2,
+     &          FRAC
+      REAL HT2,TIME1,TIME2
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
@@ -409,10 +411,44 @@ C--TRANSIENT FLUID STORAGE TERM
      1                     *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
                   ENDIF
                 ELSE
-                  IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) THEN
-                    IF(IALTFM.EQ.2) THEN
-                     RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+                  IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                    IF(IALTFM.EQ.2.OR.IALTFM.EQ.4.OR.IALTFM.EQ.5) THEN
+                      RHS(N)=RHS(N)
+     1                       -QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
      1                       *RETA(J,I,K,ICOMP)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+C...................ADD TERM FOR M_GAIN/M_LOSS
+                      IF(IALTFM.EQ.2)THEN
+                        IF(QSTO(J,I,K).GT.0) THEN
+                          RHS(N)=RHS(N)
+     1                       +QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                       *(RETA(J,I,K,ICOMP)-1.)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                        ELSE
+                          A(N)=A(N)
+     1                       -QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                       *(RETA(J,I,K,ICOMP)-1.)
+                        ENDIF
+                      ENDIF
+C...................ADD TERM FOR M_GAIN/M_LOSS FROM SORBMASS
+                      IF(IALTFM.EQ.5) THEN
+                        IF(QSTO(J,I,K).GT.0) THEN !FALLING HEAD
+                          RHS(N)=RHS(N)
+     1                       +QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                       *(RETA(J,I,K,ICOMP)-1.)*COLD(J,I,K,ICOMP) !*DELT/DTRANS
+                        ELSE  !RISING HEAD
+                          VOL2=DELR(J)*DELC(I)*DH(J,I,K) +
+     &                      DELR(J)*DELC(I)*DH(J,I,K)
+     &                      *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                          VOL1=DELR(J)*DELC(I)*DH(J,I,K) +
+     &                      DELR(J)*DELC(I)*DH(J,I,K)
+     &                      *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME1)
+                          VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                          VUNSAT1=MAX(0.0,VCELL-VOL1)
+                          VUNSAT2=MAX(0.0,VCELL-VOL2)
+                          FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                          RHS(N)=RHS(N)
+     1                       -SORBMASS(J,I,K,ICOMP)*FRAC/DTRANS
+                        ENDIF
+                      ENDIF
                     ELSEIF(IALTFM.EQ.3) THEN
                      RHS(N)=RHS(N)-QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
      1                       *COLD(J,I,K,ICOMP) !*DELT/DTRANS
@@ -741,7 +777,7 @@ C--RETURN
       END
 C
 C
-      SUBROUTINE SSM1BD(ICOMP,DTRANS)
+      SUBROUTINE SSM1BD(ICOMP,DTRANS,HT2,TIME1,TIME2)
 C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH ALL SINK/
 C SOURCE TERMS.
@@ -758,11 +794,14 @@ C
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                        FSFR,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT,
-     &                        iUnitTRNOP,DELT,COLDFLW,IDRY2
+     &                        iUnitTRNOP,DELT,COLDFLW,IDRY2,SORBMASS,
+     &                        PRSITY,DZ
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
-      REAL      DTRANS,CTMP,QSS,VOLAQU,RMULT
+      REAL      DTRANS,CTMP,QSS,VOLAQU,RMULT,VOL1,VOL2,VCELL,VUNSAT1,
+     &          VUNSAT2,FRAC
+      REAL      HT2,TIME1,TIME2
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
@@ -811,24 +850,56 @@ C--RECORD MASS STORAGE CHANGES FOR DISSOLVED AND SORBED PHASES
 CEDM--HAVE OMITTED VIVEK'S IALTFM OPTION BECAUSE THE OLD APPROACH
 CEDM--WAS WRONG.
 10          IF(IALTFM.GE.2) THEN
-              IF(IALTFM.EQ.2.OR.IALTFM.EQ.3) CTMP=COLD(J,I,K,ICOMP)
+              IF(IALTFM.GE.2.AND.IALTFM.LE.5) 
+     1        CTMP=COLD(J,I,K,ICOMP)
               !IF(ABS(COLD(J,I,K,ICOMP)-CINACT).LE.1.0E-3) then
               !IF(COLD(J,I,K,ICOMP).LE.1.0E-6) then
               !  CTMP=0.
               !endif
-              IF(IALTFM.EQ.2) THEN
-                RMULT=RETA(J,I,K,ICOMP)
-              ELSEIF(IALTFM.EQ.3) THEN
+              IF(IALTFM.EQ.3) THEN
                 RMULT=1.0
+              ELSE
+                RMULT=RETA(J,I,K,ICOMP)
               ENDIF
               IF(QSTO(J,I,K).GT.0) THEN
                 RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
      &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
      1                 *RMULT*DTRANS !*DELT
+                IF(IALTFM.EQ.2)
+     1          RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
+     &          -QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *(RMULT-1.)*DTRANS !*DELT
+                IF(IALTFM.EQ.5) THEN
+                RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
+     &          -QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *(RMULT-1.)*DTRANS !*DELT
+                SORBMASS(J,I,K,ICOMP)=SORBMASS(J,I,K,ICOMP)
+     1          +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *(RMULT-1.)*DTRANS
+                ENDIF
               ELSE
                 RMASIO(118,2,ICOMP)=RMASIO(118,2,ICOMP)
      &           +QSTO(J,I,K)*CTMP*DELR(J)*DELC(I)*DH(J,I,K)
      1                 *RMULT*DTRANS !*DELT
+                IF(IALTFM.EQ.2)
+     1          RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &          -QSTO(J,I,K)*CNEW(J,I,K,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                 *(RMULT-1.)*DTRANS !*DELT
+                IF(IALTFM.EQ.5) THEN
+                  VOL2=DELR(J)*DELC(I)*DH(J,I,K) +
+     &            DELR(J)*DELC(I)*DH(J,I,K)
+     &            *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                  VOL1=DELR(J)*DELC(I)*DH(J,I,K) +
+     &            DELR(J)*DELC(I)*DH(J,I,K)
+     &            *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME1)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VUNSAT1=MAX(0.0,VCELL-VOL1)
+                  VUNSAT2=MAX(0.0,VCELL-VOL2)
+                  FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                  RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
+     &                              +SORBMASS(J,I,K,ICOMP)*FRAC
+                  SORBMASS(J,I,K,ICOMP)=SORBMASS(J,I,K,ICOMP)*(1.-FRAC)
+                ENDIF
               ENDIF
             ELSE
               CTMP=CNEW(J,I,K,ICOMP)
