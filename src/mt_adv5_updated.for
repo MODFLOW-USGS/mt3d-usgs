@@ -4121,7 +4121,7 @@ C--LOOP THROUGH ALL INACTIVE CELLS
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF(J.EQ.3)THEN
+            IF(k.eq.1.and.i.eq.1.and.J.EQ.171)THEN
             CONTINUE
             ENDIF
             N=(K-1)*NCR + (I-1)*NCOL + J

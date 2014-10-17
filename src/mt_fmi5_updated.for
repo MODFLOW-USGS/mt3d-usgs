@@ -367,15 +367,21 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
+            IF(k.eq.1.and.i.eq.1.and.J.EQ.171)THEN
+            CONTINUE
+            ENDIF
               IF(ABS(DH(J,I,K)-1.E30).LT.1.E-5) THEN
                 ICBUND(J,I,K,1)=0
               ELSEIF(ICBUND(J,I,K,1).EQ.0.AND.PRSITY(J,I,K).GT.0) THEN
                 ICBUND(J,I,K,1)=30000
                 DO INDEX=1,NCOMP
+                  IF(NOCREWET.EQ.1) THEN
+                  ELSE
                   CTMP=CREWET(NCOL,NROW,NLAY,CNEW(:,:,:,INDEX),
      &                        ICBUND,XBC,YBC,ZBC,J,I,K)
                   CTMP=(COLD(J,I,K,INDEX)*(RETA(J,I,K,INDEX)-1.0)+CTMP)
      &                /RETA(J,I,K,INDEX)
+                  ENDIF
                   IF(NOCREWET.EQ.1) CTMP=0.
                   CNEW(J,I,K,INDEX)=CTMP
                   IF(MUTDRY.EQ.0) THEN
@@ -447,6 +453,9 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
+            IF(k.eq.1.and.i.eq.1.and.J.EQ.171)THEN
+            CONTINUE
+            ENDIF
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
               IF(DH(J,I,K).LE.0) THEN
                 IF(DRYON.EQ..TRUE.) THEN          
@@ -1611,6 +1620,7 @@ C (POWER 2) WEIGHTING .
 C *****************************************************************
 C last modified: 02-15-2005
 C
+      USE MIN_SAT  
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,JJ,II,KK
       REAL      XBC,YBC,ZBC,CTMP,CNEW,CREWET,D2,D2SUM
@@ -1705,7 +1715,9 @@ C--IN THE COLUMN DIRECTION
 C
 C--OBTAIN WEIGHTED CONCENTRATION
    30 IF(D2SUM.EQ.0) THEN
-        ICBUND(JJ,II,KK)=0
+        IF(DRYON.EQ..FALSE.) THEN
+          ICBUND(JJ,II,KK)=0
+        ENDIF
       ELSE
         CTMP=CTMP/D2SUM
       ENDIF
