@@ -82,7 +82,7 @@ C--the IUZFBND array
         IUZFBND_CHK = .FALSE.                                    
         DO I=1,NROW                                              
           DO J=1,NCOL                                            
-            IF(.NOT.IUZFBND(J,I).LE.0) THEN                      
+            IF(IUZFBND(J,I).GT.0) THEN                      
               IUZFBND_CHK = .TRUE.                               
             ENDIF                                                
           ENDDO                                                  
@@ -90,7 +90,7 @@ C--the IUZFBND array
 C--If the check on IUZFBND called IUZFBND_CHK remains false,     
 C--then the value of IUZFOPT can be set equal to zero, since all 
 C--cells are effectively acting as though IUZFOPT=0              
-        IF(.NOT.IUZFBND_CHK) THEN                                
+        IF(IUZFBND_CHK) THEN                                
           IUZFOPTG = 0                                           
         ENDIF                                                    
       ELSE                                                       

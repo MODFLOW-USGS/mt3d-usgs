@@ -230,7 +230,7 @@ C
 C
 C--READ UNSAT ZONE WATER CONTENT (UNITLESS)
       IF(FUZF) THEN 
-        IF(IUZFOPTG.GT.0) THEN
+        IF(IUZFOPTG.EQ.0) THEN
           TEXT='WATER CONTENT   '
           CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &                WC,FPRT)                                
@@ -293,7 +293,7 @@ C
 C--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE
 C--CURRENT CELL                                      
       IF(FUZF) THEN
-      IF(.NOT.IUZFOPTG.EQ.0) THEN                    
+      IF(IUZFOPTG.EQ.0) THEN                    
 C--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
         IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
           DO K=1,NLAY                                
@@ -337,7 +337,8 @@ C--WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ
 C--THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
 C  ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
                 IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
-                IF(DH(J,I,K).LT.1E-5) THEN                        
+                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
+     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
                   QZ(J,I,K)=UZFLX(J,I,K+1)                        
                 ENDIF                                             
               ENDIF                                               
@@ -349,8 +350,12 @@ C--PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE
 C--FOR BOTH THE SATURATED AND UNSATURATED CASE                    
         DO K=1,NLAY                                               
           DO I=1,NROW                                             
-            DO J=1,NCOL                                           
-              WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
+            DO J=1,NCOL
+              IF(IUZFBND(J,I).EQ.0)THEN
+                WC(J,I,K)=PRSITY(J,I,K)
+              ELSE
+                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
+              ENDIF
             ENDDO                                                 
           ENDDO                                                   
         ENDDO                                                     
@@ -367,9 +372,10 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-            IF(k.eq.1.and.i.eq.1.and.J.EQ.171)THEN
+            IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
+              IF(IUZFBND(J,I).GT.0) CYCLE
               IF(ABS(DH(J,I,K)-1.E30).LT.1.E-5) THEN
                 ICBUND(J,I,K,1)=0
               ELSEIF(ICBUND(J,I,K,1).EQ.0.AND.PRSITY(J,I,K).GT.0) THEN
@@ -409,12 +415,12 @@ C--IS SAVED BY LKMT PACKAGE VERSION 2 OR LATER
                 IF(LAYCON(K).EQ.0.OR.INT(DH(J,I,K)).EQ.-111) THEN
                   DH(J,I,K)=DZ(J,I,K)
                 ENDIF 
-              ELSEIF(iUnitTRNOP(7).GT.0.AND. .NOT.IUZFOPTG.EQ.0) THEN
+              ELSEIF(iUnitTRNOP(7).GT.0.AND. IUZFOPTG.EQ.0) THEN
 C--SET DH EQUAL TO DZ FOR THE CASE WHEN THE UZF PACKAGE IS ACTIVE 
                 IF(IUZFBND(J,I).GT.0) THEN                        
                   DH(J,I,K)=DZ(J,I,K)                             
                 ENDIF                                             
-              ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.0) THEN   
+              ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.1) THEN   
                 !don't need to do anything in this case           
               ENDIF
             ENDDO
@@ -449,13 +455,14 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         NICBND2=0                                                 
         ICBND2=0                                                  
       ENDIF                                                       
-      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN                          
+      IF(.NOT.FUZF.OR.IUZFOPTG.EQ.0) THEN                          
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-            IF(k.eq.1.and.i.eq.1.and.J.EQ.171)THEN
+            IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
+              IF(IUZFBND(J,I).GT.0) CYCLE
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
               IF(DH(J,I,K).LE.0) THEN
                 IF(DRYON.EQ..TRUE.) THEN          

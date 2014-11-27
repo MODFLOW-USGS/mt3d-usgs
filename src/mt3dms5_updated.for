@@ -438,6 +438,10 @@ C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY
               ENDIF                                         
 C
 C--SAVE OUTPUTS
+        if(KPER.eq.2.and.KSTP.ge.1.and.N.eq.400) then
+        continue
+        endif
+              
               CALL BTN1OT(KPER,KSTP,N,ICOMP,TIME2)   
               IF(FMNW) CALL SSM1OT(KPER,KSTP,N,TIME2)
               IF(iUnitTRNOP(11).GT.0) CALL TOB1OT(KPER,KSTP,N,
