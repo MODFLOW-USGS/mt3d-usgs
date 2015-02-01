@@ -5,11 +5,16 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSLCOMP
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: NSLDPHS
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISA
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: CONVMOL
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSLDOM
-        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: MANION
-        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: MCATION
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: ANION
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: ANION2
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CATION
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSSOPT
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CONVMOL
         REAL,             SAVE, DIMENSION(:),        POINTER :: ALDSSL
+        REAL,             SAVE, DIMENSION(:),        POINTER :: PORDSS
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: XB
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: XC
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: SOLU
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: RNEUTRATE
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: SSA
@@ -21,6 +26,10 @@
         REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: CRESINIT
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CSOLNEW
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CSOLOLD
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: SRCMASS
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: THKDSS
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: TSDSS
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: TEDSS
       CONTAINS
       SUBROUTINE MEMDEALLOCATE_DSSL()
         IF(ASSOCIATED(IDSSL))       DEALLOCATE(IDSSL)
@@ -29,9 +38,14 @@
         IF(ASSOCIATED(ISA))         DEALLOCATE(ISA)
         IF(ASSOCIATED(CONVMOL))     DEALLOCATE(CONVMOL)
         IF(ASSOCIATED(IDSSLDOM))    DEALLOCATE(IDSSLDOM)
-        IF(ASSOCIATED(MANION))      DEALLOCATE(MANION)
-        IF(ASSOCIATED(MCATION))     DEALLOCATE(MCATION)
+        IF(ASSOCIATED(ANION))       DEALLOCATE(ANION)
+        IF(ASSOCIATED(ANION2))      DEALLOCATE(ANION2)
+        IF(ASSOCIATED(CATION))      DEALLOCATE(CATION)
+        IF(ASSOCIATED(IDSSOPT))     DEALLOCATE(IDSSOPT)
         IF(ASSOCIATED(ALDSSL))      DEALLOCATE(ALDSSL)
+        IF(ASSOCIATED(PORDSS))      DEALLOCATE(PORDSS)
+        IF(ASSOCIATED(XB))          DEALLOCATE(XB)
+        IF(ASSOCIATED(XC))          DEALLOCATE(XC)
         IF(ASSOCIATED(SOLU))        DEALLOCATE(SOLU)
         IF(ASSOCIATED(RNEUTRATE))   DEALLOCATE(RNEUTRATE)
         IF(ASSOCIATED(SSA))         DEALLOCATE(SSA)
@@ -43,6 +57,10 @@
         IF(ASSOCIATED(CRESINIT))    DEALLOCATE(CRESINIT)
         IF(ASSOCIATED(CSOLNEW))     DEALLOCATE(CSOLNEW)
         IF(ASSOCIATED(CSOLOLD))     DEALLOCATE(CSOLOLD)
+        IF(ASSOCIATED(SRCMASS))     DEALLOCATE(SRCMASS)
+        IF(ASSOCIATED(THKDSS))      DEALLOCATE(THKDSS)
+        IF(ASSOCIATED(TSDSS))       DEALLOCATE(TSDSS)
+        IF(ASSOCIATED(TEDSS))       DEALLOCATE(TEDSS)
       END SUBROUTINE MEMDEALLOCATE_DSSL
     END MODULE DSSL
     MODULE MIN_SAT             !# This module comes from mt_mst.for of Vivek's code

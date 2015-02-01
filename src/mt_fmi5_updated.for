@@ -375,7 +375,9 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
             IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
-              IF(IUZFBND(J,I).GT.0) CYCLE
+              IF(FUZF) THEN
+                IF(IUZFBND(J,I).GT.0) CYCLE
+              ENDIF
               IF(ABS(DH(J,I,K)-1.E30).LT.1.E-5) THEN
                 ICBUND(J,I,K,1)=0
               ELSEIF(ICBUND(J,I,K,1).EQ.0.AND.PRSITY(J,I,K).GT.0) THEN
@@ -462,7 +464,9 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
             IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
-              IF(IUZFBND(J,I).GT.0) CYCLE
+              IF(FUZF) THEN
+                IF(IUZFBND(J,I).GT.0) CYCLE
+              ENDIF
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
               IF(DH(J,I,K).LE.0) THEN
                 IF(DRYON.EQ..TRUE.) THEN          

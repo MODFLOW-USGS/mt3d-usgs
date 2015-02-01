@@ -69,8 +69,8 @@ C
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
       CHARACTER FLNAME*50
       CHARACTER COMLIN*200               
-      CHARACTER CMST*3                   
-      CHARACTER CDRY*3                   
+      CHARACTER CMST*4                   
+      CHARACTER CDRY*4                   
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
       REAL DT00                          
       REAL START_TIME,TOTAL_TIME,
@@ -271,10 +271,7 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
-            if(KPER.eq.6.and.KSTP.eq.1.and.n.ge.2) then
-            continue
-            endif
-            if(KPER.eq.5.and.KSTP.eq.1.and.n.ge.1) then
+            if(KPER.eq.5.and.KSTP.eq.3.and.n.ge.1) then
             continue
             endif
 C
@@ -438,10 +435,6 @@ C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY
               ENDIF                                         
 C
 C--SAVE OUTPUTS
-        if(KPER.eq.2.and.KSTP.ge.1.and.N.eq.400) then
-        continue
-        endif
-              
               CALL BTN1OT(KPER,KSTP,N,ICOMP,TIME2)   
               IF(FMNW) CALL SSM1OT(KPER,KSTP,N,TIME2)
               IF(iUnitTRNOP(11).GT.0) CALL TOB1OT(KPER,KSTP,N,

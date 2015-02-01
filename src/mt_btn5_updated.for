@@ -1266,7 +1266,10 @@ C
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-              IF(ICBUND(J,I,K,INDEX).LE.0) CYCLE
+              IF(ICBUND(J,I,K,INDEX).LE.0) THEN
+                IF(IALTFM.EQ.5) TEMP(2)=TEMP(2)+SORBMASS(J,I,K,INDEX)
+                CYCLE
+              ENDIF
               VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
 C
               IF(iUnitTRNOP(7).GT.0) THEN
@@ -1670,6 +1673,9 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
                   VOLUME=VAQSAT(J,I,K)
                   CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
                   CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+                ENDIF
+                IF(IALTFM.EQ.5) THEN
+                  CMMS=CMMS+SORBMASS(J,I,K,ICOMP)
                 ENDIF
               ENDIF
             ENDIF

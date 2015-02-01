@@ -444,7 +444,11 @@ C...................ADD TERM FOR M_GAIN/M_LOSS FROM SORBMASS
                           VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                           VUNSAT1=MAX(0.0,VCELL-VOL1)
                           VUNSAT2=MAX(0.0,VCELL-VOL2)
-                          FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                          IF(VUNSAT1.LE.1.0E-7) THEN
+                            FRAC=0.
+                          ELSE
+                            FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                          ENDIF
                           RHS(N)=RHS(N)
      1                       -SORBMASS(J,I,K,ICOMP)*FRAC/DTRANS
                         ENDIF
@@ -895,7 +899,11 @@ CEDM--WAS WRONG.
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VUNSAT1=MAX(0.0,VCELL-VOL1)
                   VUNSAT2=MAX(0.0,VCELL-VOL2)
-                  FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                  IF(VUNSAT1.LE.1.0E-7) THEN
+                    FRAC=0.
+                  ELSE
+                    FRAC=(VUNSAT1-VUNSAT2)/VUNSAT1
+                  ENDIF
                   RMASIO(118,1,ICOMP)=RMASIO(118,1,ICOMP)
      &                              +SORBMASS(J,I,K,ICOMP)*FRAC
                   SORBMASS(J,I,K,ICOMP)=SORBMASS(J,I,K,ICOMP)*(1.-FRAC)
