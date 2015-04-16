@@ -429,7 +429,7 @@ C
         I=ISFR(N)     !ROW
         J=ISFC(N)     !COLUMN
 
-      IF(N.EQ.31)THEN
+      IF(K.EQ.1.AND.I.EQ.40.AND.J.EQ.67)THEN
       CONTINUE
       ENDIF
 

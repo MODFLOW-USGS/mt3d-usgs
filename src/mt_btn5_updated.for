@@ -22,7 +22,7 @@ C
      &              ISTART2,ISTOP2
       REAL          R
       LOGICAL       LOP
-      CHARACTER*200 LINE,FNAME
+      CHARACTER*2000 LINE,FNAME
       CHARACTER*20  FMTARG,ACCARG,FILACT
       CHARACTER     FILSTAT*7
 C
@@ -76,7 +76,7 @@ C--READ A LINE; IGNORE BLANK LINES AND PRINT COMMENT LINES.
    10 READ(INUNIT,'(A)',END=1000) LINE
       IF(LINE.EQ.' ') GOTO 10
       IF(LINE(1:1).EQ.'#') THEN
-        IF(ILIST.NE.0) WRITE(IOUT,'(A)') LINE
+        IF(ILIST.NE.0) WRITE(IOUT,'(A)') TRIM(LINE)
         GOTO 10
       ENDIF
 C
@@ -416,11 +416,11 @@ C--CHECK FOR THIRD KEYWORD
 C
 C--IF DRY1 IS TRUE AND DRYON IS FALSE THEN IDRYBUD MUST BE 1; 
 C  THIS TERM MUST BE TREATED AS SINK
-   16 IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.
-      IF(DOMINSAT.EQ..TRUE. .AND. DRYON.EQ..FALSE.) THEN
+   16 IF(.NOT.DOMINSAT) DRYON=.FALSE.
+      IF(DOMINSAT.AND.(.NOT. DRYON)) THEN
         IDRYBUD=1
       ENDIF
-      IF(DOMINSAT.EQ..FALSE.) IDRYBUD=0
+      IF(.NOT.DOMINSAT) IDRYBUD=0
 C
 C--READ AND PRINT NO. OF LAYERS, ROWS, COLUMNS, AND STRESS PERIODS,
 C--COMPONENTS
@@ -1919,7 +1919,7 @@ C
       IF(iUnitTRNOP(6).GT.0)                                    
      &  WRITE(IOUT,1190) TMASIO(11,1,ICOMP),TMASIO(11,2,ICOMP)  
 C                                                               
-      IF(DOMINSAT.EQ..TRUE.) THEN                               
+      IF(DOMINSAT) THEN                               
         IF(IDRYBUD.EQ.1)                                        
      &    WRITE(IOUT,1192) TMASIO(12,1,ICOMP),TMASIO(12,2,ICOMP)
       ENDIF                                                     

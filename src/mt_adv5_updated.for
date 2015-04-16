@@ -1717,7 +1717,7 @@ C--BACK FACE
         IF(ICBUND(JJ,II-1,KK).NE.0) THEN
           WW=DELC(II)/(DELC(II)+DELC(II-1))
           THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN  
+          IF(DOMINSAT) THEN  
             THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF               
           AREA=DELR(JJ)*THKSAT
@@ -1733,7 +1733,7 @@ C--FRONT FACE
         IF(ICBUND(JJ,II+1,KK).NE.0) THEN
           WW=DELC(II+1)/(DELC(II+1)+DELC(II))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                              
+          IF(DOMINSAT) THEN                              
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
           ENDIF                                                    
           AREA=DELR(JJ)*THKSAT
@@ -1752,7 +1752,7 @@ C--LEFT FACE
         IF(ICBUND(JJ-1,II,KK).NE.0) THEN
           WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
           THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                              
+          IF(DOMINSAT) THEN                              
             THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF                                                    
           AREA=DELC(II)*THKSAT
@@ -1768,7 +1768,7 @@ C--RIGHT FACE
         IF(ICBUND(JJ+1,II,KK).NE.0) THEN
           WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN                              
+          IF(DOMINSAT) THEN                              
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
           ENDIF                                                    
           AREA=DELC(II)*THKSAT
@@ -1847,7 +1847,7 @@ C--BACK FACE
           IF(ICBUND(JJ,II-1,KK).NE.0) THEN
             WW=DELC(II)/(DELC(II)+DELC(II-1))
             THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN  
+            IF(DOMINSAT) THEN  
               THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
             ENDIF 
             AREA=DELR(JJ)*THKSAT
@@ -1863,7 +1863,7 @@ C--FRONT FACE
           IF(ICBUND(JJ,II+1,KK).NE.0) THEN
             WW=DELC(II+1)/(DELC(II+1)+DELC(II))
             THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN  
+            IF(DOMINSAT) THEN  
               THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
             ENDIF 
             AREA=DELR(JJ)*THKSAT
@@ -1882,7 +1882,7 @@ C--LEFT FACE
           IF(ICBUND(JJ-1,II,KK).NE.0) THEN
             WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
             THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN  
+            IF(DOMINSAT) THEN  
               THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
             ENDIF 
             AREA=DELC(II)*THKSAT
@@ -1898,7 +1898,7 @@ C--RIGHT FACE
           IF(ICBUND(JJ+1,II,KK).NE.0) THEN
             WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
             THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN    
+            IF(DOMINSAT) THEN    
               THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
             ENDIF   
             AREA=DELC(II)*THKSAT
@@ -2273,7 +2273,7 @@ C-----------BACK FACE
             IF(I.GT.1) THEN
                 WW=DELC(I)/(DELC(I)+DELC(I-1))
                 THKSAT=DH(N-NCOL)*WW+DH(N)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                    
+                IF(DOMINSAT) THEN                    
                   THKSAT=ABS(DH(N-NCOL))*WW+ABS(DH(N))*(1.-WW) 
                 ENDIF                                          
                 AREA=DELR(J)*THKSAT
@@ -2287,7 +2287,7 @@ C-----------FRONT FACE
             IF(I.LT.NROW) THEN
                 WW=DELC(I+1)/(DELC(I+1)+DELC(I))
                 THKSAT=DH(N)*WW+DH(N+NCOL)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                   
+                IF(DOMINSAT) THEN                   
                   THKSAT=ABS(DH(N))*WW+ABS(DH(N+NCOL))*(1.-WW)
                 ENDIF                                         
                 AREA=DELR(J)*THKSAT
@@ -2304,7 +2304,7 @@ C-----------LEFT FACE
             IF(J.GT.1) THEN
                 WW=DELR(J)/(DELR(J)+DELR(J-1))
                 THKSAT=DH(N-1)*WW+DH(N)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                
+                IF(DOMINSAT) THEN                
                   THKSAT=ABS(DH(N-1))*WW+ABS(DH(N))*(1.-WW)
                 ENDIF                                      
                 AREA=DELC(I)*THKSAT
@@ -2318,7 +2318,7 @@ C-----------RIGHT FACE
             IF(J.LT.NCOL) THEN
                 WW=DELR(J+1)/(DELR(J+1)+DELR(J))
                 THKSAT=DH(N)*WW+DH(N+1)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN                 
+                IF(DOMINSAT) THEN                 
                   THKSAT=ABS(DH(N))*WW+ABS(DH(N+1))*(1.-WW) 
                 ENDIF                                       
                 AREA=DELC(I)*THKSAT
@@ -2406,7 +2406,7 @@ C
       ENDDO
 C
 C--CALCULATE MASS LOST TO ICBND=0 CELLS                               
-      IF(DOMINSAT.EQ..TRUE.) THEN                                     
+      IF(DOMINSAT) THEN                                     
       CTMPMAX=0.                                                      
       ICNT0=0                                                         
       IF(IC2DRY.EQ.1) THEN                                            
@@ -2426,7 +2426,7 @@ c
               QCTMP=SADV1Q2(NCOL,NROW,NLAY,J,I,K,ICBUND(:,:,:,ICOMP), 
      &         DELR,DELC,DH,CNEW(:,:,:,ICOMP),QX,QY,QZ,DTRANS,NADVFD) 
 C                                                                     
-              IF(DRYON.EQ..FALSE.) THEN                               
+              IF(.NOT.DRYON) THEN                               
                 IF(QCTMP.GT.0) THEN                                   
                   RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTMP         
                 ELSE                                                  
@@ -2582,8 +2582,8 @@ C--THE BACK FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS FRONT FACE
                 IF(ICBUND(J,I-1,K).NE.0) THEN 
                   WW=DH(J,I-1,K)/DH(J,I,K)    
               !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K))
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                 
-CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                  
+                  IF(DOMINSAT) WW=ABS(WW)                 
+CVSB                  IF(DOMINSAT) WW=1.                  
                   CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I)
                 ELSE                                                
                   IF(QY(J,I-1,K).LT.0.) THEN                        
@@ -2626,7 +2626,7 @@ CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.
                 IF(ICBUND(J,I-1,K).NE.0) THEN                       
                   WW=DH(J,I-1,K)/DH(J,I,K)                          
               !!!WW=(DH(J,I-1,K)*PRSITY(J,I-1,K))/(DH(J,I,K)*PRSITY(J,I,K))
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                  
+                  IF(DOMINSAT) WW=ABS(WW)                  
                   CTOTAL=CTOTAL-CBCK(J,I-1,K)*WW*QY(J,I-1,K)/DELC(I) 
                 ENDIF                                                
               ENDIF                                                  
@@ -2706,8 +2706,8 @@ C--THE LEFT FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS RIGHT FACE
                 IF(ICBUND(J-1,I,K).NE.0) THEN 
                   WW=DH(J-1,I,K)/DH(J,I,K)    
               !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K))
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)                 
-CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.                  
+                  IF(DOMINSAT) WW=ABS(WW)                 
+CVSB                  IF(DOMINSAT) WW=1.                  
                   CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)         
                 ELSE                                                
                   IF(QX(J-1,I,K).LT.0.) THEN                        
@@ -2749,7 +2749,7 @@ CVSB                  IF(DOMINSAT.EQ..TRUE.) WW=1.
                 IF(ICBUND(J-1,I,K).NE.0) THEN                  
                   WW=DH(J-1,I,K)/DH(J,I,K)                     
               !!!WW=(DH(J-1,I,K)*PRSITY(J-1,I,K))/(DH(J,I,K)*PRSITY(J,I,K))
-                  IF(DOMINSAT.EQ..TRUE.) WW=ABS(WW)        
+                  IF(DOMINSAT) WW=ABS(WW)        
                   CTOTAL=CTOTAL-CRGT*WW*QX(J-1,I,K)/DELR(J)
                 ENDIF                                      
               ENDIF                                        
@@ -3326,7 +3326,7 @@ C--BACK FACE
         IF(ICBUND(JJ,II-1,KK).NE.0) THEN
           WW=DELC(II)/(DELC(II)+DELC(II-1))
           THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF
           AREA=DELR(JJ)*THKSAT
@@ -3344,7 +3344,7 @@ C--FRONT FACE
         IF(ICBUND(JJ,II+1,KK).NE.0) THEN
           WW=DELC(II+1)/(DELC(II+1)+DELC(II))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
           ENDIF
           AREA=DELR(JJ)*THKSAT
@@ -3365,7 +3365,7 @@ C--LEFT FACE
         IF(ICBUND(JJ-1,II,KK).NE.0) THEN
           WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
           THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF
           AREA=DELC(II)*THKSAT
@@ -3383,7 +3383,7 @@ C--RIGHT FACE
         IF(ICBUND(JJ+1,II,KK).NE.0) THEN
           WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
           ENDIF
           AREA=DELC(II)*THKSAT
@@ -4163,7 +4163,7 @@ cvsb              IF(ICBUND(J,I-1,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N-NCOL,1).NE.0 .OR. ICBND2(J,I-1,K).NE.0) THEN
                 WW=DELC(I)/(DELC(I)+DELC(I-1))
                 THKSAT=DH(J,I-1,K)*WW+DH(J,I,K)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN
+                IF(DOMINSAT) THEN
                   THKSAT=ABS(DH(J,I-1,K))*WW+ABS(DH(J,I,K))*(1.-WW)
                 ENDIF
                 AREA=DELR(J)*THKSAT
@@ -4179,7 +4179,7 @@ cvsb              IF(ICBUND(J,I+1,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N+NCOL,1).NE.0 .OR. ICBND2(J,I+1,K).NE.0) THEN
                 WW=DELC(I+1)/(DELC(I+1)+DELC(I))
                 THKSAT=DH(J,I,K)*WW+DH(J,I+1,K)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN
+                IF(DOMINSAT) THEN
                   THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J,I+1,K))*(1.-WW)
                 ENDIF
                 AREA=DELR(J)*THKSAT
@@ -4198,7 +4198,7 @@ cvsb              IF(ICBUND(J-1,I,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N-1,1).NE.0 .OR. ICBND2(J-1,I,K).NE.0) THEN
                 WW=DELR(J)/(DELR(J)+DELR(J-1))
                 THKSAT=DH(J-1,I,K)*WW+DH(J,I,K)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN
+                IF(DOMINSAT) THEN
                   THKSAT=ABS(DH(J-1,I,K))*WW+ABS(DH(J,I,K))*(1.-WW)
                 ENDIF
                 AREA=DELC(I)*THKSAT
@@ -4214,7 +4214,7 @@ cvsb              IF(ICBUND(J+1,I,K,1).NE.0) THEN
 cvsbabc              IF(ICBUND(N+1,1).NE.0 .OR. ICBND2(J+1,I,K).NE.0) THEN
                 WW=DELR(J+1)/(DELR(J+1)+DELR(J))
                 THKSAT=DH(J,I,K)*WW+DH(J+1,I,K)*(1.-WW)
-                IF(DOMINSAT.EQ..TRUE.) THEN
+                IF(DOMINSAT) THEN
                   THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J+1,I,K))*(1.-WW)
                 ENDIF
                 AREA=DELC(I)*THKSAT
@@ -4428,7 +4428,7 @@ C--BACK FACE
         IF(ICBUND(JJ,II-1,KK).NE.0) THEN
           WW=DELC(II)/(DELC(II)+DELC(II-1))
           THKSAT=DH(JJ,II-1,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II-1,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF
           AREA=DELR(JJ)*THKSAT
@@ -4450,7 +4450,7 @@ C--FRONT FACE
         IF(ICBUND(JJ,II+1,KK).NE.0) THEN
           WW=DELC(II+1)/(DELC(II+1)+DELC(II))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ,II+1,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ,II+1,KK))*(1.-WW)
           ENDIF
           AREA=DELR(JJ)*THKSAT
@@ -4475,7 +4475,7 @@ C--LEFT FACE
         IF(ICBUND(JJ-1,II,KK).NE.0) THEN
           WW=DELR(JJ)/(DELR(JJ)+DELR(JJ-1))
           THKSAT=DH(JJ-1,II,KK)*WW+DH(JJ,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ-1,II,KK))*WW+ABS(DH(JJ,II,KK))*(1.-WW)
           ENDIF
           AREA=DELC(II)*THKSAT
@@ -4497,7 +4497,7 @@ C--RIGHT FACE
         IF(ICBUND(JJ+1,II,KK).NE.0) THEN
           WW=DELR(JJ+1)/(DELR(JJ+1)+DELR(JJ))
           THKSAT=DH(JJ,II,KK)*WW+DH(JJ+1,II,KK)*(1.-WW)
-          IF(DOMINSAT.EQ..TRUE.) THEN
+          IF(DOMINSAT) THEN
             THKSAT=ABS(DH(JJ,II,KK))*WW+ABS(DH(JJ+1,II,KK))*(1.-WW)
           ENDIF
           AREA=DELC(II)*THKSAT

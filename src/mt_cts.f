@@ -380,7 +380,7 @@ C
      &                         ITRTEXT,ITRTINJ,NEXT,NINJ,QINCTS,
      &                         QOUTCTS,CMCHGEXT,CMCHGINJ,CINCTS,
      &                         CNTE,MXEXT,MXINJ,MXCTS,QCTS,CCTS,
-     &                         IOUT,ICOMP,IWEXT,IWINJ,ICBUND,IFORCE,
+     &                         IOUT,IWEXT,IWINJ,ICBUND,IFORCE,
      &                         IDRY2
       IMPLICIT  NONE
       INTEGER ICOMP

@@ -1603,6 +1603,13 @@ c     get [a]{x} and calculate {res} -- note: use {soln} as tmp
 
       res0 = dsqrt(res0)
 
+        conv = .false.
+        conv = res0 <= rrctol*res0
+        if (conv) then
+          nitmax=0
+          return
+        endif
+
 c     save x into soln and use x as temporary(n) array
 
       do i = 1, nblack

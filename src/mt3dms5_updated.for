@@ -67,8 +67,8 @@ C
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
-      CHARACTER FLNAME*50
-      CHARACTER COMLIN*200               
+      CHARACTER FLNAME*5000
+      CHARACTER COMLIN*2000               
       CHARACTER CMST*4                   
       CHARACTER CDRY*4                   
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
@@ -114,7 +114,7 @@ cvsb
       CALL GETARG(3,CDRY)  
       IF(CMST.EQ.'DRY1'.OR.CMST.EQ.'dry1') DOMINSAT=.TRUE.
       IF(CDRY.EQ.'DRY2'.OR.CDRY.EQ.'dry2') DRYON=.TRUE.
-      IF(DOMINSAT.EQ..FALSE.) DRYON=.FALSE.
+      IF(.NOT.DOMINSAT) DRYON=.FALSE.
 c      CALL GETCL(FLNAME)                  
 C                                          
       IF(COMLIN.NE.' ') THEN               
@@ -141,7 +141,7 @@ C-Open files using the Name File method as in MODFLOW-2000
       endif
   103 format(1x,'STOP. Specified Name file does not exist: ',
      & a,' or ',a)
-      WRITE(*,104) FLNAME
+      WRITE(*,104) TRIM(FLNAME)
   104 FORMAT(1x,'Using NAME File: ',a)
       iNameFile=99
       OPEN(iNameFile,file=flname,status='old')
@@ -271,7 +271,7 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
-            if(KPER.eq.5.and.KSTP.eq.3.and.n.ge.1) then
+            if(KPER.eq.41.and.KSTP.eq.1.and.n.ge.1) then
             continue
             endif
 C
@@ -357,7 +357,7 @@ C--FORMULATE MATRIX COEFFICIENTS
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
      &                  COLD,CNEW)                          
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0       
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
      &           CALL ADVQC1FM(ICOMP)                       
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
@@ -418,7 +418,7 @@ C
               IF(iUnitTRNOP(4).GT.0) 
      &         CALL RCT1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0         
-     &           .AND. ICOMP.LE.MCOMP .AND. DRYON.EQ..TRUE.)
+     &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
      &           CALL ADVQC1BD(ICOMP)      
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE

@@ -453,7 +453,7 @@ C--SET CELLS TO INACTIVE IF SATURATED THICKNESS < OR = 0, OR
 C--IF SATURATED THICKNESS IS BELOW USER-SPECIFIED MINIMUM [THKMIN].
 C--WITH UZF TURNED ON THE GRID BECOMES FIXED.  THE USER PROVIDEDED
 C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                           
-      IF(DRYON.EQ..TRUE.) THEN                                    
+      IF(DRYON) THEN                                    
         NICBND2=0                                                 
         ICBND2=0                                                  
       ENDIF                                                       
@@ -469,7 +469,7 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
               ENDIF
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
               IF(DH(J,I,K).LE.0) THEN
-                IF(DRYON.EQ..TRUE.) THEN          
+                IF(DRYON) THEN          
                   ICBND2(J,I,K)=1                 
                   NICBND2=NICBND2+1               
                 ENDIF                             
@@ -481,7 +481,7 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
                 THKMIN0=THKMIN*DZ(J,I,K)
                 IF(IABSMIN.EQ.1) THKMIN0=THKMIN
                 IF(DH(J,I,K).LT.THKMIN0) THEN
-                  IF(DRYON.EQ..TRUE.) THEN     
+                  IF(DRYON) THEN     
                     ICBND2(J,I,K)=1            
                     NICBND2=NICBND2+1          
                   ENDIF                        
@@ -617,7 +617,7 @@ C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
           DO J=1,NCOL-1
             WW=DELR(J+1)/(DELR(J+1)+DELR(J))
             THKSAT=DH(J,I,K)*WW+DH(J+1,I,K)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN                       
+            IF(DOMINSAT) THEN                       
               IF(DH(J,I,K).LE.0. .OR. DH(J+1,I,K).LE.0.) THEN 
                 IF(DH(J,I,K).GT.0.) THEN                      
                   THKSAT=DH(J,I,K)*WW                         
@@ -630,7 +630,7 @@ C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
               THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J+1,I,K))*(1.-WW)
             ENDIF                                              
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-              IF(DOMINSAT.EQ..TRUE.) THEN           
+              IF(DOMINSAT) THEN           
                 QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
               ELSE                                  
                 QX(J,I,K)=0
@@ -640,7 +640,7 @@ C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
               QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
             ENDIF
           ENDDO
-          IF(DOMINSAT.EQ..FALSE.) THEN 
+          IF(.NOT.DOMINSAT) THEN 
             IF(ICBUND(NCOL,I,K,1).EQ.0) QX(NCOL-1,I,K)=0.
           ENDIF
         ENDDO
@@ -652,7 +652,7 @@ C
           DO I=1,NROW-1
             WW=DELC(I+1)/(DELC(I+1)+DELC(I))
             THKSAT=DH(J,I,K)*WW+DH(J,I+1,K)*(1.-WW)
-            IF(DOMINSAT.EQ..TRUE.) THEN 
+            IF(DOMINSAT) THEN 
               IF(DH(J,I,K).LE.0. .OR. DH(J,I+1,K).LE.0.) THEN
                 IF(DH(J,I,K).GT.0.) THEN      
                   THKSAT=DH(J,I,K)*WW         
@@ -665,7 +665,7 @@ C
               THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J,I+1,K))*(1.-WW)
             ENDIF                                              
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-              IF(DOMINSAT.EQ..TRUE.) THEN           
+              IF(DOMINSAT) THEN           
                 QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
               ELSE                                  
                 QY(J,I,K)=0
@@ -675,7 +675,7 @@ C
               QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
             ENDIF
           ENDDO
-          IF(DOMINSAT.EQ..FALSE.) THEN
+          IF(.NOT.DOMINSAT) THEN
             IF(ICBUND(J,NROW,K,1).EQ.0) QY(J,NROW-1,K)=0.
           ENDIF
         ENDDO
@@ -687,7 +687,7 @@ C
           DO K=1,NLAY
             THKSAT=DH(J,I,K)
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-              IF(DOMINSAT.EQ..TRUE.) THEN             
+              IF(DOMINSAT) THEN             
                 QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I)) 
               ELSE                                    
                 QZ(J,I,K)=0
@@ -707,7 +707,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
           DO J=1,NCOL
             THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-              IF(DOMINSAT.EQ..TRUE.) THEN  
+              IF(DOMINSAT) THEN  
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
               ELSE                                              
                 QSTO(J,I,K)=0
@@ -1726,7 +1726,7 @@ C--IN THE COLUMN DIRECTION
 C
 C--OBTAIN WEIGHTED CONCENTRATION
    30 IF(D2SUM.EQ.0) THEN
-        IF(DRYON.EQ..FALSE.) THEN
+        IF(.NOT.DRYON) THEN
           ICBUND(JJ,II,KK)=0
         ENDIF
       ELSE

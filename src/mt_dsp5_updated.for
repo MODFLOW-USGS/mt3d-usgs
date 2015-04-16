@@ -551,13 +551,17 @@ C--ALONG THE X-DIRECTION: DXX, DXY AND DXZ
               DXX(J,I,K,ICOMP)=
      &         AREA*DXX(J,I,K,ICOMP)/(0.5*DELR(JP1)+0.5*DELR(J))
               IF(NROW.GT.1) THEN
+                IF(ABS(DXY(J,I,K)-0.).GT.1.0E-6) THEN
                 DXY(J,I,K)=AREA*DXY(J,I,K)/
      &           (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
+                ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
+                IF(ABS(DXZ(J,I,K)-0.).GT.1.0E-6) THEN
                 DXZ(J,I,K)=AREA*DXZ(J,I,K)/((0.5*DH(J,I,KM1)
      &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(JP1,I,KM1)
      &           +DH(JP1,I,K)+0.5*DH(JP1,I,KP1))*(1.-WW) )
+                ENDIF
               ENDIF
             ENDIF
 C
@@ -568,13 +572,17 @@ C--ALONG THE Y-DIRECTION: DYX, DYY AND DYZ
               DYY(J,I,K,ICOMP)=
      &         AREA*DYY(J,I,K,ICOMP)/(0.5*DELC(IP1)+0.5*DELC(I))
               IF(NCOL.GT.1) THEN
+                IF(ABS(DYX(J,I,K)-0.).GT.1.0E-6) THEN
                 DYX(J,I,K)=AREA*DYX(J,I,K)/
      &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
+                ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
+                IF(ABS(DYZ(J,I,K)-0.).GT.1.0E-6) THEN
                 DYZ(J,I,K)=AREA*DYZ(J,I,K)/((0.5*DH(J,I,KM1)
      &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(J,IP1,KM1)
      &           +DH(J,IP1,K)+0.5*DH(J,IP1,KP1))*(1.-WW) )
+                ENDIF
               ENDIF
             ENDIF
 C
@@ -584,12 +592,16 @@ C--ALONG THE Z DIRECTION: DZX, DZY AND DZZ
               DZZ(J,I,K,ICOMP)=AREA*DZZ(J,I,K,ICOMP)/
      &         (0.5*DH(J,I,KP1)+0.5*DH(J,I,K))
               IF(NCOL.GT.1) THEN
+                IF(ABS(DZX(J,I,K)-0.).GT.1.0E-6) THEN
                 DZX(J,I,K)=AREA*DZX(J,I,K)/
      &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
+                ENDIF
               ENDIF
               IF(NROW.GT.1) THEN
+                IF(ABS(DZY(J,I,K)-0.).GT.1.0E-6) THEN
                 DZY(J,I,K)=AREA*DZY(J,I,K)/
      &           (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
+                ENDIF
               ENDIF
             ENDIF
 C
