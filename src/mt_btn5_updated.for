@@ -410,7 +410,7 @@ C--CHECK FOR THIRD KEYWORD
         ELSEIF(LINE(ISTART:ISTOP).EQ.'DRY2') THEN
           DRYON=.TRUE.
         ELSE
-          GOTO 16
+          GOTO 16 
         ENDIF
       ENDIF
 C
