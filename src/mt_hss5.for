@@ -104,10 +104,10 @@ C--ALLOCATE AND INITIALIZE
         ALLOCATE(IDSSL(MaxHSSSource),IDSSLCOMP(MaxHSSSource))
         ALLOCATE(THKDSS(MaxHSSCells,MaxHSSSource),
      1  TSDSS(MaxHSSCells,MaxHSSSource),TEDSS(MaxHSSCells,MaxHSSSource))
+        IDSSL=0
       ENDIF
       iHSSLoc=0
       HSSData=0.
-      IDSSL=0
 C
 C--READ INPUT DATA
       read(inhss,*)  faclength,factime,facmass
@@ -151,7 +151,9 @@ C--DSSL OUTPUT FILE UNIT
         IHSSOUT=IU
 C
 C--DECODE THE DISSOLUTION PACKAGE OPTION
-        READ(LINE(ISTOP+1:200),*,ERR=13) IDSSL(N),IDSSLCOMP(N)
+        IF(MAXDSSL.GT.0) THEN
+          READ(LINE(ISTOP+1:200),*,ERR=13) IDSSL(N),IDSSLCOMP(N)
+        ENDIF
 13      CONTINUE
 C
 C--ECHO INPUT DATA
@@ -160,11 +162,14 @@ C--ECHO INPUT DATA
      &         /1x,'Source Definition File Name: ',a,
      &         /1x,'Source Definition File Read from Unit: ',i4,
      &         /1x,'Output will be wrtten on Unit: ',i4)
-        IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
+        IF(MAXDSSL.GT.0) THEN
+          IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
+        ENDIF
 21    FORMAT(1X,'DISSOLUTION FORMULATION IS INVOKED FOR FOLLOWING ',I4,
      &           ' CELLS, ASSOCIATED WITH SPECIES ',I4)
 C
 C--GET SOURCE LOCATION FOR DISSOLUTION OPTION
+        IF(MAXDSSL.GT.0) THEN
         IF(IDSSL(N).GT.0) THEN
           IF(IDSSL(N).GT.MaxHSSCells) THEN
             WRITE(*,*) 'IDSSL EXCEEDS MaxHSSCells',N
@@ -186,6 +191,7 @@ C--READ DSSL INPUT FILE
           CYCLE
    22     format(1x,'[Layer,Row,Column,SrcThk,Tstrt,Tend]:',
      1           3i5,3(1PG12.4)) !,'; Species:',i3)
+        ENDIF
         ELSE
 C
 C--GET HSS SOURCE LOCATION AND NAME
@@ -401,7 +407,8 @@ C
 C
 C--FORMULATE [RHS] MATRIX FOR EULERIAN & EULERIAN-LAGRANGIAN SCHEMES     
       DO is=1,nHSSSource     
-        IF(IDSSL(is).EQ.0) THEN
+        IF(MAXDSSL.EQ.0) THEN
+C        IF(IDSSL(is).EQ.0) THEN
 c
         iHSSComp=int(HSSData(4,1,is))
         if(iHSSComp.ne.ICOMP) cycle               
@@ -487,7 +494,8 @@ C
 C
 C--LOOP over all HSS_LNAPL sources
         DO is=1,nHSSSource               
-          IF(IDSSL(is).EQ.0) THEN
+          IF(MAXDSSL.EQ.0) THEN
+C          IF(IDSSL(is).EQ.0) THEN
 c	  
           iHSSComp=int(HSSData(4,1,is))
 	        if(iHSSComp.ne.ICOMP) cycle            
