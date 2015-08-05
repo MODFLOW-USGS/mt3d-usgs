@@ -2596,8 +2596,8 @@ CVSB                  IF(DOMINSAT) WW=1.
                       K2=0                                          
                       IF(QZ(J,I-1,K).GT.0.) THEN                    
                         IF(K.LT.NLAY) K2=K+1                        
-                      ELSEIF(QZ(J,I-1,K-1).LT.0.) THEN              
-                        IF(K.GT.1) K2=K-1                           
+                      ELSEIF(K.GT.1) THEN              
+                        IF(QZ(J,I-1,K-1).LT.0.) K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2655,8 +2655,8 @@ C--SAVE THE FACE VALUE FOR NEXT CELL
                       K2=0                                          
                       IF(QZ(J,I+1,K).GT.0.) THEN                    
                         IF(K.LT.NLAY) K2=K+1                        
-                      ELSEIF(QZ(J,I+1,K-1).LT.0.) THEN              
-                        IF(K.GT.1) K2=K-1                           
+                      ELSEIF(K.GT.1) THEN              
+                        IF(QZ(J,I+1,K-1).LT.0.) K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2720,8 +2720,8 @@ CVSB                  IF(DOMINSAT) WW=1.
                       K2=0                                          
                       IF(QZ(J-1,I,K).GT.0.) THEN                    
                         IF(K.LT.NLAY) K2=K+1                        
-                      ELSEIF(QZ(J-1,I,K-1).LT.0.) THEN              
-                        IF(K.GT.1) K2=K-1                           
+                      ELSEIF(K.GT.1) THEN              
+                        IF(QZ(J-1,I,K-1).LT.0.) K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2775,8 +2775,8 @@ C--CALCULATE FACE VALUE AT (J+1/2,I,K)
                       K2=0                                          
                       IF(QZ(J+1,I,K).GT.0.) THEN                    
                         IF(K.LT.NLAY) K2=K+1                        
-                      ELSEIF(QZ(J+1,I,K-1).LT.0.) THEN              
-                        IF(K.GT.1) K2=K-1                           
+                      ELSEIF(K.GT.1) THEN              
+                        IF(QZ(J+1,I,K-1).LT.0.) K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         

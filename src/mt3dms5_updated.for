@@ -351,7 +351,7 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(18).GT.0)                    
      &           CALL LKT1FM(ICOMP)                        
                 IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC
-     1           CALL SWF1FM(ICOMP)                        
+     1           CALL GNT1FM(ICOMP)                        
                 IF(iUnitTRNOP(4).GT.0) 
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,

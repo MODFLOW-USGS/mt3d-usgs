@@ -591,7 +591,7 @@ c--get starting and ending indices of transport step in source series
       iTime2=1
       do it=MaxHSSStep,1,-1
         ttmp=HSSData(1,it,iSource)
-        if(ttmp.gt.0 .and. time2.ge.ttmp ) then
+        if(ttmp.gt.0 .and. time2.gt.ttmp ) then
           iTime2=it
           exit
         endif
