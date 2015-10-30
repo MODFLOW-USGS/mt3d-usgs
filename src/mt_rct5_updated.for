@@ -43,7 +43,7 @@ C--ALLOCATE AND INITIALIZE
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INRCT
- 1000 FORMAT(1X,'RCT1 -- CHEMICAL REACTION PACKAGE,',
+ 1000 FORMAT(/1X,'RCT1 -- CHEMICAL REACTION PACKAGE,',
      & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
 C
 C--READ AND ECHO SORPTION ISOTHERM TYPE AND FLAG IREACT
@@ -180,6 +180,7 @@ C
 C
 C--ALLOCATE IF IREACTION=1                          
       IF(IREACTION.EQ.1) THEN                       
+        ALLOCATE(IED,IEA,FEDEA)
         ALLOCATE (CRCT(NCOL,NROW,NLAY,2),STAT=IERR) 
         IF(IERR.NE.0) THEN                          
           WRITE(*,106)                              
@@ -1495,6 +1496,7 @@ C
                 RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-      
      &              (CRCT(J,I,K,1)-CNEW(J,I,K,IED))         
      &              *PRSITY(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     &              *RETA(J,I,K,IED)
 CVSB                IF(CNEW(J,I,K,IED).GE.CNEW(J,I,K,IEA)/FEDEA) THEN 
 CVSB                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-    
 CVSB     &              (CNEW(J,I,K,IEA)/FEDEA)                 
@@ -1508,6 +1510,7 @@ CVSB                ENDIF
                 RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-          
      &              (CRCT(J,I,K,2)-CNEW(J,I,K,IEA))             
      &              *PRSITY(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)    
+     &              *RETA(J,I,K,IEA)
 CVSB                IF(CNEW(J,I,K,IEA).GE.CNEW(J,I,K,IED)*FEDEA) THEN 
 CVSB                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-      
 CVSB     &              (CNEW(J,I,K,IED)*FEDEA)                   
@@ -1703,11 +1706,13 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES FLASH CONCENTRATIONS AFTER APPLYING 
 C REACTION: ED + FEAED*EA --> PRODUCT
 C ********************************************************************
-      USE MT3DMS_MODULE, ONLY: NCOMP,NLAY,NROW,NCOL,ICBUND,CNEW 
+      USE MT3DMS_MODULE, ONLY: NCOMP,NLAY,NROW,NCOL,ICBUND,CNEW,RETA,
+     1  CADV
       USE RCTMOD
       IMPLICIT NONE
       INTEGER ICOMP,K,I,J,N
       REAL CED,CEA  !,CNEW 
+      REAL C1,C2
 CEDM  DIMENSION CNEW(NCOL,NROW,NLAY,NCOMP),ICBUND(NCOL,NROW,NLAY,NCOMP) 
 C
 C      DO ICOMP=1,NCOMP
@@ -1721,14 +1726,19 @@ C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
               IF(ICBUND(J,I,K,1).LE.0) CYCLE
 C
 C              IF(ICOMP.EQ.IED) THEN
-                IF(CNEW(J,I,K,IED).GE.CNEW(J,I,K,IEA)/FEDEA) THEN
-                  CED=CNEW(J,I,K,IED)-CNEW(J,I,K,IEA)/FEDEA
+                C1=CNEW(J,I,K,IED)
+                C2=CNEW(J,I,K,IEA)*RETA(J,I,K,IEA)/
+     1          (FEDEA*RETA(J,I,K,IED))
+                IF(C1.GE.C2) THEN
+                  CED=C1-C2
                 ELSE
                   CED=0.0
                 ENDIF
 C              ELSE
-                IF(CNEW(J,I,K,IEA).GE.CNEW(J,I,K,IED)*FEDEA) THEN
-                  CEA=CNEW(J,I,K,IEA)-CNEW(J,I,K,IED)*FEDEA
+                C1=CNEW(J,I,K,IED)*RETA(J,I,K,IED)*FEDEA/RETA(J,I,K,IEA)
+                C2=CNEW(J,I,K,IEA)
+                IF(C2.GE.C1) THEN
+                  CEA=C2-C1
                 ELSE
                   CEA=0.0
                 ENDIF
@@ -1737,6 +1747,8 @@ C              ENDIF
               CRCT(J,I,K,2)=CNEW(J,I,K,IEA)
               CNEW(J,I,K,IED)=CED
               CNEW(J,I,K,IEA)=CEA
+              CADV(J,I,K,IED)=CED
+              CADV(J,I,K,IEA)=CEA
             ENDDO
           ENDDO
         ENDDO

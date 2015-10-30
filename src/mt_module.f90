@@ -485,6 +485,7 @@ MODULE MT3DMS_MODULE
         INTEGER,          SAVE,                       POINTER :: ICNF      
         INTEGER,          SAVE,                       POINTER :: IUCN      
         INTEGER,          SAVE,                       POINTER :: IUCN2     
+        INTEGER,          SAVE, DIMENSION(:),         POINTER :: ISAVUCN
         INTEGER,          SAVE,                       POINTER :: IOBS      
         INTEGER,          SAVE,                       POINTER :: IMAS      
         INTEGER,          SAVE,                       POINTER :: ICBM      
