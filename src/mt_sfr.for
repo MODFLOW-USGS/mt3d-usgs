@@ -280,12 +280,12 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE FORMULATES SFT PACKAGE
 C***********************************************************************
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,A,RHS,
      &                             DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &                             MIXELM,IDRY2
+     &                             MIXELM
       IMPLICIT  NONE
       INTEGER N,K,I,J,NN
       INTEGER ICOMP
@@ -302,7 +302,7 @@ C--FILL COEFFICIENT MATRIX A - WITH GW TO SFR TERMS
         Q=QSFGW(N)    !(-)VE MEANS GW TO SFR; (+)VE MEANS SFR TO GW
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               IF(Q.LT.0.) THEN
                 QC7(J,I,K,9)=QC7(J,I,K,9)-Q
               ELSE
@@ -336,11 +336,11 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE ASSEMBLES AND SOLVES MATRIX FOR SFR TRANSPORT
 C***********************************************************************
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
      &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
-     &                         iSSTrans,iUnitTRNOP,IDRY2
+     &                         iSSTrans,iUnitTRNOP
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
       USE XMDMODULE
@@ -455,7 +455,7 @@ C.......GW TO SFR
         Q=QSFGW(N)
         IF(Q.LT.0.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-C            IF(IDRY2.EQ.1) THEN
+C            IF(DRYON) THEN
 C              RHSSF(N)=RHSSF(N)+Q*CNEW(J,I,K,ICOMP)
 C            ENDIF
           ELSE
@@ -758,14 +758,14 @@ C     THIS SUBROUTINE CALCULATES BUDGETS FOR STREAMS
 C     THIS SUBROUTINE CALCULATES GROUNDWATER BUDGETS RELATED TO STREAMS
 C     THIS SUBROUTINE WRITES STREAM CONCENTRATIONS AT OBSERVATION LOCATIONS
 C***********************************************************************
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE LAKVARS
       USE SFRVARS
       USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
      &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
-     &                         iSSTrans,IDRY2
+     &                         iSSTrans
       IMPLICIT  NONE
       INTEGER IS,IR,ICON
       INTEGER ICOMP
@@ -1079,7 +1079,7 @@ C.......INFLOW/OUTFLOW GW
         Q=QSFGW(N)
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               IF(Q.LT.0.) THEN
 C                Q1=Q1+ABS(Q)*DTRANS
 C                CONC=CNEW(J,I,K,ICOMP)

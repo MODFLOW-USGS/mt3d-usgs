@@ -390,11 +390,11 @@ C **********************************************************************
 C last modified: 02-20-2010
 C
       USE DSSL
-      USE MIN_SAT, ONLY : QC7
+      USE MIN_SAT, ONLY : QC7,DRYON
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,MIXELM,UPDLHS,
      &                        MaxHSSSource,MaxHSSStep,MaxHSSCells,
      &                        nHSSSource,HSSData,iHSSLoc,
-     &                        A,RHS,NODES,IDRY2,DELR,DELC,DH,PRSITY,
+     &                        A,RHS,NODES,DELR,DELC,DH,PRSITY,
      &                        COLD,CNEW
 C
       IMPLICIT  NONE
@@ -422,7 +422,7 @@ c
      &     HSSData,CTMP)     
           IF(ICBUND(N,ICOMP).le.0) THEN
             IF(ICBUND(N,ICOMP).eq.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
                 QC7(J,I,K,7)=QC7(J,I,K,7)-CTMP
               ENDIF
@@ -476,11 +476,11 @@ C **********************************************************************
 C last modified: 02-20-2010
 C
       USE DSSL
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,NODES,RMASIO,
      &                         MaxHSSSource,MaxHSSCells,MaxHSSStep,
      &                         nHSSSource,iRunHSSM,faclength,factime,
-     &                         facmass,iHSSLoc,HSSData,HSSNAM,IDRY2,
+     &                         facmass,iHSSLoc,HSSData,HSSNAM,
      &                         DELR,DELC,DH,PRSITY,
      &                        COLD,CNEW
 C
@@ -511,7 +511,7 @@ c
      &       HSSData,CTMP)            
             IF(ICBUND(N,ICOMP).le.0) THEN
               IF(ICBUND(N,ICOMP).eq.0) THEN
-                IF(IDRY2.EQ.1) THEN
+                IF(DRYON) THEN
                   CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
                   QC7(J,I,K,7)=QC7(J,I,K,7)-CTMP
                   RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+CTMP*DTRANS     

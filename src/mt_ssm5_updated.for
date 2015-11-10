@@ -395,7 +395,7 @@ C
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
-      IF(DRYON.and.IDRY2.EQ.1) THEN
+      IF(DRYON) THEN
         QC7(:,:,:,7)=0.0 !Qin*Cin
         QC7(:,:,:,8)=0.0 !Qin
         QC7(:,:,:,9)=0.0 !Qout
@@ -507,7 +507,7 @@ C--(RECHARGE)
             ENDIF
           ELSE
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(RECH(J,I).LT.0) THEN
@@ -541,7 +541,7 @@ C--(EVAPOTRANSPIRATION)
             ENDIF
           ELSE
             IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
@@ -608,7 +608,7 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
 C
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN
@@ -656,7 +656,7 @@ C--(RECHARGE)
      &       -RECH(J,I)*CRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
           ELSE
             IF(K.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(RECH(J,I).LT.0) THEN
@@ -692,7 +692,7 @@ C--(EVAPOTRANSPIRATION)
             ENDIF
           ELSE
             IF(K.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
@@ -760,7 +760,7 @@ C
 C--SKIP IF NOT ACTIVE CELL      
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN
@@ -822,7 +822,7 @@ C
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
 C--INFLOWS ARE COMPUTED AND STORED AS Q*C WHILE OUTFLOWS ARE COMPUTED AND STORED AS Q
-      IF(DRYON.and.IDRY2.EQ.1) THEN
+      IF(DRYON) THEN
         QC7(:,:,:,7)=0.0 !Qin*Cin
         QC7(:,:,:,8)=0.0 !Qin
         QC7(:,:,:,9)=0.0 !Qout
@@ -975,7 +975,7 @@ C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C        
           ELSE
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 CTMP=CRCH(J,I,ICOMP)
                 IF(RECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
@@ -1025,7 +1025,7 @@ C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C
           ELSE
             IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 CTMP=CEVT(J,I,ICOMP)
                 IF(EVTR(J,I).LT.0.AND.(CTMP.LT.0 .or.
      &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
@@ -1073,7 +1073,7 @@ C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
         ENDIF                                    
 C
 C--SKIP IF NOT ACTIVE CELL
-        IF(IDRY2.EQ.0) THEN
+        IF(.NOT.DRYON) THEN
           IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
         ENDIF
 C
@@ -1119,7 +1119,7 @@ C
           ENDIF
         ELSE
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(QSS.LT.0) THEN

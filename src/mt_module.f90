@@ -577,7 +577,6 @@ MODULE MT3DMS_MODULE
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: TMASS
 !--BTN-Vivek
         INTEGER,          SAVE,                       POINTER :: INRTR         !# LINE 118 MAIN
-        INTEGER,          SAVE,                       POINTER :: MINVOL        !# NOT SET IN VIVEK'S CODE, DOING SO HERE
 !--ADV
         INTEGER,          SAVE,                       POINTER :: NADVFD
         INTEGER,          SAVE,                       POINTER :: ITRACK

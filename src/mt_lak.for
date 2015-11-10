@@ -192,13 +192,13 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE FORMULATES LKT PACKAGE
 C***********************************************************************
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE LAKVARS
       USE SFRVARS, ONLY: ISTRM,CNEWSF
       USE UZTVARS,       ONLY: NCONLK,IROUTE,UZQ,CUZINF,NCON
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,A,RHS,DTRANS,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,MIXELM,
-     &  iUnitTRNOP,IDRY2
+     &  iUnitTRNOP
 !     &  MXUZCON,IROUTE,UZQ,NCON,CUZINF,NCONLK
       IMPLICIT  NONE
       INTEGER ICOMP
@@ -232,7 +232,7 @@ C--GW TO LAK FLOW
 C.......CONSIDER ONLY FLOW INTO LAKE
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
                IF(Q.LT.0.) THEN
                  QC7(J,I,K,9)=QC7(J,I,K,9)-Q
                ENDIF
@@ -389,7 +389,7 @@ C--LAK TO GW FLOW
 C.......CONSIDER ONLY FLOW OUT OF LAKE
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               IF(Q.GT.0.) THEN
                 QC7(J,I,K,7)=QC7(J,I,K,7)-Q*CONC
                 QC7(J,I,K,8)=QC7(J,I,K,8)-Q
@@ -414,14 +414,13 @@ C***********************************************************************
 C     THIS SUBROUTINE CALCULATES BUDGETS FOR LAKE
 C     THIS SUBROUTINE CALCULATES GROUNDWATER BUDGETS RELATED TO LAKES
 C***********************************************************************
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE LAKVARS
       USE SFRVARS, ONLY : ISTRM,CNEWSF
       USE UZTVARS,       ONLY: NCONLK,IROUTE,UZQ,CUZINF,NCON
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,A,RHS,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,MIXELM,
-     &                         PRTOUT,INSFT,RMASIO,INUZT,iUnitTRNOP,
-     &                         IDRY2
+     &                         PRTOUT,INSFT,RMASIO,INUZT,iUnitTRNOP
 !     &  MXUZCON,IROUTE,UZQ,NCON,CUZINF,NCONLK
       IMPLICIT  NONE
       INTEGER ICOMP
@@ -476,7 +475,7 @@ C--GW TO LAK FLOW
 C.......CONSIDER ONLY FLOW INTO LAKE
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               IF(Q.LT.0.) THEN
                 RMASLAK(N)=RMASLAK(N)+CONC*ABS(Q)
                 GW2LAK=GW2LAK+CONC*ABS(Q)
@@ -647,7 +646,7 @@ C--LAK TO GW FLOW
 C.......CONSIDER ONLY FLOW OUT OF LAKE
         IF(ICBUND(J,I,K,ICOMP).LE.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               IF(Q.GT.0.) THEN
                 GWFROMLAK=GWFROMLAK+Q*CONC
                 RMASIO(26,1,ICOMP)=RMASIO(26,1,ICOMP)+Q*CONC*DTRANS

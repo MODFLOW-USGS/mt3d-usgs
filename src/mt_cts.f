@@ -380,8 +380,7 @@ C
      &                         ITRTEXT,ITRTINJ,NEXT,NINJ,QINCTS,
      &                         QOUTCTS,CMCHGEXT,CMCHGINJ,CINCTS,
      &                         CNTE,MXEXT,MXINJ,MXCTS,QCTS,CCTS,
-     &                         IOUT,IWEXT,IWINJ,ICBUND,IFORCE,
-     &                         IDRY2
+     &                         IOUT,IWEXT,IWINJ,ICBUND,IFORCE
       IMPLICIT  NONE
       INTEGER ICOMP
       INTEGER I,J,IW,ICTS,KK,II,JJ,N,IQ,IWELL
@@ -420,7 +419,7 @@ C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
-                IF(IDRY2.EQ.1) THEN
+                IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
                 ELSE
                   Q=0.
@@ -447,7 +446,7 @@ C
 C--SKIP IF NOT ACTIVE CELL
           IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN !EXTRACTION IS FORMULATED IN SSM PACKAGE
             IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
                 TOTQ=TOTQ+Q 
               ENDIF
@@ -513,7 +512,7 @@ C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
-                IF(IDRY2.EQ.1) THEN
+                IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
                 ELSE
                   Q=0.
@@ -567,7 +566,7 @@ C
 C--SKIP IF NOT ACTIVE CELL
           IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
             IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
                 IF(Q.LT.0) THEN
                   QC7(JJ,II,KK,9)=QC7(JJ,II,KK,9)-Q
@@ -612,7 +611,7 @@ C THIS ALSO WRITES BUDGETS FOR ALL TREATMENT SYSTEMS SIMULATED.
 C ********************************************************************
 C last modified: 10-01-2014
 C
-      USE MIN_SAT, ONLY: QC7
+      USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,
      &                         DH,CNEW,ISS,NODES,MIXELM,SS,MXSS,NCTS,
      &                         KEXT,IEXT,JEXT,KINJ,IINJ,JINJ,IOPTEXT,
@@ -621,8 +620,7 @@ C
      &                         MXEXT,MXINJ,MXCTS,RMASIO,QCTS,
      &                         CCTS,IWEXT,IWINJ,IOUT,ICBUND,
      &                         CEXT2CTS,CGW2CTS,CADDM,CCTS2EXT,
-     &                         CCTS2GW,CREMM,ICTSOUT,IFORCE,PRTOUT,
-     &                         IDRY2
+     &                         CCTS2GW,CREMM,ICTSOUT,IFORCE,PRTOUT
       IMPLICIT  NONE
       INTEGER KPER,KSTP,ICOMP,ICTS,I,II,JJ,KK,IW,IWELL,IQ
       INTEGER NTRANS
@@ -700,7 +698,7 @@ C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
-                IF(IDRY2.EQ.1) THEN
+                IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
                 ELSE
                   Q=0.
@@ -727,7 +725,7 @@ C
 C--SKIP IF NOT ACTIVE CELL
           IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
             IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 C=0.
                 Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
                 TOTQ=TOTQ+Q
@@ -810,7 +808,7 @@ C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
               IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
-                IF(IDRY2.EQ.1) THEN
+                IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
                 ELSE
                   Q=0.
@@ -862,7 +860,7 @@ C
 C--SKIP IF NOT ACTIVE CELL
           IF(ICBUND(JJ,II,KK,ICOMP).LE.0.OR.IQ.LE.0) THEN
             IF(ICBUND(JJ,II,KK,ICOMP).EQ.0.AND.IQ.GT.0) THEN
-              IF(IDRY2.EQ.1) THEN
+              IF(DRYON) THEN
                 Q=SS(5,IWELL)*DELR(JJ)*DELC(II)*ABS(DH(JJ,II,KK))
                 Q2=Q2+Q
                 CTS2GW=CTS2GW+Q*CINJ

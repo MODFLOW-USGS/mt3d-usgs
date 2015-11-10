@@ -754,6 +754,7 @@ C IN THE FORMS NEEDED BY THE TRANSPORT MODEL.
 C **********************************************************************
 C last modified: 02-20-2010
 C
+      USE MIN_SAT,       ONLY: DRYON
       USE UZTVARS,       ONLY: UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,
      &                         IUZFBND
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,NCOL,NROW,NLAY,NCOMP,FPRT,
@@ -764,7 +765,7 @@ C
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
      &                         FETS,FSWT,FSFR,ISS,NPERFL,
      &                         CNEW,SSMC,KSSZERO,
-     &                         iUnitTRNOP,IDRY2
+     &                         iUnitTRNOP
 C
       IMPLICIT  NONE
       INTEGER   INUF,J,I,K,
@@ -1035,7 +1036,7 @@ C
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
           IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               RECH(J,I)=RECH(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
             ELSE
               RECH(J,I)=0.
@@ -1087,7 +1088,7 @@ C
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
           IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
-            IF(IDRY2.EQ.1) THEN
+            IF(DRYON) THEN
               EVTR(J,I)=EVTR(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
             ELSE
               EVTR(J,I)=0
@@ -1164,7 +1165,7 @@ C
         VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
         IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
         IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
-          IF(IDRY2.EQ.1) THEN
+          IF(DRYON) THEN
             SS(5,NUM)=SS(5,NUM)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
           ELSE
             SS(5,NUM)=0
