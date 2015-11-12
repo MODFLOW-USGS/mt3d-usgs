@@ -1941,9 +1941,11 @@ C
 	    do n=1,NEA
 		  ! first term: reaction rate times effective EA availability
 	      if(special(n+ned).eq.'MAXEC')then
-
+                  RVAL=0.
+                  IF(maxEC(n+ned).GE.rcold(n+ned)) THEN
 	            rval = decay(m,n) * ((maxEC(n+ned)-rcold(n+ned)) /
      &	                 (switch(n) + (maxEC(n+ned)-rcold(n+ned))))
+                  ENDIF
             elseif(special(n+ned).eq.'SOLID')then                                   !--JZ for solid phase iron
                 if(maxEC(n+ned)<=0.)cycle
                 rval = decay(m,n) * maxEC(n+ned) /(switch(n) + 
@@ -1990,8 +1992,14 @@ C
 		do n=1,NED
 		  ! first term: reaction rate times effective EA availability
 	      if(special(m).eq.'MAXEC')then
+
+                  RVAL=0.
+                  IF(maxEC(m).GE.rcold(m)) THEN
        	        rval = decay(n,m-ned) * ((maxEC(m)-rcold(m)) /
      & 	         (switch(m-ned) + (maxEC(m)-rcold(m))))       !for iron
+                  ENDIF
+
+
             elseif(special(m).eq.'SOLID')then
               if(maxEC(m)<=0.)cycle
        	      rval = decay(n,m-ned) * maxEC(m) /(switch(m-ned) + 
