@@ -48,23 +48,23 @@
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath="..\src\mt3dms5_updated.for"/>
-		<File RelativePath="..\src\mt_adv5_updated.for"/>
-		<File RelativePath="..\src\mt_btn5_updated.for"/>
-		<File RelativePath="..\src\mt_cts.f"/>
-		<File RelativePath="..\src\mt_dsp5_updated.for"/>
-		<File RelativePath="..\src\mt_fmi5_updated.for"/>
-		<File RelativePath="..\src\mt_gcg5.for"/>
-		<File RelativePath="..\src\mt_hss5.for"/>
-		<File RelativePath="..\src\mt_lak.for"/>
+		<File RelativePath="..\src\mt3d-usgs.f"/>
+		<File RelativePath="..\src\adv1.f"/>
+		<File RelativePath="..\src\btn1.f"/>
+		<File RelativePath="..\src\cts1.f"/>
+		<File RelativePath="..\src\dsp1.f"/>
+		<File RelativePath="..\src\fmi1.f"/>
+		<File RelativePath="..\src\gcg1.f"/>
+		<File RelativePath="..\src\hss1.f"/>
+		<File RelativePath="..\src\lak1.f"/>
 		<File RelativePath="..\src\mt_module.f90"/>
-		<File RelativePath="..\src\mt_rct5_updated.for"/>
-		<File RelativePath="..\src\mt_sfr.for"/>
-		<File RelativePath="..\src\mt_ssm5_updated.for"/>
-		<File RelativePath="..\src\mt_swf.for"/>
-		<File RelativePath="..\src\mt_tob5.for"/>
-		<File RelativePath="..\src\mt_uzt.for"/>
-		<File RelativePath="..\src\NWT1_xmd.f"/>
-		<File RelativePath="..\src\NWT1_xmdlib.f"/>
-		<File RelativePath="..\src\utl7.f"/></Filter></Files>
+		<File RelativePath="..\src\rct1.f"/>
+		<File RelativePath="..\src\sfr1.f"/>
+		<File RelativePath="..\src\ssm1.f"/>
+		<File RelativePath="..\src\swf1.f"/>
+		<File RelativePath="..\src\tob1.f"/>
+		<File RelativePath="..\src\uzt1.f"/>
+		<File RelativePath="..\src\xmd1.f"/>
+		<File RelativePath="..\src\xmdlib1.f"/>
+		<File RelativePath="..\src\utl1.f"/></Filter></Files>
 	<Globals/></VisualStudioProject>
