@@ -715,20 +715,20 @@ C--4. LINEAR NON-EQUILIBRIUM...
               IF(IREACT.eq.1.or.IREACT.eq.100.or.IREACT.eq.2.or.
      1          IREACT.eq.3)                                    
      1          RC2TMP=RC2(J,I,K)                                
-C--if with no reaction or with first-order reaction               
+C--IF with no reaction or with first-order reaction               
               IF(ireact.eq.0.or.ireact.eq.1.or.ireact.eq.2.or.
      1           ireact.eq.3) THEN                            
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+
      &           RHOB(J,I,K)/DTRANS*SRCONC(J,I,K))/
      &           (RHOB(J,I,K)/DTRANS+SP2(J,I,K)/SP1(J,I,K)
      &           +RC2TMP*RHOB(J,I,K))
-C--if with zeroth-order reaction      
+C--IF with zeroth-order reaction      
               ELSEIF(ireact.eq.100) THEN 
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+
      &           RHOB(J,I,K)/DTRANS*SRCONC(J,I,K)
      &           -RC2TMP*RHOB(J,I,K))/
      &           (RHOB(J,I,K)/DTRANS+SP2(J,I,K)/SP1(J,I,K))
-              endif
+              END IF
             ENDDO
           ENDDO
         ENDDO
@@ -765,23 +765,23 @@ CVSB              ENDIF
                 RC1TMP=RC1(J,I,K)
                 RC2TMP=RC2(J,I,K)
               ENDIF    
-C--if with no reaction or with first-order reaction            
-              if(ireact.eq.0.or.ireact.eq.1) then
+C--IF with no reaction or with first-order reaction            
+              IF(ireact.eq.0.or.ireact.eq.1) THEN
                 TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
      &           +RC1TMP*PRSITY2(J,I,K)
      &           +RC2TMP*PRSITY2(J,I,K)*(RETA2(J,I,K)-1.)
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)
      &           +PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
      &           /TERM1
-C--if with zeroth-order reaction     
-              elseif(ireact.eq.100) then 
+C--IF with zeroth-order reaction     
+              ELSEIF(ireact.eq.100) THEN 
                 TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)
      &           -RC1TMP*PRSITY2(J,I,K)
      &           -RC2TMP*(1.-FRAC(J,I,K))*RHOB(J,I,K)
      &           +PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
      &           /TERM1
-              endif         
+              END IF         
             ENDDO
           ENDDO
         ENDDO
@@ -836,7 +836,7 @@ C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
               IF(IREACT.eq.1.or.IREACT.eq.100.or.IREACT.eq.2.or.
      1           IREACT.eq.3)                                   
      1           RC2TMP=RC2(N,ICOMP)                            
-C--if with no reaction or with first-order reaction             
+C--IF with no reaction or with first-order reaction             
               IF(IREACT.EQ.0.OR.IREACT.EQ.1.OR.IREACT.EQ.2.OR.  
      1           IREACT.EQ.3) THEN                              
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)
@@ -851,8 +851,8 @@ C--if with no reaction or with first-order reaction
      1          RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)
      &           *DELR(J)*DELC(I)*DH(N)                  
      &           *RHOB(N)*SRCONC(N,ICOMP-1)              
-C--if with zeroth-order reaction     
-              ELSEIF(IREACT.EQ.100) then
+C--IF with zeroth-order reaction     
+              ELSEIF(IREACT.EQ.100) THEN
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)
      &           *DH(N)*(1.-SP2(N,ICOMP)/SP1(N,ICOMP)
      &           /(RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP)))
@@ -860,7 +860,7 @@ C--if with zeroth-order reaction
      &           *DELR(J)*DELC(I)*DH(N)*RHOB(N)
      &           *(RC2TMP-SRCONC(N,ICOMP)/DTRANS))
      &           /(RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP))
-              endif   
+              END IF   
             ENDDO
           ENDDO
         ENDDO
@@ -884,8 +884,8 @@ C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
                 RC1TMP=RC1(N,ICOMP)
                 RC2TMP=RC2(N,ICOMP)
               ENDIF
-C--if with no reaction or with first-order reaction
-              if(ireact.eq.0.or.ireact.eq.1) then
+C--IF with no reaction or with first-order reaction
+              IF(ireact.eq.0.or.ireact.eq.1) THEN
                 TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)
      &           +RC1TMP*PRSITY2(N)
      &           +RC2TMP*PRSITY2(N)*(RETA2(N,ICOMP)-1.)
@@ -894,8 +894,8 @@ C--if with no reaction or with first-order reaction
                 RHS(N)=RHS(N)-SP2(N,ICOMP)
      &           *PRSITY2(N)*RETA2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)
      &           *SRCONC(N,ICOMP)/(DTRANS*TERM1)
-C--if with zeroth-order reaction      
-              elseif(ireact.eq.100) then
+C--IF with zeroth-order reaction      
+              ELSEIF(ireact.eq.100) THEN
                 TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)
      &           *DELR(J)*DELC(I)*DH(N)*(1.-SP2(N,ICOMP)/TERM1)
@@ -903,7 +903,7 @@ C--if with zeroth-order reaction
      &           *(-RC1TMP*PRSITY2(N)-RC2TMP*(1.-FRAC(N))*RHOB(N)
      &           +PRSITY2(N)*RETA2(N,ICOMP)*SRCONC(N,ICOMP)/DTRANS)
      &           /TERM1             
-              endif
+              END IF
             ENDDO
           ENDDO
         ENDDO
@@ -1435,20 +1435,20 @@ C--mobile liquid, mobile sorbed, immobile liquid, immobile sorbed
             CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
             CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML            
 C--for 1st-order reaction            
-            if(ireact.eq.1) then
+            IF(ireact.eq.1) THEN
               CMML=-RC1(J,I,K,ICOMP)*CMML*DTRANS
               CMMS=-RC2(J,I,K,ICOMP)*CMMS*DTRANS
               CIML=-RC1(J,I,K,ICOMP)*CIML*DTRANS
               CIMS=-RC2(J,I,K,ICOMP)*CIMS*DTRANS
 C--for zero-order reaction
-            elseif(ireact.eq.100) then              
+            ELSEIF(ireact.eq.100) THEN              
               CMML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY(J,I,K)*DTRANS
               CMMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
      &             *FRAC(J,I,K)
               CIML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY2(J,I,K)*DTRANS
               CIMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
      &             *(1.-FRAC(J,I,K))
-            endif            
+            END IF            
 C
 C--CALCULATE MASS LOSS/GAIN DUE TO REACTION IN MOBILE DOMAIN
             IF(CMML+CMMS.LT.0) THEN
@@ -1928,124 +1928,118 @@ C
       END
 C
 C
-	subroutine reaction_sub(icomp, cflag)
+	SUBROUTINE reaction_sub(icomp, cflag)
 C
 	! Implements general form of Lu et al (1999) Eq. 19-24
-	use RCTMOD
+	USE RCTMOD
 	implicit none
-	integer        ::  m,n,k, icomp
-	integer        ::  cflag
+	integer     m,n,k, icomp
+	integer     cflag
 C
       m=icomp
-      if (m.le.NED) then
-	    do n=1,NEA
+      IF (m.le.NED) THEN
+	    DO n=1,NEA
 		  ! first term: reaction rate times effective EA availability
-	      if(special(n+ned).eq.'MAXEC')then
-                  RVAL=0.
-                  IF(maxEC(n+ned).GE.rcold(n+ned)) THEN
-	            rval = decay(m,n) * ((maxEC(n+ned)-rcold(n+ned)) /
-     &	                 (switch(n) + (maxEC(n+ned)-rcold(n+ned))))
-                  ENDIF
-            elseif(special(n+ned).eq.'SOLID')then                                   !--JZ for solid phase iron
-                if(maxEC(n+ned)<=0.)cycle
-                rval = decay(m,n) * maxEC(n+ned) /(switch(n) + 
-     &           maxEC(n+ned))
-            elseif(special(n+ned).eq.'STORE')then
-		        rval = decay(m,n) * (rcold(m) / (switch(n) + rcold(m)))  !For methane
-            else
-		       rval = decay(m,n) * (rcold(n+ned) / (switch(n) + rcold(n+ned)))  !for other EAs
-		    end if
-
+	      IF(special(n+ned).eq.'MAXEC') THEN
+              RVAL=0.
+              IF(maxEC(n+ned).GE.rcold(n+ned)) THEN
+	          rval = decay(m,n)*((maxEC(n+ned)-rcold(n+ned)) /
+     &	             (switch(n) + (maxEC(n+ned)-rcold(n+ned))))
+              ENDIF
+            ELSEIF(special(n+ned).eq.'SOLID') THEN             !--JZ for solid phase iron
+              IF(maxEC(n+ned)<=0.) CYCLE
+              rval = decay(m,n) * maxEC(n+ned) /(switch(n) + 
+     &        maxEC(n+ned))
+            ELSEIF(special(n+ned).eq.'STORE') THEN
+              rval = decay(m,n) * (rcold(m) / (switch(n) + rcold(m)))  !For methane
+            ELSE
+              rval=decay(m,n)*(rcold(n+ned)/(switch(n) + rcold(n+ned)))!for other EAs
+		  END IF
 		  ! second term: inhibition by higher-sequence EAs
-	      if(n.gt.1)then
-	        do k=1,n-1
-	          if(special(k+ned).eq.'MAXEC')then
+	      IF(n.gt.1) THEN
+	        DO k=1,n-1
+	          IF(special(k+ned).eq.'MAXEC') THEN
 	            rval = rval * inhib(k) / (inhib(k) +
-     &            (maxEC(k+ned)-rcold(k+ned)))
-                elseif(special(k+ned).eq.'SOLID')then
-                  if(maxEC(k+ned)<=0.)cycle                                         !--JZ for solid phase iron
+     &                     (maxEC(k+ned)-rcold(k+ned)))
+                ELSEIF(special(k+ned).eq.'SOLID') THEN
+                  IF(maxEC(k+ned)<=0.) CYCLE                 !--JZ for solid phase iron
 	            rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
-                else
-			      rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
-			    end if
-	        end do
-
-	      end if
+                ELSE
+                  rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
+                END IF
+	        END DO
+	      END IF
 		  ! update electron donor(s)
-            if (cflag==0)then
-                dcdt(m)   = dcdt(m) + rval *RCOLD(m)                    !Call by the standalone module 
-            elseif(cflag==1)then
-                dcdt(m)   = dcdt(m) + rval                              !call by MT3DMS
-            endif
-	    end do
+            IF (cflag==0) THEN
+              dcdt(m) = dcdt(m) + rval *RCOLD(m)         !Call by the standalone module 
+            ELSEIF(cflag==1) THEN
+              dcdt(m) = dcdt(m) + rval                   !call by MT3DMS
+            END IF
+	    END DO
           ! yield from a higher ED (added by MTONKIN in V12)
-          if(m.gt.1.and.m.le.ned) then
-            do k=1,m-1
+          IF(m.gt.1.and.m.le.ned) THEN
+            DO k=1,m-1
               dcdt(m)=dcdt(m)+(yieldc(k,m))*dcdt(k)
-            end do
-          end if
-        end if
-
-	  ! ** use the average of (COLD+CNEW) to calculate consumption? **
-
-	  if(m.gt.NED) then
-		do n=1,NED
+            END DO
+          END IF
+        END IF
+C
+	  ! ** USE the average of (COLD+CNEW) to calculate consumption? **
+C
+	  IF(m.gt.NED) THEN
+		DO n=1,NED
 		  ! first term: reaction rate times effective EA availability
-	      if(special(m).eq.'MAXEC')then
-
-                  RVAL=0.
-                  IF(maxEC(m).GE.rcold(m)) THEN
-       	        rval = decay(n,m-ned) * ((maxEC(m)-rcold(m)) /
-     & 	         (switch(m-ned) + (maxEC(m)-rcold(m))))       !for iron
-                  ENDIF
-
-
-            elseif(special(m).eq.'SOLID')then
-              if(maxEC(m)<=0.)cycle
-       	      rval = decay(n,m-ned) * maxEC(m) /(switch(m-ned) + 
-     &  	      maxEC(m)) !for iron 
-       	    elseif(special(m).eq.'STORE')then
-		       rval = decay(n,m-ned) * (rcold(n) / (switch(m-ned) + rcold(n))) !for methane
-	    elseif(RCOLD(m)>0.0)then
-		       rval = decay(n,m-ned) * (rcold(m) / (switch(m-ned) + rcold(m))) !for other EAs
-		    else 
-		       rval=0.0    
-		    end if
+	      IF(special(m).eq.'MAXEC') THEN
+              RVAL=0.
+              IF(maxEC(m).GE.rcold(m)) THEN
+                rval = decay(n,m-ned) * ((maxEC(m)-rcold(m)) /
+     & 	              (switch(m-ned) + (maxEC(m)-rcold(m))))       !for iron
+              ENDIF
+            ELSEIF(special(m).eq.'SOLID') THEN
+              IF(maxEC(m)<=0.) CYCLE
+              rval = decay(n,m-ned)*maxEC(m)/(switch(m-ned)+maxEC(m)) !for iron 
+     	      ELSEIF(special(m).eq.'STORE') THEN
+	        rval = decay(n,m-ned)*(rcold(n)/(switch(m-ned)+rcold(n))) !for methane
+            ELSEIF(RCOLD(m)>0.0) THEN
+	        rval = decay(n,m-ned)*(rcold(m)/(switch(m-ned)+rcold(m))) !for other EAs
+	      ELSE 
+	        rval=0.0    
+	      END IF
 		  ! second term: inhibition by higher-sequence EAs
-	      if(m.gt.ned+1)then
-	        do k=1,m-ned-1
-	          if(special(k+ned).eq.'MAXEC')then
-	              rval = rval * inhib(k) / (inhib(k) +
-     &	              (maxEC(k+ned)-rcold(k+ned)))
-                elseif(special(k+ned).eq.'SOLID')then
-                    if(maxEC(k+ned)<=0.)cycle
-	              rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
-                else
+	      IF(m.gt.ned+1) THEN
+	        DO k=1,m-ned-1
+	          IF(special(k+ned).eq.'MAXEC') THEN
+                  rval = rval * inhib(k) / (inhib(k) +
+     &	                   (maxEC(k+ned)-rcold(k+ned)))
+                ELSEIF(special(k+ned).eq.'SOLID') THEN
+                  IF(maxEC(k+ned)<=0.) CYCLE
+                  rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
+                ELSE
 		        rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
-		        end if
-	        end do
-	      end if
+                END IF
+	        END DO
+	      END IF
 	      ! update electron acceptor(s)
-            if(cflag==0)then
-                dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)       !Call by the standalone module
-            elseif(cflag==1)then
-                dea_Ed_DT(n)=rval*yieldc(n,m)
-                dcdt(m) = dcdt(m) + rval*yieldc(n,m)                 !call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D AS THIS IS DONE WITHIN MT3D
-            endif  
-          end do                                                     !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m) WHEN COMPILING ALONE
-	  end if
-
-	!enddo ! ** This mimics the MT3D main NCOMP loop **
-
-	return
-	end subroutine reaction_sub
+            IF(cflag==0) THEN
+              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)       !Call by the standalone module
+            ELSEIF(cflag==1) THEN
+              dea_Ed_DT(n)=rval*yieldc(n,m)
+              dcdt(m) = dcdt(m) + rval*yieldc(n,m)                 !call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D AS THIS IS DONE WITHIN MT3D
+            END IF  
+          END DO                                                     !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m) WHEN COMPILING ALONE
+	  END IF
+C
+	!endDO ! ** This mimics the MT3D main NCOMP loop **
+C
+	RETURN
+	END SUBROUTINE reaction_sub
 C
 C
-      subroutine Stor_Add_Methane(cMethane, ICOMP, DTRANS) 
-!this subroutine is to check the concentration of methane, if it is over the maximum
-!EFC, then the additional mass of methane will be stored into a array, and the 
+      SUBROUTINE Stor_Add_Methane(cMethane, ICOMP, DTRANS) 
+!this SUBROUTINE is to check the concentration of methane, IF it is over the maximum
+!EFC, THEN the additional mass of methane will be stored into a array, and the 
 !concentration of methane will be assigned to equal the maximum EFC. 
-      use RCTMOD
+      USE RCTMOD
       USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL
 C
       REAL    cMethane(NCOL,NROW,NLAY)
@@ -2056,17 +2050,17 @@ C
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF((cMethane(J,I,K)- MaxEC(ICOMP))>0.)then
-                     MassStor(J,I,K)=MassStor(J,I,K)+(cMethane(J,I,K)
-     &               -MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(K)  
-     &                  *DELC(I)*DH(J,I,K)*DTRANS*0.5*DTRANS 
+            IF((cMethane(J,I,K)- MaxEC(ICOMP))>0.) THEN
+               MassStor(J,I,K)=MassStor(J,I,K)+(cMethane(J,I,K)
+     &                -MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(K)  
+     &                *DELC(I)*DH(J,I,K)*DTRANS*0.5*DTRANS 
                     cMethane(J,I,K)=MaxEC(ICOMP)                        
             ENDIF                                                   
           ENDDO                                                       
         ENDDO
       ENDDO      
 C
-      end subroutine
+      END SUBROUTINE
 C
 C
       SUBROUTINE KINETIC_SOLID(ICOMP,DTRANS)
