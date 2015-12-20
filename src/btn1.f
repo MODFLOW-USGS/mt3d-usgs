@@ -944,13 +944,11 @@ C--READ AND PRINT OUT TIMING INFORMATION
             TSLNGH(NSTP)=DELTF       
           ELSEIF(KPERF.GT.KPER) THEN 
             BACKSPACE(INTSO)         
-            EXIT                     
-          ELSE                       
-10          CONTINUE                 
-            WRITE(IOUT,*) 'END OF TSO FILE'
-            EXIT                   
+            EXIT                                      
           ENDIF                    
         ENDDO                      
+10      CONTINUE 
+        WRITE(IOUT,*) 'END OF TSO FILE'
         READ(IN,*)                 
         WRITE(IOUT,122) PERLEN,NSTP
       ELSE                         
