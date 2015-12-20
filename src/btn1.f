@@ -37,9 +37,7 @@ C--ALLOCATE
       ISAVUCN=1
       INOCROSS=0
 C--ALLOCATE SCALAR VARIABLES
-      !ALLOCATE(DOMINSAT)
       ALLOCATE(IATS)     
-      !ALLOCATE(DRYON)   
       ALLOCATE(MUTDRY,IC2DRY,IDRYBUD,ICTSPKG)
       MUTDRY=0 
       IC2DRY=0 
@@ -175,33 +173,33 @@ C--CHECK FOR MAJOR OPTIONS.
         DO I=1,MXTRNOP
           IF(LINE(ITYP1:ITYP2).EQ.NameTRNOP(I)) THEN
             IF(IU.EQ.0) THEN          
-              if(NameTRNOP(i).EQ.'ADV') THEN
+              IF(NameTRNOP(i).EQ.'ADV') THEN
                 IU=INADV
-              elseif(NameTRNOP(i).EQ.'DSP') THEN
+              ELSEIF(NameTRNOP(i).EQ.'DSP') THEN
                 IU=INDSP
-              elseif(NameTRNOP(i).EQ.'SSM') THEN
+              ELSEIF(NameTRNOP(i).EQ.'SSM') THEN
                 IU=INSSM
-              elseif(NameTRNOP(i).EQ.'CTS') THEN
+              ELSEIF(NameTRNOP(i).EQ.'CTS') THEN
                 IU=INCTS                        
-              elseif(NameTRNOP(i).EQ.'TSO') THEN
+              ELSEIF(NameTRNOP(i).EQ.'TSO') THEN
                 IU=INTSO                        
-              elseif(NameTRNOP(i).EQ.'UZT') THEN
+              ELSEIF(NameTRNOP(i).EQ.'UZT') THEN
                 IU=INUZT                        
-              elseif(NameTRNOP(i).EQ.'RCT') THEN
+              ELSEIF(NameTRNOP(i).EQ.'RCT') THEN
                 IU=INRCT
-              elseif(NameTRNOP(i).EQ.'GCG') THEN
+              ELSEIF(NameTRNOP(i).EQ.'GCG') THEN
                 IU=INGCG
-              elseif(NameTRNOP(i).EQ.'TOB') THEN
+              ELSEIF(NameTRNOP(i).EQ.'TOB') THEN
                 IU=INTOB
-              elseif(NameTRNOP(i).EQ.'HSS') THEN
+              ELSEIF(NameTRNOP(i).EQ.'HSS') THEN
                 IU=INHSS
-              elseif(NameTRNOP(i).EQ.'RTR') THEN
+              ELSEIF(NameTRNOP(i).EQ.'RTR') THEN
                 IU=INRTR                        
-              elseif(NameTRNOP(i).EQ.'LKT') THEN
+              ELSEIF(NameTRNOP(i).EQ.'LKT') THEN
                 IU=INLKT                        
-              elseif(NameTRNOP(i).EQ.'SFT') THEN
+              ELSEIF(NameTRNOP(i).EQ.'SFT') THEN
                 IU=INSFT                        
-              else
+              ELSE
                 WRITE(*,20) LINE(ITYP1:ITYP2)
    20           FORMAT(1X,'UNDEFINED UNIT # FOR FILE TYPE: ',A)  
                 CALL USTOP(' ')  
@@ -593,16 +591,9 @@ C--CALL RARRAY TO READ IN INITIAL CONCENTRATION
      &                     K,IN,IOUT)
         ENDDO
       ENDDO
-C
-C--ALLOCATE SPACE FOR REACTION VARIABLES      
-!      IF(IREACTION.EQ.2) THEN                
-!        ALLOCATE(INIC(NCOL,NROW,NLAY,NCOMP)) 
-!        INIC=COLD                            
-!      ENDIF                                  
-C                                             
+C                           
 C--READ AND ECHO CINACT,THKMIN
       READ(IN,'(2F10.0)',ERR=50,IOSTAT=IERR) CINACT,THKMIN
-CVSB      IF(THKMIN.LT.0) THKMIN=0.                            
 C.....READ NEGATIVE THKMIN AS ABSOLUTE VALUE OF MINTHK
       IABSMIN=0           
       IF(THKMIN.LT.0) THEN
@@ -968,17 +959,17 @@ C--READ AND PRINT OUT TIMING INFORMATION
       ENDIF
 C
 C--Read an optional flag for steady-state transport simulation
-      backspace (in)
-      read(in,'(a)') Line
+      BACKSPACE (IN)
+      READ(IN,'(a)') Line
       LLOC=31
       CALL URWORD(Line,LLOC,inam1,inam2,1,ITMP,R,IOUT,IN)
-      if(Line(inam1:inam2).eq.'SSTATE') then
+      IF(Line(inam1:inam2).eq.'SSTATE') THEN
         iSSTrans=1
-        write(iout,23)
-      else
+        WRITE(iout,23)
+      ELSE
         iSSTrans=0
-        write(iout,24)
-      endif            
+        WRITE(iout,24)
+      END IF            
 C            
    22 FORMAT(/1X,'LENGTH OF CURRENT STRESS PERIOD =',G15.7,
      & /1X,'NUMBER OF TIME STEPS FOR CURRENT STRESS PERIOD =',I5,
@@ -1109,11 +1100,11 @@ C--IF DT0 NEGATIVE, USE |DT0| AS DEFAULT TRANSPORT STEPSIZE
 c      
 c--IF steady-state transport simulation, reset time step
       IF(iSSTrans.EQ.1) THEN
-        if(MIXELM.NE.0) then
-          write(iout,101)
-          write(*,101) 
-          call ustop(' ')
-        endif
+        IF(MIXELM.NE.0) then
+          WRITE(iout,101)
+          WRITE(*,101) 
+          CALL ustop(' ')
+        ENDIF
         DTRANS=DELT      
       ENDIF
   101 format(1x,'ERROR: Steady-state transport can only be simulated',
@@ -1155,7 +1146,7 @@ C--PRINTOUT IS REQUESTED, CUT DOWN STEPSIZE
 C
       UPDLHS=.TRUE.
       IF(ABS(DTRANS-DTOLD).LT.ABS(DTRANS+DTOLD)*EPSILON
-     & .AND. NTRANS.GT.1) UPDLHS=.FALSE.
+     &  .AND. NTRANS.GT.1) UPDLHS=.FALSE.
 C
 C--PRINT OUT AN IDENTIFYING MSGGAGE
       WRITE(*,70) NTRANS,DTRANS,TIME2
@@ -1250,17 +1241,17 @@ C
                   IF(ISOTHM.EQ.1) THEN
                     CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
                     IF(IALTFM.EQ.3)
-     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
      1                   *COLD(J,I,K,INDEX)*VCELL
                   ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                     CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
                     IF(IALTFM.EQ.3)
-     1              CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VCELL
+     1                CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VCELL
                   ELSEIF(ISOTHM.GT.4) THEN
                     CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
                     IF(IALTFM.EQ.3)
-     1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
-     1                   *COLD(J,I,K,INDEX)*VCELL
+     1                CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
+     1                      *COLD(J,I,K,INDEX)*VCELL
                     CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
                     CIMS=(RETA2(J,I,K,INDEX)-1.)*CIML
                   ENDIF
@@ -1271,7 +1262,7 @@ C
               ELSE
                 IF(IALTFM.GE.1) THEN
                   VOLUME=VOLUME+QSTO(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)*
-     1        (HT2-TIME1)/PRSITY(J,I,K)
+     1                                         (HT2-TIME1)/PRSITY(J,I,K)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOLUME=MIN(VOLUME,VCELL)
                 ENDIF
@@ -1281,16 +1272,16 @@ C
                 CIMS=0.
                 IF(ISOTHM.EQ.1) THEN
                   CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
      1                   *COLD(J,I,K,INDEX)*VCELL
                 ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                   CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VOLUME
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=SRCONC(J,I,K,INDEX)*RHOB(J,I,K)*VCELL
                 ELSEIF(ISOTHM.GT.4) THEN
                   CMMS=(RETA(J,I,K,INDEX)-1.)*CMML
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=(RETA(J,I,K,INDEX)-1.)*THETAW2(J,I,K)
      1                   *COLD(J,I,K,INDEX)*VCELL
                   CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,INDEX)*VOLUME
@@ -1406,14 +1397,14 @@ C--FOR THE CURRENT TRANSPORT STEP
             IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
-                VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
-     &              *QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
-                VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
-                VOL=MIN(VOL,VCELL)
-                DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
-     &           *PRSITY(J,I,K)*VOL
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &              *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
+     &                                             *PRSITY(J,I,K)*VOL
                 ELSE
-                DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
+                  DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                     *DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
                 ENDIF
 C
@@ -1428,11 +1419,11 @@ C
                 IF(DMSTRG.LT.0) THEN
                   RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                   RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
-     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+     &                                   -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                 ELSE
                   RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
                   RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
-     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+     &                                   -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                 ENDIF
               ELSE
                 IF(IUZFBND(J,I).GT.0) THEN
@@ -1444,68 +1435,58 @@ C
                     RF=1.
                   ENDIF
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))*
-     1            THETAW(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
+     1                         THETAW(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
 C
                   IF(DMSTRG.LT.0) THEN
                     RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                     RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
-     &             -(RF-1.)*DMSTRG
+     &                                                -(RF-1.)*DMSTRG
                   ELSE
                     RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
                     RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
-     &             -(RF-1.)*DMSTRG
+     &                                                -(RF-1.)*DMSTRG
                   ENDIF
                 ELSE
-                 VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
-     &              *QSTO(J,I,K)/PRSITYSAV(J,I,K)*(HT2-TIME2)
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &               *DH(J,I,K)*QSTO(J,I,K)/PRSITYSAV(J,I,K)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
-     &           *RETA(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOL
+     &                        *RETA(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOL
                   IF(DMSTRG.LT.0) THEN
-                  RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
-                  RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
-     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+                    RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
+                    RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
+     &                  -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                   ELSE
-                  RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
-                  RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
-     &           -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
+                    RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
+                    RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
+     &                  -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                   ENDIF
                 ENDIF
               ENDIF
             ENDIF
-
-              IF(K.EQ.3) THEN
-              IF(I.EQ.123)THEN
-              IF(J.EQ.70)THEN
-              CONTINUE
-              ENDIF
-              ENDIF
-              ENDIF
-
-
           ENDDO
         ENDDO
       ENDDO
- 1110 Continue   
+ 1110 CONTINUE   
 C
 C--ACCUMULATE MASS IN/OUT FOR VARIOUS SINK/SOURCE TERMS AND
 C--MASS STOAGE CHANGES SINCE THE BEGINNING OF SIMULATION
 C      IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
-        DO IQ=1,122
-          TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
-          TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
-        ENDDO
+      DO IQ=1,122
+        TMASIO(IQ,1,ICOMP)=TMASIO(IQ,1,ICOMP)+RMASIO(IQ,1,ICOMP)
+        TMASIO(IQ,2,ICOMP)=TMASIO(IQ,2,ICOMP)+RMASIO(IQ,2,ICOMP)
+      ENDDO
 C
 C--DETERMINE TOTAL MASS IN AND OUT
       TMASIN(ICOMP)=0.
       TMASOT(ICOMP)=0.
-        DO IQ=1,122
-          IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY 
-          IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS              
-          TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
-          TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
-        ENDDO
+      DO IQ=1,122
+        IF(IDRYBUD.EQ.0 .AND. IQ.EQ.12) CYCLE !SKIP MASS-TO-DRY 
+        IF(IQ.EQ.14) CYCLE !SKIP CELL-BY-CELL MASS              
+        TMASIN(ICOMP)=TMASIN(ICOMP)+TMASIO(IQ,1,ICOMP)
+        TMASOT(ICOMP)=TMASOT(ICOMP)+TMASIO(IQ,2,ICOMP)
+      ENDDO
 C
 C--COMPUTE ACCUMULATIVE DISCREPANCY BETWEEN MASS IN AND OUT
       ERROR(ICOMP)=0.
@@ -1515,12 +1496,12 @@ C--COMPUTE ACCUMULATIVE DISCREPANCY BETWEEN MASS IN AND OUT
           ERROR(ICOMP)=0
         ELSE
           IF(IREACTION.EQ.2) THEN
-           ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP)+
-     &       MASS_NEG(ICOMP))/(0.5*(ABS(TMASIN(ICOMP)-MASS_NEG(ICOMP)))+
-     &       ABS(TMASOT(ICOMP)))
+            ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP)+
+     &        MASS_NEG(ICOMP))/(0.5*(ABS(TMASIN(ICOMP)-MASS_NEG(ICOMP)))
+     &        +ABS(TMASOT(ICOMP)))
           ELSE  
             ERROR(ICOMP)=100.*(TMASIN(ICOMP)+TMASOT(ICOMP))
-     &       /(0.5*(ABS(TMASIN(ICOMP))+ABS(TMASOT(ICOMP))))
+     &                    /(0.5*(ABS(TMASIN(ICOMP))+ABS(TMASOT(ICOMP))))
           ENDIF
         ENDIF
       ENDIF
@@ -1561,16 +1542,16 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
                 CIMS=0.
                 IF(ISOTHM.EQ.1) THEN
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
      1                   *CNEW(J,I,K,ICOMP)*VCELL
                 ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                   CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VCELL
                 ELSEIF(ISOTHM.GT.4) THEN
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-                    IF(IALTFM.EQ.3)
+                  IF(IALTFM.EQ.3)
      1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
      1                   *CNEW(J,I,K,ICOMP)*VCELL
                   CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
@@ -1591,17 +1572,17 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
               CIMS=0.
               IF(ISOTHM.EQ.1) THEN
                 CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-                    IF(IALTFM.EQ.3)
+                IF(IALTFM.EQ.3)
      1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
      1                   *CNEW(J,I,K,ICOMP)*VCELL
               ELSEIF(ISOTHM.GT.1.AND.ISOTHM.LE.4) THEN
                 CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VOLUME
-                    IF(IALTFM.EQ.3)
-     1              CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VCELL
+                IF(IALTFM.EQ.3)
+     1            CMMS=SRCONC(J,I,K,ICOMP)*RHOB(J,I,K)*VCELL
               ELSEIF(ISOTHM.GT.4) THEN
                 CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
-                    IF(IALTFM.EQ.3)
-     1              CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
+                IF(IALTFM.EQ.3)
+     1            CMMS=(RETA(J,I,K,ICOMP)-1.)*THETAW2(J,I,K)
      1                   *CNEW(J,I,K,ICOMP)*VCELL
                 CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
                 CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
@@ -1614,12 +1595,10 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
               IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
                 IF(IDRY2.GT.0) THEN
                   IF(ABS(QSTO(J,I,K)).GE.1.E-3) THEN
-                  CONTINUE
+                    CONTINUE
                   ENDIF
-
-                  CMML=QSTO(J,I,K)
-     1            *DH(J,I,K)*DELR(J)*DELC(I)
-     1            *COLDFLW(J,I,K,ICOMP)*(HT2-TIME2)
+                  CMML=QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
+     1                   *COLDFLW(J,I,K,ICOMP)*(HT2-TIME2)
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
                 ENDIF
                 IF(ICIMDRY.GE.2) THEN
@@ -1668,11 +1647,11 @@ C     &      +TMASS(3,3,ICOMP)+TMASS(4,3,ICOMP))
 C
 C--COMPUTE ALTERNATVE MEASURE OF MASS DISCREPANCY
       ERROR2(ICOMP)=0.
-      if(iSSTrans.ne.0) goto 1120 !skip if steady-state transport 
+      IF(iSSTrans.ne.0) GOTO 1120 !skip if steady-state transport 
       IF( TM1+TM2 .NE.0. ) THEN
         ERROR2(ICOMP)=100.*(TM1-TM2)/(0.5*(TM1+TM2))
       ENDIF
- 1120 continue    
+ 1120 CONTINUE    
 C
 C--RETURN
       RETURN
@@ -1747,9 +1726,9 @@ C.......WRITE TO DRY FILE
      &    WRITE(IMAS+NCOMP+ICOMP,2012) TIME2,TMASIO(12,2,ICOMP),    
      &     TMASIO(12,1,ICOMP),TMASIO(14,2,ICOMP),TMASIO(14,1,ICOMP),
      &     TMASIO(1,2,ICOMP),TMASIO(1,1,ICOMP),TOTMAS               
-        ENDIF
- 1012   FORMAT(1X,1P,7(G13.5,1X),4X,G10.3,5X,G10.3)
- 2012   FORMAT(1X,1P,8(G13.5,1X),4X,G10.3,5X,G10.3)
+      ENDIF
+ 1012 FORMAT(1X,1P,7(G13.5,1X),4X,G10.3,5X,G10.3)
+ 2012 FORMAT(1X,1P,8(G13.5,1X),4X,G10.3,5X,G10.3)
 C
 C--SAVE CELL CONCENTRATIONS TO UNFORMATTED FILES IF REQUESTED
       IF(SAVUCN .AND. PRTOUT) THEN
@@ -1893,9 +1872,7 @@ C
 C                                                             
       IF(IREACTION.EQ.2) THEN                                 
         WRITE(IOUT,1170) TMASIO(119,1,ICOMP)+MASS_NEG(ICOMP), 
-     &   TMASIO(119,2,ICOMP)                                  
-    ! & +                                                     
-    ! & mass_neg(icomp)                                       
+     &   TMASIO(119,2,ICOMP)
       ELSE                                                    
         WRITE(IOUT,1170) TMASIO(119,1,ICOMP),TMASIO(119,2,ICOMP)
       ENDIF
@@ -2004,7 +1981,7 @@ C--GET RIGHT-HAND-SIDE ARRAY [RHS]
             IF(ICBUND(N,ICOMP).LE.0) THEN
               RHS(N)=-TEMP
 C              
-            elseif(iSSTrans.eq.1) then  
+            ELSEIF(iSSTrans.eq.1) then  
               rhs(n)=0.           
 C            
             ELSE
@@ -2022,13 +1999,6 @@ C
                 ENDIF
               ELSE
                 IF(IUZFBND(J,I).GT.0) THEN
-                  !IF(ISOTHM.EQ.0) THEN
-                  !  RF=1.
-                  !ELSEIF(ISOTHM.EQ.1) THEN
-                  !  RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
-                  !ELSE
-                  !  RF=1.
-                  !ENDIF
                   RHS(N)=-TEMP*THETAW(J,I,K)*RETA(N,ICOMP)/DTRANS
      &                  *DELR(J)*DELC(I)*DH(N)
                 ELSE
@@ -2110,33 +2080,6 @@ C--IF INACTIVE OR CONSTANT CELL
           ENDDO
         ENDDO
       ENDDO
-C
-C
-!        OPEN(201,FILE='C:\\TMP\\A_Array.TXT')
-!        N=0
-!        DO K=1,NLAY
-!          DO I=1,NROW
-!            DO J=1,NCOL
-!              N=N+1
-!              WRITE(201,171)(A(N))
-!            ENDDO
-!          ENDDO    
-!        ENDDO                                     
-!  171   FORMAT(40E20.10)                        
-!        CLOSE(201)                                
-!C                                                 
-!        OPEN(202,FILE='C:\\TMP\\RHS_Array.TXT')
-!        DO K=1,NLAY
-!          DO I=1,NROW
-!            DO J=1,NCOL
-!              N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
-!              WRITE(202,172)(RHS(N))
-!            ENDDO
-!          ENDDO
-!        ENDDO                                     
-!  172   FORMAT(1000E20.10)                        
-!        CLOSE(202)                                
-C
 C
 C--CALCULATE MATRIX INDICES FOR THE GCG SOLVER
       NRC = NROW*NCOL
@@ -2267,10 +2210,6 @@ C
         KEYFOUND2=.FALSE.
         DO IKEY=1,NKEYWORDS
           IF(LINE(ISTART:ISTOP).EQ.TRIM(KEYWORDS(IKEY))) THEN
-C            IF(.NOT.KEYFOUND) THEN
-C              WRITE(IOUT,'(A)') 'BTN PACKAGE INPUT KEYWORDS: '
-C            ENDIF
-C            WRITE(IOUT,'(A)') LINE(ISTART:ISTOP)
             KEYFOUND=.TRUE.
             KEYFOUND2=.TRUE.
             EXIT
