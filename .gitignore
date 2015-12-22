@@ -162,3 +162,8 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# MT3D autotest
+src_temp
+mod_temp
+temp

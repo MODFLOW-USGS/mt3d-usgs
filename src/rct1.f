@@ -490,7 +490,7 @@ C-----READ REACTION RELATED DATA
 104     FORMAT(1X,'SIMULATED REACTION: ED + FEDEA*EA --> PRODUCT'
      1        /1X,'ELECTRON DONOR COMPONENT (IED)         = ',I3
      1        /1X,'ELECTRON ACCEPTOR COMPONENT (IEA)      = ',I3
-     1        /1X,'STOICHIOMETRIC RATIO (FEDEA)           = ',G10.4)
+     1        /1X,'STOICHIOMETRIC RATIO (FEDEA)           = ',G12.4)
 C.......CHECK FOR POSSIBLE ERRORS                              
         IF(IED.GT.NCOMP .OR. IEA.GT.NCOMP) THEN                
           WRITE(*,*) 'IEA OR IED GREATER THAN NCOMP'           
