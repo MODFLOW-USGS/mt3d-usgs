@@ -27,8 +27,8 @@ target = os.path.join('temp', program + '_' + version + target_extension)
 target_dict[os.path.basename(target)] = target
 
 # Release version information
-url_release = 'NEED TO FIGURE OUT HOW TO DO THIS'
-dir_release = os.path.join(testdir, 'mt3d')
+loc_release = os.path.join('..', 'mt3dms')
+dir_release = os.path.join('temp', 'mt3dms')
 srcdir_release = os.path.join(dir_release, 'src')
 version_release = '5.3.00'
 target_release = os.path.join('temp', program + '_' + version_release +
