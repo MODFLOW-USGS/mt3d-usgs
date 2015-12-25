@@ -140,7 +140,7 @@ C
 C--The following statement should be uncommented in order to use
 C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
-      CALL GETCL(FLNAME)
+C      CALL GETCL(FLNAME)
 C
 C--Get Name of NAME File from Screen
       IF(FLNAME.EQ.' ') THEN

@@ -836,8 +836,7 @@ C
       DIMENSION data(n)
 C      
       if(n.le.1) then
-        call ustop ('N must be at least 2 in subroutine MOMENT',
-     &   ' used by TOB Package')
+        call ustop ('N > 2 in subroutine MOMENT used by TOB Package')
       endif        
       s=0.
       do j=1,n
@@ -923,8 +922,7 @@ C
       REAL betai,a,b,x,bt,betacf,gammln
 C      
       if(x.lt.0. .or. x.gt.1.) then
-        call ustop('Bad argument x in subroutine BETAI',
-     &   ' used by TOB Package')
+        call ustop('Bad arg x in subroutine BETAI used by TOB Package')
       endif  
       if(x.eq.0. .or. x.eq.1.) then
         bt=0.
@@ -981,8 +979,7 @@ C
         h=h*del
         if(abs(del-1.).lt.EPS) goto 1
       enddo      
-      call ustop('a or b too big, or MAXIT too small',
-     & ' in subroutine BETACF used by TOB Package')
+      call ustop('a|b too big, or MAXIT too small in subroutine BETACF')
     1 betacf=h
 C
       RETURN
