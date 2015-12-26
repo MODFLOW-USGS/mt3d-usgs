@@ -1,0 +1,10 @@
+LIST  6 hsstest.lst
+BAS6  1 hsstest.ba6
+BCF6 11 hsstest.bc6
+WEL  12 hsstest.wel
+SIP  13 hsstest.sip
+OC   22 hsstest.oc
+LMT6 33 hsstest.lmt
+DIS  10 hsstest.dis
+Data(Binary) 55 hsstest.ufh
+
