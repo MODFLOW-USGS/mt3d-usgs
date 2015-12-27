@@ -74,7 +74,8 @@ C--DECODE THE INPUT VARIABLES
         IHSSGEN=1                            
       ELSEIF(LINE(inam1:inam2).EQ.'IRREGULAR') THEN 
         IHSSGEN=2
-      ENDIF      
+      ENDIF
+      MAXDSSL=0
       CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,ITMP,R,IOUT,INHSS)
       MAXDSSL=ITMP
 C
