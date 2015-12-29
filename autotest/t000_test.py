@@ -46,5 +46,5 @@ def test_compile_ref():
     return
 
 if __name__ == '__main__':
-    #test_compile_dev()
+    test_compile_dev()
     test_compile_ref()

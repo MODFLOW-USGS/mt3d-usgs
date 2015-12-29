@@ -8,11 +8,11 @@ if not os.path.isdir(testdir):
 target_dict = {}
 
 exclude = None
-retain = False
+retain = True
 
 # Compiling information
-fc = 'gfortran'
-# fc = 'ifort'
+# fc = 'gfortran'
+fc = 'ifort'
 target_extension = ''
 target_arch = 'intel64'
 if platform.system() in 'Windows':
@@ -29,6 +29,7 @@ target_dict[os.path.basename(target)] = target
 # Release version information
 loc_release = os.path.join('..', 'mt3dms')
 dir_release = os.path.join('temp', 'mt3dms')
+program = 'mt3dms'
 srcdir_release = os.path.join(dir_release, 'src')
 version_release = '5.3.00'
 target_release = os.path.join('temp', program + '_' + version_release +

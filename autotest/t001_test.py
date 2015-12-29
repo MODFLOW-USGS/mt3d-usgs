@@ -98,6 +98,6 @@ def test_mt3d():
 if __name__ == '__main__':
     namefiles = []
     for pth in config.testpaths:
-        namefiles += get_namefiles(pth, exclude='mf2005')
+        namefiles += get_namefiles(pth, exclude=('mf2005','mf2k'))
     for namefile in namefiles:
         run_mt3d(namefile)
