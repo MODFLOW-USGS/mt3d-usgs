@@ -1068,7 +1068,7 @@ C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
         IF(iUnitTRNOP(6).GT.0) THEN              
           IF(SS(8,NUM).GT.0) THEN                
-            IF(IWCTS(INT(SS(8,NUM))).GT.0.0) CYCLE      
+            IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
           ENDIF                                  
         ENDIF                                    
 C

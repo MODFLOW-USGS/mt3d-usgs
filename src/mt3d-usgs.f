@@ -69,8 +69,6 @@ C
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
       CHARACTER FLNAME*5000
       CHARACTER COMLIN*2000               
-      CHARACTER CMST*4                   
-      CHARACTER CDRY*4                   
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
       REAL DT00                          
       REAL START_TIME,TOTAL_TIME,
@@ -109,12 +107,6 @@ C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
       CALL GETARG(1,COMLIN)
-cvsb                       
-      CALL GETARG(2,CMST)  
-      CALL GETARG(3,CDRY)  
-      IF(CMST.EQ.'DRY1'.OR.CMST.EQ.'dry1') DOMINSAT=.TRUE.
-      IF(CDRY.EQ.'DRY2'.OR.CDRY.EQ.'dry2') DRYON=.TRUE.
-      IF(.NOT.DOMINSAT) DRYON=.FALSE.
 c      CALL GETCL(FLNAME)                  
 C                                          
       IF(COMLIN.NE.' ') THEN               

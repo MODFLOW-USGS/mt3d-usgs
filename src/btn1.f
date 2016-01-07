@@ -945,10 +945,15 @@ C--READ AND PRINT OUT TIMING INFORMATION
           ELSEIF(KPERF.GT.KPER) THEN 
             BACKSPACE(INTSO)         
             EXIT                                      
+          ELSE
+            WRITE(IOUT,*) 'END OF TSO FILE'
+            EXIT                   
           ENDIF                    
         ENDDO                      
+        GOTO 11
 10      CONTINUE 
         WRITE(IOUT,*) 'END OF TSO FILE'
+11      CONTINUE
         READ(IN,*)                 
         WRITE(IOUT,122) PERLEN,NSTP
       ELSE                         
