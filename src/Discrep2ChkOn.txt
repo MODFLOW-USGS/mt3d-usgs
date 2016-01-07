@@ -1,26 +1,37 @@
 1) CDRY: Vivek defines this variable as CHARACTER*3, but it is already defined as REAL in the 'modules' version.
+  - CHARACTER definition of CDRY deleted from the main file mt3d-usgs.f 1/7/2016
 2) Not sure why INCTS/6/ & INTSO/14/ are not set in congruence with other NameTRNOP slots in Vivek's version?
    yet INRTR/15/, INLKT/16/, INSFT/17/ are set as is the custom.
-   
+  - this has already been addressed in the code. 1/7/2016
 TO DO (Items skipped):
 1) In Vivek's code: Main program; lines 170-183
+  - Not sure what these line numbers refer to as the lines may have moved from the time that this comment was made.
 2) In Vivek's code: Main program; lines 230-243
 3) In Vivek's code: Main program; lines 269-271 (quoted next 3 lines):
       IF(iUnitTRNOP(6).GT.0)
      & ALLOCATE(CEXT2CTS(NCOMP),CGW2CTS(NCOMP),CADDM(NCOMP),
      & CCTS2EXT(NCOMP),CCTS2GW(NCOMP),CREMM(NCOMP))
    These lines of code should be added to the CTS package
+  - this has already been addressed in the code. 1/7/2016
 4) In Vivek's code: Main program; lines 869-872 Need to add this to the MEMDEALLOCATE function call rather than
    have it be its own thing.
+  - Not sure what this means.
 5) In Vivek's code: BTN module; MINVOL isn't used anywhere and should probably be removed.
+  - this has already been addressed in the code. 1/7/2016
 6) In Chris's translation of the code: RCT module; line 222 says "CLANGEVIN--NEED TO OPEN UCN2 FILES HERE INSTEAD OF IN BTN5AR"
    Needs to be dealt with, ask Chris if he's addressed it yet.
+  - this has already been addressed in the code. 1/7/2016
+  - commented was deleted now. 1/7/2016
 7) Check to make sure that some of Vivek's new material (For example, in SADV5U, make sure that DH
    used by Vivek will work with the UZF material.
+  - I remember seeing this with Eric. I believe this was addressed long back. Eric can you confirm? 1/7/2016
 8) Clean up function calls to SADV5Q3, NODE2KIJ, ADVQC7RP, ADVQC7BD, ADVQC7FM, SADV5Q2 in ADV package.
    That is 
+  - Not sure what this means.
 9) Functions READSFR & READLAK have not been converted into the modules format quite yet.
+  - Looks like this was addressed. 1/7/2016
 10) In FMI, check to make sure that the code around line 648 is playing nicely with each other
     (it is a mix of Vivek and UZF code).
+  - the line numbers have probably moved, but I think Eric and I had taken care of this. Eric?
 11) On about line 336 of the main module, the following code: "CNEW=COLD" should be reviewed    
-
+  - Looks like this was addressed. 1/7/2016
