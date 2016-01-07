@@ -437,7 +437,7 @@ C
       CHARACTER FINDEX*30,FLNAME*50,FLFORM*15,FLSTAT*15,FILACT*20,
      &          ACCARG*20
 C
-      INCLUDE  'FILESPEC.INC'
+      INCLUDE  'OPENSPEC.INC'
 C
 C--DETERMINE FILE FORM AND STATUS
       IF(IN.GT.0) THEN
@@ -1011,7 +1011,7 @@ C     ******************************************************************
       DIMENSION RLIST(LDIM,MXLIST)
       CHARACTER*200 LINE,FNAME
       DATA NUNOPN/99/
-      INCLUDE 'FILESPEC.INC'
+      INCLUDE 'OPENSPEC.INC'
 C     ------------------------------------------------------------------
 C
 C1------If the list is empty, return.
@@ -1190,7 +1190,7 @@ C     ------------------------------------------------------------------
       CHARACTER*200 CNTRL
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'FILESPEC.INC'
+      INCLUDE 'OPENSPEC.INC'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.
@@ -1304,7 +1304,7 @@ C     ------------------------------------------------------------------
       CHARACTER*200 CNTRL
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'FILESPEC.INC'
+      INCLUDE 'OPENSPEC.INC'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.
@@ -1533,7 +1533,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 TEXT
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'FILESPEC.INC'
+      INCLUDE 'OPENSPEC.INC'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.

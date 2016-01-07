@@ -26,7 +26,7 @@ C
       CHARACTER*20  FMTARG,ACCARG,FILACT
       CHARACTER     FILSTAT*7
 C
-      INCLUDE 'FILESPEC.INC'
+      INCLUDE 'OPENSPEC.INC'
 C
 C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
@@ -945,10 +945,15 @@ C--READ AND PRINT OUT TIMING INFORMATION
           ELSEIF(KPERF.GT.KPER) THEN 
             BACKSPACE(INTSO)         
             EXIT                                      
+          ELSE
+            WRITE(IOUT,*) 'END OF TSO FILE'
+            EXIT                   
           ENDIF                    
         ENDDO                      
+        GOTO 11
 10      CONTINUE 
         WRITE(IOUT,*) 'END OF TSO FILE'
+11      CONTINUE
         READ(IN,*)                 
         WRITE(IOUT,122) PERLEN,NSTP
       ELSE                         
