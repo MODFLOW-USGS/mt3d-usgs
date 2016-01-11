@@ -507,7 +507,7 @@ C-------READ REACTION FILE NAME
         READ(IN,'(A1000)') rec_FileName                        
         INQUIRE(FILE=rec_FileName,EXIST=EXISTED)               
         IF(.NOT.EXISTED) THEN                                  
-          WRITE(*,*) 'FILE ',TRIM(rec_FileName),' DOES NOT ESIST'
+          WRITE(*,*) 'FILE ',TRIM(rec_FileName),' DOES NOT EXIST'
           CALL USTOP('  ')        
         ELSE                      
           NODES=NLAY*NROW*NCOL    
@@ -1820,9 +1820,11 @@ C
       MASS_NEG=0.0
       CON_NEG=0.0
 C
-      WRITE(IOUT,110)
-110   FORMAT(/1x,'Species no.',5x,'Case code' , 5x, 'Max EFC',
-     1       /1x,'-----------',5x,'---------' , 5x, '-------')
+      IF(NSPECIAL.GE.1) THEN
+        WRITE(IOUT,110)
+110     FORMAT(/1x,'Species no.',5x,'Case code' , 5x, 'Max EFC',
+     1         /1x,'-----------',5x,'---------' , 5x, '-------')
+      ENDIF
       DO I=1,NSPECIAL
         READ(INUNIT,'(A)') LINE
         READ(LINE,*) N
