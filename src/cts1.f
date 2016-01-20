@@ -156,20 +156,20 @@ C--READ HEADER FOR EACH TREATMENT SYSTEM
         READ(INCTS,'(A1000)') LINE1
         READ(LINE1,'(I10)') ICTS
         READ(LINE1,'(5I10)')IDUMMY,NEXT(ICTS),NINJ(ICTS),
-     &    ITRTEXT(ICTS),ITRTINJ(ICTS)
+     &    ITRTINJ(ICTS) !ITRTEXT(ICTS),
 c-----hardwire to 0
       ITRTEXT(ICTS)=0
 c------------------
         WRITE(IOUT,10) ICTS,NEXT(ICTS),NINJ(ICTS),
-     &    ITRTEXT(ICTS),ITRTINJ(ICTS)
+     &    ITRTINJ(ICTS) !ITRTEXT(ICTS),
 10      FORMAT(/1X,'TREATMENT SYSTEM # ',I10,
      &         /1X,'------------------------------',
      &         /1X,'NUMBER OF EXTRACTION WELLS    = ',I10,
      &         /1X,'NUMBER OF INJECTION WELLS     = ',I10,
-     &         /1X,'TREATMENT OPTION (EXT. WELLS) = ',I10,
-     &         /1X,'  = 0 MEANS NO TREATMENT',
-     &         /1X,'  = 1 MEANS SAME LEVEL OF TREATMENT FOR ALL WELLS',
-     &         /1X,'  = 2 MEANS TREATMENT SPECIFIED FOR EACH WELL'
+!     &         /1X,'TREATMENT OPTION (EXT. WELLS) = ',I10,
+!     &         /1X,'  = 0 MEANS NO TREATMENT',
+!     &         /1X,'  = 1 MEANS SAME LEVEL OF TREATMENT FOR ALL WELLS',
+!     &         /1X,'  = 2 MEANS TREATMENT SPECIFIED FOR EACH WELL'
      &         /1X,'TREATMENT OPTION (INJ. WELLS) = ',I10,
      &         /1X,'  = 0 MEANS NO TREATMENT',
      &         /1X,'  = 1 MEANS SAME LEVEL OF TREATMENT FOR ALL WELLS',
