@@ -806,7 +806,7 @@ C
      &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP
 C
       IMPLICIT  NONE
-      INTEGER   ICOMP,ICBUND,K,I,J,N
+      INTEGER   ICOMP,ICBUND,K,I,J,N,III
       REAL      PRSITY,RHOB,SP1,SP2,RC1,RC2,PRSITY2,FRAC,DTRANS,
      &          SRCONC,DH,RETA2,TERM1,TINY,
      &          RC1TMP,RC2TMP,
@@ -1089,8 +1089,16 @@ C
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                
 C                                                           
               DCDT_S(N,ICOMP)=0.                            
+              DCDT_SYLD(N,ICOMP)=0.                            
               IF(ICOMP.GT.NED) DCDT_FE(N,ICOMP-NED,1:NED)=0.
+              IF(ICOMP.GT.1) THEN
+                DO III=1,ICOMP-1
+                  DCDT(III)=DCDT_S(N,III)
+                  DCDTYLD(III)=DCDT_SYLD(N,III)
+                ENDDO
+              ENDIF
               DCDT(ICOMP)=0.                                
+              DCDTYLD(ICOMP)=0.                                
               DEA_ED_DT(1:NED)=0.                           
               RVAL=0.                                       
 C                                                           
@@ -1105,8 +1113,8 @@ C	          ASSIGN CONCENTRATIONS
                   IF(RCOLD(MM)<0.0) RCOLD(MM)=0.0           
                 ENDDO                                       
 C                                                           
-	          IF(ABS(SUM(RCOLD(1:NED))).LE.1.0E-7) CYCLE  
-                IF(RCOLD(ICOMP).LE.1.0E-7) CYCLE            
+	          !IF(ABS(SUM(RCOLD(1:NED))).LE.1.0E-7) CYCLE  
+                !IF(RCOLD(ICOMP).LE.1.0E-7) CYCLE            
 !	          IF(RCOLD(ICOMP)/INIC(J,I,K,ICOMP)<=1.E-4.and.ICOMP>NED)CYCLE
 CCC                DO MM=1,MCOMP                               
 CCC	          IF(SPECIAL(MM).EQ."SOLID".AND.IFESLD.GT.0) THEN
@@ -1120,14 +1128,24 @@ C
 		        CALL reaction_sub(ICOMP,1)                        
 C                                                                   
                 DCDT_S(N,ICOMP)=DCDT(ICOMP)                         
+                DCDT_SYLD(N,ICOMP)=DCDTYLD(ICOMP)                         
 C                                                                   
                 IF(ICOMP.LE.NED) THEN                               
-                  A(N)=A(N)+DCDT(ICOMP)*                            
-     +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N)               
+C                  A(N)=A(N)+DCDT(ICOMP)*                            
+C     +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N) 
+
+                  RHS(N)=RHS(N)-DCDT(ICOMP)*
+     +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N) 
+                  RHS(N)=RHS(N)-DCDTYLD(ICOMP)*
+     +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N) 
+
+!                  RHS(N)=RHS(N)+DCDTYLD(ICOMP)*
+!     +		        PRSITY(N)*DELR(J)*DELC(I)*DH(N) 
+
                 ELSE                                                
                   DO MM=1,NED                                       
 			          DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)       
-			          RHS(N)=RHS(N)-DEA_ED_DT(MM)* COLD(N,MM)*    
+			          RHS(N)=RHS(N)-DEA_ED_DT(MM)* !COLD(N,MM)*    
      +		                      PRSITY(N)*DELR(J)*DELC(I)*DH(N) 
                   ENDDO                                             
                 ENDIF                                               
@@ -1163,6 +1181,7 @@ C
       INTEGER   M,N                 
 C
       DCRCT=0.
+      DCRCT2=0.
 C
 C--UPDATE RETARDATION FACTOR AND SORBED/IMMOBILE-PHASE CONCENTRATION
 C
@@ -1532,25 +1551,33 @@ CVSB                ENDIF
             IF(ICBUND(J,I,K,ICOMP).LE.0.AND.COLD(J,I,K,ICOMP)<=0) CYCLE 
             IF(ICOMP<=NED) THEN                                   
               DCRCT=0.0                                           
+              DCRCT2=0.0                                           
               IF(COLD(J,I,K,ICOMP)>0.) THEN                       
-                DCRCT=DCDT_S(N,ICOMP)*COLD(J,I,K,ICOMP)*DELR(J)   
+                DCRCT=DCDT_S(N,ICOMP)*DELR(J) !*COLD(J,I,K,ICOMP)*DELR(J)   
+     &          *DELC(I)*DH(j,i,k)*PRSITY(j,i,k)*DTRANS           
+                DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J) !*COLD(J,I,K,ICOMP)*DELR(J)   
      &          *DELC(I)*DH(j,i,k)*PRSITY(j,i,k)*DTRANS           
     ! &          *COLD(J,I,K,ICOMP)/                              
     ! &          ABS(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))         
               ELSEIF(COLD(J,I,K,ICOMP)<=0.) THEN                  
                 !COLD(J,I,K,ICOMP)=0.0                            
                 DCRCT=0.0                                         
+                DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J) !*COLD(J,I,K,ICOMP)*DELR(J)   
+     &          *DELC(I)*DH(j,i,k)*PRSITY(j,i,k)*DTRANS           
 !                DCRCT=DCDT_S(N,ICOMP)*COLD(J,I,K,ICOMP)*DELR(J)  
 !     &          *DELC(I)*DH(j,i,k)*Prsity(j,i,k)*DTRANS          
               ELSE                                                
-                DCRCT=DCDT_S(N,ICOMP)*COLD(J,I,K,ICOMP)*DELR(J)   
+                DCRCT=DCDT_S(N,ICOMP)*DELR(J) !*COLD(J,I,K,ICOMP)*DELR(J)   
+     &          *DELC(I)*DH(J,I,K)*PRSITY(J,I,K)*DTRANS           
+                DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J) !*COLD(J,I,K,ICOMP)*DELR(J)   
      &          *DELC(I)*DH(J,I,K)*PRSITY(J,I,K)*DTRANS           
               ENDIF                                               
             ELSEIF(ICOMP>NED.AND.ICOMP<=NED+NEA)THEN              
               DCRCT=0.0                                           
+              DCRCT2=0.0                                           
               DO M=1,NED                                          
                 IF(COLD(J,I,K,M)>0.)THEN                          
-                DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M)*COLD(J,I,K,M)  
+                DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M) !*COLD(J,I,K,M)  
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)         
      &          *DTRANS !*COLD(J,I,K,M)/                          
     !&          ABS(CNEW(J,I,K,M)-COLD(J,I,K,M))                  
@@ -1561,7 +1588,7 @@ CVSB                ENDIF
 !     &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)        
 !     &          *DTRANS                                          
                 ELSE                                              
-                 DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M)*COLD(J,I,K,M) 
+                 DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M) !*COLD(J,I,K,M) 
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)         
      &          *DTRANS                                           
                 ENDIF                                             
@@ -1579,7 +1606,7 @@ CVSB                ENDIF
               DCRCT=0.0
               DO M=1,NED                                         
                 IF(COLD(J,I,K,M)>0)THEN                          
-                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*COLD(J,I,K,M)
+                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M) !*COLD(J,I,K,M)
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
 !     &          *COLD(J,I,K,M)/                                 
 !     &          ABS(CNEW(J,I,K,M)-COLD(J,I,K,M))                
@@ -1589,7 +1616,7 @@ CVSB                ENDIF
 !                DCRCT=DCRCT-DCDT_FE(N,3,M)*COLD(J,I,K,M)        
 !     &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS
                 ELSE                                             
-                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*COLD(J,I,K,M)
+                DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M) !*COLD(J,I,K,M)
      &           *DELR(J)*DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
                 ENDIF                                            
               ENDDO                                              
@@ -1606,6 +1633,11 @@ CVSB                ENDIF
               RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT
             ELSE                                         
               RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+DCRCT
+            ENDIF                                        
+            IF(DCRCT2<0.)THEN                              
+              RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT2
+            ELSE                                         
+              RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+DCRCT2
             ENDIF                                        
           ENDDO                                          
         ENDDO                                            
@@ -1814,7 +1846,8 @@ CCC      ALLOCATE(YIELDC(NED,NED+NEA),DEA_ED_DT(NED),DCDT(NED+NEA))
       ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NCOMP))
       ALLOCATE(MAXEC(NCOMP),SWITCH(NCOMP),INHIB(NCOMP),
      1  DECAY(NED,NCOMP-NED))
-      ALLOCATE(YIELDC(NED,NCOMP),DEA_ED_DT(NED),DCDT(NCOMP))
+      ALLOCATE(YIELDC(NED,NCOMP),DEA_ED_DT(NED),DCDT(NCOMP),
+     1  DCDTYLD(NCOMP))
 C
       ALLOCATE(MASS_NEG(NCOMP),CON_NEG(NCOMP))
       MASS_NEG=0.0
@@ -1911,7 +1944,8 @@ C
         ENDIF
 C
 CCC      ALLOCATE(DCDT_FE(NODES,NEA,NED),DCDT_S(NODES,NEA+NED))
-      ALLOCATE(DCDT_FE(NODES,NCOMP-NED,NED),DCDT_S(NODES,NCOMP))
+      ALLOCATE(DCDT_FE(NODES,NCOMP-NED,NED),DCDT_S(NODES,NCOMP),
+     1  DCDT_SYLD(NODES,NCOMP))
 C
 C--ADD CODE FOR SOME BASIC QA
 C      IF() THEN
@@ -1938,6 +1972,7 @@ C
 	integer     cflag
 C
       m=icomp
+      rval=0.
       IF (m.le.NED) THEN
 	    DO n=1,NEA
 		  ! first term: reaction rate times effective EA availability
@@ -1955,7 +1990,7 @@ C
               rval = decay(m,n) * (rcold(m) / (switch(n) + rcold(m)))  !For methane
             ELSE
               rval=decay(m,n)*(rcold(n+ned)/(switch(n) + rcold(n+ned)))!for other EAs
-		  END IF
+		    END IF
 		  ! second term: inhibition by higher-sequence EAs
 	      IF(n.gt.1) THEN
 	        DO k=1,n-1
@@ -1974,13 +2009,14 @@ C
             IF (cflag==0) THEN
               dcdt(m) = dcdt(m) + rval *RCOLD(m)         !Call by the standalone module 
             ELSEIF(cflag==1) THEN
-              dcdt(m) = dcdt(m) + rval                   !call by MT3DMS
+              dcdt(m) = dcdt(m) + rval  *RCOLD(m)                 !call by MT3DMS
             END IF
 	    END DO
           ! yield from a higher ED (added by MTONKIN in V12)
           IF(m.gt.1.and.m.le.ned) THEN
             DO k=1,m-1
-              dcdt(m)=dcdt(m)+(yieldc(k,m))*dcdt(k)
+C              dcdt(m)=dcdt(m)-(yieldc(k,m))*dcdt(k)*RCOLD(K)
+              dcdtYLD(m)=dcdtYLD(m)-(yieldc(k,m))*dcdt(k) !*RCOLD(K)- COLD ALTERADY IN DCDT TERM
             END DO
           END IF
         END IF
@@ -2024,8 +2060,8 @@ C
             IF(cflag==0) THEN
               dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)       !Call by the standalone module
             ELSEIF(cflag==1) THEN
-              dea_Ed_DT(n)=rval*yieldc(n,m)
-              dcdt(m) = dcdt(m) + rval*yieldc(n,m)                 !call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D AS THIS IS DONE WITHIN MT3D
+              dea_Ed_DT(n)=rval*yieldc(n,m) *RCOLD(n)
+              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)                 !call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D AS THIS IS DONE WITHIN MT3D
             END IF  
           END DO                                                     !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m) WHEN COMPILING ALONE
 	  END IF
@@ -2083,7 +2119,7 @@ C
                 DO II=1,NED                            
                   MAXEC(IEDEA)=MAXEC(IEDEA)-           
      &                          DCDT_FE(NN,IEDEA-NED,II)*
-     &                          DTRANS*COLD(J,I,K,II)    
+     &                          DTRANS !*COLD(J,I,K,II)    
                 ENDDO                          
                 CNEW(J,I,K,ICOMP)=MAXEC(IEDEA)*
      &                          PRSITY(J,I,K)/RHOB(J,I,K)
