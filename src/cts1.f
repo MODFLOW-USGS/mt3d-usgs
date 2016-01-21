@@ -187,8 +187,8 @@ C--CHECK IF NUMBERS EXCEED MAX NUMBERS
 C
 C--READ TREATMENT OPTIONS AND CONC/MASS CHANGE IF ITRTEXT=1
         IF(ITRTEXT(ICTS).EQ.1) THEN
-          READ(INCTS,'(1000(I10,F10.0))') 
-     &      (IOPTEXT(ICOMP,1,ICTS),CMCHGEXT(ICOMP,1,ICTS),ICOMP=1,NCOMP)
+!          READ(INCTS,'(1000(I10,F10.0))') 
+!     &      (IOPTEXT(ICOMP,1,ICTS),CMCHGEXT(ICOMP,1,ICTS),ICOMP=1,NCOMP)
 C          DO II=1,NEXT(ICTS)
 C            DO ICOMP=1,NCOMP
 C              IOPTEXT(ICOMP,II,ICTS)=IOPTEXT(ICOMP,1,ICTS)
@@ -211,27 +211,28 @@ C          ENDDO
 C
 C--READ EXTRACTION WELLS TO BE TREATED AND THEIR OPTIONS AND CONC/MASS CHANGE
         DO II=1,NEXT(ICTS)
-          IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
+! provision to have separate treatment on each extraction well
+!          IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
             READ(INCTS,'(4I10)') KEXT(II,ICTS),IEXT(II,ICTS),
      &        JEXT(II,ICTS),IWEXT(II,ICTS)
-          ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
-            READ(INCTS,'(4I10,1000(I10,F10.0))') 
-     &        KEXT(II,ICTS),IEXT(II,ICTS),JEXT(II,ICTS),IWEXT(II,ICTS),
-     &        (IOPTEXT(ICOMP,II,ICTS),
-     &        CMCHGEXT(ICOMP,II,ICTS),ICOMP=1,NCOMP)
-          ELSE
-            WRITE(IOUT,110) 
-            CALL USTOP(' ')
-          ENDIF
+!          ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
+!            READ(INCTS,'(4I10,1000(I10,F10.0))') 
+!     &        KEXT(II,ICTS),IEXT(II,ICTS),JEXT(II,ICTS),IWEXT(II,ICTS),
+!     &        (IOPTEXT(ICOMP,II,ICTS),
+!     &        CMCHGEXT(ICOMP,II,ICTS),ICOMP=1,NCOMP)
+!          ELSE
+!            WRITE(IOUT,110) 
+!            CALL USTOP(' ')
+!          ENDIF
           IWCTS(IWEXT(II,ICTS))=1
         ENDDO
 C
         WRITE(IOUT,30) ICTS
-        IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
-          WRITE(IOUT,31) 
-        ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
-          WRITE(IOUT,32)
-        ENDIF
+!        IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
+!          WRITE(IOUT,31) 
+!        ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
+!          WRITE(IOUT,32)
+!        ENDIF
 30      FORMAT(/1X,'     EXTRACTION WELLS FOR TREATMENT SYSTEM ',I10)
 31      FORMAT( 1X,'     LAYER       ROW    COLUMN    WELL #',
      &         /1X,'     -----       ---    ------    ------')
@@ -240,15 +241,16 @@ C
      &         /1X,'     -----       ---    ------    ------',
      &             '    --------- --------------------')
         DO II=1,NEXT(ICTS)
-          IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
+! provision to have separate treatment on each extraction well
+!          IF(ITRTEXT(ICTS).EQ.0 .OR. ITRTEXT(ICTS).EQ.1) THEN
             WRITE(IOUT,35) KEXT(II,ICTS),IEXT(II,ICTS),JEXT(II,ICTS),
      &        IWEXT(II,ICTS)
-          ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
-            WRITE(IOUT,36) KEXT(II,ICTS),IEXT(II,ICTS),JEXT(II,ICTS),
-     &        IWEXT(II,ICTS),
-     &      (IOPTEXT(ICOMP,II,ICTS),
-     &       CMCHGEXT(ICOMP,II,ICTS),ICOMP=1,NCOMP)
-          ENDIF
+!          ELSEIF(ITRTEXT(ICTS).EQ.2) THEN
+!            WRITE(IOUT,36) KEXT(II,ICTS),IEXT(II,ICTS),JEXT(II,ICTS),
+!     &        IWEXT(II,ICTS),
+!     &      (IOPTEXT(ICOMP,II,ICTS),
+!     &       CMCHGEXT(ICOMP,II,ICTS),ICOMP=1,NCOMP)
+!          ENDIF
         ENDDO
 35      FORMAT(1X,4I10)
 36      FORMAT(1X,4I10,4X,1000(I10,1PG20.6))
@@ -356,7 +358,8 @@ C
       ENDDO !I=1,NCTS
 C
 110   FORMAT(/1X,'ERROR: INVALID TREATMENT OPTION',
-     &       /1X,'       ITRTEXT/ITRTINJ MUST BE SET TO 0, 1, OR 2') 
+     &       /1X,'       ITRTINJ MUST BE SET TO 0, 1, OR 2') 
+!     &       /1X,'       ITRTEXT/ITRTINJ MUST BE SET TO 0, 1, OR 2') 
 C
 100   CONTINUE
 C
