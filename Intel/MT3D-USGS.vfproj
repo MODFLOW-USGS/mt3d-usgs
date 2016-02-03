@@ -48,7 +48,6 @@
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath="..\src\mt3d-usgs.f"/>
 		<File RelativePath="..\src\adv1.f"/>
 		<File RelativePath="..\src\btn1.f"/>
 		<File RelativePath="..\src\cts1.f"/>
@@ -56,15 +55,17 @@
 		<File RelativePath="..\src\fmi1.f"/>
 		<File RelativePath="..\src\gcg1.f"/>
 		<File RelativePath="..\src\hss1.f"/>
-		<File RelativePath="..\src\lak1.f"/>
+		<File RelativePath="..\src\lkt1.f"/>
+		<File RelativePath="..\src\mt3d-usgs.f"/>
 		<File RelativePath="..\src\mt_module.f90"/>
+		<File RelativePath="..\src\openspec.inc"/>
 		<File RelativePath="..\src\rct1.f"/>
-		<File RelativePath="..\src\sfr1.f"/>
+		<File RelativePath="..\src\sft1.f"/>
 		<File RelativePath="..\src\ssm1.f"/>
 		<File RelativePath="..\src\swf1.f"/>
 		<File RelativePath="..\src\tob1.f"/>
+		<File RelativePath="..\src\utl1.f"/>
 		<File RelativePath="..\src\uzt1.f"/>
 		<File RelativePath="..\src\xmd1.f"/>
-		<File RelativePath="..\src\xmdlib1.f"/>
-		<File RelativePath="..\src\utl1.f"/></Filter></Files>
+		<File RelativePath="..\src\xmdlib1.f"/></Filter></Files>
 	<Globals/></VisualStudioProject>
