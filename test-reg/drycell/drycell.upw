@@ -1,0 +1,11 @@
+# MODFLOW-NWT Upstream Weighting (UPW) Package
+        50  -1.000000e+030         0         0
+  1  1                                         #LAYTYP
+  2  2                                         #LAYAVG
+  1  1                                         #CHANI
+  1  1                                         #LAYVKA
+  0  0                                         #LAYWET
+CONSTANT     100.0                             #HK                     Layer #1
+CONSTANT       1.0                             #VKA: HK/VKA => VK=HK   Layer #1
+CONSTANT     100.0                             #HK                     Layer #2
+CONSTANT       1.0                             #VKA: HK/VKA => VK=HK   Layer #2

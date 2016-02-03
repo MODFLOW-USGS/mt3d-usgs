@@ -1,0 +1,6 @@
+LIST  0  drycell.out
+BTN   0  drycell.btn  
+ADV   0  drycell.adv
+SSM   0  drycell.ssm
+GCG   0  drycell.gcg
+FTL   0  drycell.ftl   free

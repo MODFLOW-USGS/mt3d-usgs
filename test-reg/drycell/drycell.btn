@@ -1,0 +1,26 @@
+Conversion from Groundwater Vistas
+MT3D Model
+DRYCell
+         2         1         6         1         1         1         0
+D   FT  LB  
+ T F T F T
+ 1 1 1 1 1 1 1 1 1 1
+         0    10.000(10E12.4)                   -1     DELTA-X or C
+         0    10.000(10E12.4)                   -1     DELTA-Y or R
+       100     1.000(10E12.4)                   -1     TOP OF MODEL
+  2.0000e+01  2.0000e+01  2.0000e+01  2.0000e+01  2.0000e+01  2.0000e+01
+         0    10.000(10E12.4)                   -1     DELZ Layer   1
+         0    10.000(10E12.4)                   -1     DELZ Layer   2
+         0       0.2(10E12.4)                   -1     POROSITY Layer   1
+         0       0.2(10E12.4)                   -1     POROSITY Layer   2
+         0         1(25I3)                       0     ICBUND Layer   1
+         0         1(25I3)                       0     ICBUND Layer   2
+       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   1
+       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   2
+-1.000e+00 5.000e-02
+         1         0         0         0         T         F
+        -1
+         0        10
+         T        10
+1.0000e+02         11.0000e+00
+1.0000e-00     30000 1.200e+00 1.000e-00

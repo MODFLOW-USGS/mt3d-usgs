@@ -1,0 +1,12 @@
+LIST              7     drycell.lst
+BAS6              1     drycell.bas
+DIS              29     drycell.dis
+UPW              11     drycell.upw
+OC               22     drycell.oc
+NWT              19     drycell.nwt
+DATA(BINARY)     50     drycell.cbb
+DATA(BINARY)     30     drycell.hds
+DATA(BINARY)     31     drycell.ddn
+LMT6             33     drycell.lmt
+
+

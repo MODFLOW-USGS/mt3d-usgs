@@ -1,0 +1,10 @@
+# MODFLOW2000 Discretization File
+#NLAY NROW NCOL NPER  ITMUNI LENUNI  (ITMUNI=4: DAYS)
+    2    1    6    1       4      0
+ 0 0                                                   #LAYCBD
+CONSTANT    10.000                                     #DELTA-X or C
+CONSTANT    10.000                                     #DELTA-Y or R
+CONSTANT    20.000                                     #TOP OF MODEL
+CONSTANT    10.000                                     #BOTTOM OF LAYER 1
+CONSTANT     0.000                                     #BOTTOM OF LAYER 2
+100.00  1  1.0  SS
