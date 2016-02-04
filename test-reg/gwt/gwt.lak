@@ -1,0 +1,24 @@
+    2    -1                              #NLAKES, ILKCB
+-0.75   200   0.00001                    #THETA, NSSITR, SSCNCR
+ 44.0  40.0      48.0   0.0              #Lake 1: STAGES, SSMN, SSMX, CLAKE
+ 35.2  31.2      39.2   0.0              #Lake 2: STAGES, SSMN, SSMX, CLAKE
+    1     1         0                    #ITMP, ITMP1, LWRT
+OPEN/CLOSE teststrm.lk1 1 (FREE)    5    #LKARR Layer 1
+CONSTANT    0                            #LKARR Layer 2
+CONSTANT    0                            #LKARR Layer 3
+CONSTANT    0                            #LKARR Layer 4
+CONSTANT    0                            #LKARR Layer 5
+CONSTANT    0                            #LKARR Layer 6
+CONSTANT    0                            #LKARR Layer 7
+CONSTANT    0                            #LKARR Layer 8
+CONSTANT  1.0                            #BDLKNC Layer 1
+CONSTANT  1.0                            #BDLKNC Layer 2
+CONSTANT  1.0                            #BDLKNC Layer 3
+CONSTANT  1.0                            #BDLKNC Layer 4
+CONSTANT  1.0                            #BDLKNC Layer 5
+CONSTANT  1.0                            #BDLKNC Layer 6
+CONSTANT  1.0                            #BDLKNC Layer 7
+CONSTANT  1.0                            #BDLKNC Layer 8
+0                                        #NSLMS
+  0.0  0.0  0.0  0.0                     #Lake 1: PRCPLK, EVAPLK, RNF, WTHDRW
+  0.0  0.0  0.0  0.0                     #Lake 2: PRCPLK, EVAPLK, RNF, WTHDRW

@@ -1,0 +1,41 @@
+        38         2        81        82         0                    #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
+         5       0.5       1.0    1.0E-3        10       2.0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF
+        19      1.00(10e12.4)                    1                    #INITIAL CONCENTRATION FOR STREAMS COMP# 1
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+        19      1.00(10e12.4)                    1                    #DISPERSION FOR STREAM SEGS COMP# 1
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
+         3                                                            #NOBSSF [# of observations (to be found on the following 3 lines, in this example)]
+         2        12                                                  #ISOBS,IROBS (iseg, ireach)
+         3        13                                                  #ISOBS,IROBS (iseg, ireach)
+         4         7                                                  #ISOBS,IROBS (iseg, ireach)
+         2                                                            #NTMP (# of STREAM BOUNDARY CONDITIONS)
+         1         1         0 1.000e-05                              #ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         3         1         0 1.000e-05                              #ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         0                                                            #Repeat NTMP for the next stress period (This model is only one stress period)
+         0                                                            #
+
+
+
+
+
+#notes about the variables above:
+# ISEGBC(NTMP): iseg (corresponding to SFR2 input file)
+# IRCHBC(NTMP): ireach (corresponding to SFR2 input file)
+# ISFBCTYP(NTMP): type of boundary condition, as follows:
+#    BCTYPSF=0: '   HEADWATER'
+#    BCTYPSF=1: '      PRECIP'
+#    BCTYPSF=2: '      RUNOFF'
+#    BCTYPSF=3: '  CNST. CONC'
+#    BCTYPSF=4: '     PUMPING'
+#    BCTYPSF=4: '        EVAP'
+# CBCSF,INDEX=1,NCOMP): Concentration of species INDEX (up to NCOMP species) applied on this boundary condition
+#    So, if you're simulating more than one species, enter them consecutively on the same line, occupying 10 spaces each.
+#    Precip, evap default to zero if not specified (but only needed if you are simulating these in the flow model.
+#    I suspect though you just need to specify the concentration where streams are entering across the model boundary,
+#    which is type "HEADWATER"

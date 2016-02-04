@@ -1,0 +1,22 @@
+LIST              10          gwt.lst
+DIS               87          gwt.dis
+BAS6              11          gwt.ba6
+OC                12          gwt.oc
+BCF6              13          gwt.bc6
+RCH               14          gwt.rch
+LAK               19          gwt.lak
+SFR               18          gwt.sfr
+GAGE              22          gwt.gge
+SIP               34          gwt.sip
+LMT6              83          gwt.lmt
+#
+# OUTPUT
+#
+DATA              23          gwt.fhd
+DATA              26          gwt.gs1
+DATA              27          gwt.gs2
+DATA              28          gwt.sg1
+DATA              29          gwt.sg2
+DATA              30          gwt.sg3
+DATA              31          gwt.sg4
+DATA(BINARY)      33          gwt.bud
