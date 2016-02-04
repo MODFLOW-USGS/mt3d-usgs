@@ -1,0 +1,18 @@
+# MF2K NAME file
+#
+# Output Files
+LIST                2         NonEq.out
+# Global Input Files
+DIS                19         NonEq.dis
+# Flow Process Input Files
+BAS6                1         NonEq.ba6
+NWT                22         NonEq.nwt
+UPW                21         NonEq.lpf
+UZF                20         NonEq.uzf
+OC                 15         NonEq.oc
+LMT6               18         NonEq.lmt
+#
+# Additional Output Files
+DATA               30         NonEq.hed
+DATA               68         NonEq.uzf1
+DATA(BINARY)       40         NonEq.ccf  
