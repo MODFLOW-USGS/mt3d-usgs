@@ -1,6 +1,6 @@
 MT3DMS benchmark test problem #6
 transport in 2-D radial flow field during an injection/withdrawl cycle
-         1        31        31         2         1         1
+         1        31        31         2         1         1   !NLAY, NROW, NCOL, NPER, NCOMP, MCOMP,
 DAYS  FT  LB
  T T T F T F F F F F
  0                                                    !LAYCON
@@ -27,7 +27,7 @@ DAYS  FT  LB
          1        18        25 
          1        23        25
          T         1                                  !CHKMAS,NPRMAS
-     912.5         1        1.              !PERLEN,NSTP,TSMULT        (STRESS PERIOD 1)
-     56.25       500        1.         0      !DT0 MXSTRN,TTSMULT,TTSMAX
-    2737.5         1        1.              !PERLEN,NSTP,TSMULT        (STRESS PERIOD 2)
-     56.25       500        1.         0      !DT0 MXSTRN
+     912.5         1        1.                        !PERLEN,NSTP,TSMULT        (STRESS PERIOD 1)
+     56.25       500        1.         0              !DT0 MXSTRN,TTSMULT,TTSMAX
+    2737.5         1        1.                        !PERLEN,NSTP,TSMULT        (STRESS PERIOD 2)
+     56.25       500        1.         0              !DT0 MXSTRN
