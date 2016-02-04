@@ -1,0 +1,26 @@
+#
+# MT3DMS v5 Name file for 1-D test case uzt_Lamb01_TVD
+#
+# Standard output file
+LIST                16        uzt_Lamb01_TVD.m3d
+# Transport package input files
+BTN                  1        uzt_Lamb01_TVD.btn
+ADV                  2        uzt_Lamb01_TVD.adv
+DSP                  3        uzt_Lamb01_TVD.dsp
+SSM                  4        uzt_Lamb01_TVD.ssm
+GCG                  5        uzt_Lamb01_TVD.gcg
+UZT                  7        uzt_Lamb01_TVD.uzt
+# Flow-Transport Link input file
+FTL                 10        uzt_Lamb01_TVD.ftl 'FREE'
+# UZF File containing RCH and ET options
+
+# Uncomment the following lines to override
+# the default names of optional MT3DMS output files
+# mt3d001.ucn, mt3d001s.ucn, mt3d001.obs, mt3d001.mas, mt3d.cnf.
+# The unit numbers for these files are preset in the
+# MT3DMS code.
+# data(binary)     201        uzt_Lamb01_TVD.ucn
+# data(binary)     301        uzt_Lamb01_TVDs.ucn
+data               401        uzt_Lamb01_TVD.obs
+#data              601        uzt_Lamb01_TVD.mas
+#data               17        uzt_Lamb01_TVD.cnf

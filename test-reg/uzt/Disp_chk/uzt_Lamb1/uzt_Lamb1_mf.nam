@@ -1,0 +1,18 @@
+# MF2K NAME file
+#
+# Output Files
+LIST           2      uzt_Lamb1.out
+# Global Input Files
+DIS           19      uzt_Lamb1.dis
+# Flow Process Input Files
+BAS6           1      uzt_Lamb1.ba6
+NWT           22      uzt_Lamb1.nwt
+UPW           21      uzt_Lamb1.lpf
+UZF           20      uzt_Lamb1.uzf
+OC            15      uzt_Lamb1.oc
+LMT6          18      uzt_Lamb1.lmt
+#
+# Additional Output Files
+DATA          30      uzt_Lamb1.hed
+DATA          68      uzt_Lamb1.uzf1
+DATA(BINARY)  40      uzt_Lamb1.ccf  
