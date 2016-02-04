@@ -1,4 +1,4 @@
-         2        52         4         4         8         0    MXCTS,ICTSOUT,MXEXT,MXINJ
+         2        52         4         4         8         0          1        MXCTS,ICTSOUT,MXEXT,MXINJ,MXWEL,IFORCE,ICTSPKG
          2                                            NCTS                           --- STRESS PERIOD 1
          1         3         2         0         1    ICTS,NEXT,NINJ,ITRTEXT,ITRTINJ --- EXTRACTION
          1         8         6         1              EXT # 1                        --- ICTS 1
