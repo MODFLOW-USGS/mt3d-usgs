@@ -76,8 +76,8 @@ C--DECODE THE INPUT VARIABLES
         IHSSGEN=2
       ENDIF
       MAXDSSL=0
-      CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,ITMP,R,IOUT,INHSS)
-      MAXDSSL=ITMP
+!      CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,ITMP,R,IOUT,INHSS)
+!      MAXDSSL=ITMP
 C
 C--ECHO INPUT VARIABLES
       WRITE(IOUT,9) MaxHSSSource,MaxHSSCells,MaxHSSStep
@@ -148,8 +148,10 @@ C--DECODE SOURCE DEFINITION FILE INPUT UNIT
         CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INHSS)
         inHSSFile=IU
 C--DSSL OUTPUT FILE UNIT
-        CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INHSS)
-        IHSSOUT=IU
+        IF(MAXDSSL.GT.0) THEN
+          CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INHSS)
+          IHSSOUT=IU
+        ENDIF
 C
 C--DECODE THE DISSOLUTION PACKAGE OPTION
         IF(MAXDSSL.GT.0) THEN
@@ -158,13 +160,18 @@ C--DECODE THE DISSOLUTION PACKAGE OPTION
 13      CONTINUE
 C
 C--ECHO INPUT DATA
-        write(iout,20) n,HSSFileName(1:IFLEN),inHSSFile,IHSSOUT
-   20   format(/1x,'HSS Source No. ',I4.4,
+        IF(MAXDSSL.GT.0) THEN
+          write(iout,19) n,HSSFileName(1:IFLEN),inHSSFile,IHSSOUT
+   19     format(/1x,'HSS Source No. ',I4.4,
      &         /1x,'Source Definition File Name: ',a,
      &         /1x,'Source Definition File Read from Unit: ',i4,
      &         /1x,'Output will be wrtten on Unit: ',i4)
-        IF(MAXDSSL.GT.0) THEN
           IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
+        ELSE
+          write(iout,20) n,HSSFileName(1:IFLEN),inHSSFile
+   20     format(/1x,'HSS Source No. ',I4.4,
+     &         /1x,'Source Definition File Name: ',a,
+     &         /1x,'Source Definition File Read from Unit: ',i4)
         ENDIF
 21    FORMAT(1X,'DISSOLUTION FORMULATION IS INVOKED FOR FOLLOWING ',I4,
      &           ' CELLS, ASSOCIATED WITH SPECIES ',I4)
