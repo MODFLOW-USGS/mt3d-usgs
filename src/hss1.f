@@ -111,16 +111,16 @@ C--ALLOCATE AND INITIALIZE
       HSSData=0.
 C
 C--READ INPUT DATA
-      read(inhss,*)  faclength,factime,facmass
-      write(iout,10) faclength,factime,facmass
-      read(inhss,*)  nHSSSource
-      write(iout,12) nHSSSource
-   10 format(//1x,'INPUT DATA FOR HSS LNAPL SOURCES',
+      READ(inhss,*)  faclength,factime,facmass
+      WRITE(iout,10) faclength,factime,facmass
+      READ(inhss,*)  nHSSSource
+      WRITE(iout,12) nHSSSource
+   10 FORMAT(//1x,'INPUT DATA FOR HSS LNAPL SOURCES',
      & /1x,       '--------------------------------',
      &//1x,'LNTH UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4,
      & /1x,'TIME UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4,
      & /1x,'MASS UNIT CONVERSION FACTOR FROM HSSM TO MT3D-USGS =',G12.4)
-   12 format(/1x,'TOTAL NUMBER OF HSS SOURCES IN THIS SIMULATION =',I4)
+   12 FORMAT(/1x,'TOTAL NUMBER OF HSS SOURCES IN THIS SIMULATION =',I4)
 C   
       if(nHSSSource.gt.MaxHSSSource) then
         call ustop ('[MaxHSSSource] exceeded!')
@@ -161,59 +161,59 @@ C--DECODE THE DISSOLUTION PACKAGE OPTION
 C
 C--ECHO INPUT DATA
         IF(MAXDSSL.GT.0) THEN
-          write(iout,19) n,HSSFileName(1:IFLEN),inHSSFile,IHSSOUT
-   19     format(/1x,'HSS Source No. ',I4.4,
+          WRITE(iout,19) n,HSSFileName(1:IFLEN),inHSSFile,IHSSOUT
+   19     FORMAT(/1x,'HSS Source No. ',I4.4,
      &         /1x,'Source Definition File Name: ',a,
      &         /1x,'Source Definition File Read from Unit: ',i4,
      &         /1x,'Output will be wrtten on Unit: ',i4)
           IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
         ELSE
-          write(iout,20) n,HSSFileName(1:IFLEN),inHSSFile
-   20     format(/1x,'HSS Source No. ',I4.4,
+          WRITE(iout,20) n,HSSFileName(1:IFLEN),inHSSFile
+   20     FORMAT(/1x,'HSS Source No. ',I4.4,
      &         /1x,'Source Definition File Name: ',a,
      &         /1x,'Source Definition File Read from Unit: ',i4)
         ENDIF
-21    FORMAT(1X,'DISSOLUTION FORMULATION IS INVOKED FOR FOLLOWING ',I4,
-     &           ' CELLS, ASSOCIATED WITH SPECIES ',I4)
+21      FORMAT(1X,'DISSOLUTION FORMULATION IS INVOKED FOR THE ',
+     &            'FOLLOWING ',I4,' CELLS, ASSOCIATED WITH SPECIES ',I4)
 C
 C--GET SOURCE LOCATION FOR DISSOLUTION OPTION
         IF(MAXDSSL.GT.0) THEN
-        IF(IDSSL(N).GT.0) THEN
-          IF(IDSSL(N).GT.MaxHSSCells) THEN
-            WRITE(*,*) 'IDSSL EXCEEDS MaxHSSCells',N
-            WRITE(IOUT,*) 'IDSSL EXCEEDS MaxHSSCells',N
-            STOP
+          IF(IDSSL(N).GT.0) THEN
+            IF(IDSSL(N).GT.MaxHSSCells) THEN
+              WRITE(*,*) 'IDSSL EXCEEDS MaxHSSCells',N
+              WRITE(IOUT,*) 'IDSSL EXCEEDS MaxHSSCells',N
+              STOP
+            ENDIF
+            DO NUM=1,IDSSL(N)
+              READ(inhss,*)  ksource,isource,jsource,THKDSS(NUM,N),
+     &        TSDSS(NUM,N),TEDSS(NUM,N)
+              iHSSLoc(num,1,n)=
+     &          (ksource-1)*ncol*nrow+(isource-1)*ncol+jsource
+              write(iout,22) ksource,isource,jsource,THKDSS(NUM,N),
+     &        TSDSS(NUM,N),TEDSS(NUM,N)
+            ENDDO
+C--READ   DSSL INPUT FILE
+            OPEN(inHSSFile,file=HSSFileName(1:IFLEN),STATUS='OLD')
+            CALL DSSL1AR(inHSSFile,N,MaxHSSStep,nHSSSource,IOUT)
+            CLOSE(inHSSFile)
+            CYCLE
+   22       format(1x,'[Layer,Row,Column,SrcThk,Tstrt,Tend]:',
+     1             3i5,3(1PG12.4)) !,'; Species:',i3)
           ENDIF
-          DO NUM=1,IDSSL(N)
-            READ(inhss,*)  ksource,isource,jsource,THKDSS(NUM,N),
-     &      TSDSS(NUM,N),TEDSS(NUM,N)
-            iHSSLoc(num,1,n)=
-     &        (ksource-1)*ncol*nrow+(isource-1)*ncol+jsource
-            write(iout,22) ksource,isource,jsource,THKDSS(NUM,N),
-     &      TSDSS(NUM,N),TEDSS(NUM,N)
-          ENDDO
-C--READ DSSL INPUT FILE
-          OPEN(inHSSFile,file=HSSFileName(1:IFLEN),STATUS='OLD')
-          CALL DSSL1AR(inHSSFile,N,MaxHSSStep,nHSSSource,IOUT)
-          CLOSE(inHSSFile)
-          CYCLE
-   22     format(1x,'[Layer,Row,Column,SrcThk,Tstrt,Tend]:',
-     1           3i5,3(1PG12.4)) !,'; Species:',i3)
-        ENDIF
         ELSE
 C
 C--GET HSS SOURCE LOCATION AND NAME
-        IF(IHSSGEN.EQ.1) THEN                                        
-          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename,
-     &    nPoint,nSubGrid                                            
-        ELSEIF(IHSSGEN.EQ.2) THEN                                    
-          READ(inhss,*)  ksource,iHSSComp,sourcename,                
-     &    nPoint,nSubGrid                                            
-        ELSE                                                         
-          nPoint=51                                                  
-          nSubGrid=25                                                
-          READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename 
-        ENDIF                                                        
+          IF(IHSSGEN.EQ.1) THEN                                        
+            READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename,
+     &      nPoint,nSubGrid                                            
+          ELSEIF(IHSSGEN.EQ.2) THEN                                    
+            READ(inhss,*)  ksource,iHSSComp,sourcename,                
+     &      nPoint,nSubGrid                                            
+          ELSE                                                         
+            nPoint=51                                                  
+            nSubGrid=25                                                
+            READ(inhss,*)  ksource,isource,jsource,iHSSComp,sourcename 
+          ENDIF                                                        
         ENDIF
         ALLOCATE (P(2,NPOINT))                                       
 C 
@@ -226,18 +226,18 @@ C
         ENDIF                  
 C                              
         IF(IHSSGEN.EQ.1) THEN  
-        write(iout,31) ksource,isource,jsource,iHSSComp,sourcename,
-     &    nPoint,nSubGrid                                   
-   31   format(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
-     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
+          WRITE(iout,31) ksource,isource,jsource,iHSSComp,sourcename,
+     &      nPoint,nSubGrid                                   
+   31     FORMAT(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
+     &         /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
         ELSEIF(IHSSGEN.EQ.2) THEN                   
-        write(iout,32) ksource,iHSSComp,sourcename, 
-     &    nPoint,nSubGrid                           
-   32   format(1x,'[Layer]:',i5,'; Species:',i3,    
-     &        /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
+          WRITE(iout,32) ksource,iHSSComp,sourcename, 
+     &      nPoint,nSubGrid                           
+   32     FORMAT(1x,'[Layer]:',i5,'; Species:',i3,    
+     &         /1x,'Source Name: ',A,' Poly Points: ',I3,' Subgrids',I3)
         ELSE
-          write(iout,30) ksource,isource,jsource,iHSSComp,sourcename
-   30     format(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
+          WRITE(iout,30) ksource,isource,jsource,iHSSComp,sourcename
+   30     FORMAT(1x,'[Layer,Row,Column]:',3i5,'; Species:',i3,
      &          /1x,'Source Name: ',A)                 
         ENDIF                         
 C                                     
@@ -255,39 +255,39 @@ C
         ENDIF                            
 C
 C--Run external HSSMKO DLL if necessary (uncomment to activate)
-        IF(iRunHSSM.eq.1) then     
+        IF(iRunHSSM.eq.1) THEN     
 !hss      WRITE(*,33) HSSFileName(1:IFLEN)  !HSSFileName is c*200
 !hss      CALL HSSM(1,0,HSSFileName(1:IFLEN-4))  
         ENDIF         
-   33   format(/'***Running HSSMKO ',
+   33   FORMAT(/'***Running HSSMKO ',
      &          'to generate source definition file: ',a/)
 C                                                                             
 C--READ HSSM INPUT FILE
         OPEN(inHSSFile,file=HSSFileName(1:IFLEN),STATUS='OLD')
-        write(iout,40)
+        WRITE(iout,40)
    40   FORMAT(1x,'   Time      LNAPL_Plume_Radius',
      &   '   Mass_Loading_Rate')
 C
         it=0
-   50   read(inHSSFile,*,end=100) time,radius_lnapl,sourcemassflux
-        write(iout,60) time,radius_lnapl,sourcemassflux
-   60   format(1x,g12.4,3x,g15.7,4x,g15.7)     
+   50   READ(inHSSFile,*,end=100) time,radius_lnapl,sourcemassflux
+        WRITE(iout,60) time,radius_lnapl,sourcemassflux
+   60   FORMAT(1x,g12.4,3x,g15.7,4x,g15.7)     
         it=it+1
-        if(it.gt.MaxHSSStep) then
-          call ustop ('[MaxHSSStep] exceeded!')          
-        endif
+        IF(it.gt.MaxHSSStep) THEN
+          CALL ustop ('[MaxHSSStep] exceeded!')          
+        ENDIF
         HSSData(1,it,n)=time * factime
         HSSData(2,it,n)=radius_lnapl * faclength
         HSSData(3,it,n)=sourcemassflux * facmass / factime
         HSSData(4,it,n)=iHSSComp
-        goto 50
-  100   close (inHSSFile)
+        GOTO 50
+  100   CLOSE (inHSSFile)
 C
 C--DISTRIBUTE LNAPL SOURCE into MULTIPLE CELLS at MULTIPLE times
 C--(based on area weighting)
         NStep=it
-        write(iout,110)
-  110   format(1x,'Source Allocation Statistics',
+        WRITE(iout,110)
+  110   FORMAT(1x,'Source Allocation Statistics',
      &        /1x,'   Time        Layer  Row  Col',
      &        '   Redistributed Rate')
 c
@@ -295,9 +295,9 @@ c
 c          
 c compute source area
           radius_lnapl=HSSData(2,iStep,n)
-          if(radius_lnapl.le.0) then
+          IF(radius_lnapl.le.0) THEN
             area_source=-999.
-          else
+          ELSE
             IF(IHSSGEN.EQ.1) THEN                          
               area_source=radius_lnapl*radius_lnapl*nPoint*
      &        sin(2.0*PI/nPoint)/2.0                       
@@ -324,15 +324,15 @@ c distribute to starting source cell
             iHSSLoc(num,iStep,n)=
      &        (ksource-1)*ncol*nrow+(isource-1)*ncol+jsource
             area_cell=delr(jsource)*delc(isource)
-            if(area_source .lt. area_cell) then
+            IF(area_source .lt. area_cell) THEN
               HSSData(4+num,iStep,n)=HSSData(3,iStep,n)
-              write(iout,120) HSSData(1,iStep,n),
+              WRITE(iout,120) HSSData(1,iStep,n),
      &         ksource,isource,jsource,HSSData(4+num,iStep,n)
-              cycle
-            endif
+              CYCLE
+            ENDIF
 c
 c distribute to multiple cells            
-            do nr=1,nPoint     !discretize source perimeter into polygon
+            DO nr=1,nPoint     !discretize source perimeter into polygon
               degree=(nr-1)*2.*PI/nPoint                    
               p(1,nr)=xbc(jsource)+radius_lnapl*cos(degree)            
               p(2,nr)=ybc(isource)+radius_lnapl*sin(degree)
@@ -341,8 +341,8 @@ c distribute to multiple cells
 c                            
           num=0
           area_total=0	    
-          do i=1,nrow
-            do j=1,ncol
+          DO i=1,nrow
+            DO j=1,ncol
               IF(I.EQ.16.AND.J.EQ.15) THEN
                 CONTINUE                  
               ENDIF                       
@@ -352,31 +352,31 @@ c
                 R=R-0.5*sqrt(delr(j)**2+delc(i)**2)
                 if(R.gt.1.5*radius_lnapl) cycle  !1.5 is a safety factor
               ENDIF 
-              call GetArea(ncol,nrow,nPoint,p,nSubGrid,delr,xbc,
+              CALL GetArea(ncol,nrow,nPoint,p,nSubGrid,delr,xbc,
      &         delc,ybc,j,i,area_cell,IPNTPOLY)    
 c            
-              if(area_cell.le.0) cycle
+              IF(area_cell.le.0) CYCLE
               num=num+1              
-              if(num.gt.MaxHSSCells) then
-                call ustop('[MaxHSSCells] exceeded!')                 
-              endif              
+              IF(num.gt.MaxHSSCells) THEN
+                CALL ustop('[MaxHSSCells] exceeded!')                 
+              ENDIF              
               iHSSLOC(num,iStep,n)=(ksource-1)*ncol*nrow+(i-1)*ncol+j
               HSSData(4+num,iStep,n)=area_cell  
               area_total=area_total+area_cell
-            enddo
-          enddo
+            ENDDO
+          ENDDO
 c
-          do itmp=1,num
+          DO itmp=1,num
             inode=iHSSLoc(itmp,iStep,n)
-            if(inode.le.0) cycle
+            IF(inode.le.0) CYCLE
             i = mod((inode-1),ncol*nrow)/ncol + 1
             j = mod((inode-1),ncol) + 1
             area_cell=HSSData(4+itmp,iStep,n)
             R=area_cell/area_total
             HSSData(4+itmp,iStep,n)=R*HSSData(3,iStep,n)
-            write(iout,120) HSSData(1,iStep,n),ksource,i,j,
+            WRITE(iout,120) HSSData(1,iStep,n),ksource,i,j,
      &       HSSData(4+itmp,iStep,n)
-          enddo
+          ENDDO
 c
         ENDDO
   120   FORMAT(1x,g12.4,3i6,4x,g15.7)
