@@ -2476,7 +2476,7 @@ C
       USE       MIN_SAT 
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IX,IY,IZ
-      INTEGER   K2,N,NRC
+      INTEGER   K2,N,NRC,KNEXT
       REAL      COLD,QX,QY,QZ,DELR,DELC,DH,CNEW,PRSITY,RETA,DTRANS,
      &          CBCK,CTMP,WW,CTOP,CRGT,CTOTAL,CFACE,RMASIO
       REAL      CTOTAL2,CMAS2  
@@ -2593,9 +2593,23 @@ CVSB                  IF(DOMINSAT) WW=1.
      &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
                       K2=0                                          
                       IF(QZ(J,I-1,K).GT.0.) THEN                    
-                        IF(K.LT.NLAY) K2=K+1                        
+                        DO KNEXT=K+1,NLAY
+                          IF(ICBUND(J,I-1,KNEXT).GT.0) THEN
+                            K2=KNEXT
+                            EXIT
+                          ENDIF
+                        ENDDO
+C                        IF(K.LT.NLAY) K2=K+1                        
                       ELSEIF(K.GT.1) THEN              
-                        IF(QZ(J,I-1,K-1).LT.0.) K2=K-1                           
+                        IF(QZ(J,I-1,K-1).LT.0.) THEN
+                          DO KNEXT=K-1,1,-1
+                            IF(ICBUND(J,I-1,KNEXT).GT.0) THEN
+                              K2=KNEXT
+                              EXIT
+                            ENDIF
+                          ENDDO
+                        ENDIF
+C                        K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2652,9 +2666,23 @@ C--SAVE THE FACE VALUE FOR NEXT CELL
      &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
                       K2=0                                          
                       IF(QZ(J,I+1,K).GT.0.) THEN                    
-                        IF(K.LT.NLAY) K2=K+1                        
+                        DO KNEXT=K+1,NLAY
+                          IF(ICBUND(J,I+1,KNEXT).GT.0) THEN
+                            K2=KNEXT
+                            EXIT
+                          ENDIF
+                        ENDDO
+C                        IF(K.LT.NLAY) K2=K+1                        
                       ELSEIF(K.GT.1) THEN              
-                        IF(QZ(J,I+1,K-1).LT.0.) K2=K-1                           
+                        IF(QZ(J,I+1,K-1).LT.0.) THEN
+                          DO KNEXT=K-1,1,-1
+                            IF(ICBUND(J,I+1,KNEXT).GT.0) THEN
+                              K2=KNEXT
+                              EXIT
+                            ENDIF
+                          ENDDO
+                        ENDIF
+C                        K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2711,15 +2739,29 @@ CVSB                  IF(DOMINSAT) WW=1.
                   IF(QX(J-1,I,K).LT.0.) THEN                        
                     CTOTAL2=CTOTAL2-COLD(J,I,K)*QX(J-1,I,K)/DELR(J) 
                     IF(DRYON) THEN                                  
-                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELC(I)        
+                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELR(I)        
                       CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
                       CMAS2=CMAS2*RETA(J,I,K)*                      
      &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
                       K2=0                                          
                       IF(QZ(J-1,I,K).GT.0.) THEN                    
-                        IF(K.LT.NLAY) K2=K+1                        
+                        DO KNEXT=K+1,NLAY
+                          IF(ICBUND(J-1,I,KNEXT).GT.0) THEN
+                            K2=KNEXT
+                            EXIT
+                          ENDIF
+                        ENDDO
+C                        IF(K.LT.NLAY) K2=K+1                        
                       ELSEIF(K.GT.1) THEN              
-                        IF(QZ(J-1,I,K-1).LT.0.) K2=K-1                           
+                        IF(QZ(J-1,I,K-1).LT.0.) THEN
+                          DO KNEXT=K-1,1,-1
+                            IF(ICBUND(J-1,I,KNEXT).GT.0) THEN
+                              K2=KNEXT
+                              EXIT
+                            ENDIF
+                          ENDDO
+                        ENDIF
+C                        K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -2766,15 +2808,29 @@ C--CALCULATE FACE VALUE AT (J+1/2,I,K)
                   IF(QX(J,I,K).GT.0)THEN                            
                     CTOTAL2=CTOTAL2+COLD(J,I,K)*QX(J,I,K)/DELR(J)   
                     IF(DRYON) THEN                                  
-                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELC(I)           
+                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELR(I)           
                       CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
                       CMAS2=CMAS2*RETA(J,I,K)*                      
      &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
                       K2=0                                          
                       IF(QZ(J+1,I,K).GT.0.) THEN                    
-                        IF(K.LT.NLAY) K2=K+1                        
+                        DO KNEXT=K+1,NLAY
+                          IF(ICBUND(J+1,I,KNEXT).GT.0) THEN
+                            K2=KNEXT
+                            EXIT
+                          ENDIF
+                        ENDDO
+C                        IF(K.LT.NLAY) K2=K+1                        
                       ELSEIF(K.GT.1) THEN              
-                        IF(QZ(J+1,I,K-1).LT.0.) K2=K-1                           
+                        IF(QZ(J+1,I,K-1).LT.0.) THEN
+                          DO KNEXT=K-1,1,-1
+                            IF(ICBUND(J+1,I,KNEXT).GT.0) THEN
+                              K2=KNEXT
+                              EXIT
+                            ENDIF
+                          ENDDO
+                        ENDIF
+C                        K2=K-1                           
                       ELSE                                          
                         K2=0                                        
                       ENDIF                                         
@@ -3414,9 +3470,10 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
      &                         RHS,CNEW,IDRY2,DTRANS,
-     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND,
+     &  MIXELM
       IMPLICIT  NONE
-      INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
+      INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL,K2,N2,KNEXT
       INTEGER   INDX
       REAL      WW,THKSAT,AREA,ALPHA
       REAL      QCTEMP,QTEMP,QCTEMP2,CTEMP,TERMA,TERMB
@@ -3431,6 +3488,9 @@ C--LOOP THROUGH ALL ACTIVE CELLS
 C
 C-----FORMULATE FOR DRY CELLS - FLOW INTO DRY CELLS
       C7=0.
+C
+C-----FOR FINITE DIFFERENCE CONSIDER FLUX FROM NEIGHBORING CELLS AND BOUNDARIES
+      IF(MIXELM.EQ.0) THEN
       DO INDX=1,NICBND2
         N=ID2D(INDX)
         CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
@@ -3686,6 +3746,65 @@ C
  2430   CONTINUE
       ENDDO
 C
+C-----FOR TVD CONSIDER FLUX ONLY FROM BOUNDARIES
+      ELSEIF(MIXELM.EQ.-1) THEN
+      DO INDX=1,NICBND2
+        N=ID2D(INDX)
+        CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+        QCTEMP=0.
+        QCTEMP2=0.
+        QTEMP=0.
+        CTEMP=0.
+        TERMA=0.
+        TERMB=0.
+C
+C--SKIP IF INACTIVE OR CONSTANT CELL
+        IF(ICBND2(J,I,K).EQ.0) CYCLE
+C
+        QCTEMP=QCTEMP+QC7(J,I,K,7)
+        QTEMP=QTEMP+QC7(J,I,K,8)
+C        
+C        IF(ABS(QTEMP).GT.1.E-6) THEN
+C          C7(N)=QCTEMP/QTEMP
+CC          IF(ICIMDRY.EQ.2) C7(N)=(QCTEMP/QTEMP+TERMB)/TERMA
+CC          IF(ICIMDRY.EQ.3) C7(N)=(-QCTEMP+TERMB)/TERMA
+C        ENDIF
+C
+C       FIND THE NEXT ACTIVE CELL VERTICALLY
+        K2=0                                          
+        IF(QZ(J,I,K).GT.0.) THEN                    
+          DO KNEXT=K+1,NLAY
+            IF(ICBUND(J,I,KNEXT,ICOMP).GT.0) THEN
+              K2=KNEXT
+              N2=N+(K2-K)*NCR
+              EXIT
+            ENDIF
+          ENDDO
+C          IF(K.LT.NLAY) K2=K+1                        
+        ELSEIF(K.GT.1) THEN              
+          IF(QZ(J,I,K-1).LT.0.) THEN
+            DO KNEXT=K-1,1,-1
+              IF(ICBUND(J,I,KNEXT,ICOMP).GT.0) THEN
+                K2=KNEXT
+                N2=N-(K-K2)*NCR
+                EXIT
+              ENDIF
+            ENDDO
+          ENDIF
+C          K2=K-1                           
+        ELSE                                          
+          K2=0                                        
+        ENDIF
+C
+C       FORMULATE BOUNDARY CONDITION
+        IF(K2.GT.0) THEN                              
+          IF(ICBUND(J,I,K2,ICOMP).GT.0) THEN              
+            RHS(N2)=RHS(N2)+QCTEMP
+          ENDIF
+        ENDIF                                         
+      ENDDO        
+      ENDIF !MIXELM CHECK
+C
 C--RETURN
   999 RETURN
       END
@@ -3703,9 +3822,10 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
      &                         DELC,DH,QX,QY,QZ,NADVFD,NODES,A,UPDLHS,
      &                         RHS,CNEW,RMASIO,IDRY2,DTRANS,
-     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND
+     &  PRSITY2,ISOTHM,IREACT,RC1,RC2,SP2,RETA2,FRAC,RHOB,SRCONC,ICBUND,
+     &  MIXELM
       IMPLICIT  NONE
-      INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL
+      INTEGER   ICOMP,J,I,K,N,NCR,IUPS,ICTRL,K2,N2,KNEXT
       INTEGER   INDX
       REAL      WW,THKSAT,AREA,ALPHA
       REAL      QCTEMP,QTEMP,QCTEMP2,CTEMP,SCTEMP,TERMA,TERMB,TERM2,
@@ -3719,6 +3839,7 @@ C
 C-----BUDGET FOR DRY CELLS - FLOW INTO DRY CELLS
       NCR=NROW*NCOL
 C      IF(ICIMDRY.NE.2) C7=0.
+      IF(MIXELM.EQ.0) THEN
       DO INDX=1,NICBND2
         N=ID2D(INDX)
         CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
@@ -4070,6 +4191,65 @@ C          IF(QC7(J,I,K,8).LT.0.0) THEN
 C          ENDIF
 C
       ENDDO
+      ELSEIF(MIXELM.EQ.-1) THEN
+      DO INDX=1,NICBND2
+        N=ID2D(INDX)
+        CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+        QCTEMP=0.
+        QCTEMP2=0.
+        QTEMP=0.
+        CTEMP=0.
+        TERMA=0.
+        TERMB=0.
+C
+C--SKIP IF INACTIVE OR CONSTANT CELL
+        IF(ICBND2(J,I,K).EQ.0) CYCLE
+C
+        QCTEMP=QCTEMP+QC7(J,I,K,7)
+        QTEMP=QTEMP+QC7(J,I,K,8)
+        QCTEMP2=QC7(J,I,K,7)*DTRANS
+C        
+C        IF(ABS(QTEMP).GT.1.E-6) THEN
+C          C7(N)=QCTEMP/QTEMP
+CC          IF(ICIMDRY.EQ.2) C7(N)=(QCTEMP/QTEMP+TERMB)/TERMA
+CC          IF(ICIMDRY.EQ.3) C7(N)=(-QCTEMP+TERMB)/TERMA
+C        ENDIF
+C
+C       FIND THE NEXT ACTIVE CELL VERTICALLY
+        K2=0                                          
+        IF(QZ(J,I,K).GT.0.) THEN                    
+          DO KNEXT=K+1,NLAY
+            IF(ICBUND(J,I,KNEXT,ICOMP).GT.0) THEN
+              K2=KNEXT
+              N2=(K2-K)*NCR
+              EXIT
+            ENDIF
+          ENDDO
+C          IF(K.LT.NLAY) K2=K+1                        
+        ELSEIF(K.GT.1) THEN              
+          IF(QZ(J,I,K-1).LT.0.) THEN
+            DO KNEXT=K-1,1,-1
+              IF(ICBUND(J,I,KNEXT,ICOMP).GT.0) THEN
+                K2=KNEXT
+                N2=(K-K2)*NCR
+                EXIT
+              ENDIF
+            ENDDO
+          ENDIF
+C          K2=K-1                           
+        ELSE                                          
+          K2=0                                        
+        ENDIF
+C
+C       MASS BALANCE FOR BOUNDARY CONDITION FOR TVD
+        IF(K2.GT.0) THEN                              
+          IF(ICBUND(J,I,K2,ICOMP).GT.0) THEN              
+            RMASIO(12,2,ICOMP)=RMASIO(12,2,ICOMP)+QCTEMP2
+            RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)-QCTEMP2
+          ENDIF
+        ENDIF                                         
+      ENDDO        
+      ENDIF !MIXELM CHECK
 C
 C--RETURN
   999 RETURN

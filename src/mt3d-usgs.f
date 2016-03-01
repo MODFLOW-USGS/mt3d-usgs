@@ -348,7 +348,7 @@ C--FORMULATE MATRIX COEFFICIENTS
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
      &                  COLD,CNEW)                          
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0       
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
      &           CALL ADVQC1FM(ICOMP)                       
                 IF(iUnitTRNOP(5).GT.0)
@@ -409,7 +409,7 @@ C
      1         CALL SFT1BD(ICOMP,KPER,KSTP,DTRANS,N)    
               IF(iUnitTRNOP(4).GT.0) 
      &         CALL RCT1BD(ICOMP,DTRANS)
-              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0         
+              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0         
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
      &           CALL ADVQC1BD(ICOMP)      
 C
