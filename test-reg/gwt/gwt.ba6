@@ -1,21 +1,21 @@
 #test of combined stream, lake, and solute-transport packages.                 
 #...loosely based on simplified model of Cape Cod sewage plume.                
 FREE CHTOCH
-OPEN/CLOSE teststrm.i2      1 (FREE)  1                    #IBOUND layer   1
-OPEN/CLOSE teststrm.i0      1 (FREE)  1                    #IBOUND layer   2
-OPEN/CLOSE teststrm.i3      1 (FREE)  1                    #IBOUND layer   3
-OPEN/CLOSE teststrm.i1      1 (FREE)  1                    #IBOUND layer   4
-OPEN/CLOSE teststrm.i1      1 (FREE)  1                    #IBOUND layer   5
-OPEN/CLOSE teststrm.i1      1 (FREE)  1                    #IBOUND layer   6
-OPEN/CLOSE teststrm.i1      1 (FREE)  1                    #IBOUND layer   7
-OPEN/CLOSE teststrm.i1      1 (FREE)  1                    #IBOUND layer   8
- 999.00                                                    #HNOFLO
-OPEN/CLOSE teststrm.h0      1 (FREE)  1                    #Initial Head layer   1
-OPEN/CLOSE teststrm.h0      1 (FREE)  1                    #Initial Head layer   2
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   3
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   4
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   5
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   6
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   7
-OPEN/CLOSE teststrm.h2      1 (FREE)  1                    #Initial Head layer   8
+OPEN/CLOSE gwt.i2      1 (FREE)  1                    #IBOUND layer   1
+OPEN/CLOSE gwt.i0      1 (FREE)  1                    #IBOUND layer   2
+OPEN/CLOSE gwt.i3      1 (FREE)  1                    #IBOUND layer   3
+OPEN/CLOSE gwt.i1      1 (FREE)  1                    #IBOUND layer   4
+OPEN/CLOSE gwt.i1      1 (FREE)  1                    #IBOUND layer   5
+OPEN/CLOSE gwt.i1      1 (FREE)  1                    #IBOUND layer   6
+OPEN/CLOSE gwt.i1      1 (FREE)  1                    #IBOUND layer   7
+OPEN/CLOSE gwt.i1      1 (FREE)  1                    #IBOUND layer   8
+ 999.00                                               #HNOFLO
+OPEN/CLOSE gwt.h0      1 (FREE)  1                    #Initial Head layer   1
+OPEN/CLOSE gwt.h0      1 (FREE)  1                    #Initial Head layer   2
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   3
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   4
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   5
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   6
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   7
+OPEN/CLOSE gwt.h2      1 (FREE)  1                    #Initial Head layer   8
 
