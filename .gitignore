@@ -169,3 +169,13 @@ pip-log.txt
 src_temp
 mod_temp
 temp
+
+# Random
+*.xml
+*.iml
+
+# MT3D-USGS generated output
+*.CNF
+*.MAS
+*.UCN
+*.out
