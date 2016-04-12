@@ -406,7 +406,7 @@ C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,7) IN
    7  FORMAT(/1X,'BTN1 -- BASIC TRANSPORT PACKAGE,',
-     & ' VERSION 1, OCTOBER 2014, INPUT READ FROM UNIT',I3)
+     & ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
 C
 C--GET TOTAL NUMBER OF MODEL NODES
       NODES=NCOL*NROW*NLAY
@@ -506,6 +506,11 @@ C--LEGACY99STORAGE
       IF(IALTFM.EQ.0) THEN
         WRITE(IOUT,'(A)') 
      1 '  LEGACY MT3DMS STORAGE FORMULATION USED'
+      ENDIF
+C--ALTWTSORB
+      IF(IALTFM.EQ.2) THEN
+        WRITE(IOUT,'(A)') 
+     1 '  ALTERNATE ADBORBED MASS FORMULATION USED'
       ENDIF
 C--FTLPRINT
       IF(FPRT.EQ.'Y') THEN
@@ -772,17 +777,17 @@ C--READ AND ECHO LOGICAL FLAG CHKMAS
           WRITE(IMAS+INDEX,1066)
           WRITE(IMAS+INDEX,1068) TUNIT,MUNIT,MUNIT,MUNIT,MUNIT
         ENDDO
-        IF(DOMINSAT) THEN
+!        IF(DOMINSAT) THEN
 C.......CREATE ANOTHER FILE SIMILAR TO MAS - BUT TO STORE CELL-BY-CELL AND MASS-TO-DRY 
-          WRITE(IOUT,2064) IMAS+1,NPRMAS                   
-          FLNAME='MT3Dnnn.DRY'                             
-          DO INDEX=1,NCOMP                                 
-            WRITE(FLNAME(5:7),'(I3.3)') INDEX              
-            CALL OPENFL(IMAS+NCOMP+INDEX,0,FLNAME,1,FINDEX)
-            WRITE(IMAS+NCOMP+INDEX,2066)                   
-            WRITE(IMAS+NCOMP+INDEX,2068)                   
-          ENDDO                                            
-        ENDIF                                              
+!          WRITE(IOUT,2064) IMAS+1,NPRMAS                   
+!          FLNAME='MT3Dnnn.DRY'                             
+!          DO INDEX=1,NCOMP                                 
+!            WRITE(FLNAME(5:7),'(I3.3)') INDEX              
+!            CALL OPENFL(IMAS+NCOMP+INDEX,0,FLNAME,1,FINDEX)
+!            WRITE(IMAS+NCOMP+INDEX,2066)                   
+!            WRITE(IMAS+NCOMP+INDEX,2068)                   
+!          ENDDO                                            
+!        ENDIF                                              
       ELSE
         WRITE(IOUT,1065)
       ENDIF
@@ -1729,10 +1734,10 @@ C--TO FILE [MT3Dnnn.MAS] IF REQUESTED
      &   SOURCE,SINK,STRMAS,TOTMAS,
      &   ERROR(ICOMP),ERROR2(ICOMP)
 C.......WRITE TO DRY FILE                                           
-        IF(DOMINSAT)                                                
-     &    WRITE(IMAS+NCOMP+ICOMP,2012) TIME2,TMASIO(12,2,ICOMP),    
-     &     TMASIO(12,1,ICOMP),TMASIO(14,2,ICOMP),TMASIO(14,1,ICOMP),
-     &     TMASIO(1,2,ICOMP),TMASIO(1,1,ICOMP),TOTMAS               
+!        IF(DOMINSAT)                                                
+!     &    WRITE(IMAS+NCOMP+ICOMP,2012) TIME2,TMASIO(12,2,ICOMP),    
+!     &     TMASIO(12,1,ICOMP),TMASIO(14,2,ICOMP),TMASIO(14,1,ICOMP),
+!     &     TMASIO(1,2,ICOMP),TMASIO(1,1,ICOMP),TOTMAS               
       ENDIF
  1012 FORMAT(1X,1P,7(G13.5,1X),4X,G10.3,5X,G10.3)
  2012 FORMAT(1X,1P,8(G13.5,1X),4X,G10.3,5X,G10.3)
@@ -2196,7 +2201,7 @@ C
       REAL R
 C
 C SET NUMBER OF KEYWORDS AND KEYWORDS
-      NKEYWORDS=6
+      NKEYWORDS=7
       KEYFOUND=.FALSE.
       ALLOCATE(KEYWORDS(NKEYWORDS))
       KEYWORDS=''
@@ -2206,6 +2211,7 @@ C SET NUMBER OF KEYWORDS AND KEYWORDS
       KEYWORDS(4)='FTLPRINT                      '
       KEYWORDS(5)='NOWETDRYPRINT                 '
       KEYWORDS(6)='OMITDRYCELLBUDGET             '
+      KEYWORDS(7)='ALTWTSORB                     '
 C
 C READ LINE WITH KEYWORDS
       LINE=''
@@ -2263,6 +2269,8 @@ C
             MUTDRY=1
           CASE(6) !'OMITDRYCELLBUDGET'
             IDRYBUD=0
+          CASE(7) !'ALTWTSORB'
+            IALTFM=2
         END SELECT
       ENDDO
 C
