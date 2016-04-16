@@ -351,7 +351,7 @@ C***********************************************************************
       REAL    CONC,Q,VOL,COEFO,COEFN,VOLMIN
       INTEGER numactive,KKITER,ITER,N_ITER,KITERSF,NSUBSTEPS,KSFSTP
       DOUBLE PRECISION ADV1,ADV2,ADV3
-      INTEGER ICON,INOFLOW
+      INTEGER ICON,INOFLOW,IBC
 C
       DELT=DTRANS
       DELTMIN=DTRANS
@@ -669,6 +669,21 @@ CVSB        ENDIF
 CVSB      ENDDO
       DO N=1,NSTRM
         IF(IBNDSF(N).EQ.-1) THEN
+          !FIND CONC FOR THIS
+          DO I=1,NSSSF
+            IS=ISEGBC(I)
+            IR=IRCHBC(I)
+            IBC=ISTRM(IR,IS)
+            IF(IBC.EQ.N) THEN
+              CONC=CBCSF(I,ICOMP)
+              EXIT
+            ENDIF
+          ENDDO
+          IF(I.GT.NSSSF) THEN
+            WRITE(IOUT,*) 'CONSTANT HEAD BOUNDARY ERROR IN SFT FILE'
+            WRITE(*,*) 'CONSTANT HEAD BOUNDARY ERROR IN SFT FILE'
+            STOP
+          ENDIF
           !SET OFF-DIAGONAL TO ZEROES
           DO II=IASF(N)+1,IASF(N+1)-1
             AMATSF(II)=0.0D0
