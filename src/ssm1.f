@@ -587,6 +587,11 @@ C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)
         ELSEIF(IQ.EQ.27) THEN
           IGROUP=SS(7,NUM)
           CTMP=SSG(4,IGROUP)
+          IF(iUnitTRNOP(6).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
+            IF(SS(8,NUM).GT.0) THEN                
+              IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
+            ENDIF                                  
+          ENDIF                                    
 C
 C--GET RETURN FLOW CONC FOR DRAINS WITH RETURN FLOW (IQ=28)          
         ELSEIF(IQ.EQ.28 .AND. QSS.GT.0) THEN
@@ -1085,6 +1090,11 @@ C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)
         ELSEIF(IQ.EQ.27) THEN
           IGROUP=SS(7,NUM)
           CTMP=SSG(4,IGROUP)
+          IF(iUnitTRNOP(6).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
+            IF(SS(8,NUM).GT.0) THEN                
+              IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
+            ENDIF                                  
+          ENDIF                                    
 C
 C--GET RETURN FLOW CONC FOR DRAINS WITH RETURN FLOW (IQ=28)          
         ELSEIF(IQ.EQ.28 .AND. QSS.GT.0) THEN
