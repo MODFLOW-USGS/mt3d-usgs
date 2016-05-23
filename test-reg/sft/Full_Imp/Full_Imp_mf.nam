@@ -1,20 +1,20 @@
 #Model mimicing 1D OTIS Application 1 (See OTIS manual)
-LIST          21     CrnkNic.out
-BAS6          22     CrnkNic.ba6
-DIS           23     CrnkNic.dis
-NWT           24     CrnkNic.nwt
-UPW           25     CrnkNic.upw
-SFR           26     CrnkNic.sfr2
-GAGE          27     CrnkNic.gage
-OC            28     CrnkNic.oc
-LMT6          29     CrnkNic.lmt
+LIST          21     Full_Imp.out
+BAS6          22     Full_Imp.ba6
+DIS           23     Full_Imp.dis
+NWT           24     Full_Imp.nwt
+UPW           25     Full_Imp.upw
+SFR           26     Full_Imp.sfr2
+GAGE          27     Full_Imp.gage
+OC            28     Full_Imp.oc
+LMT6          29     Full_Imp.lmt
 #
 #DATA
 #
-DATA          30     CrnkNic.hed
-DATA          61     CrnkNic.gage1
-DATA          62     CrnkNic.gage2
-DATA          63     CrnkNic.gage3
-DATA          64     CrnkNic.gage4
-DATA          65     CrnkNic.gage5
-DATA          66     CrnkNic.gage6
+DATA          30     Full_Imp.hed
+DATA          61     Full_Imp.gage1
+DATA          62     Full_Imp.gage2
+DATA          63     Full_Imp.gage3
+DATA          64     Full_Imp.gage4
+DATA          65     Full_Imp.gage5
+DATA          66     Full_Imp.gage6
