@@ -10,7 +10,7 @@ NWT                22         NonEq.nwt
 UPW                21         NonEq.lpf
 UZF                20         NonEq.uzf
 OC                 15         NonEq.oc
-LMT6               18         NonEq.lmt
+LMT8               18         NonEq.lmt
 #
 # Additional Output Files
 DATA               30         NonEq.hed
