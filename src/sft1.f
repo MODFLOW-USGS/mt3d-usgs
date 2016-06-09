@@ -13,6 +13,10 @@ C
       ALLOCATE(NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,ISFRBC)
       ALLOCATE(NSSSF)
       ISFRBC=0
+C      ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)
+      ALLOCATE(NSTRM,NSF2SF,MXSGMT,MXRCH)
+      ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)       
+      ALLOCATE(NOBSSF,NJASF)                                     
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INSFT
@@ -61,9 +65,16 @@ C--ALLOCATE INITIAL AND BOUNDARY CONDITION ARRAYS
       ALLOCATE(CNEWSF(NSFINIT,NCOMP),COLDSF(NSFINIT,NCOMP),
      1  COLDSF2(NSFINIT,NCOMP),CNEWSFTMP(NSFINIT,NCOMP),
      1  DISPSF(NSFINIT,NCOMP),IBNDSF(NSFINIT))
-      ALLOCATE(ISEGBC(MXSFBC),IRCHBC(MXSFBC),ISFBCTYP(MXSFBC))
+!      ALLOCATE(ISEGBC(MXSFBC),IRCHBC(MXSFBC),ISFBCTYP(MXSFBC))
+      ALLOCATE(ISFNBC(MXSFBC),ISFBCTYP(MXSFBC))
       ALLOCATE(CBCSF(MXSFBC,NCOMP))                           
       CBCSF=0.
+C
+C--ALLOCATE
+        ALLOCATE(QPRECSF(NSFINIT),QRUNOFSF(NSFINIT),
+     &  QETSF(NSFINIT),IEXIT(NSFINIT),QPRECSFO(NSFINIT),
+     &  QRUNOFSFO(NSFINIT),QOUTSF(NSFINIT),QOUTSFO(NSFINIT),
+     &  VOLSFO(NSFINIT),VOLSFN(NSFINIT),SFLEN(NSFINIT))
 C
 C--IF LAKE PACKAGE NOT ACTIVE, NLKINIT WILL BE UNDEFINED.  
 C  ASSIGN VALUE OF 1 IF LAKE PACKAGE INACTIVE
@@ -153,14 +164,15 @@ C--CALL RARRAY TO READ DISPERSION COEFFICIENTS (L2/T)
 C
 C--READ LIST OF STREAM GAGES
       READ(INSFT,*) NOBSSF
-      ALLOCATE(ISOBS(NOBSSF),IROBS(NOBSSF))
+C      ALLOCATE(ISOBS(NOBSSF),IROBS(NOBSSF))
+      ALLOCATE(ISFNOBS(NOBSSF))
       DO I=1,NOBSSF
-        READ(INSFT,*) ISOBS(I),IROBS(I)
+        READ(INSFT,*) ISFNOBS(I) !ISOBS(I),IROBS(I)
       ENDDO
       IF(IOUTOBS.GT.0) THEN
         WRITE(IOUTOBS,*) ' STREAM OBSERVATION OUTPUT'
         WRITE(IOUTOBS,*) 
-     1 '   TIME      SEGMENT REACH  SFR-CONCENTRATION    FLOWGW',
+     1 '   TIME      SFR-NODE  SFR-CONCENTRATION    FLOWGW',
      1 '          GW-CONC'
       ENDIF
       IF(NOBSSF.GT.0 .AND. IOUTOBS.LE.0) THEN
@@ -202,8 +214,9 @@ C      ENDIF
 C
 C--RESET ARRAYS
       IF(NTMP.GE.0) THEN
-        ISEGBC=0
-        IRCHBC=0
+!        ISEGBC=0
+!        IRCHBC=0
+        ISFNBC=0
         ISFBCTYP=0
         CBCSF=0.
       ENDIF
@@ -225,7 +238,8 @@ C--READ BOUNDARY CONDITIONS
       IBNDSF=1
       WRITE(IOUT,60)
       DO NUM=1,NTMP
-          READ(IN,*) ISEGBC(NUM),IRCHBC(NUM),ISFBCTYP(NUM),
+!          READ(IN,*) ISEGBC(NUM),IRCHBC(NUM),ISFBCTYP(NUM),
+          READ(IN,*) ISFNBC(NUM),ISFBCTYP(NUM),
      1      (CBCSF(NUM,INDEX),INDEX=1,NCOMP)
 C
           IF(ISFBCTYP(NUM).EQ.0) THEN
@@ -248,7 +262,8 @@ C            WRITE(*,*) 'ISFBCTYP=4 IS NOT VALID WHEN IETSFR=0'
 C            STOP
 C          ENDIF
 C
-          WRITE(IOUT,70) ISEGBC(NUM),IRCHBC(NUM),BCTYPSF,
+!          WRITE(IOUT,70) ISEGBC(NUM),IRCHBC(NUM),BCTYPSF,
+          WRITE(IOUT,70) ISFNBC(NUM),BCTYPSF,
      1      (CBCSF(NUM,INDEX),INDEX=1,NCOMP)
 C
 C          IF(ILKBC(NUM).GT.NLKINIT) THEN
@@ -269,8 +284,8 @@ C
      & ' REUSED FROM LAST STRESS PERIOD')
    50 FORMAT(/1X,'NO. OF STREAM SINKS/SOURCES OF SPECIFIED',
      & ' CONCONCENTRATIONS =',I5,' IN STRESS PERIOD',I3)
-   60 FORMAT(/5X,' SEG  RCH     BC-TYPE       CONC(1,NCOMP)')
-70    FORMAT(5X,2I5,1X,A10,3X,1000(1X,G15.7))
+   60 FORMAT(/5X,' SFTN    BC-TYPE       CONC(1,NCOMP)')
+70    FORMAT(5X,I5,1X,A10,3X,1000(1X,G15.7))
 C
       RETURN
       END
@@ -337,21 +352,22 @@ C***********************************************************************
 C     THIS SUBROUTINE ASSEMBLES AND SOLVES MATRIX FOR SFR TRANSPORT
 C***********************************************************************
       USE MIN_SAT, ONLY: QC7,DRYON
-      USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
+      USE UZTVARS,       ONLY: CUZINF !UZQ,NCONSF,IROUTE
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,CNEW,
      &                         DTRANS,NLAY,NROW,NCOL,ICBUND,NODES,
      &                         iSSTrans,iUnitTRNOP
       USE SFRVARS
       USE LAKVARS, ONLY : CNEWLAK
+      USE PKG2PKG
       USE XMDMODULE
       IMPLICIT NONE
       INTEGER ICOMP
       REAL    DELT,DELTMIN
-      INTEGER K,I,J,II,JJ,N,NN,IS,IR,NC,ICNT,ISIN,IRIN,III
-      REAL    CONC,Q,VOL,COEFO,COEFN,VOLMIN
+      INTEGER K,I,J,II,JJ,N,NN,IS,IR,NC,ICNT,ISIN,IRIN,III,IFROM,ITO
+      REAL    CONC,Q,VOL,COEFO,COEFN,VOLMIN,VOLO,VOLN,DV
       INTEGER numactive,KKITER,ITER,N_ITER,KITERSF,NSUBSTEPS,KSFSTP
       DOUBLE PRECISION ADV1,ADV2,ADV3
-      INTEGER ICON,INOFLOW,IBC
+      INTEGER ICON,INOFLOW,IBC,NLK,NUZ
 C
       DELT=DTRANS
       DELTMIN=DTRANS
@@ -380,22 +396,28 @@ C
       RHSSF=0.
       AMATSF=0.
 C
-C--FILL RHSSF---------------------------------------------------------
-C
 C.....INFLOW BOUNDARY CONDITIONS: PRECIP AND RUNOFF
       DO I=1,NSSSF
-        IS=ISEGBC(I)
-        IR=IRCHBC(I)
+C        IS=ISEGBC(I)
+C        IR=IRCHBC(I)
+C        N=ISTRM(IR,IS)
+        N=ISFNBC(I)
         CONC=CBCSF(I,ICOMP)
-        N=ISTRM(IR,IS)
         IF(ISFBCTYP(I).EQ.0) THEN
           !BCTYPSF=' HEADWATER'
-          DO II=IDXNIN(N),IDXNIN(N+1)-1
-            ISIN=INSEG(II)
-            IRIN=INRCH(II)
-            IF(ISIN.LT.0.AND.IRIN.LT.0 .AND.
-     1         IS.EQ.-ISIN.AND.IR.EQ.-IRIN) THEN
-                Q=QINSF(II)
+C          DO II=IDXNIN(N),IDXNIN(N+1)-1
+
+      IF(N.EQ.13) THEN
+      CONTINUE
+      ENDIF
+
+          DO II=1,NSF2SF
+C            ISIN=INSEG(II)
+C            IRIN=INRCH(II)
+            CALL GETFLOWDIR(INOD1SF,INOD2SF,QN2NSF,NSF2SF,II,IFROM,ITO)
+            IF(IFROM.EQ.-999.AND.N.EQ.ITO) THEN
+C                Q=QINSF(II)
+                Q=ABS(QN2NSF(II))
 C                IF(ISFSOLV.EQ.2) THEN
                   RHSSF(N)=RHSSF(N)-Q*CONC
 C                ELSE
@@ -403,7 +425,7 @@ C                ENDIF
                 GOTO 105
             ENDIF
           ENDDO
-104       WRITE (*,*) 'INVALID SFR BC-TYPE',IS,IR
+104       WRITE (*,*) 'INVALID SFR BC-TYPE FOR SFR NODE ',N
           STOP
 105       CONTINUE
         ELSEIF(ISFBCTYP(I).EQ.1) THEN
@@ -428,32 +450,38 @@ C
         K=ISFL(N)     !LAYER
         I=ISFR(N)     !ROW
         J=ISFC(N)     !COLUMN
+        II=IASF(N)
 
-      IF(K.EQ.1.AND.I.EQ.40.AND.J.EQ.67)THEN
+      IF(N.EQ.6) THEN
       CONTINUE
       ENDIF
 
 
 C
-C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
-      IF(iSSTrans.EQ.0) THEN
-        VOL=SFLEN(N)*SFNAREA(N)
-        IF(VOL.LT.VOLMIN) VOL=VOLMIN
-        VOL=VOL/DELT
-C        IF(ISFSOLV.EQ.2) THEN
-          RHSSF(N)=RHSSF(N)-VOL*COLDSF(N,ICOMP)
-C        ELSE
-C          RHSSF(N)=RHSSF(N)+COLDSF(N,ICOMP)/DELT
-C        ENDIF
+C.......VOLUME/TIME
+        IF(iSSTrans.EQ.0) THEN
+C        VOL=SFLEN(N)*SFNAREA(N)
+C          VOL=VOLSFN(N)
+C          IF(VOL.LT.VOLMIN) VOL=VOLMIN
+C          VOL=VOL/DELT
+          CALL TIMEINTERP(VOLSFN,VOLSFO,VOLSFO,NSTRM,N,VOLN,VOLO,DV,1)
+          VOLO=VOLO/DELT
+          IF(VOLO.LT.VOLMIN) VOLO=VOLMIN
+          VOLN=VOLN/DELT
+          IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
+C          IF(ISFSOLV.EQ.2) THEN
+            RHSSF(N)=RHSSF(N)-VOLO*COLDSF(N,ICOMP)
+            AMATSF(II)=AMATSF(II)-VOLN
+C          ELSE
+C            RHSSF(N)=RHSSF(N)+COLDSF(N,ICOMP)/DELT
+C            AMATSF(II)=AMATSF(II)+1.0D0/DELT
+C          ENDIF
 C
-      ENDIF
-      IF(N.EQ.21)THEN
-      CONTINUE
-      ENDIF
-
+        ENDIF
+C
 C.......GW TO SFR
         Q=QSFGW(N)
-        IF(Q.LT.0.0) THEN
+        IF(Q.LE.0.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
 C            IF(DRYON) THEN
 C              RHSSF(N)=RHSSF(N)+Q*CNEW(J,I,K,ICOMP)
@@ -464,108 +492,126 @@ C          IF(ISFSOLV.EQ.2) THEN
 C          ELSE
 C          ENDIF
           ENDIF
-        ENDIF
+        ELSE
 C
-C.......CHECK INFLOW FROM LAKE
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.EQ.0) THEN
-            Q=QINSF(ICNT)
-            CONC=CNEWLAK(IS,ICOMP)
-C            IF(ISFSOLV.EQ.2) THEN
-              RHSSF(N)=RHSSF(N)-Q*CONC
-C            ELSE
-C            ENDIF
-          ENDIF
-        ENDDO
-      ENDDO
-C
-C.....INFLOW FROM UZF
-      IF(iUnitTRNOP(7).GT.0) THEN
-        DO ICON=1,NCONSF
-          IF(IROUTE(1,ICON).EQ.1) THEN
-            IS=IROUTE(5,ICON)      !SEGMENT
-            IR=IROUTE(6,ICON)      !REACH
-            N=ISTRM(IR,IS)
-            K=IROUTE(2,ICON)      !LAYER
-            I=IROUTE(3,ICON)      !ROW
-            J=IROUTE(4,ICON)      !COLUMN
-            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
-            IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
-            IF(IROUTE(7,ICON).EQ.1) THEN
-              CONC=CNEW(J,I,K,ICOMP)
-            ELSEIF(IROUTE(7,ICON).EQ.2) THEN
-              CONC=CUZINF(J,I,ICOMP)
-            ELSE
-              WRITE(IOUT,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
-              WRITE(*,*) 'CHECK FTL FILE - IROUTE(7,ICON) INVALID'
-              STOP
-            ENDIF
-            RHSSF(N)=RHSSF(N)+Q*CONC
-          ENDIF
-        ENDDO
-      ENDIF
-C
-C--FILL RHSSF COMPLETE------------------------------------------------
-C
-C--FILL AMATSF--------------------------------------------------------
-      ICNT=0
-      DO N=1,NSTRM
-        II=IASF(N)
-C
-C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
-        IF(iSSTrans.EQ.0) THEN
-        VOL=SFLEN(N)*SFNAREA(N)
-        IF(VOL.LT.VOLMIN) VOL=VOLMIN
-        VOL=VOL/DELT
-C        IF(ISFSOLV.EQ.2) THEN
-          AMATSF(II)=AMATSF(II)-VOL
-C        ELSE
-C          AMATSF(II)=AMATSF(II)+1.0D0/DELT
-C        ENDIF
-        ENDIF
-C
-C.......TOTAL FLOW OUT INCLUDING ET
-        IF(IEXIT(N).EQ.1) THEN
-          IF(IETSFR.EQ.0) THEN
-            Q=QOUTSF(N)-QETSF(N)
-            IF(QETSF(N).GE.QOUTSF(N)) Q=0.
+C.......SFR TO GW
+          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
           ELSE
-            Q=QOUTSF(N)
+C          IF(ISFSOLV.EQ.2) THEN
+            AMATSF(II)=AMATSF(II)-Q*WIMP
+            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+C          ELSE
+C          ENDIF
           ENDIF
+        ENDIF
+C
+C.......FLOW OUT FROM EXIT
+        IF(IEXIT(N).EQ.1) THEN
+          Q=QOUTSF(N)
 C        IF(ISFSOLV.EQ.2) THEN
           AMATSF(II)=AMATSF(II)-Q*WIMP
           RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C        ELSE
 C        ENDIF
         ENDIF
-
-      IF(N.EQ.13)THEN
-      CONTINUE
-      ENDIF
-
 C
-C.......SFR TO GW
-        Q=QSFGW(N)
-        IF(Q.GE.0.0) THEN
-C          IF(ISFSOLV.EQ.2) THEN
+C.......EVAP
+        IF(IETSFR.EQ.1) THEN
+          Q=QETSF(N)
+C        IF(ISFSOLV.EQ.2) THEN
+          AMATSF(II)=AMATSF(II)-Q*WIMP
+          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+C        ELSE
+C        ENDIF
+        ENDIF
+      ENDDO
+C
+C.......LAKE
+      DO ICNT=1,NSFR2LAK
+C        DO NC=1,NIN(N)
+C          ICNT=ICNT+1
+C          IS=INSEG(ICNT)
+C          IR=INRCH(ICNT)
+C          IF(IS.GT.0.AND.IR.EQ.0) THEN
+          N=INOD1SFLK(ICNT)
+          NLK=INOD2SFLK(ICNT)
+          Q=QSFR2LAK(ICNT)
+          II=IASF(N)
+          IF(Q.GT.0.) THEN
             AMATSF(II)=AMATSF(II)-Q*WIMP
             RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
-C          ELSE
-C          ENDIF
-        ENDIF
+          ELSE
+            Q=ABS(Q)
+C            Q=QINSF(ICNT)
+C            CONC=CNEWLAK(IS,ICOMP)
+            CONC=CNEWLAK(NLK,ICOMP)
+C            IF(ISFSOLV.EQ.2) THEN
+              RHSSF(N)=RHSSF(N)-Q*CONC
+C            ELSE
+C            ENDIF
+          ENDIF
+C        ENDDO
+      ENDDO
 C
-C.......INFLOW FROM UPSTREAM REACHES, LAKES, FIRST REACH (IS=0,IR=0)
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.GT.0) THEN
+C.....UZF
+      IF(iUnitTRNOP(7).GT.0) THEN
+        DO ICON=1,NSFR2UZF
+C          IF(IROUTE(1,ICON).EQ.1) THEN
+C            IS=IROUTE(5,ICON)      !SEGMENT
+C            IR=IROUTE(6,ICON)      !REACH
+C            N=ISTRM(IR,IS)
+C            K=IROUTE(2,ICON)      !LAYER
+C            I=IROUTE(3,ICON)      !ROW
+C            J=IROUTE(4,ICON)      !COLUMN
+C            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            Q=QSFR2UZF(ICON)
+            IF(Q.GT.0.) THEN
+              AMATSF(II)=AMATSF(II)-Q*WIMP
+              RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+            ELSE
+              Q=ABS(Q)
+              N=INOD1SFUZ(ICON)
+              NUZ=INOD2SFUZ(ICON)
+              CALL NODE2KIJ(NUZ,NLAY,NROW,NCOL,K,I,J)
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
+              IF(IUZCODESF(ICON).EQ.1) THEN
+                CONC=CNEW(J,I,K,ICOMP)
+              ELSEIF(IUZCODESF(ICON).EQ.2) THEN
+                CONC=CUZINF(J,I,ICOMP)
+              ELSEIF(IUZCODESF(ICON).EQ.3) THEN
+                CONC=CUZINF(J,I,ICOMP)
+              ELSE
+                WRITE(IOUT,*) 'CHECK FTL FILE - IUZCODESF(ICON) INVALID'
+                WRITE(*,*) 'CHECK FTL FILE - IUZCODESF(ICON) INVALID'
+                STOP
+              ENDIF
+              RHSSF(N)=RHSSF(N)+Q*CONC
+            ENDIF
+C          ENDIF
+        ENDDO
+      ENDIF
+C
+C
+C-----NODE-TO-NODE FLOW-----------------------------------------------
+C      ICNT=0
+C      DO N=1,NSTRM
+      DO NC=1,NSF2SF
+        CALL GETFLOWDIR(INOD1SF,INOD2SF,QN2NSF,NSF2SF,NC,IFROM,ITO)
+        N=ITO
+        NN=IFROM
+C        II=IASF(N)
+C
+C.......INFLOW FROM UPSTREAM REACHES
+C        DO NC=1,NIN(N)
+C          ICNT=ICNT+1
+C          IS=INSEG(ICNT)
+C          IR=INRCH(ICNT)
+C          IF(IS.GT.0.AND.IR.GT.0) THEN
+          IF(N.GT.0.AND.NN.GT.0) THEN
 C...........INFLOW FROM STREAM
-            NN=ISTRM(IR,IS)
-            Q=QINSF(ICNT)
+C            NN=ISTRM(IR,IS)
+C            Q=QINSF(ICNT)
+            Q=ABS(QN2NSF(NC))
             DO II=IASF(N)+1,IASF(N+1)-1
               IF(NN.EQ.JASF(II)) GOTO 110
             ENDDO
@@ -586,15 +632,15 @@ C            RHSSF(N)=RHSSF(N)-(1.0D0-WIMP)*Q*COLDSF(NN,ICOMP)
 C            ELSE
 C            ENDIF
 C
-            IF(IDSPFLG(ICNT).NE.0) THEN
+            IF(IDSPFLG(NC).NE.0) THEN
 C--DISPERSION
             !i=N=>AMATSF(III) and i-1=NN=>AMATSF(II) terms
 C...........DISPERSION TERMS i-1,i
-              COEFN= (  SFNAREA(N)*DISPSF(N,ICOMP)*SFLEN(NN)
-     1                +SFNAREA(NN)*DISPSF(NN,ICOMP)*SFLEN(N))/
+              COEFN= (  DISPSF(N,ICOMP)*SFLEN(NN)
+     1                +DISPSF(NN,ICOMP)*SFLEN(N))*SFNAREA(NC)/
      1                  (SFLEN(NN)+SFLEN(N))
-              COEFO= (  SFOAREA(N)*DISPSF(N,ICOMP)*SFLEN(NN)
-     1                +SFOAREA(NN)*DISPSF(NN,ICOMP)*SFLEN(N))/
+              COEFO= (  DISPSF(N,ICOMP)*SFLEN(NN)
+     1                +DISPSF(NN,ICOMP)*SFLEN(N))*SFOAREA(NC)/
      1                  (SFLEN(NN)+SFLEN(N))
               III=IASF(N)
               AMATSF(III)=AMATSF(III) 
@@ -626,7 +672,7 @@ C.............ADVECTION TERMS ON i,i+1
               RHSSF(NN)=RHSSF(NN)+(1.0D0-WIMP)*ADV3*COLDSF(N,ICOMP)
 C
             !i=NN=>AMATSF(III) and i+1=N=>AMATSF(II) terms
-            IF(IDSPFLG(ICNT).NE.0) THEN
+            IF(IDSPFLG(NC).NE.0) THEN
 C--DISPERSION
 C...........DISPERSION TERMS i,i+1
               III=IASF(NN)
@@ -640,13 +686,8 @@ C...........DISPERSION TERMS i,i+1
 C              RHSSF(N)=RHSSF(N)
 C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
             ENDIF
-C.........HEADWATER INFLOW
-          ELSEIF(IS.LT.0.AND.IR.LT.0) THEN
-            Q=QINSF(ICNT)
-            CONC=0.
-            RHSSF(N)=RHSSF(N)-Q*CONC
           ENDIF
-        ENDDO
+C        ENDDO
       ENDDO
 C
 C--CONSTANT CONCENTRATION BOUNDARY
@@ -671,10 +712,11 @@ CVSB      ENDDO
         IF(IBNDSF(N).EQ.-1) THEN
           !FIND CONC FOR THIS
           DO I=1,NSSSF
-            IS=ISEGBC(I)
-            IR=IRCHBC(I)
-            IBC=ISTRM(IR,IS)
-            IF(IBC.EQ.N) THEN
+C            IS=ISEGBC(I)
+C            IR=IRCHBC(I)
+C            IBC=ISTRM(IR,IS)
+            IBC=ISFNBC(I)
+            IF(IBC.EQ.N.AND.ISFBCTYP(I).EQ.3) THEN
               CONC=CBCSF(I,ICOMP)
               EXIT
             ENDIF
@@ -697,11 +739,6 @@ CVSB      ENDDO
 C
 C--HANDLE NO-FLOW CELLS
       DO N=1,NSTRM
-  
-      if(n.eq.21)then
-      continue
-      endif
-  
         INOFLOW=1
         DO II=IASF(N),IASF(N+1)-1
           IF(ABS(AMATSF(II)).GT.1.0E-10) INOFLOW=0
@@ -714,7 +751,7 @@ C--HANDLE NO-FLOW CELLS
         ENDIF
       ENDDO
 C
-C--FILL AMATSF COMPLETE-----------------------------------------------
+C---------------------------------------------------------------------
 C
 CCC      ENDDO !KSFSTP
 C
@@ -734,7 +771,8 @@ C
 C--SET INITIAL CONC = 0.0 IF VOLUME IS CLOSE TO ZERO
       IF(KSTP.EQ.1.AND.KPER.EQ.1.AND.N.EQ.1) THEN
         DO NN=1,NSTRM
-          VOL=SFLEN(NN)*SFNAREA(NN)
+C          VOL=SFLEN(NN)*SFNAREA(NN)
+          VOL=VOLSFN(NN)
           IF(ABS(VOL-DZERO).LE.1.0D-3) THEN
             CNEWSF(NN,:)=0.0D0
           ENDIF
@@ -760,8 +798,8 @@ C--SAVE OLD FLOW PARAMETERS
       QPRECSFO=QPRECSF
       QRUNOFSFO=QRUNOFSF
       QOUTSFO=QOUTSF
-      QINSFO=QINSF
       SFOAREA=SFNAREA
+      VOLSFO=VOLSFN
 C
       RETURN
       END
@@ -776,7 +814,8 @@ C***********************************************************************
       USE MIN_SAT, ONLY: QC7,DRYON
       USE LAKVARS
       USE SFRVARS
-      USE UZTVARS,       ONLY: NCONSF,IROUTE,UZQ,CUZINF
+      USE UZTVARS,       ONLY: CUZINF !UZQ,NCONSF,IROUTE
+      USE PKG2PKG
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,UPDLHS,CNEW,TIME2,PRTOUT,
      &                         NLAY,NROW,NCOL,ICBUND,NODES,
      &                         MIXELM,INLKT,RMASIO,iUnitTRNOP,
@@ -786,15 +825,15 @@ C***********************************************************************
       INTEGER ICOMP
       INTEGER K,I,J,N,NUM,II,ICCNODE
       INTEGER KPER,KSTP,NTRANS
-      INTEGER ISIN,IRIN,ICNT,NC,NN,III
-      REAL COEFN,COEFO,DTRANS,QX
+      INTEGER ISIN,IRIN,ICNT,NC,NN,III,IFROM,ITO,NLK,NUZ
+      REAL COEFN,COEFO,DTRANS,QX,DV
       REAL CONC,Q,VO,CO,VOL,QC,Q1,Q2,DELV,QDIFF,VOLN,VOLO,ADV1,ADV2,ADV3
       REAL GW2SFR,GWFROMSFR,LAKFROMSFR,LAK2SFR,PRECSF,RUNOFSF,WDRLSF,
      1  ETSF,TOTINSF,TOTOUTSF,CTOTINSF,CTOTOUTSF,DIFF,CDIFF,PERC,CPERC,
      1  STORINSF,STOROTSF,TOTMASOLD,TOTMASNEW,STORDIFF,CCINSF,CCOUTSF,
      1  UZF2SFR
       REAL FLOINSF,FLOOUTSF
-      REAL QL
+      REAL QL,VOLMIN
 C
 C--ZERO OUT TERMS
       CONC=0.
@@ -804,6 +843,7 @@ C--ZERO OUT TERMS
         VOUTLAK=0.
       ENDIF
 C
+      VOLMIN=1.0E-6
       FLOINSF=0.
       FLOOUTSF=0.
       GW2SFR=0.
@@ -837,10 +877,11 @@ C-- CALCULATE INFLOW, STORAGE, AND OUTFLOW TERMS
 C
 C.....INFLOW BOUNDARY CONDITIONS: PRECIP AND RUNOFF
       DO I=1,NSSSF
-        IS=ISEGBC(I)
-        IR=IRCHBC(I)
+C        IS=ISEGBC(I)
+C        IR=IRCHBC(I)
+C        N=ISTRM(IR,IS)
+        N=ISFNBC(I)
         CONC=CBCSF(I,ICOMP)
-        N=ISTRM(IR,IS)
 C.......NO BOUNDARY ALLOWED ON CONST. CONC
         IF(IBNDSF(N).EQ.-1) THEN
           CYCLE
@@ -851,12 +892,14 @@ C
           !SKIP IF CONST. CONC
         ELSEIF(ISFBCTYP(I).EQ.0) THEN
           !BCTYPSF=' HEADWATER'
-          DO II=IDXNIN(N),IDXNIN(N+1)-1
-            ISIN=INSEG(II)
-            IRIN=INRCH(II)
-            IF(ISIN.LT.0.AND.IRIN.LT.0 .AND.
-     1         IS.EQ.-ISIN.AND.IR.EQ.-IRIN) THEN
-              Q=QINSF(II)
+C          DO II=IDXNIN(N),IDXNIN(N+1)-1
+          DO II=1,NSF2SF
+C            ISIN=INSEG(II)
+C            IRIN=INRCH(II)
+            CALL GETFLOWDIR(INOD1SF,INOD2SF,QN2NSF,NSF2SF,II,IFROM,ITO)
+            IF(IFROM.EQ.-999.AND.N.EQ.ITO) THEN
+C                Q=QINSF(II)
+              Q=ABS(QN2NSF(II))
               Q1=Q1+Q*DTRANS
               FLOINSF=FLOINSF+Q*CONC*DTRANS
             ENDIF
@@ -874,25 +917,24 @@ C
         ENDIF
       ENDDO
 C
-      ICNT=0
       DO N=1,NSTRM
         K=ISFL(N)     !LAYER
         I=ISFR(N)     !ROW
         J=ISFC(N)     !COLUMN
-
-      IF(N.EQ.13)THEN
-      CONTINUE
-      ENDIF
-
 C
-C.......VOLUME/TIME: ASSUME VOLUME DOES NOT CHANGE
+C.......VOLUME
         IF(iSSTrans.EQ.0) THEN
-        VOLN=SFLEN(N)*SFNAREA(N)
-        VOLO=SFLEN(N)*SFOAREA(N)
+C        VOLN=SFLEN(N)*SFNAREA(N)
+C        VOLO=SFLEN(N)*SFOAREA(N)
+C        VOLN=VOLSFN(N)
+C        VOLO=VOLSFO(N)
+        CALL TIMEINTERP(VOLSFN,VOLSFO,VOLSFO,NSTRM,N,VOLN,VOLO,DV,1)
+        IF(VOLO.LT.VOLMIN) VOLO=VOLMIN
+        IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
         DELV=DELV+VOLN-VOLO
         IF(IBNDSF(N).NE.-1) THEN
-CCC        STORDIFF=VOLN*CNEWSF(N,ICOMP)-VOLO*COLDSF(N,ICOMP)
-        STORDIFF=VOLN*(CNEWSF(N,ICOMP)-COLDSF(N,ICOMP))
+          STORDIFF=VOLN*CNEWSF(N,ICOMP)-VOLO*COLDSF(N,ICOMP)
+C        STORDIFF=VOLN*(CNEWSF(N,ICOMP)-COLDSF(N,ICOMP))
           IF(STORDIFF.LT.0) THEN
             STORINSF=STORINSF-STORDIFF
           ELSE
@@ -901,79 +943,52 @@ CCC        STORDIFF=VOLN*CNEWSF(N,ICOMP)-VOLO*COLDSF(N,ICOMP)
         ENDIF
 C
         ENDIF
-      if(KPER.EQ.5.AND.N.EQ.31)then
-      continue
-      endif
-
 C
-C.......TOTAL FLOW OUT INCLUDING/EXCLUDING ET
-        IF(IETSFR.EQ.0) THEN
-          Q=QOUTSF(N)-QETSF(N)
-          IF(QETSF(N).GE.QOUTSF(N)) Q=0.
-          Q2=Q2+ABS(Q)*DTRANS
-        ELSE
-          Q=QOUTSF(N)
-          ETSF=ETSF+QETSF(N)*CNEWSF(N,ICOMP)*DTRANS
-          Q=MAX(0.0,QOUTSF(N)-QETSF(N))
-          Q2=Q2+ABS(Q)*DTRANS
-        ENDIF
+C.......FLOW OUT FROM EXIT
         IF(IEXIT(N).EQ.1) THEN
+          Q=QOUTSF(N)
+          Q2=Q2+ABS(Q)*DTRANS
           IF(IBNDSF(N).EQ.-1) THEN
             CCOUTSF=CCOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
           ELSE
-C
-C.......OUTFLOW TO LAK
-            II=0
-            IF(iUnitTRNOP(18).GT.0) THEN
-              IF(INLKT.GT.0) THEN
-                DO NUM=1,NSFRLAK
-                  IS=LAKSEG(NUM)    !SEGMENT NUMBER
-                  IR=LAKRCH(NUM)    !REACH NUMBER
-                  II=ISTRM(IR,IS)
-                  QL=0.
-                  QL=QLAKSFR(NUM)      !(-) MEANS SFR TO LAK; (+) MEANS LAK TO SFR
-                  IF(QL.LT.0..AND.II.EQ.N) THEN
-                    EXIT
-                  ELSE
-                    II=0
-                  ENDIF
-                ENDDO
-              ENDIF
-            ENDIF
-C
-            IF(II.EQ.N) THEN !SFR TO LAKE FLOW
-              LAKFROMSFR=LAKFROMSFR+Q*CNEWSF(N,ICOMP)*DTRANS
-            ELSE
-              FLOOUTSF=FLOOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
-            ENDIF
+            FLOOUTSF=FLOOUTSF+Q*CNEWSF(N,ICOMP)*DTRANS
           ENDIF
         ENDIF
 C
-C.......LAK, ADVECTION, DISPERSION
-        II=IASF(N)
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.EQ.0) THEN
-C...........INFLOW FROM LAKE
-            Q=QINSF(ICNT)
-            Q1=Q1+ABS(Q)*DTRANS
-            CONC=CNEWLAK(IS,ICOMP)
-            IF(IBNDSF(N).EQ.-1) THEN
-            ELSE
-              LAK2SFR=LAK2SFR+Q*CONC*DTRANS
-            ENDIF
-          ELSEIF(IS.GT.0.AND.IR.GT.0) THEN
+C.......EVAP
+        IF(IETSFR.EQ.1) THEN
+          Q=QETSF(N)
+          ETSF=ETSF+QETSF(N)*CNEWSF(N,ICOMP)*DTRANS
+          Q2=Q2+ABS(Q)*DTRANS
+        ELSE
+          Q=QETSF(N)
+          Q2=Q2+ABS(Q)*DTRANS
+        ENDIF
+      ENDDO
+C
+C
+C.......ADVECTION, DISPERSION
+C      ICNT=0
+C      DO N=1,NSTRM
+      DO NC=1,NSF2SF
+        CALL GETFLOWDIR(INOD1SF,INOD2SF,QN2NSF,NSF2SF,NC,IFROM,ITO)
+        N=ITO
+        NN=IFROM
+C        II=IASF(N)
+C
+C.......INFLOW FROM UPSTREAM REACHES
+          IF(N.GT.0.AND.NN.GT.0) THEN
 C...........INFLOW FROM STREAM
-            NN=ISTRM(IR,IS)
-            Q=QINSF(ICNT)
+C            NN=ISTRM(IR,IS)
+C            Q=QINSF(ICNT)
+            Q=ABS(QN2NSF(NC))
             DO II=IASF(N)+1,IASF(N+1)-1
               IF(NN.EQ.JASF(II)) GOTO 110
             ENDDO
 100         WRITE(*,*) 'ERROR IN JASF MATRIX'
             STOP
 110         CONTINUE
+C...........INFLOW FROM STREAM
             IF(IBNDSF(NN).EQ.-1) THEN
               QX=Q/(SFLEN(NN)+SFLEN(N))
               ADV1=QX*(WUPS*SFLEN(NN)+SFLEN(N))
@@ -985,19 +1000,19 @@ C...........INFLOW FROM STREAM
      1  +ADV2*(1.0D0-WIMP)*COLDSF(N,ICOMP)*DTRANS
             ENDIF
 C            FLOINSF=FLOINSF+Q*CNEWSF(NN,ICOMP)*DTRANS
-            Q1=Q1+ABS(Q)*DTRANS
+cc            Q1=Q1+ABS(Q)*DTRANS
 C            AMATSF(II)=AMATSF(II)+Q*WIMP
 C            RHSSF(N)=RHSSF(N)-(1.0D0-WIMP)*Q*COLDSF(NN,ICOMP)
 C
-            IF(IDSPFLG(ICNT).NE.0) THEN
+            IF(IDSPFLG(NC).NE.0) THEN
 C--DISPERSION
             !i=N and i-1=NN terms
 C...........DISPERSION TERMS i-1,i
-              COEFN= (  SFNAREA(N)*DISPSF(N,ICOMP)*SFLEN(NN)
-     1                +SFNAREA(NN)*DISPSF(NN,ICOMP)*SFLEN(N))/
+              COEFN= (  DISPSF(N,ICOMP)*SFLEN(NN)
+     1                +DISPSF(NN,ICOMP)*SFLEN(N))*SFNAREA(NC)/
      1                  (SFLEN(NN)+SFLEN(N))
-              COEFO= (  SFOAREA(N)*DISPSF(N,ICOMP)*SFLEN(NN)
-     1                +SFOAREA(NN)*DISPSF(NN,ICOMP)*SFLEN(N))/
+              COEFO= (  DISPSF(N,ICOMP)*SFLEN(NN)
+     1                +DISPSF(NN,ICOMP)*SFLEN(N))*SFOAREA(NC)/
      1                  (SFLEN(NN)+SFLEN(N))
               III=IASF(N)
               IF(IBNDSF(NN).EQ.-1) THEN
@@ -1055,7 +1070,7 @@ C.............ADVECTION TERMS ON i,i+1
      1  +(1.0D0-WIMP)*ADV3*COLDSF(N,ICOMP)*DTRANS
               ENDIF
 C
-            IF(IDSPFLG(ICNT).NE.0) THEN
+            IF(IDSPFLG(NC).NE.0) THEN
             !i=NN and i+1=N terms
 C...........DISPERSION TERMS i,i+1
               III=IASF(NN)
@@ -1082,7 +1097,6 @@ C              RHSSF(N)=RHSSF(N)
 C     1    +COEFO*(COLDSF(N,ICOMP)-COLDSF(NN,ICOMP))/(SFLEN(NN)+SFLEN(N))
             ENDIF
           ENDIF
-        ENDDO
       ENDDO
       ENDIF
 C
@@ -1102,7 +1116,7 @@ C                IF(IBNDSF(N).EQ.-1) THEN
 C                ELSE
 C                  GW2SFR=GW2SFR-Q*CONC*DTRANS
 C                ENDIF
-C                RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
+C                RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)+Q*CONC*DTRANS
                 QC7(J,I,K,9)=QC7(J,I,K,9)-Q
               ELSE
                 Q2=Q2+ABS(Q)*DTRANS
@@ -1111,14 +1125,14 @@ C                RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
                 ELSE
                   GWFROMSFR=GWFROMSFR+Q*CONC*DTRANS
                 ENDIF
-                RMASIO(52,1,ICOMP)=RMASIO(52,1,ICOMP)+Q*CONC*DTRANS
+                RMASIO(30,1,ICOMP)=RMASIO(30,1,ICOMP)+Q*CONC*DTRANS
                 QC7(J,I,K,7)=QC7(J,I,K,7)-Q*CONC
                 QC7(J,I,K,8)=QC7(J,I,K,8)-Q
               ENDIF
             ENDIF
           ENDIF
         ELSE
-          IF(Q.LT.0.0) THEN
+          IF(Q.LE.0.0) THEN
             Q1=Q1+ABS(Q)*DTRANS
             CONC=CNEW(J,I,K,ICOMP)
             IF(IBNDSF(N).EQ.-1) THEN
@@ -1126,7 +1140,7 @@ C            CCOUTSF=CCOUTSF-Q*CONC*DTRANS
             ELSE
               GW2SFR=GW2SFR-Q*CONC*DTRANS
             ENDIF
-            RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS
+            RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)+Q*CONC*DTRANS
           ELSE
             Q2=Q2+ABS(Q)*DTRANS
             CONC=CNEWSF(N,ICOMP)
@@ -1135,38 +1149,72 @@ C            CCINSF=CCINSF+Q*CONC*DTRANS
             ELSE
               GWFROMSFR=GWFROMSFR+Q*CONC*DTRANS
             ENDIF
-            RMASIO(52,1,ICOMP)=RMASIO(52,1,ICOMP)+Q*CONC*DTRANS
+            RMASIO(30,1,ICOMP)=RMASIO(30,1,ICOMP)+Q*CONC*DTRANS
           ENDIF
         ENDIF
       ENDDO
 C
       IF(ISFRBC.NE.1) THEN
 C
-C.....INFLOW FROM UZF
-      IF(iUnitTRNOP(7).GT.0) THEN
-        DO ICON=1,NCONSF
-          IF(IROUTE(1,ICON).EQ.1) THEN
-            IS=IROUTE(5,ICON)      !SEGMENT
-            IR=IROUTE(6,ICON)      !REACH
-            N=ISTRM(IR,IS)
-            K=IROUTE(2,ICON)      !LAYER
-            I=IROUTE(3,ICON)      !ROW
-            J=IROUTE(4,ICON)      !COLUMN
-            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
-            IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
-            IF(IROUTE(7,ICON).EQ.1) THEN
-              CONC=CNEW(J,I,K,ICOMP)
-            ELSEIF(IROUTE(7,ICON).EQ.2) THEN
-              CONC=CUZINF(J,I,ICOMP)
-            ENDIF
+C.....LAK
+      DO ICNT=1,NSFR2LAK
+          N=INOD1SFLK(ICNT)
+          NLK=INOD2SFLK(ICNT)
+          Q=QSFR2LAK(ICNT)
+          IF(Q.GT.0.) THEN
+            Q2=Q2+ABS(Q)*DTRANS
+            LAKFROMSFR=LAKFROMSFR+Q*CNEWSF(N,ICOMP)*DTRANS
+          ELSE
+            Q=ABS(Q)
             Q1=Q1+ABS(Q)*DTRANS
+            CONC=CNEWLAK(NLK,ICOMP)
             IF(IBNDSF(N).EQ.-1) THEN
-C              CCOUTSF=CCOUTSF-Q*CONC*DTRANS
             ELSE
-              UZF2SFR=UZF2SFR-Q*CONC*DTRANS
+              LAK2SFR=LAK2SFR+Q*CONC*DTRANS
             ENDIF
-C            RMASIO(52,2,ICOMP)=RMASIO(52,2,ICOMP)+Q*CONC*DTRANS !UZF HANDLES THIS
           ENDIF
+      ENDDO
+C
+C.....UZF
+      IF(iUnitTRNOP(7).GT.0) THEN
+        DO ICON=1,NSFR2UZF
+C          IF(IROUTE(1,ICON).EQ.1) THEN
+C            IS=IROUTE(5,ICON)      !SEGMENT
+C            IR=IROUTE(6,ICON)      !REACH
+C            N=ISTRM(IR,IS)
+C            K=IROUTE(2,ICON)      !LAYER
+C            I=IROUTE(3,ICON)      !ROW
+C            J=IROUTE(4,ICON)      !COLUMN
+C            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
+            Q=QSFR2UZF(ICON)
+            IF(Q.GT.0.) THEN
+C
+            ELSE
+              Q=ABS(Q)
+              N=INOD1SFUZ(ICON)
+              NUZ=INOD2SFUZ(ICON)
+              CALL NODE2KIJ(NUZ,NLAY,NROW,NCOL,K,I,J)
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
+              IF(IUZCODESF(ICON).EQ.1) THEN
+                CONC=CNEW(J,I,K,ICOMP)
+              ELSEIF(IUZCODESF(ICON).EQ.2) THEN
+                CONC=CUZINF(J,I,ICOMP)
+              ELSEIF(IUZCODESF(ICON).EQ.3) THEN
+                CONC=CUZINF(J,I,ICOMP)
+              ELSE
+                WRITE(IOUT,*) 'CHECK FTL FILE - IUZCODESF(ICON) INVALID'
+                WRITE(*,*) 'CHECK FTL FILE - IUZCODESF(ICON) INVALID'
+                STOP
+              ENDIF
+              Q1=Q1+ABS(Q)*DTRANS
+              IF(IBNDSF(N).EQ.-1) THEN
+C                CCOUTSF=CCOUTSF+Q*CONC*DTRANS
+              ELSE
+                UZF2SFR=UZF2SFR+Q*CONC*DTRANS
+              ENDIF
+C              RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)-Q*CONC*DTRANS !UZF HANDLES THIS
+            ENDIF
+C          ENDIF
         ENDDO
       ENDIF
 C
@@ -1266,8 +1314,8 @@ C--WRITE SFR MASS BALANCE TO OUTPUT FILE
      &       16X,'          STREAM TO GW =',G15.7)
 85    FORMAT(16X,'         STREAM TO LAK =',G15.7,
      &       16X,'         STREAM TO LAK =',G15.7)
-90    FORMAT(16X,'                    ET =',G15.7,
-     &       16X,'                    ET =',G15.7)
+90    FORMAT(16X,'           EVAPORATION =',G15.7,
+     &       16X,'           EVAPORATION =',G15.7)
 95    FORMAT(16X,'             TOTAL OUT =',G15.7,
      &       16X,'             TOTAL OUT =',G15.7)
 97    FORMAT(/16X,'        NET (IN - OUT) =',G15.7,
@@ -1280,9 +1328,10 @@ C
 C
 C--WRITE OBSERVATIONS
       DO II=1,NOBSSF
-        IS=ISOBS(II)
-        IR=IROBS(II)
-        N=ISTRM(IR,IS)
+C        IS=ISOBS(II)
+C        IR=IROBS(II)
+C        N=ISTRM(IR,IS)
+        N=ISFNOBS(II)
         CONC=CNEWSF(N,ICOMP)
 C
         K=ISFL(N)     !LAYER
@@ -1290,10 +1339,40 @@ C
         J=ISFC(N)     !COLUMN
         Q=QSFGW(N)
 C
-        WRITE(IOUTOBS,220) TIME2,IS,IR,CONC,Q,CNEW(J,I,K,ICOMP)
+        WRITE(IOUTOBS,220) TIME2,N,CONC,Q,CNEW(J,I,K,ICOMP)
       ENDDO
-220   FORMAT(1X,G15.7,I5,2X,I5,5(5X,G15.7))
+220   FORMAT(1X,G15.7,2X,I5,100(5X,G15.7))
 C
       RETURN
       END
 C
+C
+      SUBROUTINE TIMEINTERP(VAR2,VAR1,DVAR,NVAR,N,VARTN,VARTO,DV,IOPT)
+C
+C  LINEAR INTERPOLATION FOR BEGINNING AND END OF TRANSPORT TIME-STEP
+C  VAR2     - VARIABLE AT THE END OF FLOW TIME STEP - L3
+C  VAR1     - VARIABLE AT THE BEGINNING OF FLOW TIME STEP - L3
+C  DVAR     - RATE OF CHANGE - L3/T
+C  VARTN    - VARIABLE AT THE END OF TRANSPORT TIME STEP - L3
+C  VARTO    - VARIABLE AT THE BEGINNING OF TRANSPORT TIME STEP -L3
+C  DV       - DV - L3/T
+C  IOPT     - CALCULATION OPTION
+C               - 1 MEANS VAR1 AND VAR2 ARE GIVEN; VARTN,VARTO,DV ARE CALCULATED
+C               - 2 MEANS VAR1 AND DVAR ARE GIVEN; VARTN,VARTO ARE CALCULATED
+C
+      USE MT3DMS_MODULE, ONLY: HT1,HT2,TIME1,TIME2
+      REAL VAR1(NVAR),VAR2(NVAR),DVAR(NVAR)
+      INTEGER IOPT
+C
+      IF(IOPT.EQ.1) THEN
+        DV=(VAR2(N)-VAR1(N))/(HT2-HT1)
+        VARTO=VAR1(N)+DV*(TIME1-HT1)
+        VARTN=VAR1(N)+DV*(TIME2-HT1)
+      ELSEIF(IOPT.EQ.2) THEN
+        DV=DVAR(N)
+        VARTO=VAR1(N)+DV*(TIME1-HT1)
+        VARTN=VAR1(N)+DV*(TIME2-HT1)
+      ENDIF
+C
+      RETURN
+      END

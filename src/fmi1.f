@@ -10,14 +10,15 @@ C
      &                         IVER,IFTLFMT,
      &         NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR,FUZF
-     
+     &         FSWT,FSFR,FUZF,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
+     &         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF
       IMPLICIT  NONE
       INTEGER   
      &          MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB,MTCHD,
      &          MTSTR,MTFHB,MTRES,MTTLK,MTIBS,MTLAK,
-     &          MTDRT,MTETS,MTMNW,MTSWT,MTSFR,MTUZF,IERR
+     &          MTDRT,MTETS,MTMNW,MTSWT,MTSFR,MTUZF,IERR,IPCKG
       CHARACTER VERSION*11
+      CHARACTER*20 TEXT1
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INFTL
@@ -27,7 +28,8 @@ C
 C--ALLOCATE
       ALLOCATE(NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR,FUZF)
+     &         FSWT,FSFR,FUZF,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
+     &         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF)
 C
 C--INITIALIZE
       ISS=1
@@ -52,6 +54,16 @@ C--INITIALIZE
       FSWT=.FALSE.
       FSFR=.FALSE.
       FUZF=.FALSE.
+      FLAKFLOWS=.FALSE.
+      FMNWFLOWS=.FALSE.
+      FSFRFLOWS=.FALSE.
+      FUZFFLOWS=.FALSE.
+      FSWR=.FALSE.
+      FSWRFLOWS=.FALSE.
+      FSFRLAK=.FALSE.
+      FSFRUZF=.FALSE.
+      FLAKUZF=.FALSE.
+      FSNKUZF=.FALSE.
       MTSTR=0
       MTRES=0
       MTFHB=0
@@ -74,7 +86,8 @@ C--READ HEADER OF FLOW-TRANSPORT LINK FILE
      &   MTEVT,MTRIV,MTGHB,MTCHD,ISS,NPERFL
       ENDIF
 C
-  100 IF(VERSION(1:4).NE.'MT3D'.OR.IERR.NE.0) THEN
+  100 IF((VERSION(1:4).NE.'MT3D'.AND.VERSION(1:4).NE.'MTGS').OR.
+     1   IERR.NE.0) THEN
         GOTO 500
       ELSEIF(VERSION(1:11).EQ.'MT3D4.00.00') THEN
         REWIND(INFTL)
@@ -89,6 +102,42 @@ C
      &     MTSTR,MTRES,MTFHB,MTDRT,MTETS,MTTLK,MTIBS,MTLAK,MTMNW,
      &     MTSWT,MTSFR,MTUZF
         ENDIF
+      ELSEIF(VERSION(1:11).EQ.'MTGS1.00.00') THEN
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INFTL) NPCKGTXT
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INFTL,*) NPCKGTXT
+        ENDIF
+        DO IPCKG=1,NPCKGTXT
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INFTL) TEXT1
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INFTL,*) TEXT1
+          ENDIF
+C
+          IF(TEXT1.EQ.'                 STR') FSTR=.TRUE.
+          IF(TEXT1.EQ.'                 RES') FRES=.TRUE.
+          IF(TEXT1.EQ.'                 FHB') FFHB=.TRUE.
+          IF(TEXT1.EQ.'                 DRT') FDRT=.TRUE.
+          IF(TEXT1.EQ.'                 ETS') FETS=.TRUE.
+          IF(TEXT1.EQ.'                 IBS') FIBS=.TRUE.
+          IF(TEXT1.EQ.'                 TLK') FTLK=.TRUE.
+          IF(TEXT1.EQ.'                 LAK') FLAK=.TRUE. 
+          IF(TEXT1.EQ.'           LAK FLOWS') FLAKFLOWS=.TRUE.
+          IF(TEXT1.EQ.'                 MNW') FMNW=.TRUE.
+          IF(TEXT1.EQ.'           MNW FLOWS') FMNWFLOWS=.TRUE. !NOT SUPPORTED YET
+          IF(TEXT1.EQ.'                 SWT') FSWT=.TRUE.
+          IF(TEXT1.EQ.'                 SFR') FSFR=.TRUE.
+          IF(TEXT1.EQ.'           SFR FLOWS') FSFRFLOWS=.TRUE.
+          IF(TEXT1.EQ.'                 UZF') FUZF=.TRUE.
+          IF(TEXT1.EQ.'           UZF FLOWS') FUZFFLOWS=.TRUE.
+          IF(TEXT1.EQ.'                 SWR') FSWR=.TRUE.
+          IF(TEXT1.EQ.'           SWR FLOWS') FSWRFLOWS=.TRUE. !NOT SUPPORTED YET
+          IF(TEXT1.EQ.'     CONNECT SFR LAK') FSFRLAK=.TRUE.
+          IF(TEXT1.EQ.'     CONNECT SFR UZF') FSFRUZF=.TRUE.
+          IF(TEXT1.EQ.'     CONNECT LAK UZF') FLAKUZF=.TRUE.
+          IF(TEXT1.EQ.'     CONNECT SNK UZF') FSNKUZF=.TRUE.
+        ENDDO
       ENDIF
 C
 C--DETERMINE WHICH FLOW COMPONENTS USED IN FLOW MODEL
@@ -148,6 +197,35 @@ C--PRINT KEY INFORMATION OF THE FLOW MODEL
   320 FORMAT(1X,'FLOW MODEL IS STEADY-STATE')
   330 FORMAT(1X,'FLOW MODEL CONTAINS CONSTANT-HEAD CELLS')
 C
+C--CHECK IF PACKAGES ARE ON
+      IF(FUZFFLOWS) THEN
+        IF(iUnitTRNOP(7).EQ.0) WRITE(IOUT,*) ' UZT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(7).GT.0) THEN
+          WRITE(IOUT,*) ' UZT FILE WILL NOT BE USED'
+          iUnitTRNOP(7)=0
+        ENDIF
+      ENDIF
+      IF(FLAKFLOWS) THEN
+        IF(iUnitTRNOP(18).EQ.0) WRITE(IOUT,*) ' LKT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(18).GT.0) THEN
+          WRITE(IOUT,*) ' LKT FILE WILL NOT BE USED'
+          iUnitTRNOP(18)=0
+        ENDIF
+      ENDIF
+      IF(FSFRFLOWS) THEN
+        IF(iUnitTRNOP(19).EQ.0) WRITE(IOUT,*) ' SFT FILE IS REQUIRED'
+        STOP
+      ELSE
+        IF(iUnitTRNOP(19).GT.0) THEN
+          WRITE(IOUT,*) ' SFT FILE WILL NOT BE USED'
+          iUnitTRNOP(19)=0
+        ENDIF
+      ENDIF
+C
 C--DONE, RETURN
       GOTO 1000
 C
@@ -162,35 +240,6 @@ C--ERROR READING THE FLOW-TRANSPORT LINK FILE
      & /1X,'2. Unformatted Flow-Transport Link File Saved by',
      & ' Verison 1 of LinkMT3D',
      & /1X,'   Package Which Is No Longer Supported by MT3DMS.')
-C
-C--CHECK IF PACKAGES ARE ON
-      IF(FUZF) THEN
-        IF(iUnitTRNOP(7).EQ.0) WRITE(IOUT,*) ' UZT FILE IS REQUIRED'
-        STOP
-      ELSE
-        IF(iUnitTRNOP(7).GT.0) THEN
-          WRITE(IOUT,*) ' UZT FILE WILL NOT BE USED'
-          iUnitTRNOP(7)=0
-        ENDIF
-      ENDIF
-      IF(FLAK) THEN
-        IF(iUnitTRNOP(18).EQ.0) WRITE(IOUT,*) ' LKT FILE IS REQUIRED'
-        STOP
-      ELSE
-        IF(iUnitTRNOP(18).GT.0) THEN
-          WRITE(IOUT,*) ' LKT FILE WILL NOT BE USED'
-          iUnitTRNOP(18)=0
-        ENDIF
-      ENDIF
-      IF(FSFR) THEN
-        IF(iUnitTRNOP(19).EQ.0) WRITE(IOUT,*) ' SFT FILE IS REQUIRED'
-        STOP
-      ELSE
-        IF(iUnitTRNOP(19).GT.0) THEN
-          WRITE(IOUT,*) ' SFT FILE WILL NOT BE USED'
-          iUnitTRNOP(19)=0
-        ENDIF
-      ENDIF
 C
  1000 RETURN
       END
@@ -227,30 +276,30 @@ C
       KTRACK=0
 C
       INUF=INFTL
-C
-C--READ UNSAT ZONE WATER CONTENT (UNITLESS)
-      IF(FUZF) THEN 
-        IF(IUZFOPTG.EQ.0) THEN
-          TEXT='WATER CONTENT   '
-          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &                WC,FPRT)                                
-        ENDIF
+CC
+CC--READ UNSAT ZONE WATER CONTENT (UNITLESS)
+C      IF(FUZF) THEN 
+C        IF(IUZFOPTG.EQ.0) THEN
+C          TEXT='WATER CONTENT   '
+C          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+C     &                WC,FPRT)                                
+C        ENDIF
 C                                                             
-C--READ UPPER-FACE FLUX TERMS                                 
-        TEXT='UZ FLUX         '                               
-        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
-     &              UZFLX,FPRT)                               
-C                                                             
-C--READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)          
-        TEXT='UZQSTO          '                               
-        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
-     &              UZQSTO,FPRT)                              
-!C                                                            
-!C--READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                 
-!        TEXT='GWQOUT          '                              
-!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT, 
-!     &              SURFLK,FPRT)                             
-      ENDIF                                                   
+CC--READ UPPER-FACE FLUX TERMS                                 
+C        TEXT='UZ FLUX         '                               
+C        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
+C     &              UZFLX,FPRT)                               
+CC                                                             
+CC--READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)          
+C        TEXT='UZQSTO          '                               
+C        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
+C     &              UZQSTO,FPRT)                              
+C!C                                                            
+C!C--READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                 
+C!        TEXT='GWQOUT          '                              
+C!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT, 
+C!     &              SURFLK,FPRT)                             
+C      ENDIF                                                   
 C
 C--READ SATURATED THICKNESS (UNIT: L).
       IF(IVER.EQ.2) THEN
@@ -289,80 +338,80 @@ C--READ STORAGE TERM (UNIT: L**3/T).
       IF(IVER.EQ.2.AND.ISS.EQ.0) THEN
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,QSTO,FPRT)
       ENDIF
-C
-C--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE
-C--CURRENT CELL                                      
-      IF(FUZF) THEN
-      IF(IUZFOPTG.EQ.0) THEN                    
-C--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
-        IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
-          DO K=1,NLAY                                
-            DO I=1,NROW                              
-              DO J=1,NCOL                            
-                IF(IUZFBND(J,I).GT.0) THEN           
-                  SATOLD(J,I,K)=SATNEW(J,I,K)        
-                ENDIF                                
-              ENDDO                                  
-            ENDDO                                    
-          ENDDO                                      
-        ENDIF                                        
-C                                                    
-C--COMPUTE SATURATION                                
-        PRSITY=>PRSITYSAV                            
-        DO K=1,NLAY                                  
-          DO I=1,NROW                                
-            DO J=1,NCOL                              
-              IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
-                SATNEW(J,I,K)=1                      
-              ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
-     &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
-                IF(INT(DH(J,I,K)).EQ.-111) THEN      
-                  SATNEW(J,I,K)=1                    
-                ELSE                                 
-                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
-     &                          WC(J,I,K)/PRSITY(J,I,K)+          
-     &                          DH(J,I,K)/DZ(J,I,K)*1             
-                ENDIF                                             
-              ENDIF                                               
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
-C                                                                 
-C--MELD UZFLX AND QZZ ARRAY SO THAT UZFLX DOESN'T NEED TO BE DEALT
-C--WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ        
-        DO K=1,(NLAY-1)                                           
-          DO I=1,NROW                                             
-            DO J=1,NCOL                                           
-              IF(ICBUND(J,I,K,1).NE.0) THEN                       
-C--THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
-C  ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
-                IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
-                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
-     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
-                  QZ(J,I,K)=UZFLX(J,I,K+1)                        
-                ENDIF                                             
-              ENDIF                                               
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
-C                                                                 
-C--PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE    
-C--FOR BOTH THE SATURATED AND UNSATURATED CASE                    
-        DO K=1,NLAY                                               
-          DO I=1,NROW                                             
-            DO J=1,NCOL
-              IF(IUZFBND(J,I).EQ.0)THEN
-                WC(J,I,K)=PRSITY(J,I,K)
-              ELSE
-                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
-              ENDIF
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
-        PRSITYSAV=>PRSITY                                         
-        PRSITY=>WC                                                
-      ENDIF                                                       
-      ENDIF                                                       
+CC
+CC--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE
+CC--CURRENT CELL                                      
+C      IF(FUZF) THEN
+C      IF(IUZFOPTG.EQ.0) THEN                    
+CC--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
+C        IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
+C          DO K=1,NLAY                                
+C            DO I=1,NROW                              
+C              DO J=1,NCOL                            
+C                IF(IUZFBND(J,I).GT.0) THEN           
+C                  SATOLD(J,I,K)=SATNEW(J,I,K)        
+C                ENDIF                                
+C              ENDDO                                  
+C            ENDDO                                    
+C          ENDDO                                      
+C        ENDIF                                        
+CC                                                    
+CC--COMPUTE SATURATION                                
+C        PRSITY=>PRSITYSAV                            
+C        DO K=1,NLAY                                  
+C          DO I=1,NROW                                
+C            DO J=1,NCOL                              
+C              IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
+C                SATNEW(J,I,K)=1                      
+C              ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
+C     &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
+C                IF(INT(DH(J,I,K)).EQ.-111) THEN      
+C                  SATNEW(J,I,K)=1                    
+C                ELSE                                 
+C                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
+C     &                          WC(J,I,K)/PRSITY(J,I,K)+          
+C     &                          DH(J,I,K)/DZ(J,I,K)*1             
+C                ENDIF                                             
+C              ENDIF                                               
+C            ENDDO                                                 
+C          ENDDO                                                   
+C        ENDDO                                                     
+CC                                                                 
+CC--MELD UZFLX AND QZZ ARRAY SO THAT UZFLX DOESN'T NEED TO BE DEALT
+CC--WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ        
+C        DO K=1,(NLAY-1)                                           
+C          DO I=1,NROW                                             
+C            DO J=1,NCOL                                           
+C              IF(ICBUND(J,I,K,1).NE.0) THEN                       
+CC--THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
+CC  ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
+C                IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
+C                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
+C     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
+C                  QZ(J,I,K)=UZFLX(J,I,K+1)                        
+C                ENDIF                                             
+C              ENDIF                                               
+C            ENDDO                                                 
+C          ENDDO                                                   
+C        ENDDO                                                     
+CC                                                                 
+CC--PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE    
+CC--FOR BOTH THE SATURATED AND UNSATURATED CASE                    
+C        DO K=1,NLAY                                               
+C          DO I=1,NROW                                             
+C            DO J=1,NCOL
+C              IF(IUZFBND(J,I).EQ.0)THEN
+C                WC(J,I,K)=PRSITY(J,I,K)
+C              ELSE
+C                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
+C              ENDIF
+C            ENDDO                                                 
+C          ENDDO                                                   
+C        ENDDO                                                     
+C        PRSITYSAV=>PRSITY                                         
+C        PRSITY=>WC                                                
+C      ENDIF                                                       
+C      ENDIF                                                       
 C
 C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
 C--AND REACTIVATE DRY CELL IF REWET AND ASSIGN CONC AT REWET CELL
@@ -632,6 +681,7 @@ C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN           
                 QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
+                IF(THKSAT.EQ.0.0) QX(J,I,K)=0.
               ELSE                                  
                 QX(J,I,K)=0
                 IF(J.GT.1) QX(J-1,I,K)=0.
@@ -667,6 +717,7 @@ C
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN           
                 QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
+                IF(THKSAT.EQ.0.0) QY(J,I,K)=0.
               ELSE                                  
                 QY(J,I,K)=0
                 IF(I.GT.1) QY(J,I-1,K)=0.
@@ -709,6 +760,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN  
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
+                IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
               ELSE                                              
                 QSTO(J,I,K)=0
               ENDIF 
@@ -716,6 +768,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
               IF(iUnitTRNOP(7).GT.0) THEN
                 QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
      &                       (THKSAT*DELR(J)*DELC(I))    
+                IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
               ELSE                                       
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
               ENDIF                                             
@@ -756,24 +809,45 @@ C last modified: 02-20-2010
 C
       USE MIN_SAT,       ONLY: DRYON
       USE UZTVARS,       ONLY: UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,
-     &                         IUZFBND
+     &  IUZFBND,IUZRCH,UZRECH,IGWET,IUZFOPTG,WC,UZQSTO,SATOLD,
+     &  PRSITYSAV
+      USE SFRVARS,       ONLY: NSFINIT,NSTRM,ISFL,ISFR,ISFC,QSFGW,
+     &  SFNAREA,QPRECSF,QRUNOFSF,QETSF,IBNDSF,NSSSF,ISFNBC,ISFBCTYP,
+     &  IEXIT,QPRECSFO,QRUNOFSFO,QOUTSF,QOUTSFO,SFOAREA,NSF2SF,
+     &  INOD1SF,INOD2SF,IDSPFLG,QN2NSF,VOLSFO,VOLSFN,SFLEN
+      USE LAKVARS,       ONLY: QPRECLAK,QRUNOFLAK,QWDRLLAK,
+     &  QETLAK,VOLOLAK,VOLNLAK,DELVOLLAK,
+     &  LAKNUMGW,NLAKES,LKNODE,LAKL,LAKR,LAKC,QLAKGW,NLKINIT
+      USE PKG2PKG
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,NCOL,NROW,NLAY,NCOMP,FPRT,
      &                         LAYCON,ICBUND,DH,PRSITY,DELR,DELC,IRCH,
      &                         RECH,IEVT,EVTR,MXSS,NSS,NTSS,SS,BUFF,
      &                         DTSSM,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
-     &                         FETS,FSWT,FSFR,ISS,NPERFL,
+     &                         FETS,FSWT,FSFR,FUZF,ISS,NPERFL,
      &                         CNEW,SSMC,KSSZERO,
-     &                         iUnitTRNOP
+     &                         iUnitTRNOP,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,
+     &                         FSFRFLOWS,FUZFFLOWS,FSWR,FSWRFLOWS,
+     &                         FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF,
+     &                         DZ,QZ,PRSITY,QSTO
 C
       IMPLICIT  NONE
       INTEGER   INUF,J,I,K,
      &          NUM,KPER,KSTP,IQ,KSSM,ISSM,JSSM,
-     &          JJ,II,KK,JM1,JP1,IM1,IP1,KM1,KP1,INDEX
+     &          JJ,II,KK,JM1,JP1,IM1,IP1,KM1,KP1,INDEX,IFL,N,IFROM,ITO
       INTEGER   INCTS,KOLD  
-      REAL      VOLAQU,TM
+      REAL      VOLAQU,TM,THKSAT
       CHARACTER TEXT*16
+      INTEGER   NFLOWTYPE,NRCHCON,NNGW
+      REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
+     1  QN2N(:)
+      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+      INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
+      INTEGER,      ALLOCATABLE      :: ICID(:)
+      REAL,         ALLOCATABLE      :: QAUX(:)
+      INTEGER,      ALLOCATABLE      :: IP2PFLG(:)
+      CHARACTER*20  FLWTYP
 C
       INUF=INFTL
 C
@@ -823,54 +897,12 @@ C--IF RECHARGE OPTION USED IN FLOW MODEL
      &   RECH,IRCH,FPRT)
       ENDIF
 C
-C--PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED
-      IF(iUnitTRNOP(7).GT.0) THEN                              
-        DO I=1,NROW                                            
-          DO J=1,NCOL                                          
-            IF(ABS(IUZFBND(J,I)).GT.0) THEN                    
-              FINFIL(J,I)=UZFLX(J,I,ABS(IUZFBND(J,I)))         
-            ELSE                                               
-              FINFIL(J,I)=UZFLX(J,I,1)                         
-            ENDIF
-          ENDDO
-        ENDDO  
-      ENDIF    
-C
 C--READ ET FLOW TERM (L**3/T) IF EVT OPTION USED IN FLOW MODEL
       IF(FEVT) THEN
         TEXT='EVT'
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &   EVTR,IEVT,FPRT)
       ENDIF
-C
-C--READ ET FLOW TERM (L**3/T) IF SEGMENTED ET USED IN FLOW MODEL
-      IF(FETS) THEN
-        TEXT='ETS'
-        CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   EVTR,IEVT,FPRT)
-      ENDIF
-C--READ UZ-ET FLOW TERM (L**3/T) IF IETFLG>0 IN UZF PACKAGE   
-C--NOTE THAT EITHER THE ET PACKAGE OR THE UZF PACKAGE, BUT NOT
-C--BOTH WILL BE IN USE                                        
-C                                                             
-      IF(iUnitTRNOP(7).GT.0) THEN
-        IF(IETFLG) THEN
-          TEXT='UZ-ET'
-          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &                UZET,FPRT)
-        ENDIF                   
-      ENDIF                   
-C                             
-C--Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge 
-C                                                            
-      IF(iUnitTRNOP(7).GT.0) THEN
-        IF(IETFLG) THEN
-          TEXT='GW-ET' 
-          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &                GWET,FPRT)
-        ENDIF                   
-      ENDIF                   
-
 C
 C--READ RIVER FLOW TERM (L**3/T) IF RIVER OPTION USED IN FLOW MODEL.
       IF(FRIV) THEN
@@ -916,15 +948,6 @@ C--IF FHB OPTION IS USED IN FLOW MODEL.
      &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
-C--READ MULTI-NODE WELL FLOW TERM (L**3/T)
-C--IF MNW OPTION IS USED IN FLOW MODEL.
-      IF(FMNW) THEN
-        TEXT='MNW'
-        IQ=27
-        CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
-      ENDIF
-C
 C--READ DRAIN-RETURN FLOW TERM (L**3/T)
 C--IF DRT OPTION IS USED IN FLOW MODEL.
       IF(FDRT) THEN
@@ -934,35 +957,427 @@ C--IF DRT OPTION IS USED IN FLOW MODEL.
      &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
-C--READ SFR FLOW TERMS                              
-C--LENGTH (L); AREA (L**2), ALL OTHER TERMS(L**3/T) 
-C--IF LAK OPTION IS USED IN FLOW MODEL.             
-      IF(FSFR) THEN                                 
-        TEXT='SFR'                                  
-        IQ=30                                       
-        CALL READSFR(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT,NCOMP)         
-      ENDIF                                                  
+C--READ ET FLOW TERM (L**3/T) IF SEGMENTED ET USED IN FLOW MODEL
+      IF(FETS) THEN
+        TEXT='ETS'
+        CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   EVTR,IEVT,FPRT)
+      ENDIF
+C
+C--READ MULTI-NODE WELL FLOW TERM (L**3/T)
+C--IF MNW OPTION IS USED IN FLOW MODEL.
+      IF(FMNW) THEN
+        TEXT='MNW'
+        IQ=27
+        CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+      ENDIF
+C
+C--READ UZF FLOW TERMS
+      IF(FUZF) THEN                                          
+        IQ=31
+        TEXT='UZF RECHARGE'
+C        ALLOCATE(UZRECH(NCOL,NROW),IUZRCH(NCOL,NROW))
+        CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   UZRECH,IUZRCH,FPRT)
+C
+        TEXT='GW-ET'
+C        ALLOCATE(GWET(NCOL,NROW),IGWET(NCOL,NROW))
+        CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   GWET,IGWET,FPRT)
+      ELSEIF(FUZFFLOWS) THEN
+        IQ=31
+        IF(IUZFOPTG.EQ.0) THEN
+C
+C-------READ UNSAT ZONE WATER CONTENT (UNITLESS)
+          TEXT='WATER CONTENT   '
+          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                WC,FPRT)                                
+        ENDIF
+C                                                             
+C-------READ UPPER-FACE FLUX TERMS                                 
+        TEXT='UZ FLUX         '
+        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
+     &              UZFLX,FPRT)                               
+C                                                             
+C-------READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)          
+        TEXT='UZQSTO          '                               
+        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
+     &              UZQSTO,FPRT)                              
+!C                                                            
+!C-------READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                 
+!        TEXT='GWQOUT          '                              
+!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT, 
+!     &              SURFLK,FPRT)                             
+C
+C-------READ UZ-ET FLOW TERM (L**3/T) IF IETFLG>0 IN UZF PACKAGE   
+C-------NOTE THAT EITHER THE ET PACKAGE OR THE UZF PACKAGE, BUT NOT
+C-------BOTH WILL BE IN USE                                        
+C                                                             
+        IF(IETFLG) THEN
+          TEXT='UZ-ET'
+          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                UZET,FPRT)
+        ENDIF                   
+C                             
+C-------Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge 
+        IF(IETFLG) THEN
+          TEXT='GW-ET'
+C          ALLOCATE(GWET(NCOL,NROW),IGWET(NCOL,NROW))
+          CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &      GWET,IGWET,FPRT)
+C          TEXT='GW-ET' 
+C          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+C     &                GWET,FPRT)
+        ENDIF                   
+C
+C-------MODIFY ARRAYS
+C
+      IF(IUZFOPTG.EQ.0) THEN                    
+C-------IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
+        IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
+          DO K=1,NLAY                                
+            DO I=1,NROW                              
+              DO J=1,NCOL                            
+                IF(IUZFBND(J,I).GT.0) THEN           
+                  SATOLD(J,I,K)=SATNEW(J,I,K)        
+                ENDIF                                
+              ENDDO                                  
+            ENDDO                                    
+          ENDDO                                      
+        ENDIF                                        
+C                                                    
+C-------COMPUTE SATURATION                                
+        PRSITY=>PRSITYSAV                            
+        DO K=1,NLAY                                  
+          DO I=1,NROW                                
+            DO J=1,NCOL                              
+              IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
+                SATNEW(J,I,K)=1                      
+              ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
+     &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
+                IF(INT(DH(J,I,K)).EQ.-111) THEN      
+                  SATNEW(J,I,K)=1                    
+                ELSE                                 
+                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
+     &                          WC(J,I,K)/PRSITY(J,I,K)+          
+     &                          DH(J,I,K)/DZ(J,I,K)*1             
+                ENDIF                                             
+              ENDIF                                               
+            ENDDO                                                 
+          ENDDO                                                   
+        ENDDO                                                     
+C                                                                 
+C-------MELD UZFLX AND QZZ ARRAY SO THAT UZFLX DOESN'T NEED TO BE DEALT
+C-------WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ        
+        DO K=1,(NLAY-1)                                           
+          DO I=1,NROW                                             
+            DO J=1,NCOL                                           
+              IF(ICBUND(J,I,K,1).NE.0) THEN                       
+C-------THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
+C-------ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
+                IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
+                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
+     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
+                  QZ(J,I,K)=UZFLX(J,I,K+1)                        
+                ENDIF                                             
+              ENDIF                                               
+            ENDDO                                                 
+          ENDDO                                                   
+        ENDDO                                                     
+C                                                                 
+C-------PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE    
+C-------FOR BOTH THE SATURATED AND UNSATURATED CASE                    
+        DO K=1,NLAY                                               
+          DO I=1,NROW                                             
+            DO J=1,NCOL
+              IF(IUZFBND(J,I).EQ.0)THEN
+                WC(J,I,K)=PRSITY(J,I,K)
+              ELSE
+                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
+              ENDIF
+            ENDDO                                                 
+          ENDDO                                                   
+        ENDDO                                                     
+        PRSITYSAV=>PRSITY                                         
+        PRSITY=>WC                                                
+      ENDIF                                                       
+C
+C-------DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
+      DO K=1,NLAY
+        DO I=1,NROW
+          DO J=1,NCOL
+            THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
+            IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
+
+            ELSE
+              IF(iUnitTRNOP(7).GT.0) THEN
+                QSTO(J,I,K)=QSTO(J,I,K)+(UZQSTO(J,I,K))/ 
+     &                       (THKSAT*DELR(J)*DELC(I))    
+              ELSE                                       
+
+              ENDIF                                             
+            ENDIF
+            IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
+          ENDDO
+        ENDDO
+      ENDDO
+C
+C-------PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED
+        DO I=1,NROW                                            
+          DO J=1,NCOL                                          
+            IF(ABS(IUZFBND(J,I)).GT.0) THEN                    
+              FINFIL(J,I)=UZFLX(J,I,ABS(IUZFBND(J,I)))         
+            ELSE                                               
+              FINFIL(J,I)=UZFLX(J,I,1)                         
+            ENDIF
+          ENDDO
+        ENDDO  
+      ENDIF                   
 C                                                            
 C--READ LAK FLOW TERMS                                       
 C--VOLUMES (L**3); ALL OTHER TERMS(L**3/T)                   
 C--IF LAK OPTION IS USED IN FLOW MODEL.                      
       IF(FLAK) THEN                                          
         TEXT='LAK'                                           
-        IQ=31                                                
-        CALL READLAK(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT,NCOMP)         
+        IQ=26
+        CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+      ELSEIF(FLAKFLOWS) THEN
+        TEXT='LAK FLOWS'                                  
+        IQ=26
+C        CALL READLAK(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+C     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT,NCOMP)         
+C        ALLOCATE(NLAKES,LKNODE,NLKINIT)
+        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   ICBUND,FPRT,NCOMP,LKNODE,1,LAKL,LAKR,LAKC,QLAKGW,ICID,QAUX,
+     &   NLKINIT,NLAKES,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
+     &   NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
+C
+C-------ALLOCATE AND INITIALIZE LKT ARRAYS
+        ALLOCATE(LAKNUMGW(LKNODE))
+        LAKNUMGW=ICID
+C        ALLOCATE(QPRECLAK(NLAKES),QRUNOFLAK(NLAKES),QWDRLLAK(NLAKES),
+C     &  QETLAK(NLAKES),VOLOLAK(NLAKES),VOLNLAK(NLAKES),
+C     &  DELVOLLAK(NLAKES))
+C        QPRECLAK=0.
+C        QRUNOFLAK=0.
+C        QWDRLLAK=0.
+C        QETLAK=0.
+C
+C-------MAP TO SFT ARRAYS
+        DO IFL=1,NFLOWTYPE
+          FLWTYP=CFLOWTYPE(IFL)
+          SELECT CASE (FLWTYP)
+            CASE("PRECIP              ") !L3/T
+              QPRECLAK(:)=PKGFLOWS(IFL,:)
+            CASE("RUNOFF              ") !L3/T
+              QRUNOFLAK(:)=PKGFLOWS(IFL,:)
+            CASE("WITHDRW             ") !L3/T
+              QWDRLLAK(:)=PKGFLOWS(IFL,:)
+            CASE("EVAP                ") !L3/T
+              QETLAK(:)=PKGFLOWS(IFL,:)
+            CASE("VOLUME              ") !L3 - OLD VOLUME
+              VOLNLAK(:)=PKGFLOWS(IFL,:)
+            CASE("DELVOL              ") !L3/T
+              DELVOLLAK(:)=PKGFLOWS(IFL,:)
+            CASE DEFAULT
+              WRITE(*,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
+              WRITE(IOUT,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
+              STOP
+          END SELECT
+        ENDDO
+C
+C-------CHECK NRCHCON=0 - NO LAKE-TO-LAKE CONNECTIONS
+        IF(NRCHCON.GT.0) THEN
+          WRITE(*,*) 'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
+          WRITE(IOUT,*) 
+     &    'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
+          CALL USTOP(' ')
+        ENDIF
+C
+C-------INITIALIZE OLD=NEW FOR THE FIRST TIME
+        IF(KPER.EQ.1.AND.KSTP.EQ.1) THEN
+          VOLOLAK=VOLNLAK
+        ENDIF
+C
+C-------DEALLOCATE TEMP ARRAYS
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+      ENDIF
+C
+C--READ SFR FLOW TERMS                              
+C--LENGTH (L); AREA (L**2), ALL OTHER TERMS(L**3/T) 
+C--IF SFR OPTION IS USED IN FLOW MODEL.             
+      IF(FSFR) THEN !SFR ACTS AS A BOUNDARY CONDITION ONLY
+        TEXT='SFR'                                  
+        IQ=30                                       
+        CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+      ELSEIF(FSFRFLOWS) THEN
+        TEXT='SFR FLOWS'                                  
+        IQ=30                                       
+        ALLOCATE(NSTRM)
+        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   ICBUND,FPRT,NCOMP,NNGW,0,ISFL,ISFR,ISFC,QSFGW,ICID,QAUX,
+     &   NSFINIT,NSTRM,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
+     &   NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
+C
+C-------CHECK NNGW=NSTRM
+        IF(NNGW.NE.NSTRM) THEN
+          WRITE(*,*) 'INVALID NUMBER OF GW CONNECTIONS IN FTL FILE',NNGW
+          WRITE(IOUT,*) 
+     &    'INVALID NUMBER OF GW CONNECTIONS IN FTL FILE',NNGW
+          CALL USTOP(' ')
+        ENDIF
+C
+C-------ALLOCATE AND INITIALIZE SFT ARRAYS
+        NSF2SF=NRCHCON
+C        ALLOCATE(QPRECSF(NSTRM),QRUNOFSF(NSTRM),
+C     &  QETSF(NSTRM),IEXIT(NSTRM),QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
+C     &  QOUTSF(NSTRM),QOUTSFO(NSTRM),VOLSFO(NSTRM),VOLSFN(NSTRM),
+C     &  SFLEN(NSTRM))
+        QPRECSF=0.
+        QRUNOFSF=0.
+        QETSF=0.
+        IEXIT=0
+        QOUTSF=0.
+        ALLOCATE(SFNAREA(NSF2SF),SFOAREA(NSF2SF),IDSPFLG(NSF2SF),
+     &  INOD1SF(NSF2SF),INOD2SF(NSF2SF),QN2NSF(NSF2SF))
+        INOD1SF=INOD1
+        INOD2SF=INOD2
+        IDSPFLG=IDISP
+        SFNAREA=QAREA
+        QN2NSF=QN2N
+C
+C-------MAP TO SFT ARRAYS
+        DO IFL=1,NFLOWTYPE
+          FLWTYP=CFLOWTYPE(IFL)
+          SELECT CASE (FLWTYP)
+            CASE("PRECIP              ") !L3/T
+              QPRECSF(:)=PKGFLOWS(IFL,:)
+            CASE("RUNOFF              ") !L3/T
+              QRUNOFSF(:)=PKGFLOWS(IFL,:)
+            CASE("EVAP                ") !L3/T
+              QETSF(:)=PKGFLOWS(IFL,:)
+            CASE("VOLUME              ") !L3 - NEW VOLUME
+              VOLSFN(:)=PKGFLOWS(IFL,:)
+            CASE("RCHLEN              ") !L
+              SFLEN(:)=PKGFLOWS(IFL,:)
+            CASE DEFAULT
+              WRITE(*,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
+              WRITE(IOUT,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
+              STOP
+          END SELECT
+        ENDDO
+C
+C-------IDENTIFY CONSTANT CONCENTRATION NODES AND SET IBNDSF ARRAY
+        IBNDSF=1
+        DO I=1,NSSSF
+          N=ISFNBC(I)
+          IF(ISFBCTYP(I).EQ.3) IBNDSF(N)=-1
+        ENDDO
+C
+C-------POPULATE SFT ARRAYS
+        DO N=1,NSF2SF
+        IFROM=INOD1SF(N)
+          CALL GETFLOWDIR(INOD1SF,INOD2SF,QN2NSF,NSF2SF,N,IFROM,ITO)
+C-------IDENTIFY EXIT CELLS AND CALCULATE TOTAL OUTFLOW
+          IF(ITO.EQ.-999) THEN
+            IEXIT(IFROM)=1
+            QOUTSF(IFROM)=QOUTSF(IFROM)+ABS(QN2N(N))
+          ENDIF
+        ENDDO
+C
+C-------INITIALIZE OLD=NEW FOR THE FIRST TIME
+        IF(KPER.EQ.1.AND.KSTP.EQ.1) THEN
+          QPRECSFO=QPRECSF
+          QRUNOFSFO=QRUNOFSF
+          QOUTSFO=QOUTSF
+          SFOAREA=SFNAREA
+          VOLSFO=VOLSFN
+        ENDIF
+C
+C-------DEALLOCATE TEMP ARRAYS
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF                                                  
 C                                                            
 C--READ UZF -> SFR & UZF -> LAK FLOWS (L**3/T)               
 C--IF UZF AND SFR OR UZF AND LAKE OR BOTH ARE USED IN THE FLOW MODEL
-      IF((iUnitTRNOP(7).GT.0.AND.FSFR).OR.
-     &   (iUnitTRNOP(7).GT.0.AND.FLAK)) THEN                   
-        TEXT='UZF CONNECTIONS'                                 
-        IQ=32                                                  
-        CALL READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,
-     &   TEXT,NCOMP)                                           
-      ENDIF                                                    
+C      IF((iUnitTRNOP(7).GT.0.AND.FSFR).OR.
+C     &   (iUnitTRNOP(7).GT.0.AND.FLAK)) THEN                   
+C        TEXT='UZF CONNECTIONS'                                 
+C        IQ=32                                                  
+C        CALL READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,
+C     &   TEXT,NCOMP)                                           
+C      ENDIF                                                    
+C
+C--READ PACKAGE TO PACKAGE FLOWS
+C
+C--SFR-LAK
+      ALLOCATE(NSFR2LAK)
+      NSFR2LAK=0
+      IF(FSFRLAK) THEN
+        TEXT='CONNECT SFR LAK'
+        CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
+     1  NSFR2LAK,INOD1SFLK,INOD2SFLK,QSFR2LAK,IP2PFLG)
+C
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+      ENDIF
+C
+C--SFR-UZF
+      ALLOCATE(NSFR2UZF)
+      NSFR2UZF=0
+      IF(FSFRUZF) THEN
+        TEXT='CONNECT SFR UZF'
+        CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
+     1  NSFR2UZF,INOD1SFUZ,INOD2SFUZ,QSFR2UZF,IP2PFLG)
+C
+        IF(NSFR2UZF.GT.0) THEN
+          ALLOCATE(IUZCODESF(NSFR2UZF))
+          IUZCODESF=IP2PFLG
+        ENDIF
+C
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+      ENDIF
+C
+C--LAK-UZF
+      ALLOCATE(NLAK2UZF)
+      NLAK2UZF=0
+      IF(FLAKUZF) THEN
+        TEXT='CONNECT LAK UZF'
+        CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
+     1  NLAK2UZF,INOD1LKUZ,INOD2LKUZ,QLAK2UZF,IP2PFLG)
+C
+        IF(NLAK2UZF.GT.0) THEN
+          ALLOCATE(IUZCODELK(NLAK2UZF))
+          IUZCODELK=IP2PFLG
+        ENDIF
+C
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+      ENDIF
+C
+C--UZF-SNK
+      ALLOCATE(NSNK2UZF)
+      NSNK2UZF=0
+      IF(FSNKUZF) THEN
+        TEXT='CONNECT SNK UZF'
+        CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
+     1  NSNK2UZF,INOD1SKUZ,INOD2SKUZ,QSNK2UZF,IP2PFLG)
+C
+        IF(NSNK2UZF.GT.0) THEN
+          ALLOCATE(IUZCODESK(NSNK2UZF))
+          IUZCODESK=IP2PFLG
+        ENDIF
+C
+        CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+      ENDIF
+C
 C--CHECK IF MAXIMUM NUMBER OF POINT SINKS/SOURCES EXCEEDED.
 C--IF SO STOP
       WRITE(IOUT,801) NTSS
@@ -1057,7 +1472,7 @@ C          IF(ABS(VOLAQU-0.).LT.1.0E-5) RECH(J,I)=0.
       ENDDO
 C
 C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL
-  950 IF(.NOT.(iUnitTRNOP(7).GT.0)) GOTO 951
+  950 IF(.NOT.FUZFFLOWS) GOTO 951
       DO I=1,NROW                           
         DO J=1,NCOL                         
           IF(FINFIL(J,I).EQ.0) CYCLE        
@@ -1135,18 +1550,19 @@ C--(UZET)
       ENDDO                             
 C--(GWET)                               
       IF(.NOT.IETFLG) GOTO 960          
-      DO K=1,NLAY                       
+C      DO K=1,NLAY                       
         DO I=1,NROW                     
           DO J=1,NCOL                   
+            K=IGWET(J,I)
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)             
             IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN 
-              GWET(J,I,K)=0                              
+              GWET(J,I)=0                              
             ELSE                                         
-              GWET(J,I,K)=GWET(J,I,K)/VOLAQU             
+              GWET(J,I)=GWET(J,I)/VOLAQU             
             ENDIF                                        
-            IF(GWET(J,I,K).EQ.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
-            TM=PRSITY(J,I,K)/GWET(J,I,K)
+            IF(GWET(J,I).EQ.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
+            TM=PRSITY(J,I,K)/GWET(J,I)
             IF(ABS(TM).LT.DTSSM) THEN   
               DTSSM=ABS(TM)             
               KSSM=K                    
@@ -1155,7 +1571,7 @@ C--(GWET)
             ENDIF                       
           ENDDO                         
         ENDDO                           
-      ENDDO                             
+C      ENDDO                             
 C
   960 IF(NTSS.LE.0) GOTO 990
       DO NUM=1,NTSS
@@ -1586,7 +2002,18 @@ C--OTHERWISE, ADD TO THE SS ARRAY
         SS(1,NTSS)=K
         SS(2,NTSS)=I
         SS(3,NTSS)=J
-        SS(4,NTSS)=0.
+        IF(LABEL.EQ.'LAK             ') THEN
+          DO ITEMP=1,NSS
+            JJJ=SS(3,ITEMP) !LAKE NUMBER
+            ID =SS(6,ITEMP)       
+            IF(IGROUP.EQ.JJJ.AND.ID.EQ.IQ) THEN
+              SS(4,NTSS)=SS(4,ITEMP)
+              EXIT
+            ENDIF
+          ENDDO
+        ELSE
+          SS(4,NTSS)=0.
+        ENDIF
         SS(5,NTSS)=QSTEMP
         SS(6,NTSS)=IQ
         SS(7,NTSS)=IGROUP
@@ -1766,10 +2193,10 @@ C--WRITE IDENTIFYING INFORMATION
 C
 C--READ IDENTIFYING RECORD
       IF(IFTLFMT.EQ.0) THEN
-        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,MXRCH
+C        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,MXRCH
       ELSEIF(IFTLFMT.EQ.1) THEN
-        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,
-     1    MXRCH
+C        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,
+C     1    MXRCH
       ENDIF
 C
 C--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
@@ -1790,7 +2217,6 @@ cvsb      IF(ALLOCATED(QOUTSF)) DEALLOCATE(QOUTSF)
 C      IF(ALLOCATED(QOUTSFO)) DEALLOCATE(QOUTSFO)
 cvsb      IF(ALLOCATED(QETSF)) DEALLOCATE(QETSF)
 cvsb      IF(ALLOCATED(NIN)) DEALLOCATE(NIN)
-cvsb      IF(ALLOCATED(INFLWNOD)) DEALLOCATE(INFLWNOD)
 C.....NINTOT SIZED ARRAYS
 cvsb      IF(ALLOCATED(QINSF)) DEALLOCATE(QINSF)
 C      IF(ALLOCATED(QINSFO)) DEALLOCATE(QINSFO)
@@ -1805,19 +2231,19 @@ C
      1  SFLEN(NSTRM),SFNAREA(NSTRM),IREACH(NSTRM), !SFOAREA(NSTRM),
      1  QPRECSF(NSTRM),QRUNOFSF(NSTRM),
 !     1  QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
-     1  QSFGW(NSTRM),QOUTSF(NSTRM),QETSF(NSTRM),NIN(NSTRM),
-     1  INFLWNOD(NSTRM),IEXIT(NSTRM)) !,QOUTSFO(NSTRM))
-      ALLOCATE(QINSF(NINTOT),INSEG(NINTOT),INRCH(NINTOT),
-     1  IDSPFLG(NINTOT),IDXNIN(NSTRM+1)) !,QINSFO(NINTOT))
-      ALLOCATE(ISTRM(MXRCH,MXSGMT))
-      ISTRM=0
-      IDXNIN=0
+C     1  QSFGW(NSTRM),QOUTSF(NSTRM),QETSF(NSTRM),NIN(NSTRM),
+     1  IEXIT(NSTRM)) !,QOUTSFO(NSTRM))
+C      ALLOCATE(QINSF(NINTOT),INSEG(NINTOT),INRCH(NINTOT),
+C     1  IDSPFLG(NINTOT),IDXNIN(NSTRM+1)) !,QINSFO(NINTOT))
+C      ALLOCATE(ISTRM(MXRCH,MXSGMT))
+C      ISTRM=0
+C      IDXNIN=0
       IEXIT=1
 C
       IF(KKPER.EQ.1.AND.KKSTP.EQ.1) THEN
         ALLOCATE(SFOAREA(NSTRM),QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
      1    QOUTSFO(NSTRM))
-        ALLOCATE(QINSFO(NINTOT))
+C        ALLOCATE(QINSFO(NINTOT))
       ENDIF
 C
 C--CHECK INTERFACE
@@ -1860,85 +2286,85 @@ C--EACH LAKE INFLOWS AND OUTFLOWS
         ENDIF
 
         IF(IFTLFMT.EQ.0) THEN
-          READ(INUF) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
-          DO I=1,NIN(N)
-            ICNT=ICNT+1
-            READ(INUF) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-     1        IDSPFLG(ICNT)
-          ENDDO
+C          READ(INUF) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
+C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
+C          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
+C          DO I=1,NIN(N)
+C            ICNT=ICNT+1
+C            READ(INUF) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
+C     1        IDSPFLG(ICNT)
+C          ENDDO
         ELSEIF(IFTLFMT.EQ.1) THEN
-          READ(INUF,*) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
-          DO I=1,NIN(N)
-            ICNT=ICNT+1
-            READ(INUF,*) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-     1        IDSPFLG(ICNT)
-          ENDDO
+C          READ(INUF,*) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
+C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
+C          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
+C          DO I=1,NIN(N)
+C            ICNT=ICNT+1
+C            READ(INUF,*) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
+C     1        IDSPFLG(ICNT)
+C          ENDDO
         ENDIF
 C.......STORE N
-        ISTRM(IREACH(N),ISEG(N))=N
+C        ISTRM(IREACH(N),ISEG(N))=N
       ENDDO  
-      IDXNIN(NSTRM+1)=ICNT+1
-C
-C--CHECK IF NINTOT MATCHES THE SUM OF NIN(1:NSTRM)
-      IF(NINTOT.NE.ICNT) THEN
-        WRITE(*,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
-        WRITE(IOUT,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
-        CALL USTOP(' ')
-      ENDIF
-C
-C--INITIALIZE OLD=NEW FOR THE FIRST TIME
-      IF(KKPER.EQ.1.AND.KKSTP.EQ.1) THEN
-        QPRECSFO=QPRECSF
-        QRUNOFSFO=QRUNOFSF
-        QOUTSFO=QOUTSF
-        QINSFO=QINSF
-        SFOAREA=SFNAREA
-      ENDIF
-C
-C--WRITE TO OUTPUT FILE
-      ICNT=0
-      DO N=1,NSTRM
-        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
-          WRITE(IOUT,51) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-          DO I=1,NIN(N)
-            ICNT=ICNT+1
-            WRITE(IOUT,52) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-     1        IDSPFLG(ICNT)
-          ENDDO
-        ENDIF
-      ENDDO  
-C
-C--IDENTIFY NODES THAT DO NOT FEED WATER TO DOWNSTREAM NODES
-      ICNT=0
-      DO N=1,NSTRM
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.GT.0) THEN
-C...........INFLOW FROM STREAM
-            NN=ISTRM(IR,IS)
-            IEXIT(NN)=0
-          ENDIF
-        ENDDO
-      ENDDO
-C
-C--IDENTIFY CONSTANT CONCENTRATION NODES AND SET IBNDSF ARRAY
-      IBNDSF=1
-      DO I=1,NSSSF
-        IS=ISEGBC(I)
-        IR=IRCHBC(I)
-        N=ISTRM(IR,IS)
-        IF(ISFBCTYP(I).EQ.3) IBNDSF(N)=-1
-      ENDDO
+C      IDXNIN(NSTRM+1)=ICNT+1
+CC
+CC--CHECK IF NINTOT MATCHES THE SUM OF NIN(1:NSTRM)
+C      IF(NINTOT.NE.ICNT) THEN
+C        WRITE(*,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
+C        WRITE(IOUT,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
+C        CALL USTOP(' ')
+C      ENDIF
+CC
+CC--INITIALIZE OLD=NEW FOR THE FIRST TIME
+C      IF(KKPER.EQ.1.AND.KKSTP.EQ.1) THEN
+C        QPRECSFO=QPRECSF
+C        QRUNOFSFO=QRUNOFSF
+C        QOUTSFO=QOUTSF
+C        QINSFO=QINSF
+C        SFOAREA=SFNAREA
+C      ENDIF
+CC
+CC--WRITE TO OUTPUT FILE
+C      ICNT=0
+C      DO N=1,NSTRM
+C        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
+C          WRITE(IOUT,51) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
+C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
+C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
+C          DO I=1,NIN(N)
+C            ICNT=ICNT+1
+C            WRITE(IOUT,52) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
+C     1        IDSPFLG(ICNT)
+C          ENDDO
+C        ENDIF
+C      ENDDO  
+CC
+CC--IDENTIFY NODES THAT DO NOT FEED WATER TO DOWNSTREAM NODES
+C      ICNT=0
+C      DO N=1,NSTRM
+C        DO NC=1,NIN(N)
+C          ICNT=ICNT+1
+C          IS=INSEG(ICNT)
+C          IR=INRCH(ICNT)
+C          IF(IS.GT.0.AND.IR.GT.0) THEN
+CC...........INFLOW FROM STREAM
+C            NN=ISTRM(IR,IS)
+C            IEXIT(NN)=0
+C          ENDIF
+C        ENDDO
+C      ENDDO
+CC
+CC--IDENTIFY CONSTANT CONCENTRATION NODES AND SET IBNDSF ARRAY
+C      IBNDSF=1
+C      DO I=1,NSSSF
+C        IS=ISEGBC(I)
+C        IR=IRCHBC(I)
+C        N=ISTRM(IR,IS)
+C        IF(ISFBCTYP(I).EQ.3) IBNDSF(N)=-1
+C      ENDDO
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
@@ -2003,7 +2429,7 @@ C--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
       ALLOCATE(LAKRCH(NSFRLAK),LAKSEG(NSFRLAK),LAKNUMSFR(LKNODE))
       ALLOCATE(QPRECLAK(NLAKES),QRUNOFLAK(NLAKES),QWDRLLAK(NLAKES))
       ALLOCATE(QLAKGW(LKNODE),QLAKSFR(NSFRLAK),QETLAK(NLAKES))
-      ALLOCATE(VOLNLAK(NLAKES),VOLOLAK(NLAKES),DELVOLLAK(NLAKES))
+      ALLOCATE(VOLNLAK(NLAKES),VOLOLAK(NLAKES))
 C
 C--CHECK INTERFACE
 C      WRITE(*,'(14hReadLAK REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
@@ -2127,7 +2553,7 @@ C *********************************************************************
 C last modified: 08-15-2013
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
-      USE UZTVARS,       ONLY: MXUZCON,IROUTE,UZQ,NCON,NCONLK,NCONSF
+C      USE UZTVARS,       ONLY: !UZQ,NCON,NCONLK,NCONSF,MXUZCON,IROUTE,
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
      &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
@@ -2148,25 +2574,25 @@ C
 C--READ IDENTIFYING RECORD
       IF(IFTLFMT.EQ.0) THEN
         !READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
-        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
+C        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
       ELSEIF(IFTLFMT.EQ.1) THEN
         !READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
-        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
+C        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
       ENDIF
 C      WRITE(*,'(14hReadUZF REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
 C
 C--CLEAN AND INITIALIZE TO ZERO
-      DO II=1,MXUZCON
-        DO JJ=1,7
-          IROUTE(JJ,II)=0
-        ENDDO
-        UZQ(II)=0.
-      ENDDO
-      NCONLK=0
-      NCONSF=0
+C      DO II=1,MXUZCON
+C        DO JJ=1,7
+C          IROUTE(JJ,II)=0
+C        ENDDO
+C        UZQ(II)=0.
+C      ENDDO
+C      NCONLK=0
+C      NCONSF=0
 C
 C--READ CONNECTIONS INFORMATION
-      DO I=1,NCON
+C      DO I=1,NCON
         IF(IFTLFMT.EQ.0) THEN
           READ(INUF) LABEL,TEXT
         ELSEIF(IFTLFMT.EQ.1) THEN
@@ -2192,21 +2618,21 @@ C            READ(INUF,2)  KK,II,JJ,ISTSG,NREACH,Q
             READ(BUFFER,3) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
    3        FORMAT(2X,A4,2X,A4,5I6,F20.10)
           ENDIF
-          IROUTE(1,I)=1  !1:SFR, 2:LAK, 3:SNK
-          IROUTE(2,I)=KK
-          IROUTE(3,I)=II
-          IROUTE(4,I)=JJ
-          IROUTE(5,I)=ISTSG
-          IROUTE(6,I)=NREACH
-          IF(TEXT.EQ.'GRW ') THEN
-            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ENDIF
-          UZQ(I)=Q
-          NCONSF=NCONSF+1
+C          IROUTE(1,I)=1  !1:SFR, 2:LAK, 3:SNK
+C          IROUTE(2,I)=KK
+C          IROUTE(3,I)=II
+C          IROUTE(4,I)=JJ
+C          IROUTE(5,I)=ISTSG
+C          IROUTE(6,I)=NREACH
+C          IF(TEXT.EQ.'GRW ') THEN
+C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'EXC ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'REJ ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ENDIF
+C          UZQ(I)=Q
+C          NCONSF=NCONSF+1
 C
 C--IF UZF -> LAK, READ 7 VALUES
         !ELSEIF(LABEL.EQ.'LAK') THEN
@@ -2217,21 +2643,21 @@ C--IF UZF -> LAK, READ 7 VALUES
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
           ENDIF
-          IROUTE(1,I)=2  !1:SFR, 2:LAK, 3:SNK
-          IROUTE(2,I)=KK
-          IROUTE(3,I)=II
-          IROUTE(4,I)=JJ
-          IROUTE(5,I)=ILAK
-          !IROUTE(6,I) ALREADY EQUALS ZERO
-          IF(TEXT.EQ.'GRW ') THEN
-            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ENDIF
-          UZQ(I)=Q
-          NCONLK=NCONLK+1
+C          IROUTE(1,I)=2  !1:SFR, 2:LAK, 3:SNK
+C          IROUTE(2,I)=KK
+C          IROUTE(3,I)=II
+C          IROUTE(4,I)=JJ
+C          IROUTE(5,I)=ILAK
+C          !IROUTE(6,I) ALREADY EQUALS ZERO
+C          IF(TEXT.EQ.'GRW ') THEN
+C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'EXC ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'REJ ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ENDIF
+C          UZQ(I)=Q
+C          NCONLK=NCONLK+1
 C
 C--IF UZF -> SNK, READ 6 VALUES
         ! ELSEIF(LABEL.EQ.'SNK') THEN
@@ -2255,25 +2681,352 @@ C--IF UZF -> SNK, READ 6 VALUES
               READ(INUF,*) LABEL,TEXT,KK,II,JJ,LK,Q
             ENDIF
           ENDIF
-          IROUTE(1,I)=3  !1:SFR, 2:LAK, 3:SNK
-          IROUTE(2,I)=KK
-          IROUTE(3,I)=II
-          IROUTE(4,I)=JJ
-          !IROUTE(5,I) ALREADY EQUALS ZERO
-          !IROUTE(6,I) ALREADY EQUALS ZERO
-          IF(TEXT.EQ.'GRW ') THEN
-            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'EXC ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ELSEIF(TEXT.EQ.'REJ ') THEN
-            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-          ENDIF
-          UZQ(I)=Q
-          NCONLK=NCONLK+1
+C          IROUTE(1,I)=3  !1:SFR, 2:LAK, 3:SNK
+C          IROUTE(2,I)=KK
+C          IROUTE(3,I)=II
+C          IROUTE(4,I)=JJ
+C          !IROUTE(5,I) ALREADY EQUALS ZERO
+C          !IROUTE(6,I) ALREADY EQUALS ZERO
+C          IF(TEXT.EQ.'GRW ') THEN
+C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'EXC ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ELSEIF(TEXT.EQ.'REJ ') THEN
+C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
+C          ENDIF
+C          UZQ(I)=Q
+C          NCONLK=NCONLK+1
         ENDIF
 C        
-      ENDDO
+C      ENDDO
 C
       WRITE(*,*) I,LABEL,TEXT
+      RETURN
+      END
+C
+C
+      SUBROUTINE READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &   ICBUND,FPRT,NCOMP,NNGW,IPSGS,INFL,INFR,INFC,QNGW,ICID,QAUX,
+     &   NNINIT,NNODES,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
+     &   NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
+C *********************************************************************
+C THIS SUBROUTINE READS TWO SECTIONS
+C 1. GW EXCHANGE FLOWS
+C 2. INTERNAL FLOWS WITHIN A PACKAGE AND INFLOW (HEADWATER) AND 
+C    OUTFLOW (EXIT BOUNDARY)
+C *********************************************************************
+C
+      USE MT3DMS_MODULE, ONLY: IFTLFMT
+      IMPLICIT  NONE
+      INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
+     &          NC,NR,NL,IFL,IPSGS
+      INTEGER   NUM,N,ICBUND,IQ,ID,
+     &          KKK,III,JJJ,ITEMP,NCOMP,ICNT,IS,IR,NN,NNINIT
+      CHARACTER TEXT*16,FPRT*1,LABEL*16
+      DIMENSION ICBUND(NCOL,NROW,NLAY)
+      INTEGER NSFINIT,NNODES,NFLOWTYPE,NRCHCON,NNGW
+      INTEGER, DIMENSION(:), POINTER :: INFL,INFR,INFC
+      REAL,    DIMENSION(:), POINTER :: QNGW
+      REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
+     1  QN2N(:)
+      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+      INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
+      INTEGER,      ALLOCATABLE      :: ICID(:)
+      REAL,         ALLOCATABLE      :: QAUX(:)
+C
+C--WRITE IDENTIFYING INFORMATION
+      WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
+C
+C--READ IDENTIFYING RECORD
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NNGW
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NNGW
+      ENDIF
+C
+C--CHECK INTERFACE
+C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+      IF(LABEL.NE.TEXT) THEN
+        WRITE(*,4) TEXT,LABEL
+        WRITE(IOUT,4) TEXT,LABEL
+        CALL USTOP(' ')
+      ELSEIF(KKPER.NE.KPER.OR.KKSTP.NE.KSTP) THEN
+        WRITE(*,3) KKPER,KKSTP
+        WRITE(IOUT,3) KKPER,KKSTP
+        CALL USTOP(' ')
+      ELSEIF(NC.NE.NCOL.OR.NR.NE.NROW.OR.NL.NE.NLAY) THEN
+        WRITE(*,2) NC,NR,NL
+        WRITE(IOUT,2) NC,NR,NL
+        CALL USTOP(' ')
+      ENDIF
+C
+C--GROUNDWATER FLOW 
+      IF(NNGW.GT.0) THEN
+C
+C--ALLOCATE ARRAYS
+      ALLOCATE(INFL(NNGW),INFR(NNGW),INFC(NNGW),QNGW(NNGW))
+C
+C--READ GW EXCHANGE TERMS
+      IF(IPSGS.EQ.0) THEN
+        DO N=1,NNGW
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) INFL(N),INFR(N),INFC(N),QNGW(N)
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) INFL(N),INFR(N),INFC(N),QNGW(N)
+          ENDIF
+          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &              WRITE(IOUT,50) INFL(N),INFR(N),INFC(N),QNGW(N)
+        ENDDO  
+      ELSEIF(IPSGS.EQ.1) THEN
+        ALLOCATE(ICID(NNGW),QAUX(NNGW))
+        DO N=1,NNGW
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) INFL(N),INFR(N),INFC(N),QNGW(N),ICID(N),QAUX(N)
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) INFL(N),INFR(N),INFC(N),QNGW(N),ICID(N),QAUX(N)
+          ENDIF
+          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &    WRITE(IOUT,55) INFL(N),INFR(N),INFC(N),QNGW(N),ICID(N),QAUX(N)
+        ENDDO  
+      ELSE
+        WRITE(*,*) 'INVALID IPSGS',IPSGS
+        WRITE(IOUT,*) 'INVALID IPSGS',IPSGS
+        CALL USTOP(' ')
+      ENDIF
+C
+      ENDIF !IF(NNGW.GT.0)
+C
+C--READ IDENTIFYING RECORD
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) KKPER,KKSTP,LABEL,NNODES,NFLOWTYPE,NRCHCON
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) KKPER,KKSTP,LABEL,NNODES,NFLOWTYPE,NRCHCON
+      ENDIF
+C
+C--PERFORM CHECKS
+      IF(LABEL.NE.TEXT) THEN
+        WRITE(*,4) TEXT,LABEL
+        WRITE(IOUT,4) TEXT,LABEL
+        CALL USTOP(' ')
+      ELSEIF(KKPER.NE.KPER.OR.KKSTP.NE.KSTP) THEN
+        WRITE(*,3) KKPER,KKSTP
+        WRITE(IOUT,3) KKPER,KKSTP
+        CALL USTOP(' ')
+      ELSEIF(NNODES.NE.NNINIT) THEN
+        WRITE(*,5) NNODES
+        WRITE(IOUT,5) NNODES
+        CALL USTOP(' ')
+      ENDIF
+C
+C--READ THIS BLOCK FOR NODAL FLOWS (BOUNDARY CONDITIONS OR CELL SPECIFIC FLOWS)
+      IF(NFLOWTYPE.GT.0) THEN
+C
+C--ALLOCATE
+        ALLOCATE(CFLOWTYPE(NFLOWTYPE),PKGFLOWS(NFLOWTYPE,NNODES))
+C
+C--READ CFLOWTYPE IDENTIFIER TEXT
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) (CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) (CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
+        ENDIF
+C
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &  WRITE(IOUT,'(/A10,50A20)') 
+     &  '  NODE    ',(CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
+C
+C--READ BOUNDARY AND OTHER FLOW TERMS
+        DO N=1,NNODES
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) (PKGFLOWS(IFL,N),IFL=1,NFLOWTYPE)
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) (PKGFLOWS(IFL,N),IFL=1,NFLOWTYPE)
+          ENDIF
+          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &      WRITE(IOUT,51) N,(PKGFLOWS(IFL,N),IFL=1,NFLOWTYPE)
+        ENDDO  
+      ENDIF
+C
+C--READ THIS BLOCK FOR NODE-TO-NODE FLOWS
+      IF(NRCHCON.GT.0) THEN
+C
+C--ALLOCATE
+        ALLOCATE(INOD1(NRCHCON),INOD2(NRCHCON),IDISP(NRCHCON),
+     1  QAREA(NRCHCON),QN2N(NRCHCON))
+C
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &  WRITE(IOUT,'(/3A5,A15,A15)') 
+     &  ' NOD1',' NOD2',' IDIV','      FLOW RATE','      AREA'
+C
+C--READ NODE-TO-NODE INFO
+        DO N=1,NRCHCON
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) INOD1(N),INOD2(N),IDISP(N),
+     1                 QN2N(N),QAREA(N)
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) INOD1(N),INOD2(N),IDISP(N),
+     1                 QN2N(N),QAREA(N)
+          ENDIF
+          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &      WRITE(IOUT,52) INOD1(N),INOD2(N),IDISP(N),
+     1                 QN2N(N),QAREA(N)
+        ENDDO  
+      ENDIF
+C
+C--PRINT FORMATS
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
+     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     & /20X,92('-'))
+    2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
+     & ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+    3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
+     &  ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+    4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
+     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+    5 FORMAT(1X,'ERROR: INVALID NUMBER OF NODES',
+     & ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
+   50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
+   55 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7,
+     & ' CELL ID',I5,5X,'AUXILIARY FLOW',G15.7)  
+   51 FORMAT(I10,100(1X,G19.7))
+   52 FORMAT(3I5,1X,G14.7,1X,G14.7)
+C
+      RETURN
+      END
+C
+C
+      SUBROUTINE PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
+     1  NPKG2PKG,INOD1,INOD2,QN1N2,IP2PFLG)
+C *********************************************************************
+C THIS SUBROUTINE READS FLOWS BETWEEN TWO DIFFERENT PACKAGES: PKG1 PKG2
+C FLOW IS POSITIVE IF FLOW IS FROM PKG1 TO PKG2
+C *********************************************************************
+C
+      USE MT3DMS_MODULE, ONLY: IFTLFMT
+      IMPLICIT  NONE
+      INTEGER   KSTP,KPER,INUF,IOUT,KKSTP,KKPER,NPKG2PKG
+      INTEGER   NUM,N,ICBUND,IQ,ID,ITEMP,NCOMP
+      CHARACTER TEXT*16,FPRT*1,LABEL*16
+      INTEGER, DIMENSION(:), POINTER :: INOD1,INOD2
+      REAL,    DIMENSION(:), POINTER :: QN1N2
+      INTEGER,      ALLOCATABLE      :: IP2PFLG(:)
+C
+C--WRITE IDENTIFYING INFORMATION
+      WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
+C
+C--READ IDENTIFYING RECORD
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) KKPER,KKSTP,LABEL,NPKG2PKG
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) KKPER,KKSTP,LABEL,NPKG2PKG
+      ENDIF
+C
+C--CHECK INTERFACE
+C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
+      IF(LABEL.NE.TEXT) THEN
+        WRITE(*,4) TEXT,LABEL
+        WRITE(IOUT,4) TEXT,LABEL
+        CALL USTOP(' ')
+      ELSEIF(KKPER.NE.KPER.OR.KKSTP.NE.KSTP) THEN
+        WRITE(*,3) KKPER,KKSTP
+        WRITE(IOUT,3) KKPER,KKSTP
+        CALL USTOP(' ')
+      ENDIF
+C
+C--RETURN
+      IF(NPKG2PKG.EQ.0) RETURN
+C
+C--ALLOCATE
+      ALLOCATE(INOD1(NPKG2PKG),INOD2(NPKG2PKG),QN1N2(NPKG2PKG),
+     &  IP2PFLG(NPKG2PKG))
+C
+C--READ FLOW RATES
+      DO N=1,NPKG2PKG
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) INOD1(N),INOD2(N),QN1N2(N),IP2PFLG(N)
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) INOD1(N),INOD2(N),QN1N2(N),IP2PFLG(N)
+        ENDIF
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &    WRITE(IOUT,50) INOD1(N),INOD2(N),QN1N2(N),IP2PFLG(N)
+      ENDDO
+C
+C--PRINT FORMATS
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
+     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     & /20X,92('-'))
+    2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
+     & ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+    3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
+     &  ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+    4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
+     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+    5 FORMAT(1X,'ERROR: INVALID NUMBER OF NODES',
+     & ' IN FLOW-TRANSPORT LINK FILE.'
+     & /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
+   50 FORMAT(1X,'NODE1',I5,5X,'NODE1',I5,5X,'RATE',G15.7,5X,'FLAG',I4)
+C
+      RETURN
+      END
+C
+C
+      SUBROUTINE GETFLOWDIR(INOD1,INOD2,QN2N,NDIM,N,IFROM,ITO)
+C
+C DETERMINE FLOW DIRECTION
+C
+      INTEGER INOD1(NDIM),INOD2(NDIM)
+      INTEGER IFROM,ITO
+      REAL QN2N(NDIM)
+C
+      IF(QN2N(N).GT.0.) THEN
+        IFROM=INOD1(N)
+        ITO=INOD2(N)
+      ELSEIF(QN2N(N).LT.0.) THEN
+        IFROM=INOD2(N)
+        ITO=INOD1(N)
+      ELSE
+        IFROM=INOD1(N)
+        ITO=INOD2(N)
+      ENDIF
+C
+      RETURN
+      END
+C
+C
+      SUBROUTINE DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
+     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+C
+      REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
+     1  QN2N(:)
+      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+      INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
+      INTEGER,      ALLOCATABLE      :: ICID(:)
+      REAL,         ALLOCATABLE      :: QAUX(:)
+      INTEGER,      ALLOCATABLE      :: IP2PFLG(:)
+C
+       IF(ALLOCATED(CFLOWTYPE))     DEALLOCATE(CFLOWTYPE)
+       IF(ALLOCATED(PKGFLOWS))      DEALLOCATE(PKGFLOWS)
+       IF(ALLOCATED(QAREA))         DEALLOCATE(QAREA)
+       IF(ALLOCATED(QN2N))          DEALLOCATE(QN2N)
+       IF(ALLOCATED(INOD1))         DEALLOCATE(INOD1)
+       IF(ALLOCATED(INOD2))         DEALLOCATE(INOD2)
+       IF(ALLOCATED(IDISP))         DEALLOCATE(IDISP)
+       IF(ALLOCATED(ICID))          DEALLOCATE(ICID)
+       IF(ALLOCATED(QAUX))          DEALLOCATE(QAUX)
+       IF(ALLOCATED(IP2PFLG))       DEALLOCATE(IP2PFLG)
+C
       RETURN
       END

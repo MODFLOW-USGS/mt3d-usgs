@@ -7,7 +7,8 @@ C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INGCG,IOUT,NCOL,NROW,NLAY,NODES,
      &                         MXITER,ITER1,ISOLVE,NCRS,IPRGCG,ACCL,
-     &                         CCLOSE,LRCH,A,Q,WK,CNCG,RHS,L
+     &                         CCLOSE,LRCH,A,Q,WK,CNCG,RHS,L,
+     &                         iUnitTRNOP
 C
       IMPLICIT NONE
       INTEGER  IN
@@ -52,6 +53,9 @@ C--READ AND PRINT MXITER AND ISOLVE
      &          'MODIFIED INCOMPLETE CHOLESKY (MIC).')
    43 FORMAT(1X,'ERROR: INVALID PRECONDITIONING TYPE.')
 C                         
+C--IF DISPERSION PACKAGE IS OFF, MAKE NCRS=0
+      IF(iUnitTRNOP(2).EQ.0) NCRS=0
+C
       IF(NCRS.GT.0) THEN
         WRITE(IOUT,50)
       ELSE

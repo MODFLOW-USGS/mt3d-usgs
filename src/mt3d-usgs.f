@@ -59,7 +59,7 @@ C
      &                         ISOTHM,UPDLHS,MXITER,FMNW,HT1,HT2,DTRANS,
      &                         DELT,TIME1,TIME2,NPS,
      &                         MEMDEALLOCATE,
-     &                         INRTR,INTSO,INRTR,INLKT,INSFT,
+     &                         INTSO,INLKT,INSFT,
      &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
      &                         IDRY2
@@ -242,6 +242,7 @@ C
           ENDIF
 C
           IF(KPER*KSTP.GT.1) THEN
+            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD2(N)
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD2(N)
           ENDIF
 C
@@ -251,7 +252,7 @@ C
           IF(DRYON) CALL ADVQC1RP(KPER,KSTP)
 C                                           
           IF(iUnitTRNOP(19).GT.0) THEN      
-            CALL FILLIASFJASF()             
+            CALL FILLIASFJASF()
             IF(KPER*KSTP.EQ.1) CALL XMD7AR()
           ENDIF                             
 C
@@ -263,7 +264,7 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
-            if(KPER.eq.41.and.KSTP.eq.1.and.n.ge.1) then
+            if(KPER.eq.1.and.KSTP.eq.1.and.n.ge.28) then
             continue
             endif
 C

@@ -1077,15 +1077,6 @@ C
         DO K=1,NLAY                                       
           DO I=1,NROW                                     
             DO J=1,NCOL                                   
-            
-              IF(K.EQ.3) THEN
-              IF(I.EQ.123)THEN
-              IF(J.EQ.70)THEN
-              CONTINUE
-              ENDIF
-              ENDIF
-              ENDIF
-            
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                
 C                                                           
               DCDT_S(N,ICOMP)=0.                            

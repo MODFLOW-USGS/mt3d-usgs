@@ -9,16 +9,16 @@ C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                         FSFR,IVER,iUnitTRNOP,
+     &                         FSFR,FUZF,IVER,iUnitTRNOP,
      &                         ISSGOUT,MXSS,NSS,NTSS,RECH,IRCH,CRCH,
      &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,KSSZERO  
-      USE SFRVARS,       ONLY: NSTRM,NINTOT,MXSGMT,MXRCH,NSFINIT,  
+      USE SFRVARS,       ONLY: NSTRM,MXSGMT,MXRCH,NSFINIT,  
      &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,
-     &                         CRNTSF,NOBSSF,NJASF,INFLWNOD        
+     &                         CRNTSF,NOBSSF,NJASF
       USE UZTVARS,       ONLY: CUZINF,UZET,CUZET,GWET,CGWET,IETFLG,
      &                         FINFIL,UZFLX,UZQSTO,                
      &                         IETFLG,IUZFOPT,IUZFBND,             
-     &                         IUZFOPTG                            
+     &                         IUZFOPTG,UZRECH,IUZRCH,IGWET,CUZRCH
 C
       IMPLICIT  NONE
       INTEGER   ISTART, ISTOP, LLOC,I,J                            
@@ -32,11 +32,6 @@ C
 C
 C--ALLOCATE
       ALLOCATE(ISSGOUT,MXSS,NSS,NTSS)                              
-      IF(FSFR) THEN                                                
-        ALLOCATE(NSTRM,NINTOT,MXSGMT,MXRCH)                        
-        ALLOCATE(ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF)       
-        ALLOCATE(NOBSSF,NJASF)                                     
-      ENDIF                                                        
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INSSM
@@ -69,7 +64,7 @@ C--ARE USED IN FLOW MODEL
       IF(FETS) WRITE(IOUT,1416)
       IF(FSWT) WRITE(IOUT,1418)
       IF(FSFR) WRITE(IOUT,1420)
-!      IF(FUZF) WRITE(IOUT,1422)
+      IF(FUZF) WRITE(IOUT,1422)
  1010 FORMAT(1X,'HEADER LINE OF THE SSM PACKAGE INPUT FILE:',/1X,A)
  1020 FORMAT(1X,'MAJOR STRESS COMPONENTS PRESENT IN THE FLOW MODEL:')
  1340 FORMAT(1X,' o WELL [WEL]')
@@ -89,7 +84,7 @@ C--ARE USED IN FLOW MODEL
  1416 FORMAT(1X,' o SEGMENTED EVAPOTRANSPIRATION [ETS]')
  1418 FORMAT(1X,' o SUBSIDENCE-WATER TABLE [SWT]')
  1420 FORMAT(1X,' o STREAMFLOW-ROUTING [SFR]')
-! 1422 FORMAT(1X,' o UNSATURATED-ZONE FLOW [UZF]')
+ 1422 FORMAT(1X,' o UNSATURATED-ZONE FLOW [UZF]')
 C
 C--READ AND PRINT MAXIMUM NUMBER OF
 C--POINT SINKS/SOURCES PRESENT IN THE FLOW MODEL
@@ -126,6 +121,15 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(IEVT(1,1))
         ALLOCATE(CEVT(1,1,1))
       ENDIF
+      IF(FUZF) THEN
+        ALLOCATE(UZRECH(NCOL,NROW),IUZRCH(NCOL,NROW))
+        ALLOCATE(GWET(NCOL,NROW),IGWET(NCOL,NROW))
+        ALLOCATE(CUZRCH(NCOL,NROW,NCOMP),CGWET(NCOL,NROW,NCOMP))
+      ELSE
+        ALLOCATE(UZRECH(1,1),IUZRCH(1,1))
+        ALLOCATE(GWET(1,1),IGWET(1,1))
+        ALLOCATE(CUZRCH(1,1,1),CGWET(1,1,1))
+      ENDIF
       ALLOCATE(SS(8,MXSS))
       ALLOCATE(SSMC(NCOMP,MXSS))
       ALLOCATE(SSG(5,MXSS))
@@ -156,13 +160,14 @@ C
      &                         CNEW,
      &                         FWEL,FDRN,FRIV,FGHB,FRCH,FEVT,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                         FSFR,
+     &                         FSFR,FUZF,
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
      &                         KSSZERO
+      USE UZTVARS, ONLY: CUZRCH,CGWET
 C
       IMPLICIT  NONE
       INTEGER   IN,KPER,JJ,II,KK,NUM,IQ,INCRCH,INCEVT,NTMP,INDEX,
-     &          INCUZINF,INCUZET,INCGWET,INCSRFLK 
+     &          INCUZINF,INCUZET,INCGWET,INCSRFLK,INCUZF
       REAL      CSS
       CHARACTER ANAME*24,TYPESS(-1:100)*15
 C
@@ -187,8 +192,8 @@ C--INITIALIZE.
       TYPESS(29)='SEGMENTED ET   '
       TYPESS(50)='HSS MAS LOADING'
       TYPESS(51)='SUBSIDENCE-WT  '
-      TYPESS(52)='STREAM FL ROUT.'
-      TYPESS(53)='UNSAT ZONE FLOW'
+      TYPESS(30)='STREAM FL ROUT.'
+      TYPESS(31)='UNSAT ZONE FLOW'
 C
 C--READ CONCENTRATION OF DIFFUSIVE SOURCES/SINKS (RECHARGE/E.T.)
 C--FOR CURRENT STRESS PERIOD IF THEY ARE SIMULATED IN FLOW MODEL
@@ -245,6 +250,59 @@ C
    13 FORMAT(/1X,'CONCENTRATION OF E. T. FLUXES',
      & ' WILL BE READ IN STRESS PERIOD',I3)
    20 CONTINUE
+C
+C--READ CONCENTRAION OF UZF FLUX - UZRCH AND GWET
+      IF(.NOT.FUZF) GOTO 39
+C
+C--READ FLAG INCRCH INDICATING HOW TO READ UZF CONCENTRATION
+      READ(IN,'(I10)') INCUZF
+C
+C--IF INCUZF < 0, CONCENTRATIN REUSED FROM LAST STRESS PERIOD
+      IF(INCUZF.LT.0) THEN
+        WRITE(IOUT,22)
+        GOTO 29
+      ENDIF
+   22 FORMAT(/1X,'CONCENTRATION OF UZF-RCH FLUXES',
+     & ' REUSED FROM LAST STRESS PERIOD')
+C
+C--IF INCUZF >= 0, READ AN ARRAY
+C--CONTAING CONCENTRATION OF UZF-RCH FLUX [CUZRCH]
+      WRITE(IOUT,23) KPER
+      ANAME='UZRCH CONC. COMP. NO.'
+      DO INDEX=1,NCOMP
+        WRITE(ANAME(19:21),'(I3.2)') INDEX
+        CALL RARRAY(CUZRCH(1:NCOL,1:NROW,INDEX),ANAME,NROW,NCOL,0,IN,
+     &  IOUT)
+      ENDDO
+   23 FORMAT(/1X,'CONCENTRATION OF UZF-RCH FLUXES',
+     & ' WILL BE READ IN STRESS PERIOD',I3)
+29    CONTINUE
+C
+C--GWET----------
+C
+C--READ FLAG INCRCH INDICATING HOW TO READ UZF CONCENTRATION
+      READ(IN,'(I10)') INCGWET
+C
+C--IF INCGWET < 0, CONCENTRATIN REUSED FROM LAST STRESS PERIOD
+      IF(INCGWET.LT.0) THEN
+        WRITE(IOUT,32)
+        GOTO 39
+      ENDIF
+   32 FORMAT(/1X,'CONCENTRATION OF GW-ET FLUXES',
+     & ' REUSED FROM LAST STRESS PERIOD')
+C
+C--IF INCGWET >= 0, READ AN ARRAY
+C--CONTAING CONCENTRATION OF GW-ET FLUX [CGWET]
+      WRITE(IOUT,23) KPER
+      ANAME=' GWET CONC. COMP. NO.'
+      DO INDEX=1,NCOMP
+        WRITE(ANAME(19:21),'(I3.2)') INDEX
+        CALL RARRAY(CGWET(1:NCOL,1:NROW,INDEX),ANAME,NROW,NCOL,0,IN,
+     &  IOUT)
+      ENDDO
+   33 FORMAT(/1X,'CONCENTRATION OF GW-ET FLUXES',
+     & ' WILL BE READ IN STRESS PERIOD',I3)
+39    CONTINUE
 C
 C--READ AND ECHO POINT SINKS/SOURCES OF SPECIFIED CONCENTRATIONS
       READ(IN,'(I10)') NTMP
@@ -373,7 +431,8 @@ C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: IUZFBND,THETAW
+      USE UZTVARS,       ONLY: IUZFBND,THETAW,
+     &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,
      &                         DELC,DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,
@@ -381,7 +440,7 @@ C
      &                         RHS,NODES,UPDLHS,MIXELM,COLD,
      &                         ISS,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &                         FSWT,FSFR,
+     &                         FSWT,FSFR,FUZF,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
      &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,
      &                         IDRY2,PRSITY,DZ,SORBMASS
@@ -526,7 +585,7 @@ C--(RECHARGE)
       ENDDO
 C
 C--(EVAPOTRANSPIRATION)
-   12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 20
+   12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 30
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
@@ -554,6 +613,81 @@ C--(EVAPOTRANSPIRATION)
      1            CEVT(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
      1            EVTR(J,I)*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C
+C--UZF TERMS
+30    IF(.NOT.FUZF) GOTO 20
+C-----UZRECH
+      DO I=1,NROW
+        DO J=1,NCOL
+
+      if(j.eq.169) then
+      continue
+      endif
+
+          K=IUZRCH(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            IF(UZRECH(J,I).LT.0) THEN
+              IF(UPDLHS) A(N)=A(N)+UZRECH(J,I) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ELSE
+              RHS(N)=RHS(N)
+     &         -UZRECH(J,I)*CUZRCH(J,I,ICOMP) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(UZRECH(J,I).LT.0) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            UZRECH(J,I) !*ABS(VOLAQU)
+                ELSE
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1                         UZRECH(J,I)*CUZRCH(J,I,ICOMP) !*ABS(VOLAQU)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1                         UZRECH(J,I) !*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C-----GWET
+      DO I=1,NROW
+        DO J=1,NCOL
+          K=IGWET(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
+     &       CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN          
+              IF(UPDLHS) A(N)=A(N)+GWET(J,I) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
+              RHS(N)=RHS(N)
+     &         -GWET(J,I)*CGWET(J,I,ICOMP) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
+     &          CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            GWET(J,I) !*ABS(VOLAQU)
+                ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            GWET(J,I)* !ABS(VOLAQU)*
+     1            CGWET(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            GWET(J,I) !*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -609,6 +743,10 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           IHOST=MOD((MHOST-1),NCOL*NROW)/NCOL + 1
           JHOST=MOD((MHOST-1),NCOL) + 1          
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)      
+C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
+          CYCLE
         ENDIF
 C
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
@@ -658,9 +796,9 @@ C--(RECHARGE)
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(UPDLHS) A(N)=A(N)-RECH(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
             RHS(N)=RHS(N)
-     &       -RECH(J,I)*CRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
+     &       -RECH(J,I)*CUZRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
           ELSE
-            IF(K.GT.0) THEN
+            IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
@@ -681,7 +819,7 @@ C--(RECHARGE)
       ENDDO
 C
 C--(EVAPOTRANSPIRATION)
-   32 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 41
+   32 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 40
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
@@ -696,7 +834,7 @@ C--(EVAPOTRANSPIRATION)
      &         -EVTR(J,I)*CEVT(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ELSE
-            IF(K.GT.0) THEN
+            IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                 IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
@@ -710,6 +848,76 @@ C--(EVAPOTRANSPIRATION)
      1            CEVT(J,I,ICOMP)
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
      1            EVTR(J,I)*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C
+C--UZF TERMS
+40    IF(.NOT.FUZF) GOTO 41
+C-----UZRECH
+      DO I=1,NROW
+        DO J=1,NCOL
+          K=IUZRCH(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0
+     &              .AND. UZRECH(J,I).GT.0) THEN
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            IF(UPDLHS) A(N)=A(N)-UZRECH(J,I) !*DELR(J)*DELC(I)*DH(J,I,K)
+            RHS(N)=RHS(N)
+     &       -UZRECH(J,I)*CUZRCH(J,I,ICOMP) !*DELR(J)*DELC(I)*DH(J,I,K)
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(UZRECH(J,I).LT.0) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            UZRECH(J,I) !*ABS(VOLAQU)
+                ELSE
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            UZRECH(J,I)* !ABS(VOLAQU)*
+     1            CUZRCH(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            UZRECH(J,I) !*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C-----GWET
+      DO I=1,NROW
+        DO J=1,NCOL
+          K=IGWET(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
+     &       CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN             
+              CYCLE
+            ELSEIF(CGWET(J,I,ICOMP).GE.0) THEN  
+              IF(UPDLHS) A(N)=A(N)-GWET(J,I) !*DELR(J)*DELC(I)*DH(J,I,K)
+              RHS(N)=RHS(N)
+     &         -GWET(J,I)*CGWET(J,I,ICOMP) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
+     &          CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            GWET(J,I) !*ABS(VOLAQU)
+                ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            GWET(J,I)* !ABS(VOLAQU)*
+     1            CGWET(J,I,ICOMP)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            GWET(J,I) !*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -760,6 +968,10 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           JHOST=MOD((MHOST-1),NCOL) + 1
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)   
           QCTMP=QSS*CTMP                                    
+C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
+          CYCLE
         ENDIF
 C
 C--SKIP IF NOT ACTIVE CELL      
@@ -806,7 +1018,8 @@ C SOURCE TERMS.
 C ********************************************************************
 C last modified: 02-20-2010
 C
-      USE UZTVARS,       ONLY: IUZFBND,THETAW
+      USE UZTVARS,       ONLY: IUZFBND,THETAW,
+     &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,
      &                        DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,MXSS,
@@ -814,7 +1027,7 @@ C
      &                        RMASIO,
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                        FSFR,
+     &                        FSFR,FUZF,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT,
      &                        iUnitTRNOP,DELT,COLDFLW,IDRY2,SORBMASS,
      &                        PRSITY,DZ
@@ -995,7 +1208,7 @@ C
      &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
      1            RECH(J,I)*ABS(VOLAQU)*
-     1            CRCH(J,I,ICOMP)
+     1            CTMP
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
      1            RECH(J,I)*ABS(VOLAQU)
                 ENDIF
@@ -1050,7 +1263,7 @@ C
      &              *DTRANS*ABS(VOLAQU)
                   QC7(J,I,K,7)=QC7(J,I,K,7)-
      1            EVTR(J,I)*ABS(VOLAQU)*
-     1            CEVT(J,I,ICOMP)
+     1            CTMP
                   QC7(J,I,K,8)=QC7(J,I,K,8)-
      1            EVTR(J,I)*ABS(VOLAQU)
                 ENDIF
@@ -1060,8 +1273,116 @@ C
         ENDDO
       ENDDO
 C
+C--UZF TERMS
+  200 IF(.NOT.FUZF) GOTO 300
+C-----UZRECH
+      DO I=1,NROW
+        DO J=1,NCOL
+
+      if(j.eq.169)then
+      continue
+      endif
+
+
+          K=IUZRCH(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          CTMP=CUZRCH(J,I,ICOMP)
+          IF(UZRECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
+          IF(UZRECH(J,I).GT.0) THEN
+            RMASIO(53,1,ICOMP)=RMASIO(53,1,ICOMP)+UZRECH(J,I)*CTMP*
+     &        DTRANS !*
+!     &       DELR(J)*DELC(I)*DH(J,I,K)
+          ELSE
+            RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)+UZRECH(J,I)*CTMP*
+     &        DTRANS !*
+!     &       DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+C        
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                CTMP=CUZRCH(J,I,ICOMP)
+                IF(UZRECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(UZRECH(J,I).LT.0) THEN
+                  RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)+UZRECH(J,I)*CTMP
+     &              *DTRANS !*ABS(VOLAQU)
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            UZRECH(J,I) !*ABS(VOLAQU)
+                ELSE
+                  RMASIO(53,1,ICOMP)=RMASIO(53,1,ICOMP)+UZRECH(J,I)*CTMP
+     &              *DTRANS !*ABS(VOLAQU)
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            UZRECH(J,I)* !ABS(VOLAQU)*
+     1            CTMP
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            UZRECH(J,I) !*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C
+C----GWET
+      DO I=1,NROW
+        DO J=1,NCOL
+          K=IGWET(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+C          IF(K.EQ.0 .OR. ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          CTMP=CGWET(J,I,ICOMP)
+          IF(GWET(J,I).LT.0.AND.(CTMP.LT.0 .or.
+     &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+            CTMP=CNEW(J,I,K,ICOMP)
+          ELSEIF(CTMP.LT.0) THEN        
+            CTMP=0.
+          ENDIF
+          IF(GWET(J,I).GT.0) THEN
+            RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*CTMP*DTRANS !*
+!     &       DELR(J)*DELC(I)*DH(J,I,K)
+          ELSE
+            RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*CTMP*DTRANS !*
+!     &       DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+C
+          ELSE
+            IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(DRYON) THEN
+                CTMP=CGWET(J,I,ICOMP)
+                IF(GWET(J,I).LT.0.AND.(CTMP.LT.0 .or.
+     &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+                  CTMP=CNEW(J,I,K,ICOMP)
+                ELSEIF(CTMP.LT.0) THEN        
+                  CTMP=0.
+                ENDIF
+                !VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                !IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(GWET(J,I).LT.0) THEN
+                  RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*CTMP
+     &              *DTRANS !*ABS(VOLAQU)
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-
+     1            GWET(J,I) !*ABS(VOLAQU)
+                ELSE
+                  RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*CTMP
+     &              *DTRANS !*ABS(VOLAQU)
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-
+     1            GWET(J,I)* !ABS(VOLAQU)*
+     1            CTMP
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-
+     1            GWET(J,I) !*ABS(VOLAQU)
+                ENDIF
+              ENDIF
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDDO
+C
 C--POINT SINK/SOURCE TERMS
-  200 DO NUM=1,NTSS
+  300 DO NUM=1,NTSS
         K=SS(1,NUM)
         I=SS(2,NUM)
         J=SS(3,NUM)
@@ -1112,6 +1433,10 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           IHOST=MOD((MHOST-1),NCOL*NROW)/NCOL + 1
           JHOST=MOD((MHOST-1),NCOL) + 1
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)
+C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
+          CYCLE
         ENDIF
 C        
         IF(QSS.LT.0) THEN

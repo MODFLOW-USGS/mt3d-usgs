@@ -96,18 +96,18 @@ C
 C--COUNT CONNECTIONS AT EACH NODE N
       ICNT=0
       NJASF=0
+C--COUNT THE NODE ITSELF
       DO N=1,NSTRM
         IASF(N)=IASF(N)+1
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.GT.0) THEN
-            IASF(N)=IASF(N)+1
-            NN=ISTRM(IR,IS)
-            IASF(NN)=IASF(NN)+1
-          ENDIF
-        ENDDO
+      ENDDO
+C--COUNT CONNECTIONS WITH OTHER SFR NODES
+      DO NC=1,NSF2SF
+        NN=INOD1SF(NC)
+        N=INOD2SF(NC)
+        IF(N.GT.0.AND.NN.GT.0) THEN
+          IASF(N)=IASF(N)+1
+          IASF(NN)=IASF(NN)+1
+        ENDIF
       ENDDO
 C
 C-------CUMULATIVE OF CONNECTIONS PER ROW IN IASF
@@ -140,18 +140,12 @@ C-------------------------------------------
       ENDDO
 C
       ICNT=0
-      INFLWNOD=0
-      DO N=1,NSTRM
-        DO NC=1,NIN(N)
-          ICNT=ICNT+1
-          IS=INSEG(ICNT)
-          IR=INRCH(ICNT)
-          IF(IS.GT.0.AND.IR.GT.0) THEN
-            NN=ISTRM(IR,IS)
-            CALL FINDJASF(N,NN,IASF,JASF,NSTRM,NJASF)
-            INFLWNOD(NN)=1
-          ENDIF
-        ENDDO
+      DO NC=1,NSF2SF
+        NN=INOD1SF(NC)
+        N=INOD2SF(NC)
+        IF(N.GT.0.AND.NN.GT.0) THEN
+          CALL FINDJASF(N,NN,IASF,JASF,NSTRM,NJASF)
+        ENDIF
       ENDDO
 C
       RETURN

@@ -1,3 +1,43 @@
+    MODULE PKG2PKG
+        INTEGER,          SAVE,                      POINTER :: NSFR2LAK
+        INTEGER,          SAVE,                      POINTER :: NSFR2UZF
+        INTEGER,          SAVE,                      POINTER :: NLAK2UZF
+        INTEGER,          SAVE,                      POINTER :: NSNK2UZF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QSFR2LAK
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QSFR2UZF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QLAK2UZF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QSNK2UZF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD1SFLK
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD2SFLK
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD1SFUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD2SFUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD1LKUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD2LKUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD1SKUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD2SKUZ
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IUZCODESF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IUZCODELK
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IUZCODESK
+      CONTAINS
+      SUBROUTINE MEMDEALLOCATE_PKG2PKG()
+        IF(ASSOCIATED(QSFR2LAK))       DEALLOCATE(QSFR2LAK)
+        IF(ASSOCIATED(QSFR2UZF))       DEALLOCATE(QSFR2UZF)
+        IF(ASSOCIATED(QLAK2UZF))       DEALLOCATE(QLAK2UZF)
+        IF(ASSOCIATED(QSNK2UZF))       DEALLOCATE(QSNK2UZF)
+        IF(ASSOCIATED(INOD1SFLK))      DEALLOCATE(INOD1SFLK)
+        IF(ASSOCIATED(INOD2SFLK))      DEALLOCATE(INOD2SFLK)
+        IF(ASSOCIATED(INOD1SFUZ))      DEALLOCATE(INOD1SFUZ)
+        IF(ASSOCIATED(INOD2SFUZ))      DEALLOCATE(INOD2SFUZ)
+        IF(ASSOCIATED(INOD1LKUZ))      DEALLOCATE(INOD1LKUZ)
+        IF(ASSOCIATED(INOD2LKUZ))      DEALLOCATE(INOD2LKUZ)
+        IF(ASSOCIATED(INOD1SKUZ))      DEALLOCATE(INOD1SKUZ)
+        IF(ASSOCIATED(INOD2SKUZ))      DEALLOCATE(INOD2SKUZ)
+        IF(ASSOCIATED(IUZCODESF))      DEALLOCATE(IUZCODESF)
+        IF(ASSOCIATED(IUZCODELK))      DEALLOCATE(IUZCODELK)
+        IF(ASSOCIATED(IUZCODESK))      DEALLOCATE(IUZCODESK)
+      END SUBROUTINE MEMDEALLOCATE_PKG2PKG
+    END MODULE PKG2PKG
+!
     MODULE DSSL
         INTEGER,          SAVE,                      POINTER :: IHSSOUT
         INTEGER,          SAVE,                      POINTER :: MAXDSSL
@@ -69,7 +109,7 @@
         INTEGER,          SAVE, DIMENSION(:,:,:),    POINTER :: ICBND2 
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ID2D
         REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: QC7
-        REAL,             SAVE, DIMENSION(:),        POINTER :: C7
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: C7
         REAL,             SAVE, DIMENSION(:,:,:,:),  POINTER :: COLD7
         REAL,             SAVE, DIMENSION(:,:,:),    POINTER :: VAQSAT
         REAL,             SAVE, DIMENSION(:,:,:),    POINTER :: TMASS2
@@ -101,8 +141,7 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFC
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEG
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IREACH
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: NIN
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INFLWNOD
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: NIN
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IEXIT
         REAL,             SAVE, DIMENSION(:),        POINTER :: SFLEN
         REAL,             SAVE, DIMENSION(:),        POINTER :: SFNAREA
@@ -122,29 +161,40 @@
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CNEWSFTMP
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: DISPSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CBCSF
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEGBC
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCHBC
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISEGBC
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IRCHBC
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFNBC
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFBCTYP
         REAL,             SAVE, DIMENSION(:),        POINTER :: RMASSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: VOUTSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLSFO
+        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLSFN
 !
         INTEGER,          SAVE,                      POINTER :: MXSGMT
         INTEGER,          SAVE,                      POINTER :: MXRCH
-        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: ISTRM
+!        INTEGER,          SAVE, DIMENSION(:,:),      POINTER :: ISTRM
 !
 !.......OBSERVATION VARIABLES
         INTEGER,          SAVE,                      POINTER :: NOBSSF
         INTEGER,          SAVE,                      POINTER :: IOUTOBS
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISOBS
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IROBS
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISOBS
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IROBS
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFNOBS
 !
 !.......SIZE NINTOT
-        INTEGER,          SAVE,                      POINTER :: NINTOT
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDXNIN
-        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSF
-        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSFO
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INSEG
-        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INRCH
+!        INTEGER,          SAVE,                      POINTER :: NINTOT
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDXNIN
+!        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSF
+!        REAL,             SAVE, DIMENSION(:),        POINTER :: QINSFO
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INSEG
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INRCH
+!        INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSPFLG
+!
+!.......SIZE NSF2SF
+        INTEGER,          SAVE,                      POINTER :: NSF2SF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD1SF
+        INTEGER,          SAVE, DIMENSION(:),        POINTER :: INOD2SF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: QN2NSF
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IDSPFLG
 !
 !.......SOLVER VARIABLES
@@ -183,8 +233,7 @@ CONTAINS
         IF(ASSOCIATED(ISFC))       DEALLOCATE(ISFC)         !# LINE 1442 FMI
         IF(ASSOCIATED(ISEG))       DEALLOCATE(ISEG)         !# LINE 1443 FMI
         IF(ASSOCIATED(IREACH))     DEALLOCATE(IREACH)       !# LINE 1444 FMI
-        IF(ASSOCIATED(NIN))        DEALLOCATE(NIN)          !# UPDATED
-        IF(ASSOCIATED(INFLWNOD))   DEALLOCATE(INFLWNOD)     !# UPDATED
+!        IF(ASSOCIATED(NIN))        DEALLOCATE(NIN)          !# UPDATED
         IF(ASSOCIATED(SFLEN))      DEALLOCATE(SFLEN)        !# LINE 1445 FMI
         IF(ASSOCIATED(SFNAREA))    DEALLOCATE(SFNAREA)      !# LINE 1446 FMI
         IF(ASSOCIATED(SFOAREA))    DEALLOCATE(SFOAREA)      !# LINE 1447 FMI
@@ -196,27 +245,31 @@ CONTAINS
         IF(ASSOCIATED(QOUTSF))     DEALLOCATE(QOUTSF)       !# LINE 1453 FMI
         IF(ASSOCIATED(QOUTSFO))    DEALLOCATE(QOUTSFO)      !# LINE 1454 FMI
         IF(ASSOCIATED(QETSF))      DEALLOCATE(QETSF)        !# LINE 1455 FMI
-        IF(ASSOCIATED(QINSF))      DEALLOCATE(QINSF)        !# LINE 1458 FMI
-        IF(ASSOCIATED(QINSFO))     DEALLOCATE(QINSFO)       !# LINE 1459 FMI
-        IF(ASSOCIATED(INSEG))      DEALLOCATE(INSEG)        !# LINE 1460 FMI
-        IF(ASSOCIATED(INRCH))      DEALLOCATE(INRCH)        !# LINE 1461 FMI
+!        IF(ASSOCIATED(QINSF))      DEALLOCATE(QINSF)        !# LINE 1458 FMI
+!        IF(ASSOCIATED(QINSFO))     DEALLOCATE(QINSFO)       !# LINE 1459 FMI
+!        IF(ASSOCIATED(INSEG))      DEALLOCATE(INSEG)        !# LINE 1460 FMI
+!        IF(ASSOCIATED(INRCH))      DEALLOCATE(INRCH)        !# LINE 1461 FMI
         IF(ASSOCIATED(IDSPFLG))    DEALLOCATE(IDSPFLG)      !# LINE 1462 FMI
-        IF(ASSOCIATED(IDXNIN))     DEALLOCATE(IDXNIN)       !# LINE 1463 FMI
+!        IF(ASSOCIATED(IDXNIN))     DEALLOCATE(IDXNIN)       !# LINE 1463 FMI
 !.......INDEXING TO GET ISTRM FROM SEG AND RCH NUMBERS      !# LINE 1464 FMI
-        IF(ASSOCIATED(ISTRM))       DEALLOCATE(ISTRM)       !# LINE 1465 FMI
+!        IF(ASSOCIATED(ISTRM))       DEALLOCATE(ISTRM)       !# LINE 1465 FMI
         IF(ASSOCIATED(CNEWSF))      DEALLOCATE(CNEWSF)
         IF(ASSOCIATED(COLDSF))      DEALLOCATE(COLDSF)
         IF(ASSOCIATED(COLDSF2))     DEALLOCATE(COLDSF2)
         IF(ASSOCIATED(CNEWSFTMP))   DEALLOCATE(CNEWSFTMP)
         IF(ASSOCIATED(DISPSF))      DEALLOCATE(DISPSF)
         IF(ASSOCIATED(CBCSF))       DEALLOCATE(CBCSF)
-        IF(ASSOCIATED(ISEGBC))      DEALLOCATE(ISEGBC)
-        IF(ASSOCIATED(IRCHBC))      DEALLOCATE(IRCHBC)
+!        IF(ASSOCIATED(ISEGBC))      DEALLOCATE(ISEGBC)
+!        IF(ASSOCIATED(IRCHBC))      DEALLOCATE(IRCHBC)
+        IF(ASSOCIATED(ISFNBC))      DEALLOCATE(ISFNBC)
         IF(ASSOCIATED(ISFBCTYP))    DEALLOCATE(ISFBCTYP)
         IF(ASSOCIATED(RMASSF))      DEALLOCATE(RMASSF)
         IF(ASSOCIATED(VOUTSF))      DEALLOCATE(VOUTSF)
-        IF(ASSOCIATED(ISOBS))       DEALLOCATE(ISOBS)
-        IF(ASSOCIATED(IROBS))       DEALLOCATE(IROBS)
+        IF(ASSOCIATED(VOLSFO))      DEALLOCATE(VOLSFO)
+        IF(ASSOCIATED(VOLSFN))      DEALLOCATE(VOLSFN)
+!        IF(ASSOCIATED(ISOBS))       DEALLOCATE(ISOBS)
+!        IF(ASSOCIATED(IROBS))       DEALLOCATE(IROBS)
+        IF(ASSOCIATED(ISFNOBS))     DEALLOCATE(ISFNOBS)
         IF(ASSOCIATED(CFLOINSF))    DEALLOCATE(CFLOINSF)
         IF(ASSOCIATED(CFLOOUTSF))   DEALLOCATE(CFLOOUTSF)
         IF(ASSOCIATED(CGW2SFR))     DEALLOCATE(CGW2SFR)
@@ -409,20 +462,24 @@ CONTAINS
         INTEGER,          SAVE,                       POINTER :: ICBCUZ
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: UZET       
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CUZET      
-        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: GWET       
-        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CGWET
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IGWET       
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: GWET       
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CGWET
         REAL,             SAVE, DIMENSION(:,:),       POINTER :: FINFIL      
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CUZINF
 !        REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: CSURFLK   
+        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IUZRCH
+        REAL,             SAVE, DIMENSION(:,:),       POINTER :: UZRECH
+        REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: CUZRCH
 !--UZF -> SFR & UZF -> LAK CONNECTIONS
-        INTEGER,          SAVE,                       POINTER :: MXUZCON
-        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IROUTE
-        REAL,             SAVE, DIMENSION(:),         POINTER :: UZQ
-        INTEGER,          SAVE,                       POINTER :: NCON
-        INTEGER,          SAVE,                       POINTER :: NCONLK
-        INTEGER,          SAVE,                       POINTER :: NCONSF
-        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2LAK
-        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2SFR
+!        INTEGER,          SAVE,                       POINTER :: MXUZCON
+!        INTEGER,          SAVE, DIMENSION(:,:),       POINTER :: IROUTE
+!        REAL,             SAVE, DIMENSION(:),         POINTER :: UZQ
+!        INTEGER,          SAVE,                       POINTER :: NCON
+!        INTEGER,          SAVE,                       POINTER :: NCONLK
+!        INTEGER,          SAVE,                       POINTER :: NCONSF
+!        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2LAK
+!        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2SFR
 CONTAINS
         SUBROUTINE MEMDEALLOCATE_UZ()
         IF(ASSOCIATED(PRSITYSAV)) DEALLOCATE(PRSITYSAV)             !edm
@@ -442,16 +499,20 @@ CONTAINS
         IF(ASSOCIATED(ICBCUZ))    DEALLOCATE(ICBCUZ)                !edm
         IF(ASSOCIATED(UZET))      DEALLOCATE(UZET)                  !edm
         IF(ASSOCIATED(CUZET))     DEALLOCATE(CUZET)                 !edm
+        IF(ASSOCIATED(IGWET))     DEALLOCATE(IGWET)                 !edm
         IF(ASSOCIATED(GWET))      DEALLOCATE(GWET)                  !edm
         IF(ASSOCIATED(CGWET))     DEALLOCATE(CGWET)                 !edm
-        IF(ASSOCIATED(MXUZCON))   DEALLOCATE(MXUZCON)               !edm
-        IF(ASSOCIATED(IROUTE))    DEALLOCATE(IROUTE)                !edm 
-        IF(ASSOCIATED(UZQ))       DEALLOCATE(UZQ)                   !edm
-        IF(ASSOCIATED(NCON))      DEALLOCATE(NCON)                  !edm
-        IF(ASSOCIATED(NCONLK))    DEALLOCATE(NCONLK)                !edm
-        IF(ASSOCIATED(NCONSF))    DEALLOCATE(NCONSF)                !edm
+!        IF(ASSOCIATED(MXUZCON))   DEALLOCATE(MXUZCON)               !edm
+!        IF(ASSOCIATED(IROUTE))    DEALLOCATE(IROUTE)                !edm 
+!        IF(ASSOCIATED(UZQ))       DEALLOCATE(UZQ)                   !edm
+!        IF(ASSOCIATED(NCON))      DEALLOCATE(NCON)                  !edm
+!        IF(ASSOCIATED(NCONLK))    DEALLOCATE(NCONLK)                !edm
+!        IF(ASSOCIATED(NCONSF))    DEALLOCATE(NCONSF)                !edm
         IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
         IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)                !edm
+        IF(ASSOCIATED(IUZRCH))    DEALLOCATE(IUZRCH)                !edm
+        IF(ASSOCIATED(UZRECH))    DEALLOCATE(UZRECH)                !edm
+        IF(ASSOCIATED(CUZRCH))    DEALLOCATE(CUZRCH)                  !edm
         END SUBROUTINE MEMDEALLOCATE_UZ
     END MODULE UZTVARS
 MODULE MT3DMS_MODULE
@@ -485,6 +546,7 @@ MODULE MT3DMS_MODULE
         INTEGER,          SAVE,                       POINTER :: INUZT
         INTEGER,          SAVE,                       POINTER :: INHSS
         INTEGER,          SAVE,                       POINTER :: INFTL     
+        INTEGER,          SAVE,                       POINTER :: NPCKGTXT
         INTEGER,          SAVE,                       POINTER :: IFTLFMT   
         INTEGER,          SAVE,                       POINTER :: ICNF      
         INTEGER,          SAVE,                       POINTER :: IUCN      
@@ -579,8 +641,6 @@ MODULE MT3DMS_MODULE
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: TMASIO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: RMASIO
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: TMASS
-!--BTN-Vivek
-        INTEGER,          SAVE,                       POINTER :: INRTR         !# LINE 118 MAIN
 !--ADV
         INTEGER,          SAVE,                       POINTER :: NADVFD
         INTEGER,          SAVE,                       POINTER :: ITRACK
@@ -644,6 +704,16 @@ MODULE MT3DMS_MODULE
         LOGICAL,          SAVE,                       POINTER :: FSWT
         LOGICAL,          SAVE,                       POINTER :: FSFR
         LOGICAL,          SAVE,                       POINTER :: FUZF
+        LOGICAL,          SAVE,                       POINTER :: FLAKFLOWS
+        LOGICAL,          SAVE,                       POINTER :: FMNWFLOWS !NOT SUPPORTED YET
+        LOGICAL,          SAVE,                       POINTER :: FSFRFLOWS
+        LOGICAL,          SAVE,                       POINTER :: FUZFFLOWS
+        LOGICAL,          SAVE,                       POINTER :: FSWR
+        LOGICAL,          SAVE,                       POINTER :: FSWRFLOWS !NOT SUPPORTED YET
+        LOGICAL,          SAVE,                       POINTER :: FSFRLAK
+        LOGICAL,          SAVE,                       POINTER :: FSFRUZF
+        LOGICAL,          SAVE,                       POINTER :: FLAKUZF
+        LOGICAL,          SAVE,                       POINTER :: FSNKUZF
 !--FMI-Vivek
         INTEGER,          SAVE,                       POINTER :: NOCREWET              !# LINE 99 MAIN
 !--SSM                    
