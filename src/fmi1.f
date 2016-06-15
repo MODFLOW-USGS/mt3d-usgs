@@ -831,6 +831,7 @@ C
      &                         FSFRFLOWS,FUZFFLOWS,FSWR,FSWRFLOWS,
      &                         FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF,
      &                         DZ,QZ,PRSITY,QSTO
+      USE INTERFACE1
 C
       IMPLICIT  NONE
       INTEGER   INUF,J,I,K,
@@ -960,6 +961,7 @@ C
 C--READ ET FLOW TERM (L**3/T) IF SEGMENTED ET USED IN FLOW MODEL
       IF(FETS) THEN
         TEXT='ETS'
+        IQ=29
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &   EVTR,IEVT,FPRT)
       ENDIF
