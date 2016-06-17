@@ -19,7 +19,7 @@ if platform.system() in 'Windows':
     target_extension = '.exe'
 
 # Development version information
-testpaths = [os.path.join('..', 'test-reg'), os.path.join('..', 'test-cmp')]
+testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]
 srcdir = os.path.join('..', 'src')
 program = 'mt3d-usgs'
 version = '1.0.00'
