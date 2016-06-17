@@ -1,0 +1,374 @@
+ F F F F F F F T     !FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FUZET,FUZINF
+       10            !MXSS
+ 5                   !NSS - SP1
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP2
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP3
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP4
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP4
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP5
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP6
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP7
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP8
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP9
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP10
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP11
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP12
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP13
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP14
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP15
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP16
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP17
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP18
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP19
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP20
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP21
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP22
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP23
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP24
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP25
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP26
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP27
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP28
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP29
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP30
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP31
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP32
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP33
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP34
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP35
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP36
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP37
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP38
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP39
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP40
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP41
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP42
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP43
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP44
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP45
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP46
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP47
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP48
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP49
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP50
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP51
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP52
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP53
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP54
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP55
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP56
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP57
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP58
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP59
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP60
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+ 5                   !NSS - SP61
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       209        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          1        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          2        0.         1  !KSS,ISS,JSS,CSS,ITYPE
+       210        1          3        0.         1  !KSS,ISS,JSS,CSS,ITYPE

@@ -1,0 +1,8 @@
+#MODFLOW Transient Storage Problem
+#   
+
+CONSTANT   1             #IBOUND Layer   1
+CONSTANT   1             #IBOUND Layer   2
+-999                     #HNOFLO
+CONSTANT   9.9999        #STARTING HEADS Layer 1
+CONSTANT   9.9999        #STARTING HEADS Layer 2

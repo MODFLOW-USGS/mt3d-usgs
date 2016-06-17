@@ -1,0 +1,732 @@
+                                  MODFLOW-NWT-SWR1 
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUNDWATER-FLOW MODEL
+                            VERSION 1.0.7 01/15/2013
+                    BASED ON MODFLOW-2005 VERSION 1.9.01 05/01/2012
+
+ LIST FILE: gv6.lst
+                         UNIT    7
+
+ OPENING gv6.ba6
+ FILE TYPE:BAS6   UNIT    1   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.dis
+ FILE TYPE:DIS   UNIT   29   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.wel
+ FILE TYPE:WEL   UNIT   13   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.nwt
+ FILE TYPE:NWT   UNIT   12   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.upw
+ FILE TYPE:UPW   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.oc
+ FILE TYPE:OC   UNIT   22   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.lmt
+ FILE TYPE:LMT6   UNIT   33   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv6.cbb
+ FILE TYPE:DATA(BINARY)   UNIT   50   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING gv6.hds
+ FILE TYPE:DATA(BINARY)   UNIT   30   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING gv6.ddn
+ FILE TYPE:DATA(BINARY)   UNIT   31   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    1
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   29
+ #NLAY NROW NCOL NPER ITMUNI LENUNI
+    2 LAYERS         1 ROWS         1 COLUMNS
+    4 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS FEET
+  Confining bed flag for each layer:
+   0   0
+
+                     DELR =   10.0000    
+
+                     DELC =   10.0000    
+
+
+
+           TOP ELEVATION OF LAYER 1
+ READING ON UNIT   29 WITH FORMAT: (FREE)              
+
+           1
+ ...........
+   1    20.0    
+
+
+
+             MODEL LAYER BOTTOM EL. FOR LAYER   1
+ READING ON UNIT   29 WITH FORMAT: (FREE)              
+
+           1
+ ...........
+   1    10.0    
+
+
+
+             MODEL LAYER BOTTOM EL. FOR LAYER   2
+ READING ON UNIT   29 WITH FORMAT: (FREE)              
+
+           1
+ ...........
+   1    0.00    
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         2.000000          1                    1.000         TR
+        2         2.000000          1                    1.000         TR
+        3         2.000000          1                    1.000         TR
+        4         2.000000          1                    1.000         TR
+
+ TRANSIENT SIMULATION
+
+
+
+ 
+ #MODFLOW Transient Storage Problem                                              
+ #                                                                               
+
+           BOUNDARY ARRAY =              1 FOR LAYER   1
+
+           BOUNDARY ARRAY =              1 FOR LAYER   2
+
+ AQUIFER HEAD WILL BE SET TO  -999.00     AT ALL NO-FLOW NODES (IBOUND=0).
+
+             INITIAL HEAD =   9.99990     FOR LAYER   1
+
+             INITIAL HEAD =   9.99990     FOR LAYER   2
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS   0    DRAWDOWN PRINT FORMAT CODE IS   0
+ HEADS WILL BE SAVED ON UNIT   30    DRAWDOWNS WILL BE SAVED ON UNIT   31
+ # MODFLOW2005 NWT Input File
+ # Test Problem 4 MT3D/UZF taken from UZF doc
+ #HEADTOL  FLUXTOL MAXITEROUT THICKFACT   LINMETH    IPRNWT     IBOTAV OPTIONS            [DBDTHETA]  [DBDKAPPA] [DBDGAMMA] [MOMFACT] [BACKFLAG] [MAXBACKITER] [BACKTOL] [BACKREDUCE]
+ # [IACL] [NORDER]    [LEVEL]   [NORTH] [IREDSYS] [RRCTOLS] [IDROPTOL] [EPSRN]  [HCLOSEXMD] [MXITERXMD]
+
+ NWT1 -- Newton Solver, VERSION 1.0.6, 12/05/2012
+         INPUT READ FROM UNIT 12
+
+ SPECIFIED OPTION:
+ SOLVER INPUT VALUES ARE SPECIFIED BY USER
+ ***XMD linear solver will be used***
+ 
+   CONVERGENCE CRITERION OF   0.500000E-08 FOR HEAD SOLUTION
+   AND A TOLERANCE OF   0.100000E+01 FOR FLOW SOLUTION AND 
+   A MAXIMUM OF  2500 OUTER ITERATIONS. 
+
+
+   D-B-D REDUCTION FACTOR OF    0.800000E+00 AND 
+   A D-B-D INCREASE FACTOR OF    0.100000E-04 AND 
+   A D-B-D RELAXATION OF    0.000000E+00 AND 
+   A MOMENTUM FACTOR OF    0.100000E+00 .
+
+
+ ***BACKTRACKING IS INACTIVE***
+ XMD -- LINEAR SOLUTION BY XMD PACKAGE VERSION 1.30
+     BY MOTOMU IBARAKI, OHIO STATE UNIVERSITY, COLOMBUS, OH
+                 INPUT READ FROM UNIT 12
+ ACCELERATION METHOD                    (IACL) =         2
+ NODE ORDERING FLAG                   (NORDER) =         1
+ LEVEL OF FILL                         (LEVEL) =         3
+ MAXIMUM NUMBER OF ORTHOGONALIZATIONS  (NORTH) =         5
+ INDEX FOR USING REDUCED SYSTEM      (IREDSYS) =         1
+ RESID. REDUCTION CONVERGE CRITERION  (RRCTOL) =  0.000000E+00
+ INDEX FOR USING DROP TOLERANCE     (IDROPTOL) =         1
+ DROP TOLERANCE VALUE                  (EPSRN) =  0.100000E-03
+ CONVERGENCE CRITERIA OF           (HCLOSEXMD) =  0.100000E-03
+ MAX. NUMBER OF LINEAR ITERATIONS  (MXITERXMD) =       200
+
+
+ UPW1 -- UPSTREAM WEIGHTING FLOW PACKAGE, VERSION 1.0.6, 12/05/2012
+         INPUT READ FROM UNIT 11
+
+ #UPW File
+ #IUPWCB    HDRY  NPUPW  IPHDRY
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+ No named parameters
+
+   LAYER FLAGS:
+ LAYER       LAYTYP          LAYAVG    CHANI           LAYVKA           LAYWET
+ ---------------------------------------------------------------------------
+    1             1             2     1.000E+00             1             0
+    2             1             2     1.000E+00             1             0
+
+   INTERPRETATION OF LAYER FLAGS:
+                        INTERBLOCK     HORIZONTAL    DATA IN
+         LAYER TYPE   TRANSMISSIVITY   ANISOTROPY   ARRAY VKA   WETTABILITY
+ LAYER   (LAYTYP)        (LAYAVG)      (CHANI)     (LAYVKA)       (LAYWET)
+ ---------------------------------------------------------------------------
+    1   CONVERTIBLE     LOG-ARITH     1.000E+00    ANISOTROPY  NON-WETTABLE
+    2   CONVERTIBLE     LOG-ARITH     1.000E+00    ANISOTROPY  NON-WETTABLE
+
+    HYD. COND. ALONG ROWS =   100.000     FOR LAYER   1
+
+  HORIZ. TO VERTICAL ANI. =   1.00000     FOR LAYER   1
+
+         SPECIFIC STORAGE =  1.000000E-09 FOR LAYER   1
+
+           SPECIFIC YIELD =  0.100000     FOR LAYER   1
+
+    HYD. COND. ALONG ROWS =   100.000     FOR LAYER   2
+
+  HORIZ. TO VERTICAL ANI. =   1.00000     FOR LAYER   2
+
+         SPECIFIC STORAGE =  1.000000E-09 FOR LAYER   2
+
+           SPECIFIC YIELD =  0.100000     FOR LAYER   2
+
+ WEL -- WELL PACKAGE, VERSION 1.0.6, 12/05/2012 INPUT READ FROM UNIT   13
+ No named parameters
+ MAXIMUM OF      1 ACTIVE WELLS AT ONE TIME
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+ No named parameters
+  PHIRAMP WILL BE SET TO A DEFAULT VALUE OF 0.05
+  WELLS WITH REDUCED PUMPING WILL BE REPORTED TO THE MAIN LISTING FILE
+
+
+     0 Well parameters
+
+
+ ***Link-MT3DMS Package v7***
+ OPENING LINK-MT3DMS OUTPUT FILE: gv6.ftl                                                                                                                                                                                                 
+ ON UNIT NUMBER:   333
+ FILE TYPE: FORMATTED  
+ HEADER OPTION: EXTENDED
+ ***Link-MT3DMS Package v7***
+
+1
+                            STRESS PERIOD NO.    1, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   2.000000    
+
+ WELL NO.  LAYER   ROW   COL   STRESS RATE         
+ --------------------------------------------------
+      1      2      1      1      -25.00    
+
+      1 WELL 
+ 
+ SOLVING FOR HEAD 
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                 1           2             1    1     2      -0.5499394518E+01       1    1    2        -0.2500000000E+02      0.2500000000E+02
+          0                 2           2             1    1     2       0.4494553552E+00       1    1    2         0.2499998525E+01      0.2500000037E+01
+          0                 3           2             1    1     2       0.4498647378E-01       1    1    2         0.2499998089E+00      0.2499998139E+00
+          0                 4           2             1    1     1       0.4502308799E-02       1    1    2         0.2499747743E-01      0.2499748354E-01
+          0                 5           2             1    1     1       0.4505529811E-03       1    1    2         0.2499247458E-02      0.2499250656E-02
+          0                 6           1             1    1     1       0.4508302612E-04       1    1    2         0.2498497342E-03      0.2498505158E-03
+          0                 7           1             1    1     1       0.4510626233E-05       1    1    2         0.2497497644E-04      0.2497512112E-04
+          0                 8           1             1    1     1       0.4512502021E-06       1    1    2         0.2496249181E-05      0.2496272341E-05
+          0                 9           1             1    1     1       0.4513919282E-07       1    1    2         0.2494753062E-06      0.2494786915E-06
+          0                10           1             1    1     1       0.4515085999E-08       1    1    2         0.2493015927E-07      0.2493062750E-07
+
+    ------------------------------------------------
+       NWT REQUIRED           10 OUTER ITERATIONS 
+       AND A TOTAL OF         15 INNER ITERATIONS.
+    ------------------------------------------------
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       1       1
+ UBUDSV SAVING "         STORAGE" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+ UBUDSV SAVING "   CONSTANT HEAD" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+ UBUDSV SAVING "FLOW LOWER FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+ UBUDSV SAVING "           WELLS" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+
+ SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT  333 FOR MT3DMS
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    1
+
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    5.000    
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    5.000    
+
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    1
+
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    1
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =          50.0000               STORAGE =          25.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =           0.0000                 WELLS =           0.0000
+
+            TOTAL IN =          50.0000              TOTAL IN =          25.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =           0.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =          50.0000                 WELLS =          25.0000
+
+           TOTAL OUT =          50.0000             TOTAL OUT =          25.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+1
+1
+                            STRESS PERIOD NO.    2, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   2.000000    
+
+ WELL NO.  LAYER   ROW   COL   STRESS RATE         
+ --------------------------------------------------
+      1      2      1      1       25.00    
+
+      1 WELL 
+ 
+ SOLVING FOR HEAD 
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                 1           2             1    1     2       0.5499394793E+01       1    1    2         0.2500000000E+02      0.2500000000E+02
+          0                 2           2             1    1     2      -0.4494109952E+00       1    1    1        -0.2493736142E+01      0.2493737949E+01
+          0                 3           2             1    1     2      -0.4494159506E-01       1    1    1        -0.2493735909E+00      0.2493737716E+00
+          0                 4           2             1    1     2      -0.4493759439E-02       1    1    1        -0.2493486211E-01      0.2493488018E-01
+          0                 5           2             1    1     2      -0.4492910006E-03       1    1    1        -0.2492987180E-02      0.2492988986E-02
+          0                 6           2             1    1     2      -0.1138811665E-03       1    1    1        -0.3129468278E-03      0.3129469716E-03
+          0                 7           1             1    1     1      -0.2721787524E-05       1    1    1        -0.2519266418E-03      0.2726877277E-03
+          0                 8           1             1    1     1      -0.2373288245E-05       1    1    2        -0.1141654429E-03      0.1169095913E-03
+          0                 9           1             1    1     1      -0.2212651575E-05       1    1    2        -0.1288027943E-03      0.1288274009E-03
+          0                10           1             1    1     1      -0.2075067391E-05       1    1    2        -0.1232684426E-03      0.1232687017E-03
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                11           1             1    1     1      -0.1944409991E-05       1    1    2        -0.1159514122E-03      0.1159514152E-03
+          0                12           1             1    1     1      -0.1819323923E-05       1    1    2        -0.1087095552E-03      0.1087095553E-03
+          0                13           1             1    1     1      -0.1699848149E-05       1    1    2        -0.1017434188E-03      0.1017434188E-03
+          0                14           1             1    1     1      -0.1586088134E-05       1    1    2        -0.9508330550E-04      0.9508330550E-04
+          0                15           1             1    1     1      -0.1478092775E-05       1    1    2        -0.8873843035E-04      0.8873843035E-04
+          0                16           1             1    1     1      -0.1375851206E-05       1    1    2        -0.8271232582E-04      0.8271232582E-04
+          0                17           1             1    1     1      -0.1279300576E-05       1    1    2        -0.7700488641E-04      0.7700488641E-04
+          0                18           1             1    1     1      -0.1188335042E-05       1    1    2        -0.7161305075E-04      0.7161305075E-04
+          0                19           1             1    1     1      -0.1102813513E-05       1    1    2        -0.6653129276E-04      0.6653129276E-04
+          0                20           1             1    1     1      -0.1022567253E-05       1    1    2        -0.6175209091E-04      0.6175209092E-04
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                21           1             1    1     1      -0.9474056441E-06       1    1    2        -0.5726631207E-04      0.5726631207E-04
+          0                22           1             1    1     1      -0.8771225875E-06       1    1    2        -0.5306359526E-04      0.5306359526E-04
+          0                23           1             1    1     1      -0.8115009024E-06       1    1    2        -0.4913264274E-04      0.4913264275E-04
+          0                24           1             1    1     1      -0.7503165902E-06       1    1    2        -0.4546152923E-04      0.4546152923E-04
+          0                25           1             1    1     1      -0.6933424953E-06       1    1    2        -0.4203790559E-04      0.4203790559E-04
+          0                26           1             1    1     1      -0.6403511562E-06       1    1    2        -0.3884922808E-04      0.3884922808E-04
+          0                27           1             1    1     1      -0.5911173752E-06       1    1    2        -0.3588290747E-04      0.3588290747E-04
+          0                28           1             1    1     1      -0.5454199620E-06       1    1    2        -0.3312645276E-04      0.3312645276E-04
+          0                29           1             1    1     1      -0.5030436060E-06       1    1    2        -0.3056759124E-04      0.3056759124E-04
+          0                30           1             1    1     1      -0.4637797806E-06       1    1    2        -0.2819435940E-04      0.2819435940E-04
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                31           1             1    1     1      -0.4274278328E-06       1    1    2        -0.2599515574E-04      0.2599515574E-04
+          0                32           1             1    1     1      -0.3937955924E-06       1    1    2        -0.2395880256E-04      0.2395880256E-04
+          0                33           1             1    1     1      -0.3626997216E-06       1    1    2        -0.2207459329E-04      0.2207459329E-04
+          0                34           1             1    1     1      -0.3339661504E-06       1    1    2        -0.2033231431E-04      0.2033231431E-04
+          0                35           1             1    1     1      -0.3074299088E-06       1    1    2        -0.1872224311E-04      0.1872224311E-04
+          0                36           1             1    1     1      -0.2829352048E-06       1    1    2        -0.1723517744E-04      0.1723517744E-04
+          0                37           1             1    1     1      -0.2603354770E-06       1    1    2        -0.1586241524E-04      0.1586241524E-04
+          0                38           1             1    1     1      -0.2394930437E-06       1    1    2        -0.1459577288E-04      0.1459577288E-04
+          0                39           1             1    1     1      -0.2202786200E-06       1    1    2        -0.1342754149E-04      0.1342754149E-04
+          0                40           1             1    1     1      -0.2025714611E-06       1    1    2        -0.1235050513E-04      0.1235050513E-04
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                41           1             1    1     1      -0.1862586665E-06       1    1    2        -0.1135790444E-04      0.1135790444E-04
+          0                42           1             1    1     1      -0.1712349858E-06       1    1    2        -0.1044342753E-04      0.1044342753E-04
+          0                43           1             1    1     1      -0.1574023613E-06       1    1    2        -0.9601180864E-05      0.9601180864E-05
+          0                44           1             1    1     1      -0.1446696550E-06       1    1    2        -0.8825680197E-05      0.8825680198E-05
+          0                45           1             1    1     1      -0.1329520781E-06       1    1    2        -0.8111821444E-05      0.8111821444E-05
+          0                46           1             1    1     1      -0.1221710041E-06       1    1    2        -0.7454853403E-05      0.7454853403E-05
+          0                47           1             1    1     1      -0.1122536957E-06       1    1    2        -0.6850383215E-05      0.6850383216E-05
+          0                48           1             1    1     1      -0.1031324155E-06       1    1    2        -0.6294325431E-05      0.6294325431E-05
+          0                49           1             1    1     1      -0.9474479139E-07       1    1    2        -0.5782892913E-05      0.5782892913E-05
+          0                50           1             1    1     1      -0.8703289050E-07       1    1    2        -0.5312585927E-05      0.5312585927E-05
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                51           1             1    1     1      -0.7994335216E-07       1    1    2        -0.4880163033E-05      0.4880163033E-05
+          0                52           1             1    1     1      -0.7342680436E-07       1    1    2        -0.4482633813E-05      0.4482633813E-05
+          0                53           1             1    1     1      -0.6743759846E-07       1    1    2        -0.4117227945E-05      0.4117227945E-05
+          0                54           1             1    1     1      -0.6193361257E-07       1    1    2        -0.3781387932E-05      0.3781387932E-05
+          0                55           1             1    1     1      -0.5687613504E-07       1    1    2        -0.3472754543E-05      0.3472754543E-05
+          0                56           1             1    1     1      -0.5222933190E-07       1    1    2        -0.3189163181E-05      0.3189163181E-05
+          0                57           1             1    1     1      -0.4796019107E-07       1    1    2        -0.2928592949E-05      0.2928592949E-05
+          0                58           1             1    1     1      -0.4403835933E-07       1    1    2        -0.2689199391E-05      0.2689199391E-05
+          0                59           1             1    1     1      -0.4043586730E-07       1    1    2        -0.2469285391E-05      0.2469285391E-05
+          0                60           1             1    1     1      -0.3712688965E-07       1    1    2        -0.2267272066E-05      0.2267272066E-05
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                61           1             1    1     1      -0.3408761239E-07       1    1    2        -0.2081720595E-05      0.2081720595E-05
+          0                62           1             1    1     2      -0.3442285910E-06       1    1    2        -0.1911297659E-05      0.1911297659E-05
+          0                63           1             1    1     1      -0.3424748437E-07       1    1    2        -0.1899807103E-06      0.1899807905E-06
+          0                64           1             1    1     1      -0.3407439589E-08       1    1    2        -0.1888474799E-07      0.1888477961E-07
+
+    ------------------------------------------------
+       NWT REQUIRED           64 OUTER ITERATIONS 
+       AND A TOTAL OF         70 INNER ITERATIONS.
+    ------------------------------------------------
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       1       1
+ UBUDSV SAVING "         STORAGE" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    2
+ UBUDSV SAVING "   CONSTANT HEAD" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    2
+ UBUDSV SAVING "FLOW LOWER FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    2
+ 
+ WELLS WITH REDUCED PUMPING FOR STRESS PERIOD     2 TIME STEP     1
+   LAY   ROW   COL         APPL.Q          ACT.Q        GW-HEAD       CELL-BOT
+     2     1     1   0.250000E+02   0.250000E+02   0.999990E+01   0.000000E+00
+ 
+ UBUDSV SAVING "           WELLS" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    2
+
+ SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT  333 FOR MT3DMS
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    2
+
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    10.00    
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    2
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    10.00    
+
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    2
+
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    2
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   2
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =          50.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =          50.0000                 WELLS =          25.0000
+
+            TOTAL IN =         100.0000              TOTAL IN =          25.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =          50.0000               STORAGE =          25.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =          50.0000                 WELLS =           0.0000
+
+           TOTAL OUT =         100.0000             TOTAL OUT =          25.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    2
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 3.45600E+05  5760.0      96.000      4.0000     1.09514E-02
+1
+1
+                            STRESS PERIOD NO.    3, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   2.000000    
+
+ WELL NO.  LAYER   ROW   COL   STRESS RATE         
+ --------------------------------------------------
+      1      2      1      1      -25.00    
+
+      1 WELL 
+ 
+ SOLVING FOR HEAD 
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                 1           2             1    1     2      -0.5499394518E+01       1    1    2        -0.2500000000E+02      0.2500000000E+02
+          0                 2           2             1    1     2       0.4494553552E+00       1    1    2         0.2499998525E+01      0.2500000037E+01
+          0                 3           2             1    1     2       0.4498647378E-01       1    1    2         0.2499998089E+00      0.2499998139E+00
+          0                 4           2             1    1     1       0.4502308799E-02       1    1    2         0.2499747744E-01      0.2499748354E-01
+          0                 5           2             1    1     1       0.4505529813E-03       1    1    2         0.2499247458E-02      0.2499250656E-02
+          0                 6           1             1    1     1       0.4508302604E-04       1    1    2         0.2498497333E-03      0.2498505149E-03
+          0                 7           1             1    1     1       0.4510626312E-05       1    1    2         0.2497497553E-04      0.2497512021E-04
+          0                 8           1             1    1     1       0.4512499519E-06       1    1    2         0.2496247362E-05      0.2496270522E-05
+          0                 9           1             1    1     1       0.4513943584E-07       1    1    2         0.2494753062E-06      0.2494786963E-06
+          0                10           1             1    1     1       0.4514836576E-08       1    1    2         0.2493015927E-07      0.2493062194E-07
+
+    ------------------------------------------------
+       NWT REQUIRED           10 OUTER ITERATIONS 
+       AND A TOTAL OF         15 INNER ITERATIONS.
+    ------------------------------------------------
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       1       1
+ UBUDSV SAVING "         STORAGE" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    3
+ UBUDSV SAVING "   CONSTANT HEAD" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    3
+ UBUDSV SAVING "FLOW LOWER FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    3
+ UBUDSV SAVING "           WELLS" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    3
+
+ SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT  333 FOR MT3DMS
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    3
+
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    5.000    
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    3
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    5.000    
+
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    3
+
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    3
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   3
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =         100.0000               STORAGE =          25.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =          50.0000                 WELLS =           0.0000
+
+            TOTAL IN =         150.0000              TOTAL IN =          25.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =          50.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =         100.0000                 WELLS =          25.0000
+
+           TOTAL OUT =         150.0000             TOTAL OUT =          25.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    3
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 5.18400E+05  8640.0      144.00      6.0000     1.64271E-02
+1
+1
+                            STRESS PERIOD NO.    4, LENGTH =   2.000000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.000
+
+                            INITIAL TIME STEP SIZE =   2.000000    
+
+ WELL NO.  LAYER   ROW   COL   STRESS RATE         
+ --------------------------------------------------
+      1      2      1      1       50.00    
+
+      1 WELL 
+ 
+ SOLVING FOR HEAD 
+                                                   Max.-Head-Change                         Max.-Flux-Residual
+  Residual-Control   Outer-Iter.   Inner-Iter.     Column Row Layer    Maximum-Head-Change  Column Row Layer    Maximum-Flux-Residual          L2-NORM 
+          0                 1           2             1    1     2       0.1099878959E+02       1    1    2         0.5000000000E+02      0.5000000000E+02
+          0                 2           2             1    1     1      -0.8989070350E+00       1    1    1        -0.2998822351E+02      0.3903851687E+02
+          0                 3           2             1    1     1      -0.8989169912E-01       1    1    1        -0.2998821990E+01      0.3903851195E+01
+          0                 4           2             1    1     1      -0.8988369747E-02       1    1    1        -0.2998521709E+00      0.3903460289E+00
+          0                 5           2             1    1     1      -0.8986670727E-03       1    1    1        -0.2997921603E-01      0.3902679074E-01
+          0                 6           1             1    1     1      -0.8984073279E-04       1    1    1        -0.2997021822E-02      0.3901507745E-02
+          0                 7           1             1    1     1      -0.8980578603E-05       1    1    1        -0.2995822633E-03      0.3899946646E-03
+          0                 8           1             1    1     1      -0.8976185276E-06       1    1    1        -0.2994324313E-04      0.3897996171E-04
+          0                 9           1             1    1     1      -0.8970908311E-07       1    1    1        -0.2992528607E-05      0.3895658181E-05
+          0                10           1             1    1     1      -0.8964719331E-08       1    1    1        -0.2990436769E-06      0.3892934442E-06
+          0                11           1             1    1     1      -0.8955300791E-09       1    1    1        -0.2988053893E-07      0.3889787990E-07
+
+    ------------------------------------------------
+       NWT REQUIRED           11 OUTER ITERATIONS 
+       AND A TOTAL OF         16 INNER ITERATIONS.
+    ------------------------------------------------
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     1         0       1       1
+ UBUDSV SAVING "         STORAGE" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    4
+ UBUDSV SAVING "   CONSTANT HEAD" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    4
+ UBUDSV SAVING "FLOW LOWER FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    4
+ 
+ WELLS WITH REDUCED PUMPING FOR STRESS PERIOD     4 TIME STEP     1
+   LAY   ROW   COL         APPL.Q          ACT.Q        GW-HEAD       CELL-BOT
+     2     1     1   0.500000E+02   0.500000E+02   0.150249E+02   0.000000E+00
+ 
+ UBUDSV SAVING "           WELLS" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    4
+
+ SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT  333 FOR MT3DMS
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    4
+
+1
+              HEAD IN LAYER   1 AT END OF TIME STEP   1 IN STRESS PERIOD    4
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    15.00    
+1
+              HEAD IN LAYER   2 AT END OF TIME STEP   1 IN STRESS PERIOD    4
+  ---------------------------------------------------------------------------
+
+            1
+ ............
+   1    15.02    
+
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    4
+
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    4
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   4
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =         100.0000               STORAGE =           0.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =         150.0000                 WELLS =          50.0000
+
+            TOTAL IN =         250.0000              TOTAL IN =          50.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =         150.0000               STORAGE =          50.0000
+       CONSTANT HEAD =           0.0000         CONSTANT HEAD =           0.0000
+               WELLS =         100.0000                 WELLS =           0.0000
+
+           TOTAL OUT =         250.0000             TOTAL OUT =          50.0000
+
+            IN - OUT =           0.0000              IN - OUT =           0.0000
+
+ PERCENT DISCREPANCY =           0.00     PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    4
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+ STRESS PERIOD TIME 1.72800E+05  2880.0      48.000      2.0000     5.47570E-03
+         TOTAL TIME 6.91200E+05  11520.      192.00      8.0000     2.19028E-02
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2013/12/26 11:21:21
+ Elapsed run time: **.000 Seconds
+

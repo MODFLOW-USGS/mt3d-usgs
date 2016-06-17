@@ -1,0 +1,15 @@
+#NLAY NROW NCOL NPER ITMUNI LENUNI
+    2    1    1    4      4      1  #(ITMUNI=4: Days; LENUNI=1: Feet)
+    0    0                          #No confining bed
+CONSTANT 10                         #DELR
+CONSTANT 10                         #DELC
+INTERNAL  1.0 (FREE) 1              #TOP Elev
+  20
+INTERNAL  1.0 (FREE) 1              #BOT Elev Layer 1
+  10
+INTERNAL  1.0 (FREE) 1              #BOT Elev Layer 2
+   0
+ 2.0   1   1.0   TR                 #PERLEN NSTP TSMULT Ss/tr 
+ 2.0   1   1.0   TR                 #PERLEN NSTP TSMULT Ss/tr 
+ 2.0   1   1.0   TR                 #PERLEN NSTP TSMULT Ss/tr 
+ 2.0   1   1.0   TR                 #PERLEN NSTP TSMULT Ss/tr 
