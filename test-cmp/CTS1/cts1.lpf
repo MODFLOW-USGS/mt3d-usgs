@@ -1,0 +1,12 @@
+#LPF - Layer-Property Flow Package Convertion of MF96 to MF2K5
+#ILPFCB HDRY NPLPF  (ILPFCB—is a flag and a unit number; NPLPF—is the number of LPF parameters)
+      0 -999     0
+  0                                     #LAYTYP(NLAY) (LAYTYP=1: convertible)
+  2                                     #LAYAVG(NLAY) (LAYAVG=2: arithmetic mean)
+  1                                     #CHANI(NLAY)  (CHANI=1: defines horizontal anisotropy for the entire layer)
+  1                                     #LAYVKA(NLAY) (LAYVKA=1: VKA is the ratio of horizontal to vertical hydraulic conductivity)
+  0                                     #LAYWET(NLAY) (LAYWET=0: Wetting is not active)
+CONSTANT 0.005                          #HK(NCOL,NROW)
+CONSTANT 10.00                          #VKA
+CONSTANT 0.00                           #Ss
+
