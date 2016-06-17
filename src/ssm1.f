@@ -433,6 +433,7 @@ C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: IUZFBND,THETAW,
      &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
+      USE PKG2PKG,       ONLY: NSNK2UZF,IUZCODESK,INOD2SKUZ,QSNK2UZF
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,
      &                         DELC,DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,
@@ -440,16 +441,16 @@ C
      &                         RHS,NODES,UPDLHS,MIXELM,COLD,
      &                         ISS,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,
      &                         FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &                         FSWT,FSFR,FUZF,
+     &                         FSWT,FSFR,FUZF,FSNKUZF,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
      &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,
      &                         IDRY2,PRSITY,DZ,SORBMASS
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
-     &          MHOST,KHOST,IHOST,JHOST
+     &          MHOST,KHOST,IHOST,JHOST,II
       REAL      CTMP,QSS,QCTMP,VOLAQU,VOL1,VOL2,VCELL,VUNSAT1,VUNSAT2,
-     &          FRAC
+     &          FRAC,GWQOUT
       REAL HT2,TIME1,TIME2
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
@@ -694,6 +695,20 @@ C-----GWET
           ENDIF
         ENDDO
       ENDDO
+C-----SEEPAGE
+      IF(FSNKUZF) THEN
+        DO II=1,NSNK2UZF
+          IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
+            N=INOD2SKUZ(II)
+            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            GWQOUT=QSNK2UZF(II)
+            IF(GWQOUT.GT.0) THEN                           
+              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDIF
 C
 C--POINT SINK/SOURCE TERMS
    20 DO NUM=1,NTSS
@@ -924,6 +939,20 @@ C-----GWET
           ENDIF
         ENDDO
       ENDDO
+C-----SEEPAGE
+      IF(FSNKUZF) THEN
+        DO II=1,NSNK2UZF
+          IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
+            N=INOD2SKUZ(II)
+            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            GWQOUT=QSNK2UZF(II)
+            IF(GWQOUT.GT.0) THEN                           
+              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDIF
 C
 C--POINT SINK/SOURCE TERMS
    41 DO NUM=1,NTSS
@@ -1020,6 +1049,7 @@ C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: IUZFBND,THETAW,
      &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
+      USE PKG2PKG,       ONLY: NSNK2UZF,IUZCODESK,INOD2SKUZ,QSNK2UZF
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,
      &                        DH,IRCH,RECH,CRCH,IEVT,EVTR,CEVT,MXSS,
@@ -1027,15 +1057,15 @@ C
      &                        RMASIO,
      &                        FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                        FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                        FSFR,FUZF,
+     &                        FSFR,FUZF,FSNKUZF,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT,
      &                        iUnitTRNOP,DELT,COLDFLW,IDRY2,SORBMASS,
      &                        PRSITY,DZ
 C
       IMPLICIT  NONE
-      INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST
+      INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST,II,N
       REAL      DTRANS,CTMP,QSS,VOLAQU,RMULT,VOL1,VOL2,VCELL,VUNSAT1,
-     &          VUNSAT2,FRAC
+     &          VUNSAT2,FRAC,GWQOUT
       REAL      HT2,TIME1,TIME2
 C
 C--ZERO OUT QC7(:,:,:,7:9) TERMS FOR STORAGE AND BOUNDARY CONDITIONS
@@ -1278,12 +1308,6 @@ C--UZF TERMS
 C-----UZRECH
       DO I=1,NROW
         DO J=1,NCOL
-
-      if(j.eq.169)then
-      continue
-      endif
-
-
           K=IUZRCH(J,I)
           IF(K.EQ.0) CYCLE
           IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
@@ -1380,6 +1404,22 @@ C
           ENDIF
         ENDDO
       ENDDO
+C-----SEEPAGE
+      IF(FSNKUZF) THEN
+        DO II=1,NSNK2UZF
+          IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
+            N=INOD2SKUZ(II)
+            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            GWQOUT=QSNK2UZF(II)
+            CTMP=CNEW(J,I,K,ICOMP)
+            IF(GWQOUT.GT.0) THEN                           
+                RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)-ABS(GWQOUT)*
+     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
+            ENDIF
+          ENDIF
+        ENDDO
+      ENDIF
 C
 C--POINT SINK/SOURCE TERMS
   300 DO NUM=1,NTSS
