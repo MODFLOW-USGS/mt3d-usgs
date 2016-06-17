@@ -8,18 +8,18 @@ if not os.path.isdir(testdir):
 target_dict = {}
 
 exclude = None
-retain = True
+retain = False
 
 # Compiling information
-# fc = 'gfortran'
-fc = 'ifort'
+fc = 'gfortran'
+#fc = 'ifort'
 target_extension = ''
 target_arch = 'intel64'
 if platform.system() in 'Windows':
     target_extension = '.exe'
 
 # Development version information
-testpaths = [os.path.join('..', 'test-reg'),]
+testpaths = [os.path.join('..', 'test-reg'), os.path.join('..', 'test-cmp')]
 srcdir = os.path.join('..', 'src')
 program = 'mt3d-usgs'
 version = '1.0.00'
@@ -38,4 +38,4 @@ target_dict[os.path.basename(target_release)] = target_release
 target_dict[program] = target_release
 
 # Comparison information
-target_dict['mfnwt'] = 'mfnwt' + target_extension
+target_dict['mfnwt'] = 'MODFLOW-NWT_64' + target_extension

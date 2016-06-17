@@ -37,7 +37,7 @@ def test_compile_ref():
     shutil.copytree(config.loc_release, dir_release)
 
     # compile
-    pymake.main(srcdir, target, config.fc, 'gcc', makeclean=False,
+    pymake.main(srcdir, target, config.fc, 'gcc', makeclean=True,
                 expedite=False, dryrun=False, double=False, debug=False,
                 include_subdirs=False, arch=config.target_arch)
 
