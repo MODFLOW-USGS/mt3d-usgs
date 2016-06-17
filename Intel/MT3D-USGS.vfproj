@@ -54,6 +54,7 @@
 		<File RelativePath="..\src\dsp1.f"/>
 		<File RelativePath="..\src\fmi1.f"/>
 		<File RelativePath="..\src\gcg1.f"/>
+		<File RelativePath="..\src\gnt1.f"/>
 		<File RelativePath="..\src\hss1.f"/>
 		<File RelativePath="..\src\lkt1.f"/>
 		<File RelativePath="..\src\mt3d-usgs.f"/>
@@ -62,7 +63,6 @@
 		<File RelativePath="..\src\rct1.f"/>
 		<File RelativePath="..\src\sft1.f"/>
 		<File RelativePath="..\src\ssm1.f"/>
-		<File RelativePath="..\src\swf1.f"/>
 		<File RelativePath="..\src\tob1.f"/>
 		<File RelativePath="..\src\utl1.f"/>
 		<File RelativePath="..\src\uzt1.f"/>

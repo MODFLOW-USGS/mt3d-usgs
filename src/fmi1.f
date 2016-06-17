@@ -199,8 +199,10 @@ C--PRINT KEY INFORMATION OF THE FLOW MODEL
 C
 C--CHECK IF PACKAGES ARE ON
       IF(FUZFFLOWS) THEN
-        IF(iUnitTRNOP(7).EQ.0) WRITE(IOUT,*) ' UZT FILE IS REQUIRED'
-        STOP
+        IF(iUnitTRNOP(7).EQ.0) THEN
+          WRITE(IOUT,*) ' UZT FILE IS REQUIRED'
+          STOP
+        ENDIF
       ELSE
         IF(iUnitTRNOP(7).GT.0) THEN
           WRITE(IOUT,*) ' UZT FILE WILL NOT BE USED'
@@ -208,8 +210,10 @@ C--CHECK IF PACKAGES ARE ON
         ENDIF
       ENDIF
       IF(FLAKFLOWS) THEN
-        IF(iUnitTRNOP(18).EQ.0) WRITE(IOUT,*) ' LKT FILE IS REQUIRED'
-        STOP
+        IF(iUnitTRNOP(18).EQ.0) THEN
+          WRITE(IOUT,*) ' LKT FILE IS REQUIRED'
+          STOP
+        ENDIF
       ELSE
         IF(iUnitTRNOP(18).GT.0) THEN
           WRITE(IOUT,*) ' LKT FILE WILL NOT BE USED'
@@ -217,8 +221,10 @@ C--CHECK IF PACKAGES ARE ON
         ENDIF
       ENDIF
       IF(FSFRFLOWS) THEN
-        IF(iUnitTRNOP(19).EQ.0) WRITE(IOUT,*) ' SFT FILE IS REQUIRED'
-        STOP
+        IF(iUnitTRNOP(19).EQ.0) THEN
+          WRITE(IOUT,*) ' SFT FILE IS REQUIRED'
+          STOP
+        ENDIF
       ELSE
         IF(iUnitTRNOP(19).GT.0) THEN
           WRITE(IOUT,*) ' SFT FILE WILL NOT BE USED'

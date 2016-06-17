@@ -1,18 +1,28 @@
 C 
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C                                                                      %
-C                               MT3DMS                                 %
+C                             MT3D-USGS                                %
 C      a modular three-dimensional multi-species transport model       %
 C    for simulation of advection, dispersion and chemical reactions    %
 C                of contaminants in groundwater systems                %
 C                                                                      %
 C                  For Technical Information Contact                   %
-C                           Chunmiao Zheng                             %
-C                  Department of Geological Sciences                   %
-C                        University of Alabama                         %
-C                      Tuscaloosa, AL 35487, USA                       %
-C                        Email: czheng@ua.edu                          %
-C              Web site: http://hydro.geo.ua.edu/mt3d                  %
+C                                                                      %
+C                           Vivek Bedekar                              %
+C                    S.S. Papadopulos & Associates                     %
+C                                                                      %
+C                      Bethesda, MD 20814, USA                         %
+C                     Email: vbedekar@sspa.com                         %
+C                     Web site: http://sspa.com/                       %
+C                                                                      %
+C                                 or                                   %
+C                                                                      %
+C                             Eric Morway                              %
+C                       U.S. Geological Survey                         %
+C                                                                      %
+C                    Carson City, NV 89701, USA                        %
+C                     Email: emorway@usgs.gov                          %
+C   Web site: https://www.usgs.gov/ or http://water.usgs.gov/ogw/      %
 C                                                                      %
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
