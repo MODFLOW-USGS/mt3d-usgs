@@ -344,7 +344,7 @@ C
 C--LAK TO GW FLOW
       DO NUM=1,LKNODE
         N=LAKNUMGW(NUM) !LAKE NUMBER
-        K=LAKL(NUM)     ! LAYER
+        K=LAKL(NUM)     !LAYER
         I=LAKR(NUM)     !ROW
         J=LAKC(NUM)     !COLUMN
         Q=0.
