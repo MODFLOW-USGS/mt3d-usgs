@@ -7,6 +7,6 @@ NWT              19     drycell.nwt
 DATA(BINARY)     50     drycell.cbb
 DATA(BINARY)     30     drycell.hds
 DATA(BINARY)     31     drycell.ddn
-LMT8             33     drycell.lmt
+LMT6             33     drycell.lmt
 
 
