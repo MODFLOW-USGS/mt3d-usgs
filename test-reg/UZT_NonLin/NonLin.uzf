@@ -1,0 +1,74 @@
+#NUZTOP IUZFOPT IRUNFLG IETFLG IUZFCB1 IUZFCB2 NTRAIL2 NSETS2 NUZGAG SURFDEP
+3       1       0       0      0       0       25      80     1      0.001  
+INTERNAL   1   (free)   -1
+0  1  0                                            #IUZFBND
+INTERNAL   1   (free)   -1
+2.3148148148E-05 3.46455E-05 2.3148148148E-05 #VKS
+CONSTANT 4.5                                      #BROOKS-COREY EPSILON
+CONSTANT 0.43                                      #THTS
+CONSTANT 0.4                                       #THTI   0.378639 
+1 1 68 3      IFTUNIT
+1                                                  NUZF1 Stress Period 1
+INTERNAL   1   (free)   -1                         FINF Stress Period 1
+2.3148148148E-05 2.3148148148E-05 2.31481481484E-05
+-1                                                 NUZF1 Stress Period 2
+-1                                                 NUZF1 Stress Period 3
+-1                                                 NUZF1 Stress Period 4
+-1                                                 NUZF1 Stress Period 5
+-1                                                 NUZF1 Stress Period 6
+-1                                                 NUZF1 Stress Period 7
+-1                                                 NUZF1 Stress Period 8
+-1                                                 NUZF1 Stress Period 9
+-1                                                 NUZF1 Stress Period 10
+-1                                                 NUZF1 Stress Period 11
+-1                                                 NUZF1 Stress Period 12
+-1                                                 NUZF1 Stress Period 13
+-1                                                 NUZF1 Stress Period 14
+-1                                                 NUZF1 Stress Period 15
+-1                                                 NUZF1 Stress Period 16
+-1                                                 NUZF1 Stress Period 17
+-1                                                 NUZF1 Stress Period 18
+-1                                                 NUZF1 Stress Period 19
+-1                                                 NUZF1 Stress Period 20
+-1                                                 NUZF1 Stress Period 21
+-1                                                 NUZF1 Stress Period 22
+-1                                                 NUZF1 Stress Period 23
+-1                                                 NUZF1 Stress Period 24
+-1                                                 NUZF1 Stress Period 25
+-1                                                 NUZF1 Stress Period 26
+-1                                                 NUZF1 Stress Period 27
+-1                                                 NUZF1 Stress Period 28
+-1                                                 NUZF1 Stress Period 29
+-1                                                 NUZF1 Stress Period 30
+-1                                                 NUZF1 Stress Period 31
+-1                                                 NUZF1 Stress Period 32
+-1                                                 NUZF1 Stress Period 33
+-1                                                 NUZF1 Stress Period 34
+-1                                                 NUZF1 Stress Period 35
+-1                                                 NUZF1 Stress Period 36
+-1                                                 NUZF1 Stress Period 37
+-1                                                 NUZF1 Stress Period 38
+-1                                                 NUZF1 Stress Period 39
+-1                                                 NUZF1 Stress Period 40
+-1                                                 NUZF1 Stress Period 41
+-1                                                 NUZF1 Stress Period 42
+-1                                                 NUZF1 Stress Period 43
+-1                                                 NUZF1 Stress Period 44
+-1                                                 NUZF1 Stress Period 45
+-1                                                 NUZF1 Stress Period 46
+-1                                                 NUZF1 Stress Period 47
+-1                                                 NUZF1 Stress Period 48
+-1                                                 NUZF1 Stress Period 49
+-1                                                 NUZF1 Stress Period 50
+-1                                                 NUZF1 Stress Period 51
+-1                                                 NUZF1 Stress Period 52
+-1                                                 NUZF1 Stress Period 53
+-1                                                 NUZF1 Stress Period 54
+-1                                                 NUZF1 Stress Period 55
+-1                                                 NUZF1 Stress Period 56
+-1                                                 NUZF1 Stress Period 57
+-1                                                 NUZF1 Stress Period 58
+-1                                                 NUZF1 Stress Period 59
+-1                                                 NUZF1 Stress Period 60
+-1                                                 NUZF1 Stress Period 61
+

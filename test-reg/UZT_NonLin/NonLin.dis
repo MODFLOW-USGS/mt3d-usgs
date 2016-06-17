@@ -1,0 +1,500 @@
+#MF model for comparing flow solution to 1-D VS2D example
+210 1 3 61 1 3 #NLAY, NROW, NCOL, NPER, ITMUNI (1=seconds), LENUNI (3=centimeters)
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 
+0 0 0 0 0 0 0 0 0 0 
+CONSTANT 1  # DELR
+CONSTANT 1  # DELC
+INTERNAL 1 (FREE) -1   
+200 200 200 #Top Elev Lay 1
+INTERNAL 1 (FREE) -1   
+199 199 199 #Bot Elev Lay 1
+INTERNAL 1 (FREE) -1   
+198 198 198 #Bot Elev Lay 2
+INTERNAL 1 (FREE) -1   
+197 197 197 #Bot Elev Lay 3
+INTERNAL 1 (FREE) -1   
+196 196 196 #Bot Elev Lay 4
+INTERNAL 1 (FREE) -1   
+195 195 195 #Bot Elev Lay 5
+INTERNAL 1 (FREE) -1   
+194 194 194 #Bot Elev Lay 6
+INTERNAL 1 (FREE) -1   
+193 193 193 #Bot Elev Lay 7
+INTERNAL 1 (FREE) -1   
+192 192 192 #Bot Elev Lay 8
+INTERNAL 1 (FREE) -1   
+191 191 191 #Bot Elev Lay 9
+INTERNAL 1 (FREE) -1   
+190 190 190 #Bot Elev Lay 10
+INTERNAL 1 (FREE) -1   
+189 189 189 #Bot Elev Lay 11
+INTERNAL 1 (FREE) -1   
+188 188 188 #Bot Elev Lay 12
+INTERNAL 1 (FREE) -1   
+187 187 187 #Bot Elev Lay 13
+INTERNAL 1 (FREE) -1   
+186 186 186 #Bot Elev Lay 14
+INTERNAL 1 (FREE) -1   
+185 185 185 #Bot Elev Lay 15
+INTERNAL 1 (FREE) -1   
+184 184 184 #Bot Elev Lay 16
+INTERNAL 1 (FREE) -1   
+183 183 183 #Bot Elev Lay 17
+INTERNAL 1 (FREE) -1   
+182 182 182 #Bot Elev Lay 18
+INTERNAL 1 (FREE) -1   
+181 181 181 #Bot Elev Lay 19
+INTERNAL 1 (FREE) -1   
+180 180 180 #Bot Elev Lay 20
+INTERNAL 1 (FREE) -1   
+179 179 179 #Bot Elev Lay 21
+INTERNAL 1 (FREE) -1   
+178 178 178 #Bot Elev Lay 22
+INTERNAL 1 (FREE) -1   
+177 177 177 #Bot Elev Lay 23
+INTERNAL 1 (FREE) -1   
+176 176 176 #Bot Elev Lay 24
+INTERNAL 1 (FREE) -1   
+175 175 175 #Bot Elev Lay 25
+INTERNAL 1 (FREE) -1   
+174 174 174 #Bot Elev Lay 26
+INTERNAL 1 (FREE) -1   
+173 173 173 #Bot Elev Lay 27
+INTERNAL 1 (FREE) -1   
+172 172 172 #Bot Elev Lay 28
+INTERNAL 1 (FREE) -1   
+171 171 171 #Bot Elev Lay 29
+INTERNAL 1 (FREE) -1   
+170 170 170 #Bot Elev Lay 30
+INTERNAL 1 (FREE) -1   
+169 169 169 #Bot Elev Lay 31
+INTERNAL 1 (FREE) -1   
+168 168 168 #Bot Elev Lay 32
+INTERNAL 1 (FREE) -1   
+167 167 167 #Bot Elev Lay 33
+INTERNAL 1 (FREE) -1   
+166 166 166 #Bot Elev Lay 34
+INTERNAL 1 (FREE) -1   
+165 165 165 #Bot Elev Lay 35
+INTERNAL 1 (FREE) -1   
+164 164 164 #Bot Elev Lay 36
+INTERNAL 1 (FREE) -1   
+163 163 163 #Bot Elev Lay 37
+INTERNAL 1 (FREE) -1   
+162 162 162 #Bot Elev Lay 38
+INTERNAL 1 (FREE) -1   
+161 161 161 #Bot Elev Lay 39
+INTERNAL 1 (FREE) -1   
+160 160 160 #Bot Elev Lay 40
+INTERNAL 1 (FREE) -1   
+159 159 159 #Bot Elev Lay 41
+INTERNAL 1 (FREE) -1   
+158 158 158 #Bot Elev Lay 42
+INTERNAL 1 (FREE) -1   
+157 157 157 #Bot Elev Lay 43
+INTERNAL 1 (FREE) -1   
+156 156 156 #Bot Elev Lay 44
+INTERNAL 1 (FREE) -1   
+155 155 155 #Bot Elev Lay 45
+INTERNAL 1 (FREE) -1   
+154 154 154 #Bot Elev Lay 46
+INTERNAL 1 (FREE) -1   
+153 153 153 #Bot Elev Lay 47
+INTERNAL 1 (FREE) -1   
+152 152 152 #Bot Elev Lay 48
+INTERNAL 1 (FREE) -1   
+151 151 151 #Bot Elev Lay 49
+INTERNAL 1 (FREE) -1   
+150 150 150 #Bot Elev Lay 50
+INTERNAL 1 (FREE) -1   
+149 149 149 #Bot Elev Lay 51
+INTERNAL 1 (FREE) -1   
+148 148 148 #Bot Elev Lay 52
+INTERNAL 1 (FREE) -1   
+147 147 147 #Bot Elev Lay 53
+INTERNAL 1 (FREE) -1   
+146 146 146 #Bot Elev Lay 54
+INTERNAL 1 (FREE) -1   
+145 145 145 #Bot Elev Lay 55
+INTERNAL 1 (FREE) -1   
+144 144 144 #Bot Elev Lay 56
+INTERNAL 1 (FREE) -1   
+143 143 143 #Bot Elev Lay 57
+INTERNAL 1 (FREE) -1   
+142 142 142 #Bot Elev Lay 58
+INTERNAL 1 (FREE) -1   
+141 141 141 #Bot Elev Lay 59
+INTERNAL 1 (FREE) -1   
+140 140 140 #Bot Elev Lay 60
+INTERNAL 1 (FREE) -1   
+139 139 139 #Bot Elev Lay 61
+INTERNAL 1 (FREE) -1   
+138 138 138 #Bot Elev Lay 62
+INTERNAL 1 (FREE) -1   
+137 137 137 #Bot Elev Lay 63
+INTERNAL 1 (FREE) -1   
+136 136 136 #Bot Elev Lay 64
+INTERNAL 1 (FREE) -1   
+135 135 135 #Bot Elev Lay 65
+INTERNAL 1 (FREE) -1   
+134 134 134 #Bot Elev Lay 66
+INTERNAL 1 (FREE) -1   
+133 133 133 #Bot Elev Lay 67
+INTERNAL 1 (FREE) -1   
+132 132 132 #Bot Elev Lay 68
+INTERNAL 1 (FREE) -1   
+131 131 131 #Bot Elev Lay 69
+INTERNAL 1 (FREE) -1   
+130 130 130 #Bot Elev Lay 70
+INTERNAL 1 (FREE) -1   
+129 129 129 #Bot Elev Lay 71
+INTERNAL 1 (FREE) -1   
+128 128 128 #Bot Elev Lay 72
+INTERNAL 1 (FREE) -1   
+127 127 127 #Bot Elev Lay 73
+INTERNAL 1 (FREE) -1   
+126 126 126 #Bot Elev Lay 74
+INTERNAL 1 (FREE) -1   
+125 125 125 #Bot Elev Lay 75
+INTERNAL 1 (FREE) -1   
+124 124 124 #Bot Elev Lay 76
+INTERNAL 1 (FREE) -1   
+123 123 123 #Bot Elev Lay 77
+INTERNAL 1 (FREE) -1   
+122 122 122 #Bot Elev Lay 78
+INTERNAL 1 (FREE) -1   
+121 121 121 #Bot Elev Lay 79
+INTERNAL 1 (FREE) -1   
+120 120 120 #Bot Elev Lay 80
+INTERNAL 1 (FREE) -1   
+119 119 119 #Bot Elev Lay 81
+INTERNAL 1 (FREE) -1   
+118 118 118 #Bot Elev Lay 82
+INTERNAL 1 (FREE) -1   
+117 117 117 #Bot Elev Lay 83
+INTERNAL 1 (FREE) -1   
+116 116 116 #Bot Elev Lay 84
+INTERNAL 1 (FREE) -1   
+115 115 115 #Bot Elev Lay 85
+INTERNAL 1 (FREE) -1   
+114 114 114 #Bot Elev Lay 86
+INTERNAL 1 (FREE) -1   
+113 113 113 #Bot Elev Lay 87
+INTERNAL 1 (FREE) -1   
+112 112 112 #Bot Elev Lay 88
+INTERNAL 1 (FREE) -1   
+111 111 111 #Bot Elev Lay 89
+INTERNAL 1 (FREE) -1   
+110 110 110 #Bot Elev Lay 90
+INTERNAL 1 (FREE) -1   
+109 109 109 #Bot Elev Lay 91
+INTERNAL 1 (FREE) -1   
+108 108 108 #Bot Elev Lay 92
+INTERNAL 1 (FREE) -1   
+107 107 107 #Bot Elev Lay 93
+INTERNAL 1 (FREE) -1   
+106 106 106 #Bot Elev Lay 94
+INTERNAL 1 (FREE) -1   
+105 105 105 #Bot Elev Lay 95
+INTERNAL 1 (FREE) -1   
+104 104 104 #Bot Elev Lay 96
+INTERNAL 1 (FREE) -1   
+103 103 103 #Bot Elev Lay 97
+INTERNAL 1 (FREE) -1   
+102 102 102 #Bot Elev Lay 98
+INTERNAL 1 (FREE) -1   
+101 101 101 #Bot Elev Lay 99
+INTERNAL 1 (FREE) -1   
+100 100 100 #Bot Elev Lay 100
+INTERNAL 1 (FREE) -1   
+99 99 99 #Bot Elev Lay 101
+INTERNAL 1 (FREE) -1   
+98 98 98 #Bot Elev Lay 102
+INTERNAL 1 (FREE) -1   
+97 97 97 #Bot Elev Lay 103
+INTERNAL 1 (FREE) -1   
+96 96 96 #Bot Elev Lay 104
+INTERNAL 1 (FREE) -1   
+95 95 95 #Bot Elev Lay 105
+INTERNAL 1 (FREE) -1   
+94 94 94 #Bot Elev Lay 106
+INTERNAL 1 (FREE) -1   
+93 93 93 #Bot Elev Lay 107
+INTERNAL 1 (FREE) -1   
+92 92 92 #Bot Elev Lay 108
+INTERNAL 1 (FREE) -1   
+91 91 91 #Bot Elev Lay 109
+INTERNAL 1 (FREE) -1   
+90 90 90 #Bot Elev Lay 110
+INTERNAL 1 (FREE) -1   
+89 89 89 #Bot Elev Lay 111
+INTERNAL 1 (FREE) -1   
+88 88 88 #Bot Elev Lay 112
+INTERNAL 1 (FREE) -1   
+87 87 87 #Bot Elev Lay 113
+INTERNAL 1 (FREE) -1   
+86 86 86 #Bot Elev Lay 114
+INTERNAL 1 (FREE) -1   
+85 85 85 #Bot Elev Lay 115
+INTERNAL 1 (FREE) -1   
+84 84 84 #Bot Elev Lay 116
+INTERNAL 1 (FREE) -1   
+83 83 83 #Bot Elev Lay 117
+INTERNAL 1 (FREE) -1   
+82 82 82 #Bot Elev Lay 118
+INTERNAL 1 (FREE) -1   
+81 81 81 #Bot Elev Lay 119
+INTERNAL 1 (FREE) -1   
+80 80 80 #Bot Elev Lay 120
+INTERNAL 1 (FREE) -1   
+79 79 79 #Bot Elev Lay 121
+INTERNAL 1 (FREE) -1   
+78 78 78 #Bot Elev Lay 122
+INTERNAL 1 (FREE) -1   
+77 77 77 #Bot Elev Lay 123
+INTERNAL 1 (FREE) -1   
+76 76 76 #Bot Elev Lay 124
+INTERNAL 1 (FREE) -1   
+75 75 75 #Bot Elev Lay 125
+INTERNAL 1 (FREE) -1   
+74 74 74 #Bot Elev Lay 126
+INTERNAL 1 (FREE) -1   
+73 73 73 #Bot Elev Lay 127
+INTERNAL 1 (FREE) -1   
+72 72 72 #Bot Elev Lay 128
+INTERNAL 1 (FREE) -1   
+71 71 71 #Bot Elev Lay 129
+INTERNAL 1 (FREE) -1   
+70 70 70 #Bot Elev Lay 130
+INTERNAL 1 (FREE) -1   
+69 69 69 #Bot Elev Lay 131
+INTERNAL 1 (FREE) -1   
+68 68 68 #Bot Elev Lay 132
+INTERNAL 1 (FREE) -1   
+67 67 67 #Bot Elev Lay 133
+INTERNAL 1 (FREE) -1   
+66 66 66 #Bot Elev Lay 134
+INTERNAL 1 (FREE) -1   
+65 65 65 #Bot Elev Lay 135
+INTERNAL 1 (FREE) -1   
+64 64 64 #Bot Elev Lay 136
+INTERNAL 1 (FREE) -1   
+63 63 63 #Bot Elev Lay 137
+INTERNAL 1 (FREE) -1   
+62 62 62 #Bot Elev Lay 138
+INTERNAL 1 (FREE) -1   
+61 61 61 #Bot Elev Lay 139
+INTERNAL 1 (FREE) -1   
+60 60 60 #Bot Elev Lay 140
+INTERNAL 1 (FREE) -1   
+59 59 59 #Bot Elev Lay 141
+INTERNAL 1 (FREE) -1   
+58 58 58 #Bot Elev Lay 142
+INTERNAL 1 (FREE) -1   
+57 57 57 #Bot Elev Lay 143
+INTERNAL 1 (FREE) -1   
+56 56 56 #Bot Elev Lay 144
+INTERNAL 1 (FREE) -1   
+55 55 55 #Bot Elev Lay 145
+INTERNAL 1 (FREE) -1   
+54 54 54 #Bot Elev Lay 146
+INTERNAL 1 (FREE) -1   
+53 53 53 #Bot Elev Lay 147
+INTERNAL 1 (FREE) -1   
+52 52 52 #Bot Elev Lay 148
+INTERNAL 1 (FREE) -1   
+51 51 51 #Bot Elev Lay 149
+INTERNAL 1 (FREE) -1   
+50 50 50 #Bot Elev Lay 150
+INTERNAL 1 (FREE) -1   
+49 49 49 #Bot Elev Lay 151
+INTERNAL 1 (FREE) -1   
+48 48 48 #Bot Elev Lay 152
+INTERNAL 1 (FREE) -1   
+47 47 47 #Bot Elev Lay 153
+INTERNAL 1 (FREE) -1   
+46 46 46 #Bot Elev Lay 154
+INTERNAL 1 (FREE) -1   
+45 45 45 #Bot Elev Lay 155
+INTERNAL 1 (FREE) -1   
+44 44 44 #Bot Elev Lay 156
+INTERNAL 1 (FREE) -1   
+43 43 43 #Bot Elev Lay 157
+INTERNAL 1 (FREE) -1   
+42 42 42 #Bot Elev Lay 158
+INTERNAL 1 (FREE) -1   
+41 41 41 #Bot Elev Lay 159
+INTERNAL 1 (FREE) -1   
+40 40 40 #Bot Elev Lay 160
+INTERNAL 1 (FREE) -1   
+39 39 39 #Bot Elev Lay 161
+INTERNAL 1 (FREE) -1   
+38 38 38 #Bot Elev Lay 162
+INTERNAL 1 (FREE) -1   
+37 37 37 #Bot Elev Lay 163
+INTERNAL 1 (FREE) -1   
+36 36 36 #Bot Elev Lay 164
+INTERNAL 1 (FREE) -1   
+35 35 35 #Bot Elev Lay 165
+INTERNAL 1 (FREE) -1   
+34 34 34 #Bot Elev Lay 166
+INTERNAL 1 (FREE) -1   
+33 33 33 #Bot Elev Lay 167
+INTERNAL 1 (FREE) -1   
+32 32 32 #Bot Elev Lay 168
+INTERNAL 1 (FREE) -1   
+31 31 31 #Bot Elev Lay 169
+INTERNAL 1 (FREE) -1   
+30 30 30 #Bot Elev Lay 170
+INTERNAL 1 (FREE) -1   
+29 29 29 #Bot Elev Lay 171
+INTERNAL 1 (FREE) -1   
+28 28 28 #Bot Elev Lay 172
+INTERNAL 1 (FREE) -1   
+27 27 27 #Bot Elev Lay 173
+INTERNAL 1 (FREE) -1   
+26 26 26 #Bot Elev Lay 174
+INTERNAL 1 (FREE) -1   
+25 25 25 #Bot Elev Lay 175
+INTERNAL 1 (FREE) -1   
+24 24 24 #Bot Elev Lay 176
+INTERNAL 1 (FREE) -1   
+23 23 23 #Bot Elev Lay 177
+INTERNAL 1 (FREE) -1   
+22 22 22 #Bot Elev Lay 178
+INTERNAL 1 (FREE) -1   
+21 21 21 #Bot Elev Lay 179
+INTERNAL 1 (FREE) -1   
+20 20 20 #Bot Elev Lay 180
+INTERNAL 1 (FREE) -1   
+19 19 19 #Bot Elev Lay 181
+INTERNAL 1 (FREE) -1   
+18 18 18 #Bot Elev Lay 182
+INTERNAL 1 (FREE) -1   
+17 17 17 #Bot Elev Lay 183
+INTERNAL 1 (FREE) -1   
+16 16 16 #Bot Elev Lay 184
+INTERNAL 1 (FREE) -1   
+15 15 15 #Bot Elev Lay 185
+INTERNAL 1 (FREE) -1   
+14 14 14 #Bot Elev Lay 186
+INTERNAL 1 (FREE) -1   
+13 13 13 #Bot Elev Lay 187
+INTERNAL 1 (FREE) -1   
+12 12 12 #Bot Elev Lay 188
+INTERNAL 1 (FREE) -1   
+11 11 11 #Bot Elev Lay 189
+INTERNAL 1 (FREE) -1   
+10 10 10 #Bot Elev Lay 190
+INTERNAL 1 (FREE) -1   
+9 9 9 #Bot Elev Lay 191
+INTERNAL 1 (FREE) -1   
+8 8 8 #Bot Elev Lay 192
+INTERNAL 1 (FREE) -1   
+7 7 7 #Bot Elev Lay 193
+INTERNAL 1 (FREE) -1   
+6 6 6 #Bot Elev Lay 194
+INTERNAL 1 (FREE) -1   
+5 5 5 #Bot Elev Lay 195
+INTERNAL 1 (FREE) -1   
+4 4 4 #Bot Elev Lay 196
+INTERNAL 1 (FREE) -1   
+3 3 3 #Bot Elev Lay 197
+INTERNAL 1 (FREE) -1   
+2 2 2 #Bot Elev Lay 198
+INTERNAL 1 (FREE) -1   
+1 1 1 #Bot Elev Lay 199
+INTERNAL 1 (FREE) -1   
+0 0 0 #Bot Elev Lay 200
+INTERNAL 1 (FREE) -1   
+-1 -1 -1 #Bot Elev Lay 201
+INTERNAL 1 (FREE) -1   
+-2 -2 -2 #Bot Elev Lay 202
+INTERNAL 1 (FREE) -1   
+-3 -3 -3 #Bot Elev Lay 203
+INTERNAL 1 (FREE) -1   
+-4 -4 -4 #Bot Elev Lay 204
+INTERNAL 1 (FREE) -1   
+-5 -5 -5 #Bot Elev Lay 205
+INTERNAL 1 (FREE) -1   
+-6 -6 -6 #Bot Elev Lay 206
+INTERNAL 1 (FREE) -1   
+-7 -7 -7 #Bot Elev Lay 207
+INTERNAL 1 (FREE) -1   
+-8 -8 -8 #Bot Elev Lay 208
+INTERNAL 1 (FREE) -1   
+-9 -9 -9 #Bot Elev Lay 209
+INTERNAL 1 (FREE) -1   
+-10 -10 -10 #Bot Elev Lay 210
+1728000 20 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is to establish the water profile
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for when the solute is introduced
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 1
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 2
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 3
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 4
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 5
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 6
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 7
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 8
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 9
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 10 
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 11
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 12
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 13
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 14 
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 15
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 16
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 17
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 18
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 19
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 20
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 21
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 22
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 23
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 24
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 25
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 26
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 27
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 28
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 29
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 30
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 31
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 32
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 33
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 34
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 35
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 36
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 37
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 38
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 39
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 40
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 41
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 42
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 43
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 44
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 45
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 46
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 47
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 48
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 49
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 50
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 51
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 52
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 53
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 54
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 55
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 56
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 57
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 58
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 59
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 60
+86400   96 1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 60

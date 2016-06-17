@@ -1,0 +1,6 @@
+LIST  0  transtor_altfm=0.out
+BTN   0  transtor.btn  DRYBUD
+ADV   0  transtor_altfm=0.adv
+SSM   0  transtor.ssm
+GCG   0  transtor.gcg
+FTL   0  transtor.ftl  FREE

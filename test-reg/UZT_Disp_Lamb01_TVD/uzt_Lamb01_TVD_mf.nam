@@ -1,0 +1,18 @@
+# MF2K NAME file
+#
+# Output Files
+LIST                2         uzt_Lamb01_TVD.out
+# Global Input Files
+DIS                19         uzt_Lamb01_TVD.dis
+# Flow Process Input Files
+BAS6                1         uzt_Lamb01_TVD.ba6
+NWT                22         uzt_Lamb01_TVD.nwt
+UPW                21         uzt_Lamb01_TVD.lpf
+UZF                20         uzt_Lamb01_TVD.uzf
+OC                 15         uzt_Lamb01_TVD.oc
+LMT6               18         uzt_Lamb01_TVD.lmt
+#
+# Additional Output Files
+DATA               30         uzt_Lamb01_TVD.hed
+DATA               68         uzt_Lamb01_TVD.uzf1
+DATA(BINARY)       40         uzt_Lamb01_TVD.ccf
