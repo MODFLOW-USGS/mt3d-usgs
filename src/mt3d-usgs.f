@@ -252,7 +252,7 @@ C
           ENDIF
 C
           IF(KPER*KSTP.GT.1) THEN
-            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD2(N)
+C            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD2(N)
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD2(N)
           ENDIF
 C
@@ -274,7 +274,7 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
-            if(KPER.eq.1.and.KSTP.eq.1.and.n.ge.28) then
+            if(KPER.eq.1.and.KSTP.eq.1.and.n.ge.10) then
             continue
             endif
 C

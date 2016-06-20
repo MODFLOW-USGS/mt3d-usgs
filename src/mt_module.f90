@@ -205,8 +205,9 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: QOUTSFO
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: IBNDSF
         DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWSF
-        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF
-        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDSF2
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: COLDSF
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: COLDSF2
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: BUFFSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CNEWSFTMP
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: DISPSF
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CBCSF
@@ -216,8 +217,8 @@
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ISFBCTYP
         REAL,             SAVE, DIMENSION(:),        POINTER :: RMASSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: VOUTSF
-        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLSFO
-        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLSFN
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: VOLSFO
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: VOLSFN
 !
         INTEGER,          SAVE,                      POINTER :: MXSGMT
         INTEGER,          SAVE,                      POINTER :: MXRCH
@@ -351,8 +352,9 @@ CONTAINS
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKRCH
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKSEG
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: LAKNUMSFR
-        REAL,             SAVE, DIMENSION(:,:),      POINTER :: CNEWLAK
-        REAL,             SAVE, DIMENSION(:,:),      POINTER :: COLDLAK
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: CNEWLAK
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:),      POINTER :: COLDLAK
+        REAL,             SAVE, DIMENSION(:,:),      POINTER :: BUFFLAK
         REAL,             SAVE, DIMENSION(:,:),      POINTER :: CBCLK
         REAL,             SAVE, DIMENSION(:),        POINTER :: QPRECLAK
         REAL,             SAVE, DIMENSION(:),        POINTER :: QRUNOFLAK
@@ -360,9 +362,9 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:),        POINTER :: QLAKGW
         REAL,             SAVE, DIMENSION(:),        POINTER :: QLAKSFR
         REAL,             SAVE, DIMENSION(:),        POINTER :: QETLAK
-        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLNLAK
-        REAL,             SAVE, DIMENSION(:),        POINTER :: VOLOLAK
-        REAL,             SAVE, DIMENSION(:),        POINTER :: DELVOLLAK
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: VOLNLAK
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: VOLOLAK
+        DOUBLE PRECISION, SAVE, DIMENSION(:),        POINTER :: DELVOLLAK
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ILKBC
         INTEGER,          SAVE, DIMENSION(:),        POINTER :: ILKBCTYP
         REAL,             SAVE, DIMENSION(:),        POINTER :: RMASLAK

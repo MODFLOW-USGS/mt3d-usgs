@@ -1189,7 +1189,7 @@ C-------MAP TO SFT ARRAYS
             CASE("EVAP                ") !L3/T
               QETLAK(:)=PKGFLOWS(IFL,:)
             CASE("VOLUME              ") !L3 - OLD VOLUME
-              VOLNLAK(:)=PKGFLOWS(IFL,:)
+              VOLOLAK(:)=PKGFLOWS(IFL,:)
             CASE("DELVOL              ") !L3/T
               DELVOLLAK(:)=PKGFLOWS(IFL,:)
             CASE DEFAULT
@@ -1209,7 +1209,7 @@ C-------CHECK NRCHCON=0 - NO LAKE-TO-LAKE CONNECTIONS
 C
 C-------INITIALIZE OLD=NEW FOR THE FIRST TIME
         IF(KPER.EQ.1.AND.KSTP.EQ.1) THEN
-          VOLOLAK=VOLNLAK
+          VOLNLAK=VOLOLAK
         ENDIF
 C
 C-------DEALLOCATE TEMP ARRAYS
