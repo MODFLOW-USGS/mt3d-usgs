@@ -267,7 +267,7 @@ C
      &                         FPRT,LAYCON,ICBUND,HORIGN,DH,PRSITY,
      &                         DELR,DELC,DZ,XBC,YBC,ZBC,QSTO,COLD,CNEW,
      &                         RETA,QX,QY,QZ,DTRACK,DTRACK2,THKMIN,ISS,
-     &                         IVER,iUnitTRNOP,PRSITY,FUZF,
+     &                         IVER,iUnitTRNOP,PRSITY,FUZF,FUZFFLOWS,
      &                         NOCREWET  
 C
       IMPLICIT  NONE
@@ -423,14 +423,14 @@ C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
 C--AND REACTIVATE DRY CELL IF REWET AND ASSIGN CONC AT REWET CELL
 C--WITH UZF TURNED ON THE GRID BECOMES FIXED.  THE USER PROVIDEDED
 C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED                           
-      IF(.NOT.FUZF.OR.IUZFOPTG.EQ.0) THEN                         
+      IF(.NOT.FUZFFLOWS.OR.IUZFOPTG.EQ.0) THEN                         
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
             IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
-              IF(FUZF) THEN
+              IF(FUZFFLOWS) THEN
                 IF(IUZFBND(J,I).GT.0) CYCLE
               ENDIF
               IF(ABS(DH(J,I,K)-1.E30).LT.1.E-5) THEN
@@ -512,14 +512,14 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         NICBND2=0                                                 
         ICBND2=0                                                  
       ENDIF                                                       
-      IF(.NOT.FUZF.OR.IUZFOPTG.EQ.0) THEN                          
+      IF(.NOT.FUZFFLOWS.OR.IUZFOPTG.EQ.0) THEN                          
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
             IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
             CONTINUE
             ENDIF
-              IF(FUZF) THEN
+              IF(FUZFFLOWS) THEN
                 IF(IUZFBND(J,I).GT.0) CYCLE
               ENDIF
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
