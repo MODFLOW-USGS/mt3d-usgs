@@ -18,6 +18,9 @@ target_arch = 'intel64'
 if platform.system() in 'Windows':
     target_extension = '.exe'
 
+# Standard versions of modflow codes to use for regressions
+mf2005exe = os.path.join('bin', 'mf2005{}'.format(target_extension))
+
 # Development version information
 testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]
 srcdir = os.path.join('..', 'src')
@@ -39,3 +42,4 @@ target_dict[program] = target_release
 
 # Comparison information
 target_dict['mfnwt'] = 'MODFLOW-NWT_64' + target_extension
+
