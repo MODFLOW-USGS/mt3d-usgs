@@ -18,7 +18,7 @@
 # is Unformatted or Formatted. The default is Unformatted if no input is given.
 #
 
-OUTPUT_FILE_NAME
+OUTPUT_FILE_NAME    zeroth.ftl
 OUTPUT_FILE_UNIT
 OUTPUT_FILE_HEADER  standard
 OUTPUT_FILE_FORMAT  unformatted

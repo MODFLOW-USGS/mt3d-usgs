@@ -5,17 +5,26 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['P07', ]
+test_dirs = ['P07', 'zeroth', ] 
 
 def run_mt3d(mfnamefile, mtnamefile, regression=True):
     """
     Run the simulations.
 
     """
-    print(mfnamefile, mtnamefile)
 
     # Set root as the directory name where namefile is located
-    testname = pymake.get_sim_name(mfnamefile.replace('_mf', ''), 
+    flowexe = config.target_dict['mfnwt']
+    if '_mf2k' in mfnamefile:
+        crep = '_mf2k'
+        flowexe = config.target_dict['mf2k']
+    elif '_mf2005' in mfnamefile:
+        crep = '_mf2005'
+        flowexe = config.target_dict['mf2005']
+    else:
+        crep = '_mf'
+        flowexe = config.target_dict['mfnwt']
+    testname = pymake.get_sim_name(mfnamefile.replace(crep, ''), 
                                    rootpth=os.path.dirname(mfnamefile))[0]
 
     # Setup modflow
@@ -41,56 +50,40 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
 
     success_cmp = True
     if regression:
-        action = pymake.setup_comparison(mfnamefile, testpth)
-        action = pymake.setup_comparison(mtnamefile, testpth, 
-                                         remove_existing=False)
-        testpth_cmp = os.path.join(testpth, action)
-        if action is not None:
-            files_cmp = None
-            if action.lower() == '.cmp':
-                files_cmp = []
-                files = os.listdir(testpth_cmp)
-                for file in files:
-                    files_cmp.append(
-                            os.path.abspath(os.path.join(testpth_cmp, file)))
-                success_cmp = True
-                #print(files_cmp)
-            else:
-                print('running comparison modflow-nwt model...{}'.format(testpth_cmp))
-                key = action.lower().replace('.cmp', '')
-                nam = os.path.basename(mfnamefile)
-                exe_name = os.path.abspath(config.target_dict['mfnwt'])
-                success_cmp, buff = flopy.run_model(exe_name, nam,
-                                                    model_ws=testpth_cmp,
-                                                    silent=True)
-                if success_cmp:
-                    print('running comparison mt3dms model...{}'.format(testpth_cmp))
-                    key = action.lower().replace('.cmp', '')
-                    nam = os.path.basename(mtnamefile)
-                    exe_name = os.path.abspath(config.target_release)
-                    success_cmp, buff = flopy.run_model(exe_name, nam,
-                                                        model_ws=testpth_cmp,
-                                                        silent=True,
-                                                        normal_msg='program completed')
-            #print('success: ', success)
-            #print('success_cmp: ', success_cmp)
-            if success_cmp:
+        testname_reg = os.path.basename(config.target_release)
+        testpth_reg = os.path.join(testpth, testname_reg)
+        pymake.setup(mfnamefile, testpth_reg)
+        pymake.setup(mtnamefile, testpth_reg, remove_existing=False)
+        print('running regression {} model...{}'.format(os.path.basename(flowexe), testpth_reg))
+        nam = os.path.basename(mfnamefile)
+        exe_name = flowexe #config.target_dict['mfnwt']
+        success_reg, buff = flopy.run_model(exe_name, nam,
+                                            model_ws=testpth_reg,
+                                            silent=True)
+        if success_reg:
+            print('running regression mt3dms model...{}'.format(testpth_reg))
+            nam = os.path.basename(mtnamefile)
+            exe_name = os.path.abspath(config.target_release)
+            success_reg, buff = flopy.run_model(exe_name, nam,
+                                                model_ws=testpth_reg,
+                                                silent=True,
+                                                normal_msg='program completed')
+            if success_reg:
                 nam = os.path.basename(mtnamefile)
                 namefile1 = os.path.join(testpth, nam)
-                namefile2 = os.path.join(testpth_cmp, nam)
+                namefile2 = os.path.join(testpth_reg, nam)
                 outfileucn = os.path.join(
                              os.path.split(os.path.join(testpth, nam))[0],
                              'ucn.cmp')
                 success_ucn = pymake.compare_concs(namefile1, namefile2,
                                                    ctol=0.001,
-                                                   outfile=outfileucn,
-                                                   files2=files_cmp)
-                if success_cmp and success_ucn:
-                    success_cmp = True
+                                                   outfile=outfileucn)
+                if success_reg and success_ucn:
+                    success_reg = True
                 else:
-                    success_cmp = False
+                    success_reg = False
     # Clean things up
-    if success and success_cmp and not config.retain:
+    if success and success_reg and not config.retain:
         pymake.teardown(testpth)
     assert success, 'model did not run'
     assert success_cmp, 'comparison model did not meet comparison criteria'

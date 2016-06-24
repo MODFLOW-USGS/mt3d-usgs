@@ -2,7 +2,7 @@
 UNIFORM FLOW FIELD WITH pulse source
          1         1       101         3
  day   m   g
-T T T T t                                             !TRNOP
+T T T T T                                             !TRNOP
  0                                                    !LAYCON
          0  .1600000                                  !DELR
          0   1.00000                                  !DELC
@@ -12,7 +12,7 @@ T T T T t                                             !TRNOP
          0         1                                  !ICBUND-LAY1
          0        0.                                  !SCONC-LAY1
    -999.99                                            !CINACT
-         5         2         5         0         T         t
+         5         2         5         0         T         T
          2                                            !NPRS
          0   1000.00
          1                                            !NOBS

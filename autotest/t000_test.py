@@ -36,6 +36,18 @@ def test_compile_ref():
     # Copy MT3DMS into our test folder
     shutil.copytree(config.loc_release, dir_release)
 
+    # Replace the getcl command with getarg
+    print(config.srcdir_release)
+    f1 = open(os.path.join(config.srcdir_release, 'mt3dms5.for'), 'r')
+    f2 = open(os.path.join(config.srcdir_release, 'mt3dms5.for.tmp'), 'w')
+    for line in f1:
+        f2.write(line.replace('CALL GETCL(FLNAME)', 'CALL GETARG(1,FLNAME)'))
+    f1.close()
+    f2.close()
+    os.remove(os.path.join(config.srcdir_release, 'mt3dms5.for'))
+    shutil.move(os.path.join(config.srcdir_release, 'mt3dms5.for.tmp'),
+                os.path.join(config.srcdir_release, 'mt3dms5.for'))
+
     # compile
     pymake.main(srcdir, target, config.fc, 'gcc', makeclean=True,
                 expedite=False, dryrun=False, double=False, debug=False,
@@ -46,5 +58,5 @@ def test_compile_ref():
     return
 
 if __name__ == '__main__':
-    test_compile_dev()
     test_compile_ref()
+    test_compile_dev()
