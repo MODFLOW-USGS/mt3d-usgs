@@ -32,7 +32,7 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
                                     silent=True)
 
     if success:
-        print('running mt3dms-usgs model...{}'.format(testname))
+        print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
         exe_name = os.path.abspath(config.target)
         success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
