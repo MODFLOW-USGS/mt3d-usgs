@@ -1,6 +1,8 @@
 #SFR Input file for example 1D solute transport using MT3DMS
 #KRCH,IRCH,JRCH,ISEG,IREACH, RCHLEN,{STRTOP},{SLOPE},{STRTHICK},{STRHC1}
-REACHINPUT                                                    #1a
+OPTIONS
+ REACHINPUT                                                    #1a
+END
   650    6  0  0  1.0  0.0001  -10  11  1                      #1c: NSTRM,NSS,NSFRPAR,NPARSEG,CONST,DLEAK,ISTCB1,ISTCB2,{ISFROPT},{NSTRAIL},{ISUZN},{NSFRSETS}  neg. NSTRM flags for simulation of unsat. flow beneath strm
     1    2   1      1    1      1.00   98.75000000  0.0001000 0.50    1.0e-10
     1    2   2      1    2      1.00   98.74990000  0.0001000 0.50    1.0e-10

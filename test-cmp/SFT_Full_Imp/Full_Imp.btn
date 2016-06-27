@@ -23,8 +23,8 @@ sec   m  g
          0        10                                                  #A20 - NOBS,NPROBS (skip KOBS,IOBS,JOBS) 
          T        10                                                  #A22 - CHKMAS,NPRMAS                 
    30600.0         1       1.0   TR                                   #A23 - PERLEN,NSTP,TSMULT, Tracer injected at 8:30am (commences at the end of this stress period)           
-       300      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-1
+       180      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-1
    10800.0         1       1.0   TR                                   #A23 - PERLEN,NSTP,TSMULT, Tracer injected for a period of 3 hrs (duration of this stress period)
-       300      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-2
+       180      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-2
    45000.0         1       1.0   TR                                   #A23 - PERLEN,NSTP,TSMULT, Tracer monitored until midnight.
-       300      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-3
+       180      2500 1.000e+00 0.000e+00                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX-SP-3
