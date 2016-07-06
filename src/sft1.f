@@ -505,8 +505,8 @@ C.......SFR TO GW
 C          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
 C          ELSE
 C          IF(ISFSOLV.EQ.2) THEN
-            AMATSF(II)=AMATSF(II)-Q*WIMP
-            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+            AMATSF(II)=AMATSF(II)-Q !*WIMP
+C            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C          ELSE
 C          ENDIF
 C          ENDIF
@@ -516,8 +516,8 @@ C.......FLOW OUT FROM EXIT
         IF(IEXIT(N).EQ.1) THEN
           Q=QOUTSF(N)
 C        IF(ISFSOLV.EQ.2) THEN
-          AMATSF(II)=AMATSF(II)-Q*WIMP
-          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+          AMATSF(II)=AMATSF(II)-Q !*WIMP
+C          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C        ELSE
 C        ENDIF
         ENDIF
@@ -526,8 +526,8 @@ C.......EVAP
         IF(IETSFR.EQ.1) THEN
           Q=QETSF(N)
 C        IF(ISFSOLV.EQ.2) THEN
-          AMATSF(II)=AMATSF(II)-Q*WIMP
-          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+          AMATSF(II)=AMATSF(II)-Q !*WIMP
+C          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C        ELSE
 C        ENDIF
         ENDIF
@@ -545,8 +545,8 @@ C          IF(IS.GT.0.AND.IR.EQ.0) THEN
           Q=QSFR2LAK(ICNT)
           II=IASF(N)
           IF(Q.GT.0.) THEN
-            AMATSF(II)=AMATSF(II)-Q*WIMP
-            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+            AMATSF(II)=AMATSF(II)-Q !*WIMP
+C            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
           ELSE
             Q=ABS(Q)
 C            Q=QINSF(ICNT)
@@ -573,8 +573,8 @@ C            J=IROUTE(4,ICON)      !COLUMN
 C            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
             Q=QSFR2UZF(ICON)
             IF(Q.GT.0.) THEN
-              AMATSF(II)=AMATSF(II)-Q*WIMP
-              RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+              AMATSF(II)=AMATSF(II)-Q !*WIMP
+C              RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
             ELSE
               Q=ABS(Q)
               N=INOD1SFUZ(ICON)
