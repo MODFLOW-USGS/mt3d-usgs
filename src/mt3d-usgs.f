@@ -12,8 +12,8 @@ C                           Vivek Bedekar                              %
 C                    S.S. Papadopulos & Associates                     %
 C                                                                      %
 C                      Bethesda, MD 20814, USA                         %
-C                     Email: vbedekar@sspa.com                         %
-C                     Web site: http://sspa.com/                       %
+C                      Email: vivekb@sspa.com                          %
+C                   Web site: http://www.sspa.com/                     %
 C                                                                      %
 C                                 or                                   %
 C                                                                      %
