@@ -394,6 +394,8 @@ C
           CSS=SSMC(INDEX,NUM)
           IF(IQ.EQ.-1.AND.KK.EQ.0) THEN                     
             WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
+          ELSEIF(IQ.EQ.26.AND.KK.EQ.0.AND.II.EQ.0) THEN
+            WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
           ELSE                                              
             IF(CSS.NE.0 .OR. ICBUND(JJ,II,KK,INDEX).LT.0)
      &       WRITE(IOUT,70) NUM,KK,II,JJ,CSS,TYPESS(IQ),INDEX
@@ -727,6 +729,9 @@ C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
 CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE    
           ENDIF                                   
         ENDIF                                     
+C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
 C                                                 
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
@@ -758,10 +763,6 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           IHOST=MOD((MHOST-1),NCOL*NROW)/NCOL + 1
           JHOST=MOD((MHOST-1),NCOL) + 1          
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)      
-C
-C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
-        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
-          CYCLE
         ENDIF
 C
         IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) THEN
@@ -966,6 +967,9 @@ C--POINT SINK/SOURCE TERMS
 C
 C--COMPUTE PRODUCT OF Q*C
         QCTMP=QSS*CTMP        
+C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
 C        
 C--RESET Q*C FOR MASS-LOADING SOURCES (IQ=15)
         IF(IQ.EQ.15) THEN
@@ -997,10 +1001,6 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           JHOST=MOD((MHOST-1),NCOL) + 1
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)   
           QCTMP=QSS*CTMP                                    
-C
-C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
-        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
-          CYCLE
         ENDIF
 C
 C--SKIP IF NOT ACTIVE CELL      
@@ -1438,6 +1438,9 @@ C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
           ENDIF                                  
         ENDIF                                    
 C
+C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
+        IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
+C
 C--SKIP IF NOT ACTIVE CELL
         IF(.NOT.DRYON) THEN
           IF(ICBUND(J,I,K,ICOMP).LE.0.OR.IQ.LE.0) CYCLE
@@ -1473,10 +1476,6 @@ C--(IF INPUT CONCENTRATION WAS SET TO A NEGATIVE INTEGER)
           IHOST=MOD((MHOST-1),NCOL*NROW)/NCOL + 1
           JHOST=MOD((MHOST-1),NCOL) + 1
           CTMP=CNEW(JHOST,IHOST,KHOST,ICOMP)
-C
-C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
-        ELSEIF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) THEN
-          CYCLE
         ENDIF
 C        
         IF(QSS.LT.0) THEN
@@ -1613,6 +1612,9 @@ c
         qss=ss(5,num)
         IQ=ss(6,num)
         iGroup=ss(7,num)
+C
+C--SKIP IS LAK CELL
+        IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
 c
 c--skip if at an inactive cell        
         if(icbund(j,i,k,icomp).le.0) cycle

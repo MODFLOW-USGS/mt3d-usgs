@@ -1589,6 +1589,8 @@ C
         K=SS(1,NUM)
         I=SS(2,NUM)
         J=SS(3,NUM)
+        IQ=SS(6,NUM)
+        IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
         VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
         IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
         IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
