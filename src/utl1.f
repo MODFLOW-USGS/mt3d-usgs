@@ -427,7 +427,7 @@ C IF [IDFL]>0, FILE WILL BE GIVEN THE DEFAULT NAME [FLNAME],
 C OTHERWISE, THE SUBROUTINE WILL PROPMT FOR THE FILE NAME.
 C THE CONTENT OF THE PROMPT IS IN [FINDEX].
 c NOTE: THE STYLE OF UNFORMATTED FILES IS SPECIFIED IN THE
-C INCLUDE FILE 'FILESPEC.INC'
+C INCLUDE FILE 'openspec.inc'
 C ******************************************************************
 C last modified: 02-15-2005
 C
@@ -437,7 +437,7 @@ C
       CHARACTER FINDEX*30,FLNAME*50,FLFORM*15,FLSTAT*15,FILACT*20,
      &          ACCARG*20
 C
-      INCLUDE  'OPENSPEC.INC'
+      INCLUDE  'openspec.inc'
 C
 C--DETERMINE FILE FORM AND STATUS
       IF(IN.GT.0) THEN
@@ -1011,7 +1011,7 @@ C     ******************************************************************
       DIMENSION RLIST(LDIM,MXLIST)
       CHARACTER*200 LINE,FNAME
       DATA NUNOPN/99/
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C     ------------------------------------------------------------------
 C
 C1------If the list is empty, return.
@@ -1190,7 +1190,7 @@ C     ------------------------------------------------------------------
       CHARACTER*200 CNTRL
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.
@@ -1304,7 +1304,7 @@ C     ------------------------------------------------------------------
       CHARACTER*200 CNTRL
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.
@@ -1533,7 +1533,7 @@ C     ------------------------------------------------------------------
       CHARACTER*16 TEXT
       CHARACTER*200 FNAME
       DATA NUNOPN/99/
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C     ------------------------------------------------------------------
 C
 C1------READ ARRAY CONTROL RECORD AS CHARACTER DATA.

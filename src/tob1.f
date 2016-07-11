@@ -21,7 +21,7 @@ C
       REAL      TimeObs,Roff,Coff,weight,cobs,FluxObs,R,fraction
       CHARACTER LINE*200,FNAME*80,FTMP*80,NAMTMP*12,header*15,
      &          TYPESS(-1:100)*15
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C
       INTOB=IN
 C

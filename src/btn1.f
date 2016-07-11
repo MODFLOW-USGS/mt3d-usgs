@@ -3,7 +3,7 @@ C
 C *******************************************************************
 C OPEN FILES, USING THE METHOD OF MODFLOW-96, 2000 & 2005
 c NOTE: THE STYLE OF UNFORMATTED FILES IS SPECIFIED IN THE
-C INCLUDE FILE 'FILESPEC.INC'
+C INCLUDE FILE 'openspec.inc'
 C *******************************************************************
 C Last modified: 02-20-2010
 C
@@ -26,7 +26,7 @@ C
       CHARACTER*20  FMTARG,ACCARG,FILACT
       CHARACTER     FILSTAT*7
 C
-      INCLUDE 'OPENSPEC.INC'
+      INCLUDE 'openspec.inc'
 C
 C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
