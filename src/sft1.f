@@ -426,8 +426,8 @@ C                ENDIF
                 GOTO 105
             ENDIF
           ENDDO
-104       WRITE (*,*) 'INVALID SFR BC-TYPE FOR SFR NODE ',N
-          STOP
+C104       WRITE (*,*) 'INVALID SFR BC-TYPE FOR SFR NODE ',N
+C          STOP
 105       CONTINUE
         ELSEIF(ISFBCTYP(I).EQ.1) THEN
           !BCTYPSF='    PRECIP'
@@ -465,14 +465,20 @@ C        VOL=SFLEN(N)*SFNAREA(N)
 C          VOL=VOLSFN(N)
 C          IF(VOL.LT.VOLMIN) VOL=VOLMIN
 C          VOL=VOL/DELT
+CCC---
           CALL TIMEINTERP(VOLSFN,VOLSFO,VOLSFO,NSTRM,N,VOLN,VOLO,DV,1)
           VOLO=VOLO/DELT
           IF(VOLO.LT.VOLMIN) VOLO=VOLMIN
           VOLN=VOLN/DELT
           IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
+CCC          VOLN=VOLSFN(N)/DELT
+CCC          IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
 C          IF(ISFSOLV.EQ.2) THEN
             RHSSF(N)=RHSSF(N)-VOLO*COLDSF(N,ICOMP)
             AMATSF(II)=AMATSF(II)-VOLN
+CCC            RHSSF(N)=RHSSF(N)-VOLN*COLDSF(N,ICOMP)
+CCC            AMATSF(II)=AMATSF(II)-VOLN
+CCC---
 C          ELSE
 C            RHSSF(N)=RHSSF(N)+COLDSF(N,ICOMP)/DELT
 C            AMATSF(II)=AMATSF(II)+1.0D0/DELT
@@ -482,7 +488,7 @@ C
 C
 C.......GW TO SFR
         Q=QSFGW(N)
-        IF(Q.LE.0.0) THEN
+        IF(Q.LT.0.0) THEN
           IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
 C            IF(DRYON) THEN
 C              RHSSF(N)=RHSSF(N)+Q*CNEW(J,I,K,ICOMP)
@@ -496,22 +502,22 @@ C          ENDIF
         ELSE
 C
 C.......SFR TO GW
-          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
-          ELSE
+C          IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+C          ELSE
 C          IF(ISFSOLV.EQ.2) THEN
-            AMATSF(II)=AMATSF(II)-Q*WIMP
-            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+            AMATSF(II)=AMATSF(II)-Q !*WIMP
+C            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C          ELSE
 C          ENDIF
-          ENDIF
+C          ENDIF
         ENDIF
 C
 C.......FLOW OUT FROM EXIT
         IF(IEXIT(N).EQ.1) THEN
           Q=QOUTSF(N)
 C        IF(ISFSOLV.EQ.2) THEN
-          AMATSF(II)=AMATSF(II)-Q*WIMP
-          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+          AMATSF(II)=AMATSF(II)-Q !*WIMP
+C          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C        ELSE
 C        ENDIF
         ENDIF
@@ -520,8 +526,8 @@ C.......EVAP
         IF(IETSFR.EQ.1) THEN
           Q=QETSF(N)
 C        IF(ISFSOLV.EQ.2) THEN
-          AMATSF(II)=AMATSF(II)-Q*WIMP
-          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+          AMATSF(II)=AMATSF(II)-Q !*WIMP
+C          RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
 C        ELSE
 C        ENDIF
         ENDIF
@@ -539,8 +545,8 @@ C          IF(IS.GT.0.AND.IR.EQ.0) THEN
           Q=QSFR2LAK(ICNT)
           II=IASF(N)
           IF(Q.GT.0.) THEN
-            AMATSF(II)=AMATSF(II)-Q*WIMP
-            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+            AMATSF(II)=AMATSF(II)-Q !*WIMP
+C            RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
           ELSE
             Q=ABS(Q)
 C            Q=QINSF(ICNT)
@@ -567,8 +573,8 @@ C            J=IROUTE(4,ICON)      !COLUMN
 C            Q=-UZQ(ICON)   !(-)VE MEANS GW TO LAK; (+)VE MEANS LAK TO GW
             Q=QSFR2UZF(ICON)
             IF(Q.GT.0.) THEN
-              AMATSF(II)=AMATSF(II)-Q*WIMP
-              RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
+              AMATSF(II)=AMATSF(II)-Q !*WIMP
+C              RHSSF(N)=RHSSF(N)+(1.0D0-WIMP)*Q*COLDSF(N,ICOMP)
             ELSE
               Q=ABS(Q)
               N=INOD1SFUZ(ICON)
@@ -902,21 +908,29 @@ C            IRIN=INRCH(II)
             IF(IFROM.EQ.-999.AND.N.EQ.ITO) THEN
 C                Q=QINSF(II)
               Q=ABS(QN2NSF(II))
-              Q1=Q1+Q*DTRANS
+C              Q1=Q1+Q*DTRANS
               FLOINSF=FLOINSF+Q*CONC*DTRANS
             ENDIF
           ENDDO
         ELSEIF(ISFBCTYP(I).EQ.1) THEN
           !BCTYPSF='    PRECIP'
           Q=QPRECSF(N)
-          Q1=Q1+Q*DTRANS
+C          Q1=Q1+Q*DTRANS
           PRECSF=PRECSF+Q*CONC*DTRANS
         ELSEIF(ISFBCTYP(I).EQ.2) THEN
           !BCTYPSF='    RUNOFF'
           Q=QRUNOFSF(N)
-          Q1=Q1+Q*DTRANS
+C          Q1=Q1+Q*DTRANS
           RUNOFSF=RUNOFSF+Q*CONC*DTRANS
         ENDIF
+      ENDDO
+C
+C--CALCULATE Q1 FOR BOUNDARY CONDITIONS
+      DO N=1,NSTRM
+        Q=QPRECSF(N)
+        Q1=Q1+Q*DTRANS
+        Q=QRUNOFSF(N)
+        Q1=Q1+Q*DTRANS
       ENDDO
 C
       DO N=1,NSTRM
@@ -934,15 +948,17 @@ C        VOLO=VOLSFO(N)
         IF(VOLO.LT.VOLMIN) VOLO=VOLMIN
         IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
         DELV=DELV+VOLN-VOLO
-        IF(IBNDSF(N).NE.-1) THEN
+CCC        VOLN=VOLSFN(N)
+CCC        IF(VOLN.LT.VOLMIN) VOLN=VOLMIN
+C        IF(IBNDSF(N).NE.-1) THEN
           STORDIFF=VOLN*CNEWSF(N,ICOMP)-VOLO*COLDSF(N,ICOMP)
-C        STORDIFF=VOLN*(CNEWSF(N,ICOMP)-COLDSF(N,ICOMP))
+CCC        STORDIFF=VOLN*(CNEWSF(N,ICOMP)-COLDSF(N,ICOMP))
           IF(STORDIFF.LT.0) THEN
             STORINSF=STORINSF-STORDIFF
           ELSE
             STOROTSF=STOROTSF+STORDIFF
           ENDIF
-        ENDIF
+C        ENDIF
 C
         ENDIF
 C
@@ -978,8 +994,13 @@ C      DO N=1,NSTRM
         NN=IFROM
 C        II=IASF(N)
 C
+C.......INFLOW FROM HEADWATER
+          IF(N.GT.0.AND.NN.LT.0) THEN
+            Q=ABS(QN2NSF(NC))
+            Q1=Q1+Q*DTRANS
+C
 C.......INFLOW FROM UPSTREAM REACHES
-          IF(N.GT.0.AND.NN.GT.0) THEN
+          ELSEIF(N.GT.0.AND.NN.GT.0) THEN
 C...........INFLOW FROM STREAM
 C            NN=ISTRM(IR,IS)
 C            Q=QINSF(ICNT)
@@ -1134,7 +1155,7 @@ C                RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)+Q*CONC*DTRANS
             ENDIF
           ENDIF
         ELSE
-          IF(Q.LE.0.0) THEN
+          IF(Q.LT.0.0) THEN
             Q1=Q1+ABS(Q)*DTRANS
             CONC=CNEW(J,I,K,ICOMP)
             IF(IBNDSF(N).EQ.-1) THEN
