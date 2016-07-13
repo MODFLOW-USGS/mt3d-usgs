@@ -84,7 +84,7 @@ C
       REAL START_TIME,TOTAL_TIME,
      &     END_TIME
       LOGICAL existed
-      CHARACTER,PARAMETER :: VID*30='[Version 1.00-beta 0x/xx/2014]'
+      CHARACTER,PARAMETER :: VID*18='[Ver 1.00.00]'
 C
 C--ALLOCATE LOGICALS
       ALLOCATE(DOMINSAT,DRYON)
@@ -105,9 +105,10 @@ C--Get CPU time at the start of simulation
 C
 C--WRITE AN IDENTIFIER TO SCREEN
       WRITE(*,101) VID
-  101 FORMAT(1X,'MT3DMS - Modular 3-D Multi-Species Transport Model ',
-     & A14/1X,'Developed at University of Alabama',
-     & ' for U.S. Department of Defense'/)
+  101 FORMAT(1X,'MT3D-USGS - Modular 3D Multi-Species Transport Model ',
+     & A14,/1X,'and based on MT3DMS. MT3D-USGS developed in ',
+     & 'cooperation by ',/1X,'S.S. Papadopulos & Associates ',
+     & 'and the U.S. Geological Survey')
 C
 C--INITIALIZE CHARACTER VARIABLES
       FLNAME=' '
@@ -153,7 +154,7 @@ C
 C--WRITE PROGRAM TITLE TO OUTPUT FILE
       WRITE(IOUT,11)
    11 FORMAT(/30X,71('+')/30X,'+',69X,'+'
-     &  /30X,'+',28X,'   MT3DMS',32X,'+'
+     &  /30X,'+',30X,'MT3D-USGS',30X,'+'
      &  /30X,'+',13X,'A Modular 3D Multi-Species Transport Model ',
      &           13X,'+'
      &  /30X,'+', 4X,'For Simulation of Advection, Dispersion and',
