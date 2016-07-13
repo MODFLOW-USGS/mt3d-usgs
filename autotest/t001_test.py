@@ -5,7 +5,7 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['lkt', ]
+test_dirs = ['lkt', 'SFT_CrnkNic', 'SFT_Full_Imp']
 
 def run_mt3d(mfnamefile, mtnamefile, comparison=True):
     """

@@ -114,12 +114,9 @@ C--CALCULATE SATURATION AND STORE IN SATOLD
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-              IF(K.EQ.3.AND.I.GE.1.AND.J.GE.2) THEN
-              CONTINUE
-              ENDIF
               IF(ICBUND(J,I,K,1).GT.0) THEN
-              DH(J,I,K)=SDH(J,I,K)
-              SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
+                DH(J,I,K)=SDH(J,I,K)
+                SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
      &                          WC(J,I,K)/PRSITY(J,I,K)+
      &                          DH(J,I,K)/DZ(J,I,K)*1
               ENDIF

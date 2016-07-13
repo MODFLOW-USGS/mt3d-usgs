@@ -427,9 +427,6 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-            IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
-            CONTINUE
-            ENDIF
               IF(FUZFFLOWS) THEN
                 IF(IUZFBND(J,I).GT.0) CYCLE
               ENDIF
@@ -516,9 +513,6 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-            IF(k.eq.36.and.i.eq.1.and.J.EQ.120)THEN
-            CONTINUE
-            ENDIF
               IF(FUZFFLOWS) THEN
                 IF(IUZFBND(J,I).GT.0) CYCLE
               ENDIF
