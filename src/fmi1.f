@@ -12,6 +12,7 @@ C
      &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
      &         FSWT,FSFR,FUZF,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
      &         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF
+      USE SFRVARS, ONLY: ISFTTR
       IMPLICIT  NONE
       INTEGER   
      &          MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB,MTCHD,
@@ -128,7 +129,12 @@ C
           IF(TEXT1.EQ.'           MNW FLOWS') FMNWFLOWS=.TRUE. !NOT SUPPORTED YET
           IF(TEXT1.EQ.'                 SWT') FSWT=.TRUE.
           IF(TEXT1.EQ.'                 SFR') FSFR=.TRUE.
-          IF(TEXT1.EQ.'           SFR FLOWS') FSFRFLOWS=.TRUE.
+          IF(TEXT1.EQ.'        SFR FLOWS SS' .OR.
+     1       TEXT1.EQ.'        SFR FLOWS TR') THEN
+            FSFRFLOWS=.TRUE.
+            IF(TEXT1.EQ.'        SFR FLOWS SS') ISFTTR=0
+            IF(TEXT1.EQ.'        SFR FLOWS TR') ISFTTR=1
+          ENDIF
           IF(TEXT1.EQ.'                 UZF') FUZF=.TRUE.
           IF(TEXT1.EQ.'           UZF FLOWS') FUZFFLOWS=.TRUE.
           IF(TEXT1.EQ.'                 SWR') FSWR=.TRUE.
@@ -815,7 +821,7 @@ C
      &                   QPRECSF,QRUNOFSF,QETSF,IBNDSF,NSSSF,ISFNBC,
      &                   ISFBCTYP,IEXIT,QPRECSFO,QRUNOFSFO,QOUTSF,
      &                   QOUTSFO,SFOAREA,NSF2SF,INOD1SF,INOD2SF,IDSPFLG,
-     &                   QN2NSF,VOLSFO,VOLSFN,SFLEN
+     &                   QN2NSF,VOLSFO,VOLSFN,SFLEN,ISFTTR
       USE LAKVARS, ONLY: QPRECLAK,QRUNOFLAK,QWDRLLAK,
      &                   QETLAK,VOLOLAK,VOLNLAK,DELVOLLAK,
      &                   LAKNUMGW,NLAKES,LKNODE,LAKL,LAKR,LAKC,
@@ -1220,7 +1226,11 @@ C--IF SFR OPTION IS USED IN FLOW MODEL.
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ELSEIF(FSFRFLOWS) THEN
-        TEXT='SFR FLOWS'                                  
+        IF(ISFTTR.EQ.0) THEN
+          TEXT='SFR FLOWS SS'                                  
+        ELSE
+          TEXT='SFR FLOWS TR'                                  
+        ENDIF
         IQ=30                                       
         ALLOCATE(NSTRM)
         CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,

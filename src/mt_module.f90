@@ -180,8 +180,10 @@
         INTEGER,          SAVE,                      POINTER :: NSFINIT
         INTEGER,          SAVE,                      POINTER :: ICBCSF
         INTEGER,          SAVE,                      POINTER :: IETSFR
+        INTEGER,          SAVE,                      POINTER :: ISFTTR
         INTEGER,          SAVE,                      POINTER :: ISFSOLV
         INTEGER,          SAVE,                      POINTER :: MXITERSF
+        INTEGER,          SAVE,                      POINTER :: IPRTXMD
         REAL,             SAVE,                      POINTER :: WIMP
         REAL,             SAVE,                      POINTER :: WUPS
         REAL,             SAVE,                      POINTER :: CCLOSESF
@@ -269,6 +271,8 @@
         REAL,             SAVE, DIMENSION(:),        POINTER :: CSTOROTSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CCCINSF
         REAL,             SAVE, DIMENSION(:),        POINTER :: CCCOUTSF
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CLOSTMASS
+        REAL,             SAVE, DIMENSION(:),        POINTER :: CGAINEDMASS
 CONTAINS
       SUBROUTINE MEMDEALLOCATE3()
         IF(ASSOCIATED(IASF))   DEALLOCATE(IASF)        !# LINE 496 SFR

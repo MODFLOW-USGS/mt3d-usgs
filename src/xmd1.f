@@ -162,9 +162,9 @@ CVSB      ELSEIF ( IFDPARAM.EQ.3 ) THEN
         LEVEL = 1
         NORTH = 7
         IREDSYS = 0
-        RRCTOLS = 0.0
-        IDROPTOL = 1
-        EPSRNS = 1.0e-3
+        RRCTOLS = 1.0e-06 !0.0
+        IDROPTOL = 0 !1
+        EPSRNS = 1.0e-10
         HCLOSEXMDDUM = 1.0e-4
         MXITERXMD = 50
 CVSB      END IF    
