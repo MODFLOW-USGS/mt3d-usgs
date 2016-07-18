@@ -465,17 +465,8 @@ C--IS SAVED BY LKMT PACKAGE VERSION 2 OR LATER
           DO I=1,NROW
             DO J=1,NCOL
               IF(ICBUND(J,I,K,1).EQ.0) CYCLE
-              IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN 
-                IF(LAYCON(K).EQ.0.OR.INT(DH(J,I,K)).EQ.-111) THEN
-                  DH(J,I,K)=DZ(J,I,K)
-                ENDIF 
-              ELSEIF(iUnitTRNOP(7).GT.0.AND. IUZFOPTG.EQ.0) THEN
-C--SET DH EQUAL TO DZ FOR THE CASE WHEN THE UZF PACKAGE IS ACTIVE 
-                IF(IUZFBND(J,I).GT.0) THEN                        
-                  DH(J,I,K)=DZ(J,I,K)                             
-                ENDIF                                             
-              ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.1) THEN   
-                !don't need to do anything in this case           
+              IF(LAYCON(K).EQ.0.OR.INT(DH(J,I,K)).EQ.-111) THEN
+                DH(J,I,K)=DZ(J,I,K)
               ENDIF
             ENDDO
           ENDDO
@@ -600,6 +591,7 @@ C
       ENDDO
 C
   420 IF(NLAY.LT.2) GOTO 430
+      IF(FUZFFLOWS) GOTO 430  ! THIS CALCULATION IS REPEATED IN RP2 WHEN FUZFFLOWS>0
       DO J=1,NCOL
         DO I=1,NROW
           DO K=2,NLAY
@@ -638,7 +630,9 @@ C
             TK=0.
             IF(J.GT.1) TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
             IF(I.GT.1) TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
-            IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            IF(.NOT.FUZFFLOWS) THEN
+              IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            ENDIF
             IF(TK.EQ.0) CYCLE
             TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
             IF(TK.LT.DTRACK2) THEN
@@ -733,6 +727,7 @@ C
       ENDDO
 C
   920 IF(NLAY.LT.2) GOTO 990
+      IF(FUZFFLOWS) GOTO 990
       DO J=1,NCOL
         DO I=1,NROW
           DO K=1,NLAY
@@ -753,6 +748,7 @@ C
 C
 C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
   990 CONTINUE
+      IF(FUZFFLOWS) GOTO 991
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
@@ -779,7 +775,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
       ENDDO
 C
 C--SYNCHRONIZE ICBUND CONDITIONS OF ALL SPECIES
-      IF(NCOMP.EQ.1) GOTO 999
+ 991  IF(NCOMP.EQ.1) GOTO 999
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
@@ -824,7 +820,7 @@ C
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,NCOL,NROW,NLAY,NCOMP,FPRT,
      &                         LAYCON,ICBUND,DH,PRSITY,DELR,DELC,IRCH,
      &                         RECH,IEVT,EVTR,MXSS,NSS,NTSS,SS,BUFF,
-     &                         DTSSM,
+     &                         DTSSM,IVER,DTRACK,DTRACK2,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
      &                         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,
      &                         FETS,FSWT,FSFR,FUZF,ISS,NPERFL,
@@ -837,11 +833,11 @@ C
 C
       IMPLICIT  NONE
 C
-      INTEGER   INUF,J,I,K,
+      INTEGER   INUF,J,I,K,JTRACK,ITRACK,KTRACK,
      &          NUM,KPER,KSTP,IQ,KSSM,ISSM,JSSM,
      &          JJ,II,KK,JM1,JP1,IM1,IP1,KM1,KP1,INDEX,IFL,N,IFROM,ITO
       INTEGER   INCTS,KOLD  
-      REAL      VOLAQU,TM,THKSAT
+      REAL      VOLAQU,TM,THKSAT,TK
       CHARACTER TEXT*16
       INTEGER   NFLOWTYPE,NRCHCON,NNGW
       REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
@@ -984,12 +980,12 @@ C--READ UZF FLOW TERMS
         TEXT='UZF RECHARGE'
 C        ALLOCATE(UZRECH(NCOL,NROW),IUZRCH(NCOL,NROW))
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   UZRECH,IUZRCH,FPRT)
+     &              UZRECH,IUZRCH,FPRT)
 C
         TEXT='GW-ET'
 C        ALLOCATE(GWET(NCOL,NROW),IGWET(NCOL,NROW))
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   GWET,IGWET,FPRT)
+     &              GWET,IGWET,FPRT)
       ELSEIF(FUZFFLOWS) THEN
         IQ=31
         IF(IUZFOPTG.EQ.0) THEN
@@ -1038,95 +1034,107 @@ C     &                GWET,FPRT)
 C
 C-------MODIFY ARRAYS
 C
-      IF(IUZFOPTG.EQ.0) THEN                    
+        IF(IUZFOPTG.EQ.0) THEN                    
 C-------IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
-        IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
-          DO K=1,NLAY                                
-            DO I=1,NROW                              
-              DO J=1,NCOL                            
-                IF(IUZFBND(J,I).GT.0) THEN           
-                  SATOLD(J,I,K)=SATNEW(J,I,K)        
-                ENDIF                                
-              ENDDO                                  
-            ENDDO                                    
-          ENDDO                                      
-        ENDIF                                        
+          IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
+            DO K=1,NLAY                                
+              DO I=1,NROW                              
+                DO J=1,NCOL                            
+                  IF(IUZFBND(J,I).GT.0) THEN           
+                    SATOLD(J,I,K)=SATNEW(J,I,K)        
+                  ENDIF                                
+                ENDDO                                  
+              ENDDO                                    
+            ENDDO                                      
+          ENDIF                                        
 C                                                    
 C-------COMPUTE SATURATION                                
-        PRSITY=>PRSITYSAV                            
-        DO K=1,NLAY                                  
-          DO I=1,NROW                                
-            DO J=1,NCOL                              
-              IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
-                SATNEW(J,I,K)=1                      
-              ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
-     &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
-                IF(INT(DH(J,I,K)).EQ.-111) THEN      
-                  SATNEW(J,I,K)=1                    
-                ELSE                                 
-                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
-     &                          WC(J,I,K)/PRSITY(J,I,K)+          
-     &                          DH(J,I,K)/DZ(J,I,K)*1             
-                ENDIF                                             
-              ENDIF                                               
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
+          PRSITY=>PRSITYSAV                            
+          DO K=1,NLAY                                  
+            DO I=1,NROW                                
+              DO J=1,NCOL                              
+                IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
+                  SATNEW(J,I,K)=1                      
+                ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
+     &          .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
+                  IF(INT(DH(J,I,K)).EQ.-111) THEN      
+                    SATNEW(J,I,K)=1                    
+                  ELSE                                 
+                    SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
+     &                            WC(J,I,K)/PRSITY(J,I,K)+          
+     &                            DH(J,I,K)/DZ(J,I,K)*1             
+                  ENDIF                                             
+                ENDIF                                               
+              ENDDO                                                 
+            ENDDO                                                   
+          ENDDO                                                     
 C                                                                 
 C-------MELD UZFLX AND QZZ ARRAY SO THAT UZFLX DOESN'T NEED TO BE DEALT
 C-------WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ        
-        DO K=1,(NLAY-1)                                           
-          DO I=1,NROW                                             
-            DO J=1,NCOL                                           
-              IF(ICBUND(J,I,K,1).NE.0) THEN                       
+          DO K=1,(NLAY-1)                                           
+            DO I=1,NROW                                             
+              DO J=1,NCOL                                           
+                IF(ICBUND(J,I,K,1).NE.0) THEN                       
 C-------THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
 C-------ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
-                IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
-                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
-     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
-                  QZ(J,I,K)=UZFLX(J,I,K+1)                        
-                ENDIF                                             
-              ENDIF                                               
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
+                  IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
+                  IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
+     &                UZFLX(J,I,K+1).LE.0.0) THEN                        
+                    QZ(J,I,K)=UZFLX(J,I,K+1)                        
+                  ENDIF                                             
+                ENDIF                                               
+              ENDDO                                                 
+            ENDDO                                                   
+          ENDDO                                                     
 C                                                                 
 C-------PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE    
 C-------FOR BOTH THE SATURATED AND UNSATURATED CASE                    
-        DO K=1,NLAY                                               
-          DO I=1,NROW                                             
-            DO J=1,NCOL
-              IF(IUZFBND(J,I).EQ.0)THEN
-                WC(J,I,K)=PRSITY(J,I,K)
-              ELSE
-                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
-              ENDIF
-            ENDDO                                                 
-          ENDDO                                                   
-        ENDDO                                                     
-        PRSITYSAV=>PRSITY                                         
-        PRSITY=>WC                                                
-      ENDIF                                                       
+          DO K=1,NLAY                                               
+            DO I=1,NROW                                             
+              DO J=1,NCOL
+                IF(IUZFBND(J,I).EQ.0)THEN
+                  WC(J,I,K)=PRSITY(J,I,K)
+                ELSE
+                  WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
+                ENDIF
+              ENDDO                                                 
+            ENDDO                                                   
+          ENDDO                                                     
+          PRSITYSAV=>PRSITY                                         
+          PRSITY=>WC                                                
+        ENDIF
+C
+C--SET DH EQUAL TO DZ FOR THE CASE WHEN THE UZF PACKAGE IS ACTIVE 
+        IF(IVER.EQ.2) THEN
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                IF(ICBUND(J,I,K,1).EQ.0) CYCLE 
+                IF(iUnitTRNOP(7).GT.0.AND. IUZFOPTG.EQ.0) THEN
+                  IF(IUZFBND(J,I).GT.0) THEN                        
+                    DH(J,I,K)=DZ(J,I,K)                             
+                  ENDIF                                             
+                ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.1) THEN   
+                  !don't need to do anything in this case           
+                ENDIF
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDIF
 C
 C-------DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
-      DO K=1,NLAY
-        DO I=1,NROW
-          DO J=1,NCOL
-            THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
-            IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-
-            ELSE
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              THKSAT=DH(J,I,K)  ! WHEN UZT ACTIVE, DH IS DZ
               IF(iUnitTRNOP(7).GT.0) THEN
                 QSTO(J,I,K)=QSTO(J,I,K)+(UZQSTO(J,I,K))/ 
      &                       (THKSAT*DELR(J)*DELC(I))    
-              ELSE                                       
-
-              ENDIF                                             
-            ENDIF
-            IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
+              ENDIF
+              IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
+            ENDDO
           ENDDO
         ENDDO
-      ENDDO
 C
 C-------PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED
         DO I=1,NROW                                            
@@ -1138,6 +1146,94 @@ C-------PULL INFILTRATED VALUES FROM UZFLX ARRAY IF FUZF OPTION USED
             ENDIF
           ENDDO
         ENDDO  
+C
+C--NOW THAT UZFLX HAS BEEN WOVEN INTO QZ, REDO CALCULATION OF 
+C--MAXIMUM TIME INCREMENT DURING WHICH ANY PARTICLE
+C--CANNOT MOVE MORE THAN ONE CELL IN THE Z-DIRECTION.
+        IF(NLAY.LT.2) GOTO 440
+        DO J=1,NCOL
+          DO I=1,NROW
+            DO K=2,NLAY
+C       
+              IF(ICBUND(J,I,K,1).NE.0) THEN
+                TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
+                IF(TK.EQ.0) CYCLE
+                TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
+                IF(ABS(TK).LT.DTRACK) THEN
+                  DTRACK=ABS(TK)
+                  JTRACK=J
+                  ITRACK=I
+                  KTRACK=K
+                ENDIF
+              ENDIF
+C       
+            ENDDO
+          ENDDO
+        ENDDO
+C
+C--PRINT INFORMATION ON DTRACK
+  440   WRITE(IOUT,500) DTRACK,KTRACK,ITRACK,JTRACK
+  500   FORMAT(/1X,'MAXIMUM STEPSIZE DURING WHICH ANY PARTICLE CANNOT',
+     &   ' MOVE MORE THAN ONE CELL IN Z-DIRECTION'/1X,'=',G11.4,
+     &   '(WHEN MIN. R.F.=1) AT K=',I4,', I=',I4,', J=',I4)
+C
+C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
+C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
+C
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              IF(ICBUND(J,I,K,1).EQ.0) CYCLE
+              TK=0.
+              IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+              IF(TK.EQ.0) CYCLE
+              TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
+              IF(TK.LT.DTRACK2) THEN
+                DTRACK2=TK
+                JTRACK=J
+                ITRACK=I
+                KTRACK=K
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+C
+C--PRINT INFORMATION ON DTRACK2
+        WRITE(IOUT,550) DTRACK2,KTRACK,ITRACK,JTRACK
+  550   FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
+     &   ' OF THE ADVECTION TERM'/1X,
+     &   '(FOR PURE FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
+     &   '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
+C
+        IF(NLAY.LT.2) GOTO 990
+        DO J=1,NCOL
+          DO I=1,NROW
+            DO K=1,NLAY
+              THKSAT=DH(J,I,K)
+              IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
+                QZ(J,I,K)=0
+                IF(K.GT.1) QZ(J,I,K-1)=0.
+              ELSE
+                QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I))
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+C
+C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
+  990   CONTINUE
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              THKSAT=DH(J,I,K)
+              IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
+                QSTO(J,I,K)=0
+              ELSE
+                QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
       ENDIF                   
 C                                                            
 C--READ LAK FLOW TERMS                                       
@@ -1578,7 +1674,7 @@ C      DO K=1,NLAY
         ENDDO                           
 C      ENDDO                             
 C
-  960 IF(NTSS.LE.0) GOTO 990
+  960 IF(NTSS.LE.0) GOTO 970
       DO NUM=1,NTSS
         K=SS(1,NUM)
         I=SS(2,NUM)
@@ -1608,7 +1704,7 @@ C        IF(ABS(VOLAQU-0.).LT.1.0E-5) SS(5,NUM)=0.
       ENDDO
 C
 C--PRINT INFORMATION ON DTSSM
-  990 WRITE(IOUT,1000) DTSSM,KSSM,ISSM,JSSM
+  970 WRITE(IOUT,1000) DTSSM,KSSM,ISSM,JSSM
  1000 FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
      & ' OF THE SINK & SOURCE TERM'/1X,'=',G11.4,
      & '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
