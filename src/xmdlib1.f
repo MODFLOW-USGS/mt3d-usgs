@@ -1,6 +1,6 @@
 !
 !                        libxmd
-!                      version 2.1.1
+!                      version 2.1.2
 !
 !                 (c) 2011   M. Ibaraki
 !
@@ -11,6 +11,8 @@
 !                    no scaling is required for red-black ordering (reduced system)
 !        version 2.1.1   May 12, 2011
 !                    minor changes
+!        version 2.1.2   January 23, 2012
+!                    resolved cgstab and orthomin initialization issues
 !
 !
       module xmdalloc
@@ -388,7 +390,6 @@ c     initialize arrays
 
       do 4 iblck = 1, nblack       ! do it in NEW number!!
 
-
         iold = RBorder(iblck)       ! black node number in old numbering
 
 c     load row i of L/U into list  -- black node
@@ -464,9 +465,6 @@ c      new fill-in caused by red node elimination -> level = 1
         enddo
         list(jafwk(iend)) = n+1         ! end marker
 
-      if(iblck.eq.5) then
-      continue
-      endif
 
         call xmdmrgd(a, afwk, row, epsrn, iblck, nblack, ia, iaf,
      [              jafwk, idiagf, list, RBorder, nja, size(jafwk),
@@ -912,7 +910,7 @@ c       total     9*nblack
 
       integer :: i, iter, irpnt, ierror
       double precision :: res0, omega, omegah, beta, betah, alpha,
-     [                 resmax, temp1, temp2, temp
+     [                 resmax, temp1, temp2, temp, verysmall
       logical :: conv, rescal
 
       double precision, dimension(:), allocatable :: q, qb, aqb, reso,
@@ -923,12 +921,10 @@ c       total     9*nblack
      [          sb(nblack), stat = ierror )
       if (ierror /= 0) stop "== not enough memory (xmdcgstb) =="
 
+      verysmall = 1.0d-300
 
-
-
-
-
-
+      q(1:nblack) = 0.0d0
+      aqb(1:nblack) = 0.0d0
 
       irpnt = nblack+1             ! pointer for REDorder
       if (nred < 1) irpnt = 1
@@ -965,16 +961,14 @@ c     iteration loop
 c
       do iter = 0, nitmax
 
-      if(iter.eq.1)then
-      continue
-      endif
-
         betah = 0.0d+0
         do i = 1, nblack
           betah = betah + reso(i)*res(i)
         enddo
 
-        omega = (betah/beta)*(omegah/alpha)
+!       omega = (betah/beta)*(omegah/alpha)
+        omega = betah/(beta+sign(verysmall, beta)) *
+     [          omegah/(alpha+sign(verysmall, alpha))
         beta = betah
         do i = 1, nblack
           q(i) = res(i)+omega*(q(i)-alpha*aqb(i))
@@ -996,7 +990,8 @@ c
           temp1 = temp1 + reso(i)*aqb(i)
         enddo
 
-        omegah = betah/temp1
+!       omegah = betah/temp1
+        omegah = betah/(temp1+sign(verysmall, temp1))
 
         do i = 1, nblack
           s(i) = res(i) - omegah*aqb(i)
@@ -1017,7 +1012,8 @@ c
           temp2 = temp2 + t(i)*s(i)
         enddo
 
-        alpha = temp2/temp1
+!       alpha = temp2/temp1
+        alpha = temp2/(temp1+sign(verysmall, temp1))
 
         resmax = 0.0d+0
         temp1 = 0.0d+0
@@ -1584,6 +1580,8 @@ c       v(i) = 0.0d0
         avk(i) = 0.0d0
       enddo
 
+      aqaq(1:north) = 0.0d0
+
       avk = 0.0d0
 
       irpnt = nblack+1             ! pointer for REDorder
@@ -1602,6 +1600,11 @@ c     get [a]{x} and calculate {res} -- note: use {soln} as tmp
       enddo
 
       res0 = dsqrt(res0)
+c     save x into soln and use x as temporary(n) array
+
+      do i = 1, nblack
+        soln(i) = x( RBorder(i) )
+      enddo
 
         conv = .false.
         conv = res0 <= rrctol*res0
@@ -1609,12 +1612,6 @@ c     get [a]{x} and calculate {res} -- note: use {soln} as tmp
           nitmax=0
           return
         endif
-
-c     save x into soln and use x as temporary(n) array
-
-      do i = 1, nblack
-        soln(i) = x( RBorder(i) )
-      enddo
 
 c
 c     iteration loop
@@ -1747,14 +1744,21 @@ c     |  Abr   :  Abb   | | Xb |
 c     |        :        | |    |
 c     \                 / \    /
 c
+c      let's Xr = -Dr^{-1} * Arb * Xb then
+c
+c      Abb' * Xb = Abb_{diag} * Xb + { Abb_{off_diag} - Abr * Dr^{-1} * Arb } Xb
+c                = Abb_{diag} * Xb + ( Abb Abr )_{off_diag} * { Xr+Xb }
+c
 c     local variables
 c
       integer iold, kk, iblck, ired
 
+c     calculate Xr = -Dr^{-1} * Arb * Xb
+
       do ired = 1, nred
 
         iold = REDorder(ired)
-        xx(iold) = 0.0d0
+        xx(iold) = 0.0d0  ! use red xx(iold) as tmp.
 
         do kk = ia(iold)+1, ia(iold+1)-1
           xx(iold) = xx(iold) - a(kk) * xx(ja(kk))
@@ -1764,12 +1768,17 @@ c
 
       enddo
 
+c     calculate   Abb' * Xb
+c                  = Abb_{diag} * Xb + ( Abb Abr )_{off_diag} * { Xr+Xb }
+
       do iblck = 1, nblack
 
         iold = RBorder(iblck)
 
+c     obatain Abb_{diag} * Xb
         amltx(iblck) = xx(iold) * a( ia(iold) )
 
+c     calculate  ( Abb Abr )_{off_diag} * { Xr+Xb } and add to the above
         do kk = ia(iold)+1, ia(iold+1)-1
           amltx(iblck) = amltx(iblck) + a(kk)* xx( ja(kk) )
         enddo
@@ -1825,11 +1834,6 @@ c
       ierr = 0
       do i = 1, n
         found = .false.
-        
-        IF(I.EQ.31) THEN
-        CONTINUE
-        ENDIF
-        
         do j = ia(i), ia(i+1)-1
           if (ja(j) == i) then
             node = ja(ia(i))
@@ -1846,9 +1850,7 @@ c
           return
         endif
         nentry = ia(i+1)-ia(i)-1
-        IF(nentry.GT.0) THEN
         call xmdshell(ja(ia(i)+1),nentry)
-        ENDIF
       enddo
 
       end subroutine xmdrowrg
@@ -2059,7 +2061,7 @@ c
         mult = row(irow)/af(idiagf(irow))
         row(irow) = mult
 
-        do 3 ii = idiagf(irow)+1, iaf(irow+1)-1
+        do ii = idiagf(irow)+1, iaf(irow+1)-1
   100     continue
           ilevel1 = levptr(ii)+levptr1(irow)+1
           ilevel2 = levptr1(jaf(ii))
@@ -2095,7 +2097,7 @@ c
               goto 100
             endif
           endif
-    3   continue
+        enddo
 
         next = list(next)
 c
