@@ -1,6 +1,6 @@
-        38         2        81        82         0                    #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
-         5       0.5       1.0    1.0E-3        10       2.0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF
-        19      1.00(10e12.4)                    1                    #INITIAL CONCENTRATION FOR STREAMS COMP# 1
+        38         2        81        82         0                              #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
+         5       0.5       1.0    1.0E-3        10       2.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF
+        19      1.00(10e12.4)                    1                              #INITIAL CONCENTRATION FOR STREAMS COMP# 1
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
