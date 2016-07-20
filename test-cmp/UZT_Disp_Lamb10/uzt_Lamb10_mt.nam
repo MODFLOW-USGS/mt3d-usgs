@@ -11,7 +11,7 @@ SSM              4        uzt_Lamb10.ssm
 GCG              5        uzt_Lamb10.gcg
 UZT              7        uzt_Lamb10.uzt
 # Flow-Transport Link input file
-FTL             10        uzt_Lamb10.hff2 'FREE'
+FTL             10        uzt_Lamb10.ftl 'FREE'
 # UZF File containing RCH and ET options
 
 # Uncomment the following lines to override

@@ -5,7 +5,7 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['lkt', 'SFT_CrnkNic', 'SFT_Full_Imp']
+test_dirs = ['lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10']
 
 def run_mt3d(mfnamefile, mtnamefile, comparison=True):
     """
