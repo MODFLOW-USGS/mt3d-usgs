@@ -809,7 +809,7 @@ C IN THE FORMS NEEDED BY THE TRANSPORT MODEL.
 C **********************************************************************
 C last modified: 02-20-2010
 C
-      USE MIN_SAT, ONLY: DRYON
+      USE MIN_SAT, ONLY: DRYON,DOMINSAT
       USE UZTVARS, ONLY: UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,
      &                   IUZFBND,IUZRCH,UZRECH,IGWET,IUZFOPTG,WC,UZQSTO,
      &                   SATOLD,PRSITYSAV
@@ -1217,8 +1217,12 @@ C
             DO K=1,NLAY
               THKSAT=DH(J,I,K)
               IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-                QZ(J,I,K)=0
-                IF(K.GT.1) QZ(J,I,K-1)=0.
+                IF(DOMINSAT) THEN
+                  QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I))
+                ELSE
+                  QZ(J,I,K)=0
+                  IF(K.GT.1) QZ(J,I,K-1)=0.
+                ENDIF
               ELSE
                 QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I))
               ENDIF
