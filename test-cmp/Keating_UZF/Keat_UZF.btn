@@ -1,6 +1,6 @@
 #Conversion from Groundwater Vistas
 #MT3D Model
-ModflowStyleArrays DRY1 DRY2
+ModflowStyleArrays DRYCELL
         80         1       400         3         1         1
 day  FT  LB  
  T F T F T
