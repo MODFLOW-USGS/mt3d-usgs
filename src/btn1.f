@@ -1390,7 +1390,7 @@ C
       IMPLICIT  NONE
       INTEGER   ICOMP,K,I,J,IQ,INDX,N
       REAL      DMSTRG,SOURCE,SINK,TM1,TM2,DTRANS,
-     &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS,RF,CLOSEZERO
+     &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS,CLOSEZERO
       REAL TIME2,HT2,VOL,VCELL
       CLOSEZERO=1E-06
 C
@@ -1433,24 +1433,24 @@ C
                 ENDIF
               ELSE
                 IF(IUZFBND(J,I).GT.0) THEN
-                  IF(ISOTHM.EQ.0) THEN
-                    RF=1.
-                  ELSEIF(ISOTHM.EQ.1) THEN
-                    RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
-                  ELSE
-                    RF=1.
-                  ENDIF
+                  !IF(ISOTHM.EQ.0) THEN
+                  !  RF=1.
+                  !ELSEIF(ISOTHM.EQ.1) THEN
+                  !  RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
+                  !ELSE
+                  !  RF=1.
+                  !ENDIF
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))*
      1                         THETAW(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
 C
                   IF(DMSTRG.LT.0) THEN
                     RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                     RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
-     &                                                -(RF-1.)*DMSTRG
+     &                                  -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                   ELSE
                     RMASIO(119,2,ICOMP)=RMASIO(119,2,ICOMP)-DMSTRG
                     RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)
-     &                                                -(RF-1.)*DMSTRG
+     &                                  -(RETA(J,I,K,ICOMP)-1.)*DMSTRG
                   ENDIF
                 ELSE
                   VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
@@ -1983,7 +1983,7 @@ C
       INTEGER   ICOMP,J,I,K,ICBUND,N,NRC,
      &          NSIZE
       REAL      CADV,COLD,PRSITY,DTRANS,RETA,TEMP,DH,
-     &          HT2,TIME2,RF,VOL,VCELL
+     &          HT2,TIME2,VOL,VCELL
       DIMENSION ICBUND(NODES,NCOMP),CADV(NODES,NCOMP),COLD(NODES,NCOMP),
      &          RETA(NODES,NCOMP),PRSITY(NODES),DH(NODES)
 C
@@ -2066,14 +2066,15 @@ C--IF INACTIVE OR CONSTANT CELL
             ELSE if(iSSTrans.eq.0)  then
               IF(iUnitTRNOP(7).GT.0) THEN
                 IF(IUZFBND(J,I).GT.0) THEN
-                  IF(ISOTHM.EQ.0) THEN
-                    RF=1.
-                  ELSEIF(ISOTHM.EQ.1) THEN
-                    RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
-                  ELSE
-                    RF=1.
-                  ENDIF
-                  A(N)=-THETAW(J,I,K)*RF*DELR(J)*DELC(I)*DH(N)/DTRANS
+                  !IF(ISOTHM.EQ.0) THEN
+                  !  RF=1.
+                  !ELSEIF(ISOTHM.EQ.1) THEN
+                  !  RF=1.+RHOB(J,I,K)*SP1(J,I,K,ICOMP)/THETAW(J,I,K)
+                  !ELSE
+                  !  RF=1.
+                  !ENDIF
+                  A(N)=-THETAW(J,I,K)*RETA(N,ICOMP)
+     &                 *DELR(J)*DELC(I)*DH(N)/DTRANS
                 ELSE
                   VOL=DELR(J)*DELC(I)*DH(N)+DELR(J)*DELC(I)*DH(N)
      &                *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
