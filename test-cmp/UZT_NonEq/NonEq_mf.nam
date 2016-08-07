@@ -1,4 +1,4 @@
-# MF2K NAME file
+# MF-NWT NAME file
 #
 # Output Files
 LIST                2         NonEq.out
@@ -15,4 +15,4 @@ LMT6               18         NonEq.lmt
 # Additional Output Files
 DATA               30         NonEq.hed
 DATA               68         NonEq.uzf1
-DATA(BINARY)       40         NonEq.ccf  
+DATA(BINARY)       40         NonEq.cbc

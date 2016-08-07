@@ -1,5 +1,5 @@
 #
-# MT3DMS v5 Name file for 1-D test case NonEq
+# MT3D-USGS ver 1.00.00 Name file for 1-D test case with non-equilibrium transport
 #
 # Standard output file
 LIST                16        NonEq.m3d
@@ -9,10 +9,10 @@ ADV                  2        NonEq.adv
 DSP                  3        NonEq.dsp
 SSM                  4        NonEq.ssm
 GCG                  5        NonEq.gcg
-RCT                  6        NonEq.rct
+RCT                  8        NonEq.rct
 UZT                  7        NonEq.uzt
 # Flow-Transport Link input file
-FTL                 10        NonEq_stopflow.ftlu 'FREE'
+FTL                 10        NonEq_wStopQ.ftl   FREE
 # UZF File containing RCH and ET options
 
 # Uncomment the following lines to override
