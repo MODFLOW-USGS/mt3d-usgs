@@ -1274,7 +1274,7 @@ T T T F T F F F F F                                           !TRNOP: ADV,DSP,SS
          0 0.000E+00                                          !SCONC-L209
          0 0.000E+00                                          !SCONC-L210
       -999      0.01                                          !CINACT,THKMIN
-        12         0         0         0         F            !IFMTCN,IFMTNP,IFMTRF,IFMTDP,SAVUCN
+        12         0         0         0         T            !IFMTCN,IFMTNP,IFMTRF,IFMTDP,SAVUCN
         86                                                     !NPRS (>0 skip TIMPRS)
       0.01      0.25      0.50      0.75      1.00      1.25      1.50      1.75
       2.00      2.25      2.50      2.75      3.00      3.25      3.50      3.75
