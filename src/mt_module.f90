@@ -537,46 +537,46 @@ CONTAINS
 !        REAL,             SAVE, DIMENSION(:),         POINTER :: CUZT2SFR
 CONTAINS
         SUBROUTINE MEMDEALLOCATE_UZ()
-        IF(ASSOCIATED(PRSITYSAV)) DEALLOCATE(PRSITYSAV)             !edm
-        IF(ASSOCIATED(SATOLD))    DEALLOCATE(SATOLD)                !edm
-        IF(ASSOCIATED(SATNEW))    DEALLOCATE(SATNEW)                !edm
-        IF(ASSOCIATED(SDH))       DEALLOCATE(SDH)                   !edm
-        IF(ASSOCIATED(IUZFBND))   DEALLOCATE(IUZFBND)               !edm
-        IF(ASSOCIATED(WC))        DEALLOCATE(WC)                    !edm
-        IF(ASSOCIATED(THETAW))    DEALLOCATE(THETAW)                !edm
-        IF(ASSOCIATED(UZFLX))     DEALLOCATE(UZFLX)                 !edm
-        IF(ASSOCIATED(UZQSTO))    DEALLOCATE(UZQSTO)                !edm
-        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
-        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)                !edm
-        IF(ASSOCIATED(IUZFOPTG))  DEALLOCATE(IUZFOPTG)              !edm
-        IF(ASSOCIATED(IETFLG))    DEALLOCATE(IETFLG)                !edm
-        IF(ASSOCIATED(IUZFOPT))   DEALLOCATE(IUZFOPT)               !edm
-        IF(ASSOCIATED(ICBCUZ))    DEALLOCATE(ICBCUZ)                !edm
-        IF(ASSOCIATED(UZET))      DEALLOCATE(UZET)                  !edm
-        IF(ASSOCIATED(CUZET))     DEALLOCATE(CUZET)                 !edm
-        IF(ASSOCIATED(IGWET))     DEALLOCATE(IGWET)                 !edm
-        IF(ASSOCIATED(GWET))      DEALLOCATE(GWET)                  !edm
-        IF(ASSOCIATED(CGWET))     DEALLOCATE(CGWET)                 !edm
-!        IF(ASSOCIATED(MXUZCON))   DEALLOCATE(MXUZCON)               !edm
-!        IF(ASSOCIATED(IROUTE))    DEALLOCATE(IROUTE)                !edm 
-!        IF(ASSOCIATED(UZQ))       DEALLOCATE(UZQ)                   !edm
-!        IF(ASSOCIATED(NCON))      DEALLOCATE(NCON)                  !edm
-!        IF(ASSOCIATED(NCONLK))    DEALLOCATE(NCONLK)                !edm
-!        IF(ASSOCIATED(NCONSF))    DEALLOCATE(NCONSF)                !edm
-        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)                !edm
-        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)                !edm
-        IF(ASSOCIATED(IUZRCH))    DEALLOCATE(IUZRCH)                !edm
-        IF(ASSOCIATED(UZRECH))    DEALLOCATE(UZRECH)                !edm
-        IF(ASSOCIATED(CUZRCH))    DEALLOCATE(CUZRCH)                  !edm
+        IF(ASSOCIATED(PRSITYSAV)) DEALLOCATE(PRSITYSAV)
+        IF(ASSOCIATED(SATOLD))    DEALLOCATE(SATOLD)   
+        IF(ASSOCIATED(SATNEW))    DEALLOCATE(SATNEW)   
+        IF(ASSOCIATED(SDH))       DEALLOCATE(SDH)      
+        IF(ASSOCIATED(IUZFBND))   DEALLOCATE(IUZFBND)  
+        IF(ASSOCIATED(WC))        DEALLOCATE(WC)       
+        IF(ASSOCIATED(THETAW))    DEALLOCATE(THETAW)   
+        IF(ASSOCIATED(UZFLX))     DEALLOCATE(UZFLX)    
+        IF(ASSOCIATED(UZQSTO))    DEALLOCATE(UZQSTO)   
+        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)   
+        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)   
+        IF(ASSOCIATED(IUZFOPTG))  DEALLOCATE(IUZFOPTG) 
+        IF(ASSOCIATED(IETFLG))    DEALLOCATE(IETFLG)   
+        IF(ASSOCIATED(IUZFOPT))   DEALLOCATE(IUZFOPT)  
+        IF(ASSOCIATED(ICBCUZ))    DEALLOCATE(ICBCUZ)   
+        IF(ASSOCIATED(UZET))      DEALLOCATE(UZET)     
+        IF(ASSOCIATED(CUZET))     DEALLOCATE(CUZET)    
+        IF(ASSOCIATED(IGWET))     DEALLOCATE(IGWET)    
+        IF(ASSOCIATED(GWET))      DEALLOCATE(GWET)     
+        IF(ASSOCIATED(CGWET))     DEALLOCATE(CGWET)    
+!        IF(ASSOCIATED(MXUZCON))   DEALLOCATE(MXUZCON) 
+!        IF(ASSOCIATED(IROUTE))    DEALLOCATE(IROUTE)  
+!        IF(ASSOCIATED(UZQ))       DEALLOCATE(UZQ)     
+!        IF(ASSOCIATED(NCON))      DEALLOCATE(NCON)    
+!        IF(ASSOCIATED(NCONLK))    DEALLOCATE(NCONLK)  
+!        IF(ASSOCIATED(NCONSF))    DEALLOCATE(NCONSF)  
+        IF(ASSOCIATED(FINFIL))    DEALLOCATE(FINFIL)   
+        IF(ASSOCIATED(CUZINF))    DEALLOCATE(CUZINF)   
+        IF(ASSOCIATED(IUZRCH))    DEALLOCATE(IUZRCH)   
+        IF(ASSOCIATED(UZRECH))    DEALLOCATE(UZRECH)   
+        IF(ASSOCIATED(CUZRCH))    DEALLOCATE(CUZRCH)   
         END SUBROUTINE MEMDEALLOCATE_UZ
     END MODULE UZTVARS
 MODULE MT3DMS_MODULE
         INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=9000
         CHARACTER(LEN=4), SAVE, DIMENSION(MXTRNOP) :: NameTRNOP=        &
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
-     &    'CTS ', 'UZT ', '    ', '    ', '    ',                       &      !edm
+     &    '    ', 'UZT ', '    ', '    ', '    ',                       &
      &    'TOB ', '    ', 'HSS ', 'TSO ', 'RTR ',                       &
-     &    '    ', '    ', 'LKT ', 'SFT ', '    '/)
+     &    '    ', '    ', 'LKT ', 'SFT ', 'CTS '/)
         INTEGER,          SAVE,                       POINTER :: NCOL      
         INTEGER,          SAVE,                       POINTER :: NROW      
         INTEGER,          SAVE,                       POINTER :: NLAY      

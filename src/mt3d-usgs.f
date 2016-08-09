@@ -34,7 +34,7 @@ C U.S. Geological Survey with the iterative solver routine by Tsun-Zee
 C Mai.  Funding for MT3D-USGS development is provided, in part, by
 C U.S. Geological Survey's Groundwater Resources Program.
 C
-C Copyright, 2014, . All rights reserved.
+C Copyright, 2016, . All rights reserved.
 C
 C This program is provided without any warranty.
 C No author or distributor accepts any responsibility
@@ -45,7 +45,7 @@ C but ONLY under the condition that the above copyright notice
 C and this notice remain intact.
 C
 C=======================================================================
-C Version history: xx-xx-2014 (1.00)
+C Version history: xx-xx-2016 (1.00)
 C
 C  =====================================================================
 C
@@ -173,7 +173,7 @@ C--ALLOCATE STORAGE SPACE FOR DATA ARRAYS
       IF(iUnitTRNOP(7).GT.0) CALL UZT1AR(iUnitTRNOP(7))
       IF(iUnitTRNOP(4).GT.0) CALL RCT1AR(iUnitTRNOP(4))
       IF(iUnitTRNOP(5).GT.0) CALL GCG1AR(iUnitTRNOP(5))
-      IF(iUnitTRNOP(6).GT.0) CALL CTS1AR(iUnitTRNOP(6))
+      IF(iUnitTRNOP(20).GT.0) CALL CTS1AR(iUnitTRNOP(20))
       IF(iUnitTRNOP(11).GT.0) CALL TOB1AR(iUnitTRNOP(11))
       IF(iUnitTRNOP(13).GT.0) CALL HSS1AR(iUnitTRNOP(13))
       IF(iUnitTRNOP(18).GT.0) CALL LKT1AR(iUnitTRNOP(18))
@@ -211,7 +211,7 @@ C
 C--READ AND PREPARE INPUT INFORMATION WHICH IS CONSTANT
 C--WITHIN EACH STRESS PERIOD
         IF(iUnitTRNOP(3).GT.0) CALL SSM1RP(KPER)
-        IF(iUnitTRNOP(6).GT.0) CALL CTS1RP(KPER)
+        IF(iUnitTRNOP(20).GT.0) CALL CTS1RP(KPER)
         IF(iUnitTRNOP(7).GT.0) CALL UZT1RP(KPER)
 C--READ LAK AND SFR BOUNDARY CONDITIONS
         IF(iUnitTRNOP(18).GT.0) CALL LKT1SS(KPER)
@@ -316,7 +316,7 @@ C--ALWAYS UPDATE MATRIX IF NONLINEAR SORPTION OR MULTICOMPONENT
               IF(iUnitTRNOP(4).GT.0.AND.ISOTHM.GT.1) UPDLHS=.TRUE.
               IF(NCOMP.GT.1) UPDLHS=.TRUE.
               IF(IALTFM.GE.2) UPDLHS=.TRUE.
-              IF(iUnitTRNOP(6).GT.0 .OR.
+              IF(iUnitTRNOP(20).GT.0 .OR.
      1           iUnitTRNOP(18).GT.0 .OR.
      1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.
 C
@@ -350,7 +350,7 @@ C--FORMULATE MATRIX COEFFICIENTS
      &           CALL UZT1FM(ICOMP)
                 IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL HSS1FM(ICOMP,ICBUND,time1,time2,DTRANS)
-                IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)
+                IF(iUnitTRNOP(20).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL CTS1FM(ICOMP)                        
                 IF(iUnitTRNOP(18).GT.0)                    
      &           CALL LKT1FM(ICOMP)                        
@@ -413,7 +413,7 @@ C
      &         CALL UZT1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
      &         CALL HSS1BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
-              IF(iUnitTRNOP(6).GT.0 .AND. ICOMP.LE.MCOMP)
+              IF(iUnitTRNOP(20).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL CTS1BD(KSTP,KPER,ICOMP,DTRANS,N)     
               IF(iUnitTRNOP(18).GT.0)                    
      1         CALL LKT1BD(ICOMP,KPER,KSTP,DTRANS,N)    

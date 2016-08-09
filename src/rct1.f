@@ -1119,7 +1119,7 @@ C
 		        CALL reaction_sub(ICOMP,1)                        
 C                                                                   
                 DCDT_S(N,ICOMP)=DCDT(ICOMP)                         
-                DCDT_SYLD(N,ICOMP)=DCDTYLD(ICOMP)                         
+                DCDT_SYLD(N,ICOMP)=DCDTYLD(ICOMP)
 C                                                                   
                 IF(ICOMP.LE.NED) THEN                               
 C                  A(N)=A(N)+DCDT(ICOMP)*                            
@@ -1649,7 +1649,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
      &                         RETA2,FRAC,SRCONC,ISOTHM,IREACT,
-     &                         CNEW                                 !edm
+     &                         CNEW
 C
       IMPLICIT  NONE
       INTEGER   ICOMP
@@ -1677,7 +1677,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
      &                         RETA2,FRAC,SRCONC,ISOTHM,IREACT,
-     &                         CNEW                                 !edm
+     &                         CNEW
 C
       IMPLICIT  NONE
       INTEGER   ICOMP
@@ -1704,7 +1704,7 @@ C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
      &                         RETA2,FRAC,SRCONC,ISOTHM,IREACT,
-     &                         CNEW,THETAW2                                 !edm
+     &                         CNEW,THETAW2
 C
       IMPLICIT  NONE
       INTEGER   ICOMP

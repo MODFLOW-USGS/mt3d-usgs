@@ -50,7 +50,7 @@ C--SET DEFAULT UNIT NUMBERS
       INADV=2
       INDSP=3
       INSSM=4
-      INCTS=6
+      INCTS=20
       INUZT=7
       INRCT=8
       INGCG=9  
@@ -1871,7 +1871,7 @@ C
       IF(FUZFFLOWS) 
      &  WRITE(IOUT,2206) TMASIO(54,1,ICOMP),TMASIO(54,2,ICOMP)
 C
-      IF(iUnitTRNOP(6).GT.0)                                    
+      IF(iUnitTRNOP(20).GT.0)                                    
      &  WRITE(IOUT,1190) TMASIO(11,1,ICOMP),TMASIO(11,2,ICOMP)  
 C                                                               
       IF(DOMINSAT) THEN                               

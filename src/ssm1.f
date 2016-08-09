@@ -723,7 +723,7 @@ C--POINT SINK/SOURCE TERMS
         IQ=SS(6,NUM)
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
-        IF(iUnitTRNOP(6).GT.0) THEN               
+        IF(iUnitTRNOP(20).GT.0) THEN               
           IF(SS(8,NUM).GT.0) THEN                 
             CONTINUE                              
 CCCCC          IF(IWCTS(SS(8,NUM)).GT.0) CYCLE    
@@ -741,7 +741,7 @@ C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)
         ELSEIF(IQ.EQ.27) THEN
           IGROUP=SS(7,NUM)
           CTMP=SSG(4,IGROUP)
-          IF(iUnitTRNOP(6).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
+          IF(iUnitTRNOP(20).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
             IF(SS(8,NUM).GT.0) THEN                
               IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
             ENDIF                                  
@@ -1432,7 +1432,7 @@ C--POINT SINK/SOURCE TERMS
         IF(NCOMP.GT.1) CTMP=SSMC(ICOMP,NUM)
 C
 C--SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM
-        IF(iUnitTRNOP(6).GT.0) THEN              
+        IF(iUnitTRNOP(20).GT.0) THEN              
           IF(SS(8,NUM).GT.0) THEN                
             IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
           ENDIF                                  
@@ -1454,7 +1454,7 @@ C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)
         ELSEIF(IQ.EQ.27) THEN
           IGROUP=SS(7,NUM)
           CTMP=SSG(4,IGROUP)
-          IF(iUnitTRNOP(6).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
+          IF(iUnitTRNOP(20).GT.0) THEN !SKIP IF THE WELL IS A PART OF TREATMENT SYSTEM 
             IF(SS(8,NUM).GT.0) THEN                
               IF(IWCTS(INT(SS(8,NUM))).GT.0) CYCLE      
             ENDIF                                  
