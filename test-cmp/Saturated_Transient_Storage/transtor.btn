@@ -1,4 +1,4 @@
-#MT3D-USGS Model for testing alternative storage formulation
+#MT3D-USGS Model for testing storage formulation
 #     NLAY      NROW      NCOL      NPER     NCOMP     MCOMP   IATS
          2         1         1         4         1         1
 D   FT  LB  
