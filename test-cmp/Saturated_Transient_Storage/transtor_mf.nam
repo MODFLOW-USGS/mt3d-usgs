@@ -1,0 +1,12 @@
+LIST           7 transtor.lst
+BAS6           1 transtor.ba6
+DIS           29 transtor.dis
+WEL           13 transtor.wel
+NWT           12 transtor.nwt
+UPW           11 transtor.upw
+OC            22 transtor.oc
+LMT6          33 transtor.lmt
+DATA(BINARY)  50 transtor.cbb
+DATA(BINARY)  30 transtor.hds
+DATA(BINARY)  31 transtor.ddn
+
