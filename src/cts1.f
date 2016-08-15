@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED IN THE CONTAMINANT 
 C TREATMENT SYSTEM PACKAGE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INCTS,IOUT,MXCTS,ICTSOUT,NCOL,NROW,NLAY,
      &                         NCOMP,MXCTS,MXEXT,MXINJ,KEXT,IEXT,
@@ -86,7 +85,6 @@ C ********************************************************************
 C THIS SUBROUTINE READS NODES AND CONCENTRATIONS OF EXTRACTION/INJECTION
 C NEEDED BY THE CONTAMINANT TREATMENT SYSTEM (CTS) PACKAGE.
 C ********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INCTS,IOUT,NCOL,NROW,NLAY,NCOMP,MXCTS,
      &                         MXEXT,MXINJ,NCTS,KEXT,IEXT,JEXT,KINJ,
@@ -373,7 +371,6 @@ C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE TREATMENT 
 C SYSTEM TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,
@@ -612,7 +609,6 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH CTS TERMS.
 C THIS ALSO WRITES BUDGETS FOR ALL TREATMENT SYSTEMS SIMULATED.
 C ********************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT, ONLY: QC7,DRYON
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,

@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE ADVECTION
 C (ADV) PACKAGE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,MXPART,
      &                         PERCEL,INADV,
@@ -378,7 +377,6 @@ C LEVEL DUE TO ADVECTION WITH THE MIXED EULERIAN-LAGRANGIAN SCHEMES.
 C ALSO INCLUDED ARE EXPLICIT UPSTREAM FINITE DIFFERENCE AND THIRD-ORDER
 C TVD (ULTIMATE) SCHEMES.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,
@@ -509,7 +507,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES CONCENTRATIONS AT THE INTERMEDIATE TIME
 C LEVEL DUE TO ADVECTION USING THE FORWARD TRACKING MOC PROCEDURE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,NCOUNT,NPCHEK,NP,ICBUND,
@@ -817,7 +814,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES CONCENTRATIONS AT THE INTERMEDIATE TIME
 C LEVEL DUE TO ADVECTION WITH THE BACKWARD TRACKING MMOC PROCEDURE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NMAX,NCOL,NROW,NLAY,NP,ICBUND,MIXELM,
@@ -1194,7 +1190,6 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES THE RELATIVE CELL CONCENTRATION GRADIENT
 C FOR EACH ACTIVE CELL IN THE GRID.
 C ********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,J,I,K,JM1,JP1,IM1,IP1,KM1,KP1,
@@ -1266,7 +1261,6 @@ C **********************************************************************
 C THIS SUBROUTINE MANAGES THE DISTRIBUTION OF MOVING PARTICLES,
 C DELETING OR INSERTING PARTICLES AS NECESSARY.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   IOUT,NCOL,NROW,NLAY,NCOUNT,MXPART,ICBUND,NPCHEK,
@@ -1426,7 +1420,6 @@ C ********************************************************************
 C THIS SUBROUTINE INSERTS [NADD] NEW PARTICLES AT CELL (JJ,II,KK)
 C RANDOMLY INSIDE THE CELL BLOCK.
 C ********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,JJ,II,KK,N,NP,NCOUNT,MXPART,NPCHEK,
@@ -1468,7 +1461,6 @@ C THIS FUNCTION RETURNS A RANDOM NUMBER BETWEEN 0.0 AND 1.0.
 C SET IDUM TO ANY NONZERO INTEGER TO INITIALIZE THE SEQUENCE.
 C [MODIFIED FROM PRESS ET AL. (1992)].
 C ******************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   IDUM,IA,IM,IQ,IR,MASK,K
@@ -1494,7 +1486,6 @@ C ********************************************************************
 C THIS SUBROUTINE INSERTS NEW PARTICLES AT CELL (JJ,II,KK) WITH
 C A FIXED PATTERN BASED ON THE VALUES OF [NADD] AND [NPLANE].
 C ********************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,JJ,II,KK,N,NP,NCOUNT,MXPART,NPCHEK,
@@ -1667,7 +1658,6 @@ C MOVING OUT OF THE CELL IF SADV5Q > 0, INTO THE CELL IF SADV5Q < 0.
 C NADVFD=1 IS FOR THE UPSTREAM SCHEME; NADVFD=2 IS FOR THE CENTRAL
 C WEIGHTING SCHEME.
 C *******************************************************************
-C last modified: 10-01-2014
 C
       USE       MIN_SAT 
       IMPLICIT  NONE
@@ -1791,7 +1781,6 @@ C *********************************************************************
 C THIS SUBROUTINE SOLVES THE ADVECTION TERM WITH THE UPSTREAM WEIGHTING
 C FINITE DIFFERENCE SCHEME.
 C *********************************************************************
-C last modified: 02-15-2005
 C
       USE       MIN_SAT   
       IMPLICIT  NONE
@@ -1937,7 +1926,6 @@ C *******************************************************************
 C THIS SUBROUTINE CALCULATES WEIGHTED VELOCITY NEEDED FOR MOVING
 C PARTICLE P OVER DT USING THE 4TH-ORDER RUNGE-KUTTA SOLUTION.
 C *******************************************************************
-C last modified: 10-01-2014
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,ICBUND,JP,IP,KP,J0,I0,K0,J,I,K,N
@@ -2216,7 +2204,6 @@ C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 10-01-2014
 C
       USE UZTVARS,       ONLY: IUZFBND
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,NODES,
@@ -2342,7 +2329,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGET OF CONSTANT-CONCENTRATION NODES
 C DUE TO ADVECTION.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY:IOUT,NCOL,NROW,NLAY,MCOMP,NADVFD,ICBUND,
      &                        DELR,DELC,DH,QX,QY,QZ,CNEW,RMASIO,
@@ -2471,7 +2457,6 @@ C *********************************************************************
 C THIS SUBROUTINE SOLVES THE ADVECTION TERM WITH THE 3RD ORDER TVD
 C SCHEME (ULTIMATE).
 C *********************************************************************
-C last modified: 02-15-2005
 C
       USE       MIN_SAT 
       IMPLICIT  NONE
@@ -2912,7 +2897,6 @@ C LL = 1: LEFT FACE
 C      2: BACK FACE
 C      3: TOP  FACE
 C**********************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IP1,IM1,IM2,JP1,JM1,JM2,
@@ -3328,7 +3312,6 @@ C MOVING OUT OF THE CELL IF SADV1Q > 0, INTO THE CELL IF SADV1Q < 0.
 C NADVFD=1 IS FOR THE UPSTREAM SCHEME; NADVFD=2 IS FOR THE CENTRAL
 C WEIGHTING SCHEME.
 C *******************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT
       IMPLICIT  NONE
@@ -3464,7 +3447,6 @@ C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -3816,7 +3798,6 @@ C THIS SUBROUTINE FORMULATES COEFFICIENT MATRICES FOR THE ADVECTION
 C TERM WITH THE OPTIONS OF UPSTREAM (NADVFD=1) AND CENTRAL (NADVFD=2)
 C WEIGHTING.
 C *********************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -4275,7 +4256,6 @@ C 7 - INFLOW TO DRY CELL Q*C
 C 8 - INFLOW TO DRY CELL Q
 C 9 - OUTFLOW FROM DRY CELL Q
 C *********************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,
@@ -4540,7 +4520,6 @@ C IDIR3=1 RECORD MASS MOVING IN INTO QCTMP2
 C IDIR3=2 RECORD MASS MOVING OUT INTO QCTMP3
 C
 C *******************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT
       IMPLICIT  NONE

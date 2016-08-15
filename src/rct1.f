@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE CHEMICAL 
 C REACTION (RCT) PACKAGE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INRCT,IOUT,NCOL,NROW,NLAY,NCOMP,ICBUND,
      &                         COLD,PRSITY,BUFF,SRCONC,RETA,RHOB,
@@ -618,7 +617,6 @@ C ***NOTE: THIS ROUTINE IS CALLED FROM A NUMBER OF FUNCTIONS, TWO
 C          OF WHICH ARE RCT1CF1 AND RCT1CF2.  WHEN CALLED FROM THE
 c          LATTER, 'PRISTY' ACTS AS A SURROGATE FOR 'THETAW'.
 C ********************************************************************
-C last modified: 10-01-2005
 C
       USE RCTMOD
       USE UZTVARS,       ONLY: THETAW
@@ -799,7 +797,6 @@ C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX [A] AND THE
 C RIGHT-HAND-SIDE MATRIX [RHS] FOR SORPTION AND 1ST/0TH ORDER 
 C REACTION TERMS USING THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C *******************************************************************
-C last modified: 10-01-2005
 C
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,NODES,
@@ -1155,7 +1152,6 @@ C
 C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGET ASSOCIATED WITH REACTIONS.
 C **********************************************************************
-C last modified: 10-01-2005
 C
       USE MIN_SAT, ONLY: VAQSAT,ICIMDRY
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
@@ -1644,7 +1640,6 @@ C
 C ********************************************************************
 C THIS SUBROUTINE UPDATES NONLINEAR REACTION COEFFICIENTS.
 C ********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,
@@ -1671,7 +1666,6 @@ C
 C ********************************************************************
 C THIS SUBROUTINE UPDATES NONLINEAR REACTION COEFFICIENTS.
 C ********************************************************************
-C last modified: 02-15-2005
 C
       USE UZTVARS,       ONLY: THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
@@ -1699,7 +1693,6 @@ C
 C ********************************************************************
 C THIS SUBROUTINE UPDATES NONLINEAR REACTION COEFFICIENTS.
 C ********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,PRSITY,
      &                         RETA,RFMIN,RHOB,SP1,SP2,RC1,RC2,PRSITY2,

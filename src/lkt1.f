@@ -3,7 +3,6 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR LAK VARIABLES
 C***********************************************************************
-C last modified: 10-01-2014
       USE LAKVARS
       USE MT3DMS_MODULE, ONLY: INLKT,IOUT,NCOMP
       INTEGER IN

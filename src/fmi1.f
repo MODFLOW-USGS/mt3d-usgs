@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE CHECKS FLOW-TRANSPORT LINK FILE AND ALLOCATES SPACE
 C FOR ARRAYS THAT MAY BE NEEDED BY FLOW MODEL-INTERFACE (FMI) PACKAGE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,MXTRNOP,iUnitTRNOP,NPERFL,ISS,
      &                         IVER,IFTLFMT,
@@ -264,7 +263,6 @@ C INTERFACES, AND FLOW RATE TO OR FROM TRANSIENT STORAGE
 C FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL, AND PREPARES THEM
 C IN THE FORMS NEEDED BY THE TRANSPORT MODEL.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MIN_SAT  
       USE UZTVARS,       ONLY: WC,UZFLX,UZQSTO,SATOLD,SATNEW,
@@ -807,7 +805,6 @@ C THIS SUBROUTINE READS THE LOCATIONS AND FLOW RATES OF SINKS & SOURCES
 C FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL, AND PREPARES THEM
 C IN THE FORMS NEEDED BY THE TRANSPORT MODEL.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE MIN_SAT, ONLY: DRYON,DOMINSAT
       USE UZTVARS, ONLY: UZET,GWET,IETFLG,FINFIL,UZFLX,SATNEW,
@@ -1751,7 +1748,6 @@ C *****************************************************************
 C THIS SUBROUTINE READS HEADS AND VOLUMETRIC FLUXES ACROSS CELL
 C INTERFACES FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *****************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
 C
@@ -1834,7 +1830,6 @@ C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF DIFFUSIVE
 C SINK/SOURCE TERMS (RECHARGE AND EVAPOTRANSPIRATION) FROM AN
 C UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *****************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
 C
@@ -1921,7 +1916,6 @@ C *********************************************************************
 C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF POINT SINK/SOURCE
 C FLOW TERMS FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
@@ -2041,7 +2035,6 @@ C *********************************************************************
 C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF SINK/SOURCE GROUPS
 C THAT ARE CONNECTED FROM THE FLOW-TRANSPORT LINK FILE
 C *********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
@@ -2174,7 +2167,6 @@ C THIS FUNCTION OBTAINS CONCENTRATION AT A REWET CELL (JJ,II,KK)
 C FROM CONCENTRATIONS AT NEIGHBORING NODES WITH INVERSE DISTANCE
 C (POWER 2) WEIGHTING .
 C *****************************************************************
-C last modified: 02-15-2005
 C
       USE MIN_SAT  
       IMPLICIT  NONE
@@ -2291,7 +2283,6 @@ C
 C *********************************************************************
 C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF SFR PAKCAGE
 C *********************************************************************
-C last modified: 08-10-2012
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT 
       USE SFRVARS
@@ -2517,7 +2508,6 @@ C
 C *********************************************************************
 C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF LAK PAKCAGE
 C *********************************************************************
-C last modified: 08-10-2012
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
       USE LAKVARS
@@ -2667,7 +2657,6 @@ C
 C *********************************************************************
 C THIS SUBROUTINE READS UZF->SFR & UZF->LAK CONNECTIONS
 C *********************************************************************
-C last modified: 08-15-2013
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
 C      USE UZTVARS,       ONLY: !UZQ,NCON,NCONLK,NCONSF,MXUZCON,IROUTE,

@@ -36,7 +36,6 @@ C THIS SUBROUTINE IS USED TO INPUT 1 OR 2D INTEGER ARRAYS
 C BY BLOCK, ZONAL, LIST-DIRECTED, UNFORMATTED,
 C OR ANY USER-SPECIFIED FORMAT.
 C ************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   NZMAX
@@ -238,7 +237,6 @@ C THIS SUBROUTINE IS USED TO INPUT 1 OR 2D REAL ARRAYS,
 C BY BLOCK, ZONAL, LIST-DIRECTED, UNFORMATTED,
 C OR ANY USER-SPECIFIED FORMAT.
 C ********************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   NZMAX
@@ -429,7 +427,6 @@ C THE CONTENT OF THE PROMPT IS IN [FINDEX].
 c NOTE: THE STYLE OF UNFORMATTED FILES IS SPECIFIED IN THE
 C INCLUDE FILE 'openspec.inc'
 C ******************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   IN,ISTAT,I,IDFL
@@ -511,7 +508,6 @@ C ************************************************************
 C PRINT AN INTEGER 1 OR 2D ARRAY IN WRAP OR STRIP FORM.
 C [MODIFIED FROM MCDONALD AND HARBAUGH (1988)].
 C ************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   IA,KTRN,KSTP,KPER,NCOL,NROW,ILAY,IPRN,IOUT,
@@ -639,7 +635,6 @@ C ****************************************************************
 C PRINT A REAL 1 OR 2D ARRAY IN WRAP OR STRIP FORM.
 C [MODIFIED FROM MCDONALD AND HARBAUGH (1988)].
 C ****************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   KTRN,KSTP,KPER,NCOL,NROW,ILAY,IPRN,IOUT,IP,J,I,

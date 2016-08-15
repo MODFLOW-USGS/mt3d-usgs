@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED IN THE DISPERSION
 C (DSP) PACKAGE.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INDSP,IOUT,NCOL,NROW,NLAY,MCOMP,BUFF,
      &                         ALPHAL,DMCOEF,TRPT,TRPV,DXX,DYY,
@@ -149,7 +148,6 @@ C NOTE: Dij IS CALCULATED USING DARCY FLUX COMPONENTS INSTEAD OF
 C ====  LINEAR VELOCITY COMPONENTS.  TO CONVERT THIS APPARENT Dij TO
 C       ACTUAL DISPERSION COEFFICIENT, IT IS DIVIDED BY POROSITY.
 C***********************************************************************
-C last modified: 10-30-2005
 C
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,ICBUND,PRSITY,
      &                         DELR,DELC,DH,QX,QY,QZ,IFMTDP,DTDISP,ISS,
@@ -637,7 +635,6 @@ C **********************************************************************
 C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX FOR THE DISPERSION
 C TERM USING THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C **********************************************************************
-C last modified: 10-30-2006
 C
       USE UZTVARS,       ONLY: IUZFBND
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,MCOMP,DELR,DELC,DH,
@@ -897,7 +894,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGET OF CONSTANT-CONCENTRATION NODES
 C DUE TO DISPERSION.
 C **********************************************************************
-C last modified: 10-30-2006
 C
       USE MT3DMS_MODULE, ONLY:NCOL,NROW,NLAY,MCOMP,ICBUND,DELR,DELC,
      &                        DH,DXX,DXY,DXZ,DYX,DYY,DYZ,DZX,DZY,DZZ,

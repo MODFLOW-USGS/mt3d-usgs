@@ -4,7 +4,6 @@ C ********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE HSSM-MT3DMS
 C INTERFACE (HSS) PACKAGE.
 C ********************************************************************
-C Last modified: 02-20-2010
 C
       USE DSSL
       USE MT3DMS_MODULE, ONLY: INHSS,IOUT,NCOL,NROW,NLAY,NCOMP,ICBUND,
@@ -395,7 +394,6 @@ C **********************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE HSS SOURCE
 C TERM UNDER THE IMPLICIT FINITE-DIFFERENCE METHOD.
 C **********************************************************************          
-C last modified: 02-20-2010
 C
       USE DSSL
       USE MIN_SAT, ONLY : QC7,DRYON
@@ -481,7 +479,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH THE HSS
 C SOURCE TERM.
 C **********************************************************************          
-C last modified: 02-20-2010
 C
       USE DSSL
       USE MIN_SAT, ONLY: QC7,DRYON
@@ -585,7 +582,6 @@ C **********************************************************************
 C THIS SUBROUTINE CALCULATES AN AVERAGE MASS LOADING RATE BETWEEN TIME
 C INTERVAL [Time1, Time2] FROM AN ARBITRARILY DEFINED SOURCE SERIES
 C **********************************************************************          
-C last modified: 02-20-2010
 C
       IMPLICIT  NONE
       INTEGER   NCOL,NROW,NLAY,isource,it,icell,
@@ -680,7 +676,6 @@ C that is intersected by a polygon defined in array P of dimension
 C [nPoint]. The finite-difference cell is discritized into a subgrid
 C of dimension [nSubgrid] x [nSubgrid].
 c **********************************************************************    
-c last modified: 01-10-2006
 c
       implicit  none
       integer   ncol,nrow,nPoint,nSubgrid,j,i,nx,ny,nsub
@@ -739,7 +734,6 @@ C a polygon defined by a [NP] number of points P.  If yes,
 C the function returns a logical value .TRUE.  Otherwise,
 C it returns .FAUSE.
 C .........................................................
-C last modified: 01-10-2006
 C
       REAL P,P1,P2,PL1,PL2
       DIMENSION P(2,NP),P1(2),P2(2),PL1(2),PL2(2)

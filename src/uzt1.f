@@ -3,7 +3,6 @@ C
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR UZT VARIABLES
 C***********************************************************************
-C last modified 10-01-2014
       USE UZTVARS
       USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,NCOL,NROW,DZ,DH,ICBUND,PRSITY,
      &                         NLAY,NCOL,NROW,iUnitTRNOP
@@ -263,7 +262,6 @@ C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE UZT SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS
       USE PKG2PKG
@@ -493,7 +491,6 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH UZT SINK/
 C SOURCE TERMS.
 C ********************************************************************
-C last modified: 08-28-2013
       USE UZTVARS
       USE PKG2PKG
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,

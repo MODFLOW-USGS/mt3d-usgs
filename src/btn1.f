@@ -5,7 +5,6 @@ C OPEN FILES, USING THE METHOD OF MODFLOW-96, 2000 & 2005
 c NOTE: THE STYLE OF UNFORMATTED FILES IS SPECIFIED IN THE
 C INCLUDE FILE 'openspec.inc'
 C *******************************************************************
-C Last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,
      &                         INTOB,INHSS,INFTL,FPRT,MXTRNOP,
@@ -257,7 +256,6 @@ C **********************************************************************
 C THIS SUBROUTINE READS AND PREPARES INPUT DATA RELEVANT TO THE ENTIRE
 C SIMULATION.
 C***********************************************************************
-C last modified: 02-15-2005
 C
       USE UZTVARS, ONLY: PRSITYSAV,IUZFOPTG
 	USE MT3DMS_MODULE
@@ -918,7 +916,6 @@ C
 C *****************************************************************
 C THIS SUBROUTINE GETS TIMING INFORMATION FOR EACH STRESS PERIOD.
 C *****************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INBTN,IOUT,NSTP,MXSTP,TSLNGH,DT0,
      &                         MXSTRN,TTSMULT,TTSMAX,TUNIT,iSSTrans,
@@ -1050,7 +1047,6 @@ C DETERMINING THE STEPSIZE TO BE USED AND WHETHER PRINTOUT IS REQUIRED
 C FOR NEXT TRANSPORT STEP. IT ALSO COMPUTES TOTAL MASS IN THE AQUIFER
 C AT THE FIRST TRANSPORT STEP OF EACH TRANSPORT LOOP.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: SATOLD,PRSITYSAV,IUZFBND,THETAW
       USE MT3DMS_MODULE, ONLY: IOUT,MXTRNOP,iUnitTRNOP,iSSTrans,NSTP,
@@ -1339,7 +1335,6 @@ C **************************************************************
 C THIS SUBROUTINE UPDATES CELL CONCENTRATION AND MASS IN/OUT
 C ACCUMULATING ARRAY TO PREPARE FOR SIMULATION AT NEXT STEP.
 C **************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,CNEW,
      &                         CWGT,CINACT,RMASIO
@@ -1373,7 +1368,6 @@ C **********************************************************************
 C THIS SUBROUTINE SUMMARIZES VOLUMETRIC MASS BUDGETS AND CALCULATES
 C MASS BALANCE DISCREPANCY SINCE THE BEGINNING OF THE SIMULATION.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: PRSITYSAV,SATOLD,IUZFBND,THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,DELR,DELC,DH,
@@ -1674,7 +1668,6 @@ C THIS SUBROUTINE SAVES SIMULATION RESULTS IN THE STANDARD OUTPUT FILE
 C AND VARIOUS OPTIONAL OUTPUT FILES, ACCORDING TO THE OUTPUT CONTROL
 C OPTIONS SPECIFIED IN THE BASIC TRANSPORT INPUT FILE.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,CNEW,
      &                         NPINS,NRC,RETA,SRCONC,MXTRNOP,TUNIT,
@@ -1971,7 +1964,6 @@ C
 C *********************************************************************
 C THIS SUBROUTINE INITIALIZES ALL MATRICES FOR THE IMPLICIT SCHEME.
 C *********************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV,THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
@@ -2133,7 +2125,6 @@ C ***************************************************
 C THIS FUNCTION CHECKS WHETHER ELEMENTS IN AN ARRAY
 C ARE UNIFORM.
 C ***************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   NC,NR,NL,J,I,K

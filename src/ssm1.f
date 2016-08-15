@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED IN THE SINK & SOURCE
 C MIXING (SSM) PACKAGE.
 C **********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
@@ -154,7 +153,6 @@ C ********************************************************************
 C THIS SUBROUTINE READS CONCENTRATIONS OF SOURCES OR SINKS NEEDED BY
 C THE SINK AND SOURCE MIXING (SSM) PACKAGE.
 C ********************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,ICBUND,
      &                         CNEW,
@@ -431,7 +429,6 @@ C ******************************************************************
 C THIS SUBROUTINE FORMULATES MATRIX COEFFICIENTS FOR THE SINK/
 C SOURCE TERMS UNDER THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C ******************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: IUZFBND,THETAW,
      &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
@@ -1045,7 +1042,6 @@ C ********************************************************************
 C THIS SUBROUTINE CALCULATES MASS BUDGETS ASSOCIATED WITH ALL SINK/
 C SOURCE TERMS.
 C ********************************************************************
-C last modified: 02-20-2010
 C
       USE UZTVARS,       ONLY: IUZFBND,THETAW,
      &                         GWET,CGWET,UZRECH,IUZRCH,IGWET,CUZRCH
@@ -1524,7 +1520,6 @@ C
 C ******************************************************************
 C THIS SUBROUTINE SAVES INFORMATION FOR MULTI-NODE WELLS.
 C ******************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,ICBUND,MXSS,NTSS,
      &                         NSS,SS,SSG,PRTOUT,IOUT,ISSGOUT

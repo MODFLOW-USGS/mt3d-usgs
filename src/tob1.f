@@ -4,7 +4,6 @@ C **********************************************************************
 C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE TRANSPORT
 C OBSERVATION (TOB) PACKAGE.
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: INTOB,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         MaxConcObs,MaxFluxObs,MaxFluxCells,
@@ -295,7 +294,6 @@ C This subroutine calls the sconcobs and smassfluxobs subroutines
 C to compute observed residuals between observed and simulated 
 C values
 C **********************************************************************          
-C last modified: 01-21-2009
       USE MT3DMS_MODULE, ONLY: IOUT,inConcObs,inFluxObs
       IMPLICIT NONE
       INTEGER :: KPER,KSTP,NTRANS,IGRID
@@ -321,7 +319,6 @@ C This subroutine gets calculated concentration values at observation
 C points and computes residual errors between calculated and observed
 C if necessary
 C **********************************************************************          
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,CNEW,ICBUND,DELR,
      &                         DELC,XBC,YBC,
@@ -564,7 +561,6 @@ C This subroutine gets calculated mass fluxes at user specified
 C locations and computes residual errors between calculated and
 C observed if necessary
 C **********************************************************************
-C last modified: 02-20-2010
 C
       USE MT3DMS_MODULE, ONLY: ncol,nrow,nlay,ncomp,CNEW,ICBUND,
      &                         delr,delc,dh,
@@ -809,7 +805,6 @@ C This subroutine computes mean, variance, skewness, and kurtosis
 C for an array of data points data(n).
 C *****************************************************************
 C modified from Press et al. (1992)
-C last modified: 02-15-2005
 C      
       IMPLICIT NONE
       INTEGER n,j

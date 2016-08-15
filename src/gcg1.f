@@ -3,7 +3,6 @@ C
 C ********************************************************************
 C ALLOCATE STORAGE IN THE X AND IX ARRAYS FOR GCG ARRAYS
 C ********************************************************************
-C last modified: 10-01-2014
 C
       USE MT3DMS_MODULE, ONLY: INGCG,IOUT,NCOL,NROW,NLAY,NODES,
      &                         MXITER,ITER1,ISOLVE,NCRS,IPRGCG,ACCL,
@@ -127,7 +126,6 @@ C******************************************************************
 C PRINT MAXIMUM CONCENTRATION CHANGES FOR EACH ITERATION DURING
 C A TRANSPORT TIME STEP
 C******************************************************************
-C last modified: 02-15-2005
 C
       IMPLICIT  NONE
       INTEGER   LRCH,ITP,MXITER,ITER1,IOUT,I,J
@@ -191,7 +189,6 @@ C  WK      : REAL ARRAY OF LENGTH 7*NCOL*NROW*NLAY, WORK SPACES.
 C  NCRS    : INTEGER, 7 OR 19 DIAGONALS INDICATOR.
 C  ISPD    : INPUT INTEGER, SYMMETRIC CASE INDICATOR.
 C **********************************************************************
-C last modified: 2-15-2005
 C
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NODES,CINACT,UPDLHS,ISPD,
      &                         ITER1,MXITER,CCLOSE,CNCG,LRCH,A,RHS,Q,WK,
@@ -463,7 +460,6 @@ C*******************************************************************
 C...  THIS SUBROUTINE, MVPRD, PERFORMS AX=Y
 C...  WHERE THE MATRIX A IS STORED IN DIAGONAL FORM
 C*******************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: L
 C
@@ -492,7 +488,6 @@ C
 C*********************************************************************
 C.... THIS SUBROUTINE, MTVPRD, PERFORMS A^TX=Y
 c*********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: L
 C
@@ -539,7 +534,6 @@ C*         SY      :  INPUT REAL ARRAY. THE RIGHT HAND SIDE OF THE
 C*                    SYSTEM.
 C*         Y       :  OUTPUT REAL ARRAY. CONTAINS THE SOLUTION.
 C*********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: L
 C
@@ -650,7 +644,6 @@ C*                      SIDE OF THIS SYSTEM.
 C*         Y          : OUTPUT REAL ARRAY. IT CONTAINS THE SOLUTION OF
 C*                      THIS SYSTEM.
 C***********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: L
 C
@@ -756,7 +749,6 @@ C*         A       INPUT REAL VECTOR. CONTAINS THE NONZERO ELEMENTS
 C*                 OF THE MATRIX.
 C*         Q       OUTPUT, CONTAINS THE COMPACT LDU FORM FOR THE MIC
 C**********************************************************************
-C last modified: 02-15-2005
 C
       USE MT3DMS_MODULE, ONLY: L
 C
