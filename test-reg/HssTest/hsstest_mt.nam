@@ -26,4 +26,5 @@ FTL   0   hsstest.ftl  noprint
 # data         401 species1.obs
 # data         601 species1.mas
 # data         17  model_a.cnf
-#inputfile hss_source.dat
+
+inputfile hss_source.dat
