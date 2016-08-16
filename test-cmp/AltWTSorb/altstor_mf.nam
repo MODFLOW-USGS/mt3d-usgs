@@ -1,0 +1,12 @@
+LIST          7      altstor.lst
+BAS6          1      altstor.bas
+DIS          29      altstor.dis
+WEL          13      altstor.wel
+UPW          11      altstor.upw
+OC           22      altstor.oc
+NWT          45      altstor.nwt
+LMT6         33      altstor.lmt
+DATA(BINARY) 50      altstor.cbb
+DATA(BINARY) 30      altstor.hds
+DATA(BINARY) 31      altstor.ddn
+

@@ -1,0 +1,7 @@
+LIST  0  altstor.out
+BTN   0  altstor.btn
+ADV   0  altstor.adv
+SSM   0  altstor.ssm
+RCT   0  altstor.rct
+GCG   0  altstor.gcg
+FTL   0  altstor.ftl 
