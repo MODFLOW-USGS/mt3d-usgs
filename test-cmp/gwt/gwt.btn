@@ -1,13 +1,14 @@
 Conversion from Groundwater Vistas
 MT3D Model
+MODFLOWStyleArrays
          8        36        23         1         1         1
 D   FT  LB  
  T F T F T
  1 1 1 1 1 1 1 1 1 1
-       0004.05665E02(10F13.0)                   -1     DELTA-X or C
-       0004.03717E02(10F4.0)                    -1     DELTA-Y or R
-       000     100.0(10F5.0)                    -1     TOP OF MODEL
-       100     1.000(01F12.6)                    -1     DELZ Layer   1
+CONSTANT       4.05665E02                     DELTA-X or C
+CONSTANT       4.03717E02                     DELTA-Y or R
+CONSTANT            100.0                     TOP OF MODEL
+INTERNAL       1.0 (1F12.6)                   -1     DELZ Layer   1
 66.652932
 66.037770
 65.561415
@@ -836,37 +837,37 @@ D   FT  LB
 86.992481
 86.828864
 86.239974
-        00     15.00(01F12.6)                    -1     DELZ Layer   2
-        00     15.00(01F12.6)                    -1     DELZ Layer   3
-        00     15.00(01F12.6)                    -1     DELZ Layer   4
-        00     15.00(01F12.6)                    -1     DELZ Layer   5
-        00     15.00(01F12.6)                    -1     DELZ Layer   6
-        00     15.00(01F12.6)                    -1     DELZ Layer   7
-        00     15.00(01F12.6)                    -1     DELZ Layer   8
-         0       0.3(10E12.4)                   -1     POROSITY Layer   1
-         0       0.3(10E12.4)                   -1     POROSITY Layer   2
-         0       0.3(10E12.4)                   -1     POROSITY Layer   3
-         0       0.3(10E12.4)                   -1     POROSITY Layer   4
-         0       0.3(10E12.4)                   -1     POROSITY Layer   5
-         0       0.3(10E12.4)                   -1     POROSITY Layer   6
-         0       0.3(10E12.4)                   -1     POROSITY Layer   7
-         0       0.3(10E12.4)                   -1     POROSITY Layer   8
-         0         1(25I3)                       0     ICBUND Layer   1
-         0         1(25I3)                       0     ICBUND Layer   2
-         0         1(25I3)                       0     ICBUND Layer   3
-         0         1(25I3)                       0     ICBUND Layer   4
-         0         1(25I3)                       0     ICBUND Layer   5
-         0         1(25I3)                       0     ICBUND Layer   6
-         0         1(25I3)                       0     ICBUND Layer   7
-         0         1(25I3)                       0     ICBUND Layer   8
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   1
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   2
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   3
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   4
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   5
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   6
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   7
-       000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   8
+CONSTANT     15.00                                    DELZ Layer   2
+CONSTANT     15.00                                    DELZ Layer   3
+CONSTANT     15.00                                    DELZ Layer   4
+CONSTANT     15.00                                    DELZ Layer   5
+CONSTANT     15.00                                    DELZ Layer   6
+CONSTANT     15.00                                    DELZ Layer   7
+CONSTANT     15.00                                    DELZ Layer   8
+CONSTANT       0.3                                   POROSITY Layer   1
+CONSTANT       0.3                                   POROSITY Layer   2
+CONSTANT       0.3                                   POROSITY Layer   3
+CONSTANT       0.3                                   POROSITY Layer   4
+CONSTANT       0.3                                   POROSITY Layer   5
+CONSTANT       0.3                                   POROSITY Layer   6
+CONSTANT       0.3                                   POROSITY Layer   7
+CONSTANT       0.3                                   POROSITY Layer   8
+CONSTANT         1                                   ICBUND Layer   1
+CONSTANT         1                                   ICBUND Layer   2
+CONSTANT         1                                   ICBUND Layer   3
+CONSTANT         1                                   ICBUND Layer   4
+CONSTANT         1                                   ICBUND Layer   5
+CONSTANT         1                                   ICBUND Layer   6
+CONSTANT         1                                   ICBUND Layer   7
+CONSTANT         1                                   ICBUND Layer   8
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   1
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   2
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   3
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   4
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   5
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   6
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   7
+CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   8
 -1.000e+00 1.000e-03
          0         0         0         0         T         F
         -1

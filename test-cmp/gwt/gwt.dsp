@@ -1,11 +1,11 @@
-         0       20.                                   AL-LAYER 1
-         0       20.                                   AL
-         0       20.                                   AL
-         0       20.                                   AL
-         0       20.                                   AL
-         0       20.                                   AL
-         0       20.                                   AL
-         0       20.                                   AL-LAYER 8
-         0        .1                                   TRPT
-         0       .01                                   TRPV
-         0         0                                   DMCOEF
+CONSTANT       20.                                   AL-LAYER 1
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL
+CONSTANT       20.                                   AL-LAYER 8
+CONSTANT        .1                                   TRPT
+CONSTANT       .01                                   TRPV
+CONSTANT         0                                   DMCOEF

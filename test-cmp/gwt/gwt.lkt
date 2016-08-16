@@ -1,5 +1,5 @@
          2       100         81        0                              #NLAKES,MXBCLK,ICBCLK,IETLK
-       100      1.00(10e12.4)                    1                    #Array header info: IREAD,CONST,FMTIN,IPRN: INITIAL CONCENTRATION FOR LAKE COMP# 1
+INTERNAL      1.00 (10e12.4)           1                              #Array header info: IREAD,CONST,FMTIN,IPRN: INITIAL CONCENTRATION FOR LAKE COMP# 1
    000.00E00                                                          #input array that follows the FMTIN format
          0                                                            #NTMP (set this to non-zero if you need to enter conc. of user-specified inflow into the lake (these being specified in the MODFLOW model), precip, or evap.
                                                                       #otherwise, leave as zero for each stress period
