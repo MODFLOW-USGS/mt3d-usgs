@@ -1,0 +1,16 @@
+#UPW File                     
+#IUPWCB    HDRY  NPUPW  IPHDRY
+     50  -888.0      0       0
+  1  1
+  2  2
+  1. 1.
+  1  1
+  0  0 
+CONSTANT     100.0      #HYDRAULIC CONDUCTIVITY Layer 1
+CONSTANT       1.0      #VKA (HK/1 = VK)
+CONSTANT      1E-9      #Ss  Specific Storage Layer 1
+CONSTANT      0.10      #SY  Specific Yield Layer 1
+CONSTANT     100.0      #HYDRAULIC CONDUCTIVITY Layer 2
+CONSTANT       1.0      #VKA (HK/1 = VK)
+CONSTANT      1E-9      #Ss  Specific Storage Layer 2
+CONSTANT      0.10      #SY  Specific Yield Layer 2

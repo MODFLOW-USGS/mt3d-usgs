@@ -1,0 +1,12 @@
+LIST          7     LegStor.lst
+BAS6          1     LegStor.bas
+DIS          29     LegStor.dis
+WEL          13     LegStor.wel
+UPW          11     LegStor.upw
+OC           22     LegStor.oc
+NWT          45     LegStor.nwt
+LMT6         33     LegStor.lmt
+DATA(BINARY) 50     LegStor.cbb
+DATA(BINARY) 30     LegStor.hds
+DATA(BINARY) 31     LegStor.ddn
+

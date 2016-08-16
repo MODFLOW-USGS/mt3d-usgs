@@ -1,0 +1,13 @@
+         1         1         2         0                     #ISOTHM (1=Linear), IREACT (1=1st-order irreversible), IRCTOP (2=3D data entry), IGETSC (0=initial sorbed mass not read)
+         0      1.50 (10E12.4)                    1          #Rho_b layer 1
+         0      1.50 (10E12.4)                    1          #Rho_b layer 2
+         0 1.000e-01 (10E12.4)                    1          #SP1   layer 1
+         0 1.000e-01 (10E12.4)                    1          #SP1   layer 2
+         0 0.000e+00 (10E12.4)                    1          #SP2   layer 1
+         0 0.000e-00 (10E12.4)                    1          #SP2   layer 2
+         0 0.000e+00 (10E12.4)                    1          #RC1   layer 1
+         0 0.000e-00 (10E12.4)                    1          #RC1   layer 2
+         0 0.000e+00 (10E12.4)                    1          #RC2   layer 1
+         0 0.000e-00 (10E12.4)                    1          #RC2   layer 2
+         0 0.000e+00 (10E12.4)                    1
+         0 0.000e-00 (10E12.4)                    1
