@@ -1,0 +1,6 @@
+# MODFLOW2005 NWT Input File
+# Test Problem 4 MT3D/UZF taken from UZF doc
+#HEADTOL  FLUXTOL MAXITEROUT THICKFACT   LINMETH    IPRNWT     IBOTAV OPTIONS            [DBDTHETA]  [DBDKAPPA] [DBDGAMMA] [MOMFACT] [BACKFLAG] [MAXBACKITER] [BACKTOL] [BACKREDUCE]
+# [IACL] [NORDER]    [LEVEL]   [NORTH] [IREDSYS] [RRCTOLS] [IDROPTOL] [EPSRN]  [HCLOSEXMD] [MXITERXMD]
+  5.0E-9      1.0        2500    1.0e-5         2         1          1 SPECIFIED  CONTINUE     0.80     0.00001      0.000     0.100          0           100      1.20          0.9  linmeth=1 (GMRES); =2 (xmd)  
+       2        1          3         5         1       0.0          1  1.0E-4       1.0e-4        200   XMD   

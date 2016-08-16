@@ -1,0 +1,26 @@
+Conversion from Groundwater Vistas
+MT3D Model
+         1         1         2         1         7         7
+D   FT  LB
+ F F T T T
+ 1
+         0    50.000(10E12.4)                   -1     DELTA-X or C
+         0    50.000(10E12.4)                   -1     DELTA-Y or R
+         0   100.000(10E12.4)                   -1     TOP OF MODEL
+         0   100.000(10E12.4)                   -1     DELZ Layer   1
+         03.0000e-01(10E12.4)                   -1     POROSITY Layer   1
+         0         1(25I3)                      -1     ICBUND Layer   1
+         0     5.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   1 for ED1
+         0     5.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   1 FOR ED2
+         0    6.0000(10E12.4)                   -1     ICs in Layer 1 FOR EA1
+         0    17.000(10E12.4)                   -1     ICs in Layer 1 FOR EA2
+         0    0.0010(10E12.4)                   -1     ICs in Layer 1 FOR EA3
+         0    100.00(10E12.4)                   -1     ICs in Layer 1 FOR EA4
+         0    0.0001(10E12.4)                   -1     ICs in Layer 1 FOR EA5
+-1.000e+00 5.000e-02
+         0         0         1         0         T         F
+        -1
+         0        10
+         T        10
+3.0000e+03         11.2000e+00
+1.0000e+00    150000
