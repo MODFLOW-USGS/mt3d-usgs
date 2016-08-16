@@ -1,0 +1,12 @@
+# MODFLOW-NWT Upstream Weighting (UPW) Package
+#IUPWCB       HDRY     NPUPW  IPHDRY
+     50  -1.00e+30         0       0
+      1                               #LAYTYP (Convertible)
+      0                               #LAYAVG (Harmonic)
+      1.                              #CHANI  (CHANI is the anisotropy for entire layer)
+      0                               #LAYVKA (Inidicates is vert. hydraulic conductivty)
+      0                               #LAYWET (always 0 in NWT)
+INTERNAL     1  (free)   -1           #HYD. COND. Layer 1
+  1.0000e+02  1.0000e+02
+INTERNAL     1  (free)   -1           #VERT. HYD. COND. Layer 1
+  1.0000e+02  1.0000e+02
