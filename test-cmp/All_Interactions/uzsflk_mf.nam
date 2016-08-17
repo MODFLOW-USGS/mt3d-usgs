@@ -1,0 +1,57 @@
+#
+LIST           7        uzsflk.out
+BAS6           8        uzsflk.ba6
+DIS           10        uzsflk.dis
+#
+UPW           13        uzsflk.upw
+SFR           14        uzsflk.sfr
+UZF           17        uzsflk.uzf
+LAK           18        uzsflk.lak
+MNW2          19        uzsflk.mnw2
+MNWI          26        uzsflk.mnwi
+NWT           20        uzsflk.nwt
+OC            21        uzsflk.oc
+HFB6          22        uzsflk.hfb
+LMT6          11        uzsflk.lmt
+#WEL           12        uzsflk.wel
+GAGE          24        uzsflk.gage
+HOB           25        uzsflk.hob
+#
+#Lake Stage-Capacity-Surface Area Table
+#
+DATA          50        LAK_stg_cap_area_TABFILE.txt
+#
+#SFR Specified inflows
+#
+DATA          71        SFR_iseg5_TABFILE.txt
+DATA          72        SFR_iseg6_TABFILE.txt
+DATA          73        SFR_iseg8_TABFILE.txt
+DATA          74        SFR_iseg11_TABFILE.txt
+#
+#Output
+#
+DATA(BINARY)  40        uzsflk.ccf
+DATA(BINARY)  44        uzsflk.uzfot
+DATA(BINARY)  45        uzsflk.lakoutput            #ILKCB
+DATA          41        uzsflk.hed
+DATA          58        uzsflk.WELL1output
+DATA          59        uzsflk.WELL2output
+DATA          68        UnsatOutput.uzf1
+DATA          70        z_cell_3_3.uzf1
+DATA         129        Mtn_Crk_1.txt
+DATA         130        Mtn_Crk_2.txt
+DATA         131        Mtn_Crk_3.txt
+DATA         132        Mtn_Cnflnce.txt
+DATA         133        Trib_1_tot.txt
+DATA         134        Trib_2_tot.txt
+DATA         135        Flow_Cnflnce.txt
+DATA         136        Flow_before_div.txt
+DATA         137        Diversion.txt
+DATA         138        Mainstem_before_LAK.txt
+DATA         139        Lake_Stg.txt
+DATA         140        Res_release.txt
+DATA         141        Spillway.txt
+#
+#Head Observation File
+#
+DATA          60        uzsflk.hobs

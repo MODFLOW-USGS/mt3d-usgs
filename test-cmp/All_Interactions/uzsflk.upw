@@ -1,0 +1,20 @@
+#UPW File
+#IUPWCB    HDRY  NPUPW  IPHDRY
+     40  -888.0      0       0  
+1    1    1                                                             #LAYTYP(NLAY)
+2    2    2                                                             #LAYAVG(NLAY)
+1.   1.   1.                                                            #CHANI(NLAY)
+1    1    1                                                             #LAYVKA(NLAY)
+0    0    0                                                             #LAYWET(NLAY)  
+CONSTANT    0.25                                                        #HK(NCOL,NROW) Lay 1
+CONSTANT    2.00                                                        #VKA (HK/1 = VK)
+CONSTANT    1E-6                                                        #Ss  Specific Storage
+CONSTANT    0.20                                                        #SY(NCOL,NROW) Lay 1
+OPEN/CLOSE  Lay_2_K_MF_Input_Array.txt    1.00  (FREE) -1               #HK(NCOL,NROW) Lay 2      
+CONSTANT    2.00                                                        #VKA (HK/1 = VK)
+CONSTANT    1E-6                                                        #Ss  Specific Storage
+CONSTANT    0.30                                                        #SY(NCOL,NROW) Lay 2      
+OPEN/CLOSE  Lay_3_K_MF_Input_Array.txt    1.00  (FREE) -1               #HK(NCOL,NROW) Lay 3      
+CONSTANT    2.00                                                        #VKA (HK/1 = VK)
+CONSTANT    1E-6                                                        #Ss  Specific Storage
+CONSTANT    0.20                                                        #SY(NCOL,NROW) Lay 3      

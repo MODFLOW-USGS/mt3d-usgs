@@ -1,0 +1,27 @@
+#
+# MT3DMS v5 Name file for 3-D test case with UZF/SFR/LAK
+#
+# Standard output file
+LIST 16 uzsflk.m3d
+# Transport package input files
+BTN   1 uzsflk.btn
+ADV   2 uzsflk.adv
+DSP   3 uzsflk.dsp
+SSM   4 uzsflk.ssm
+GCG   5 uzsflk.gcg
+# UZF File containing RCH and ET options
+UZT   7 uzsflk.uzt
+LKT  18 uzsflk.lkt
+SFT  19 uzsflk.sft
+# Flow-Transport Link input file
+FTL  10 uzsflk.ftl 'FREE'
+# Uncomment the following lines to override
+# the default names of optional MT3DMS output files
+# mt3d001.ucn, mt3d001s.ucn, mt3d001.obs, mt3d001.mas, mt3d.cnf.
+# The unit numbers for these files are preset in the
+# MT3D-USGS code.
+DATA        44 uzsflk.dat
+DATA       401 uzsflk.obs
+DATA        17 uzsflk.cnf
+DATA        81 uzsflk.rch.by.rch
+DATA        82 uzsflk.sobs

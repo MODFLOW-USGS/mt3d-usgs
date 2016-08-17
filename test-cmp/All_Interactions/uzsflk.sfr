@@ -1,0 +1,443 @@
+#SFR Input file for SFR-UZF-LAK MT3DMS example problem
+#Item 2: KRCH IRCH JRCH ISEG IREACH RCHLEN [STRTOP]      [SLOPE] [STRTHICK] [STRHC1] [THTS] [THTI] [EPS] [UHC]
+REACHINPUT                                                  #Item 1a
+TABFILES 4 367                                              #Item 1b
+32  12  0  0  86400  0.0001 -1  0  3  5  5  80              #Item 1c: NSTRM NSS NSFRPAR NPARSEG CONST DLEAK ISTCB1  ISTCB2 [ISFROPT] [NSTRAIL] [ISUZN] [NSFRSETS] [IRTFLG] [NUMTIM] [WEIGHT] [FLWTOL]
+            2    3    3    1      1    141   99.99   0.008794326       0.5       1.0   0.35   0.25   3.5   1.0  #Item 2 arguments listed above
+            2    4    3    2      1    141   104.0   0.037234043       0.5       1.0   0.35   0.25   3.5   1.0
+            2    3    4    3      1    141   104.0   0.037234043       0.5       1.0   0.35   0.25   3.5   1.0
+            2    4    4    4      1    241   98.75   0.007092199       0.5       1.0   0.35   0.25   3.5   1.0
+            2    5    5    4      2    121   97.75   0.010330579       0.5       1.0   0.35   0.25   3.5   1.0
+            2    6    5    4      3    121   96.50   0.012396694       0.5       1.0   0.35   0.25   3.5   1.0
+            2    7    4    4      4    141   95.00   0.007092199       0.5       1.0   0.35   0.25   3.5   1.0
+            2    8    3    4      5    121   94.00   0.008264463       0.5       1.0   0.35   0.25   3.5   1.0
+            2    9    3    4      6    100   93.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   10    3    4      7    100   92.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   11    3    4      8    100   91.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   12    3    4      9    200   90.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   12    1    5      1    100   92.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   12    2    5      2    100   91.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   12    5    6      1    100   92.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   12    4    6      2    100   91.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   13    3    7      1    100   89.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   14    3    7      2    100   88.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   15    3    7      3    100   87.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   16    3    7      4    100   86.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   17    3    7      5    100   85.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   18    3    7      6    150   84.50   0.005000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   18    4    8      1    121   84.40   0.000826446       0.5       1.0   0.35   0.25   3.5   1.0
+            2   19    4    8      2    141   84.30   0.000709220       0.5       1.0   0.35   0.25   3.5   1.0
+            2   19    3    9      1    100   83.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   20    3    9      2    100   82.00   0.010000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   21    3   10      1    100   80.00   0.050000000       0.5       0.0   0.35   0.25   3.5   1.0
+            2   22    3   10      2    100   75.00   0.050000000       0.5       0.0   0.35   0.25   3.5   1.0
+            2   23    3   10      3    100   70.00   0.050000000       0.5       0.0   0.35   0.25   3.5   1.0
+            2   24    3   10      4    100   65.00   0.050000000       0.5       0.0   0.35   0.25   3.5   1.0
+            2   25    3   11      1    100   65.10   0.015000000       0.5       1.0   0.35   0.25   3.5   1.0
+            2   25    3   12      1    10    79.50   0.050000000       0.5       1.0   0.35   0.25   3.5   1.0
+12  0     0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period # 1
+1     1     4     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Spring-fed Creek
+  10                                                            #Item 6d2  Spring-fed Creek
+2     1     4     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Spring-fed/surface-runoff Creek
+  10                                                            #Item 6d2  Spring-fed/surface-runoff Creek
+3     1     4     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Spring-fed/surface-runoff Creek
+  10                                                            #Item 6d2  Spring-fed/surface-runoff Creek
+4     1     7     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Creek
+  10                                                            #Item 6d2  Creek
+5     1     7     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Tributary Creek #1
+  10                                                            #Item 6d2  Tributary Creek #1
+6     1     7     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Tributary Creek #2
+  10                                                            #Item 6d2  Tributary Creek #2
+7     1     9     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Creek
+  10                                                            #Item 6d2  Creek
+8     1     0     7       0  0.01     0     0     0    0.04     #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Diversion
+  10                                                            #Item 6d2  Diversion
+9     1    10     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Creek
+  10                                                            #Item 6d2  Creek
+10    1    -1     0    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Lakebed Thalweg
+  10                                                            #Item 6d2  Lakebed Thalweg
+11     1    0    -1    0.01     0     0     0  0.04             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Reservoir Release
+  10                                                            #Item 6d2  Reservoir Release
+12     1    0    -1    0.00     0     0     0  0.03             #Item 6a: NSEG,ICALC,OUTSEG,IUPSEG,{IPRIOR},{NSTRPTS},FLOW,RUNOFF,ETSW,PPTSW,{ROUGHCH}
+  10                                                            #Item 6d1  Spillway Relief
+  10                                                            #Item 6d2  Spillway Relief
+5    367  71                                                    #Tributary Creek #1              (TABFILE: SEGNUM,NUMVAL,IUNIT)
+6    367  72                                                    #Tributary Creek #2              (TABFILE: SEGNUM,NUMVAL,IUNIT)
+8    367  73                                                    #Diversion Ditch                 (TABFILE: SEGNUM,NUMVAL,IUNIT)
+11   367  74                                                    #Managed Reservoir Release       (TABFILE: SEGNUM,NUMVAL,IUNIT)
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 2 (First Stress Period)
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 3  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 4  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 5  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 6  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 7  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 8  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 9  
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 10 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 11 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 12 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 13 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 14 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 15 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 16 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 17 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 18 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 19 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 20 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 21 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 22 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 23 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 24 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 25 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 26 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 27 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 28 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 29 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 30 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 31 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 32 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 33 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 34 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 35 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 36 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 37 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 38 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 39 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 40 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 41 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 42 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 43 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 44 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 45 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 46 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 47 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 48 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 49 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 50 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 51 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 52 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 53 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 54 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 55 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 56 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 57 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 58 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 59 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 60 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 61 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 62 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 63 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 64 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 65 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 66 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 67 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 68 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 69 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 70 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 71 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 72 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 73 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 74 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 75 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 76 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 77 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 78 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 79 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 80 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 81 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 82 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 83 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 84 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 85 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 86 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 87 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 88 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 89 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 90 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 91 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 92 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 93 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 94 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 95 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 96 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 97 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 98 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 99 
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 100
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 101
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 102
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 103
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 104
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 105
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 106
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 107
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 108
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 109
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 110
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 111
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 112
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 113
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 114
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 115
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 116
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 117
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 118
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 119
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 120
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 121
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 122
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 123
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 124
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 125
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 126
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 127
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 128
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 129
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 130
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 131
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 132
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 133
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 134
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 135
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 136
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 137
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 138
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 139
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 140
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 141
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 142
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 143
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 144
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 145
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 146
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 147
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 148
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 149
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 150
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 151
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 152
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 153
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 154
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 155
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 156
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 157
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 158
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 159
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 160
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 161
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 162
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 163
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 164
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 165
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 166
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 167
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 168
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 169
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 170
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 171
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 172
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 173
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 174
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 175
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 176
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 177
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 178
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 179
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 180
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 181
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 182
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 183
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 184
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 185
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 186
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 187
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 188
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 189
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 190
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 191
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 192
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 193
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 194
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 195
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 196
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 197
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 198
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 199
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 200
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 201
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 202
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 203
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 204
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 205
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 206
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 207
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 208
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 209
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 210
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 211
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 212
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 213
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 214
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 215
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 216
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 217
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 218
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 219
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 220
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 221
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 222
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 223
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 224
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 225
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 226
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 227
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 228
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 229
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 230
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 231
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 232
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 233
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 234
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 235
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 236
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 237
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 238
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 239
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 240
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 241
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 242
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 243
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 244
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 245
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 246
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 247
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 248
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 249
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 250
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 251
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 252
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 253
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 254
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 255
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 256
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 257
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 258
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 259
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 260
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 261
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 262
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 263
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 264
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 265
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 266
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 267
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 268
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 269
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 270
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 271
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 272
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 273
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 274
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 275
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 276
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 277
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 278
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 279
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 280
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 281
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 282
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 283
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 284
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 285
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 286
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 287
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 288
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 289
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 290
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 291
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 292
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 293
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 294
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 295
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 296
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 297
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 298
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 299
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 300
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 301
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 302
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 303
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 304
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 305
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 306
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 307
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 308
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 309
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 310
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 311
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 312
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 313
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 314
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 315
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 316
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 317
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 318
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 319
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 320
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 321
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 322
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 323
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 324
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 325
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 326
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 327
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 328
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 329
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 330
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 331
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 332
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 333
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 334
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 335
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 336
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 337
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 338
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 339
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 340
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 341
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 342
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 343
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 344
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 345
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 346
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 347
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 348
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 349
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 350
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 351
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 352
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 353
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 354
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 355
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 356
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 357
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 358
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 359
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 360
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 361
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 362
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 363
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 364
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 365
+-12   0   0                                                     #Item 5: ITMP,IRDFLG,IPTFLG   Stress Period 366

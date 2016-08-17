@@ -1,0 +1,793 @@
+TABLEINPUT
+1         45                                                          #ITEM 1: NLAKES,ILKCB
+-0.75     100       0.00001    0.25                                    #ITEM 2: THETA,[NSSITR],[SSCNCR],SURFDEP
+72.00     65.00     80.000    50                                      #ITEM 3: STAGES,[SSMN],[SSMX],Unit # of TableInput
+1         1         0                                                 #ITEM 4: ITMP,ITMP1,LWRT
+INTERNAL  1  (FREE)  -1                                               #ITEM 5: LKARR  Layer 1
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  0  0  0
+0  0  1  0  0
+0  1  1  1  0
+0  1  1  1  0
+0  1  1  1  0
+0  0  0  0  0
+CONSTANT  0                                                           #ITEM 5: LKARR  Layer 2
+CONSTANT  0                                                           #ITEM 5: LKARR  Layer 3
+INTERNAL  1  (FREE)  -1                                               #ITEM 6: BDLKNC Layer 1
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.00  0.00  0.00
+0.00  0.00  0.11  0.00  0.00
+0.00  0.11  0.11  0.11  0.00
+0.00  0.11  0.11  0.11  0.00
+0.00  0.11  0.11  0.11  0.00
+0.00  0.00  0.00  0.00  0.00
+CONSTANT  0                                                           #ITEM 6: BDLKNC Layer 2
+CONSTANT  0                                                           #ITEM 6: BDLKNC Layer 3
+0                                                                     #ITEM 7: NSLMS  (Number of sublakes)     
+0.001            0.000500     0.000     0.000                         #PRCPLK,EVAPLK,RNF,WTHDRW  
+-1         1         0                                                #Stress Period 2                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 3                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 4                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 5                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 6                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 7                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 8                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 9                       
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 10                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 11                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 12                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 13                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 14                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 15                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 16                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 17                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 18                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 19                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 20                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 21                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 22                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 23                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 24                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 25                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 26                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 27                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 28                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 29                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 30                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 31                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 32                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 33                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 34                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 35                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 36                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 37                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 38                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 39                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 40                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 41                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 42                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 43                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 44                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 45                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 46                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 47                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 48                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 49                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 50                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 51                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 52                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 53                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 54                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 55                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 56                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 57                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 58                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 59                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 60                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 61                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 62                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 63                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 64                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 65                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 66                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 67                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 68                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 69                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 70                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 71                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 72                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 73                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 74                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 75                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 76                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 77                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 78                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 79                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 80                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 81                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 82                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 83                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 84                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 85                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 86                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 87                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 88                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 89                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 90                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 91                      
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 92                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 93                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 94                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 95                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 96                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 97                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 98                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 99                      
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 100                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 101                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 102                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 103                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 104                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 105                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 106                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 107                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 108                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 109                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 110                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 111                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 112                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 113                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 114                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 115                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 116                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 117                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 118                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 119                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 120                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 121                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 122                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 123                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 124                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 125                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 126                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 127                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 128                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 129                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 130                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 131                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 132                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 133                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 134                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 135                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 136                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 137                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 138                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 139                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 140                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 141                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 142                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 143                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 144                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 145                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 146                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 147                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 148                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 149                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 150                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 151                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 152                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 153                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 154                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 155                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 156                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 157                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 158                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 159                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 160                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 161                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 162                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 163                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 164                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 165                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 166                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 167                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 168                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 169                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 170                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 171                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 172                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 173                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 174                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 175                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 176                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 177                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 178                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 179                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 180                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 181                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 182                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 183                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 184                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 185                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 186                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 187                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 188                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 189                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 190                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 191                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 192                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 193                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 194                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 195                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 196                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 197                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 198                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 199                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 200                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 201                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 202                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 203                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 204                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 205                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 206                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 207                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 208                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 209                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 210                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 211                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 212                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 213                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 214                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 215                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 216                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 217                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 218                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 219                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 220                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 221                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 222                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 223                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 224                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 225                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 226                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 227                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 228                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 229                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 230                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 231                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 232                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 233                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 234                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 235                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 236                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 237                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 238                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 239                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 240                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 241                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 242                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 243                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 244                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 245                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 246                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 247                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 248                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 249                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 250                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 251                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 252                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 253                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 254                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 255                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 256                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 257                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 258                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 259                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 260                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 261                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 262                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 263                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 264                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 265                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 266                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 267                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 268                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 269                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 270                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 271                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 272                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 273                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 274                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 275                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 276                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 277                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 278                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 279                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 280                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 281                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 282                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 283                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 284                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 285                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 286                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 287                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 288                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 289                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 290                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 291                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 292                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 293                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 294                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 295                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 296                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 297                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 298                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 299                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 300                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 301                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 302                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 303                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 304                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 305                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 306                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 307                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 308                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 309                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 310                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 311                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 312                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 313                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 314                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 315                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 316                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 317                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 318                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 319                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 320                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 321                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 322                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 323                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 324                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 325                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 326                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 327                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 328                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 329                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 330                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 331                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 332                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 333                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 334                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 335                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 336                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 337                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 338                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 339                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 340                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 341                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 342                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 343                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 344                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 345                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 346                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 347                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 348                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 349                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 350                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 351                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 352                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 353                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 354                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 355                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 356                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 357                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 358                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 359                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 360                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 361                     
+0.002000         0.001000         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW                 
+-1         1         0                                                #Stress Period 362                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 363                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 364                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 365                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         
+-1         1         0                                                #Stress Period 366                     
+0.001613         0.003495         0         0                         #PRCPLK,EVAPLK,RNF,WTHDRW         

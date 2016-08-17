@@ -1,0 +1,1115 @@
+        32        32        81        82         0                              #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,MXUZCON
+         5       0.5       1.0    1.0E-6        01       1.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF
+         0      10.0     FMTIN(not used)         0                              #Use constant initial concentration for simplicity
+         0      0.15     FMTIN(not used)         0                              #Use constant stream dispersion for simplicity
+      12                                                                        #NOBSSF
+       1       1
+       2       1
+       3       1
+       4       9
+       5       2
+       6       2
+       7       1
+       7       6
+       8       1
+       9       2
+      11       1
+      12       1                                                      #End OBS
+       2                                                              #NTMP  Steady State
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 1
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 2
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 3
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 4
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 5
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 6
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 7
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 8
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 9
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 10
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 11
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 12
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 13
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 14
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 15
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 16
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 17
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 18
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 19
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 20
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 21
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 22
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 23
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 24
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 25
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 26
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 27
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 28
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 29
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 30
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 31
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 32
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 33
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 34
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 35
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 36
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 37
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 38
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 39
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 40
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 41
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 42
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 43
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 44
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 45
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 46
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 47
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 48
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 49
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 50
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 51
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 52
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 53
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 54
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 55
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 56
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 57
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 58
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 59
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 60
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 61
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 62
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 63
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 64
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 65
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 66
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 67
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 68
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 69
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 70
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 71
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 72
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 73
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 74
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 75
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 76
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 77
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 78
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 79
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 80
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 81
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 82
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 83
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 84
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 85
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 86
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 87
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 88
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 89
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 90
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 91
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 92
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 93
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 94
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 95
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 96
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 97
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 98
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 99
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 100
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 101
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 102
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 103
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 104
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 105
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 106
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 107
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 108
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 109
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 110
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 111
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 112
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 113
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 114
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 115
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 116
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 117
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 118
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 119
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 120
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 121
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 122
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 123
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 124
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 125
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 126
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 127
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 128
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 129
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 130
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 131
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 132
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 133
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 134
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 135
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 136
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 137
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 138
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 139
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 140
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 141
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 142
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 143
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 144
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 145
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 146
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 147
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 148
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 149
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 150
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 151
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 152
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 153
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 154
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 155
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 156
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 157
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 158
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 159
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 160
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 161
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 162
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 163
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 164
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 165
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 166
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 167
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 168
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 169
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 170
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 171
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 172
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 173
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 174
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 175
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 176
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 177
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 178
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 179
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 180
+       5       1        0       10.0                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0      20.00
+       2                                                              #NTMP  Steady State       SP 181
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 182
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 183
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 184
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 185
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 186
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 187
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 188
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 189
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 190
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 191
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 192
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 193
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 194
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 195
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 196
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 197
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 198
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 199
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 200
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 201
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 202
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 203
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 204
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 205
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 206
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 207
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 208
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 209
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 210
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 211
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 212
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 213
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 214
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 215
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 216
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 217
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 218
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 219
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 220
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 221
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 222
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 223
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 224
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 225
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 226
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 227
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 228
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 229
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 230
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 231
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 232
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 233
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 234
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 235
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 236
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 237
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 238
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 239
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 240
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 241
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 242
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 243
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 244
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 245
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 246
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 247
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 248
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 249
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 250
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 251
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 252
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 253
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 254
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 255
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 256
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 257
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 258
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 259
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 260
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 261
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 262
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 263
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 264
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 265
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 266
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 267
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 268
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 269
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 270
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 271
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 272
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 273
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 274
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 275
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 276
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 277
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 278
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 279
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 280
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 281
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 282
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 283
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 284
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 285
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 286
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 287
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 288
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 289
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 290
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 291
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 292
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 293
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 294
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 295
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 296
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 297
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 298
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 299
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 300
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 301
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 302
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 303
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 304
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 305
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 306
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 307
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 308
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 309
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 310
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 311
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 312
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 313
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 314
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 315
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 316
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 317
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 318
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 319
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 320
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 321
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 322
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 323
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 324
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 325
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 326
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 327
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 328
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 329
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 330
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 331
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 332
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 333
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 334
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 335
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 336
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 337
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 338
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 339
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 340
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 341
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 342
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 343
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 344
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 345
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 346
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 347
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 348
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 349
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 350
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 351
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 352
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 353
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 354
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 355
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 356
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 357
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 358
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 359
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 360
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 361
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 362
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 363
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 364
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0
+       2                                                              #NTMP  Steady State       SP 365
+       5       1        0        2.5                                  #ISEGBC,IRCHBC,ISFBCTYP,CBCSF
+       6       1        0       20.0

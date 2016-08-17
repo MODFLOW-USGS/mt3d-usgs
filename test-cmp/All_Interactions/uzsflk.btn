@@ -1,0 +1,870 @@
+#2D Test Model for UZF-MT3D
+#Model for comparison with CATHY
+         3        25         5       366         1         1          #A3 - NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
+ day   m   g                                                          #A4 - TUNIT,LUNIT,MUNIT
+ T T T F T F F F F F                                                  #A5 - ADV,DSP,SSM,RCT,GCG,XXX,XXX,XXX,XXX,XXX
+ 1 1 1                                                                #A6 - LAYCON(NLAY)
+         0 1.000E+02                                                  #A7 - DELR
+         0 1.000E+02                                                  #A8 - DELR
+       100  1.00E+00             (5f7.2)         1                    #A9 - HTOP
+ 140.00 140.00 140.00 140.00 140.00
+ 140.00 120.00 120.00 120.00 120.00
+ 140.00 120.00 100.00 105.00 105.00
+ 140.00 120.00 105.00  99.00 102.00
+ 140.00 120.00 105.00 102.00  98.00
+ 140.00 120.00 105.00 102.00  97.00
+ 120.00 115.00 102.00  96.00 102.00
+ 112.00 105.00  95.00 101.00 104.00
+ 104.00  95.00  94.00  96.00 100.00
+  96.00  94.00  93.00  95.00  96.00
+  95.00  95.00  92.00  94.00  96.00
+  93.00  92.00  91.00  92.00  93.00
+  96.00  95.00  90.00  94.00  95.00
+  95.00  92.00  89.00  92.00  95.00
+  94.00  91.00  88.00  91.00  94.00
+  93.00  90.00  87.00  90.00  93.00
+  92.00  89.00  86.00  89.00  92.00
+  91.00  88.00  85.00  88.00  91.00
+  90.00  87.00  84.00  87.00  90.00
+  89.00  86.00  83.00  86.00  89.00
+  86.00  84.00  80.10  84.00  86.00
+  84.00  80.10  80.10  80.10  84.00
+  84.00  80.10  80.10  80.10  84.00
+  84.00  80.10  80.10  80.10  84.00
+  84.00  84.00  64.00  84.00  84.00
+       100  1.00E+00            (5f7.2)         1                    #A10 - DZ (lay 1)
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.00   0.00   0.00
+   0.00   0.00   0.10   0.00   0.00
+   0.00   3.10   5.10   4.10   0.00
+   0.00   7.10  10.10   8.10   0.00
+   0.00  12.10  15.10  13.10   0.00
+   0.00   0.00   0.00   0.00   0.00
+       100  1.00E+00            (5f7.2)         1                    #A10 - DZ (lay 2)
+  10.00  10.00  10.00  10.00  10.00
+  10.00   8.00   8.00   8.00   8.00
+  10.00   8.00   5.00   5.00   5.00
+  10.00   8.00   5.00   5.00   5.00
+  10.00   8.00   5.00   5.00   5.00
+  10.00   8.00   5.00   5.00   5.00
+  10.00   8.00   8.00   5.00   5.00
+  10.00  10.00   8.00   8.00   8.00
+  10.00  10.00   8.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  30.00  20.00  30.00  10.00
+       100  1.00E+00             (5f7.2)         1                    #A10 - DZ (lay 3)
+   2.00   2.00   2.00   2.00   2.00
+   2.00   2.00   2.00   2.00   2.00
+   2.00   2.00   3.00   3.00   3.00
+   2.00   2.00   3.00   2.00   3.00
+   2.00   2.00   3.00   3.00   2.00
+  10.00   6.00   3.00   3.00   2.00
+   5.00   4.00   3.00   3.00   3.00
+   3.00   3.00   3.00   3.00   3.00
+   4.00   4.00   4.00   4.00   4.00
+   5.00   5.00   5.00   5.00   5.00
+   6.00   6.00   6.00   6.00   6.00
+   7.00   7.00   7.00   7.00   7.00
+   8.00   8.00   8.00   8.00   8.00
+   9.00   9.00   9.00   9.00   9.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+  10.00  10.00  10.00  10.00  10.00
+         0  0.30                                                      #A11 - PRSITY (lay 1)
+         0  0.30                                                      #A11 - PRSITY (lay 2)
+         0  0.30                                                      #A11 - PRSITY (lay 3)
+         0  0                                                         #A14 - ICBUND (lay 1)
+         0  1                                                         #A14 - ICBUND (lay 2)
+         0  1                                                         #A14 - ICBUND (lay 3)
+         0  0.0                                                       #A15 - SCONC (lay 1)
+         0  0.0                                                       #A15 - SCONC (lay 2)
+         0  0.0                                                       #A15 - SCONC (lay 3)
+      -999      0.01                                                  #A16 - CINACT,THKMIN
+        12         0         0         0         T                    #A17 - IFMTCN,IFMTNP,IFMTRF,IFMTDP,SAVUCN
+        -1                                                            #A18 - NPRS (>0 skip TIMPRS)
+        12         1                                                  #A20 - NOBS,NPROBS (skip KOBS,IOBS,JOBS)          
+         2         3         3                                        #A21 - KOBS,IOBS,JOBS
+         2         4         3                                        #A21 - KOBS,IOBS,JOBS
+         2         5         5                                        #A21 - KOBS,IOBS,JOBS
+         2         9         2                                        #A21 - KOBS,IOBS,JOBS
+         2        12         2                                        #A21 - KOBS,IOBS,JOBS
+         2        12         4                                        #A21 - KOBS,IOBS,JOBS
+         2        15         2                                        #A21 - KOBS,IOBS,JOBS
+         2        18         2                                        #A21 - KOBS,IOBS,JOBS
+         2        22         1                                        #A21 - KOBS,IOBS,JOBS
+         2        20         4                                        #A21 - KOBS,IOBS,JOBS
+         2        23         3                                        #A21 - KOBS,IOBS,JOBS
+         2        25         2                                        #A21 - KOBS,IOBS,JOBS
+         T         1                                                  #A22 - CHKMAS,NPRMAS
+         1         1      1.00     SSTATE                             #A23 - PERLEN,NSTP,TSMULT          Steady State
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   Steady State
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-1
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-1
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-2
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-2
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-3
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-3
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-4
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-4
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-5
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-5
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-6
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-6
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-7
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-7
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-8
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-8
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-9
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-9
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-10
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-10
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-11
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-11
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-12
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-12
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-13
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-13
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-14
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-14
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-15
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-15
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-16
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-16
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-17
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-17
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-18
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-18
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-19
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-19
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-20
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-20
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-21
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-21
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-22
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-22
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-23
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-23
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-24
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-24
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-25
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-25
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-26
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-26
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-27
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-27
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-28
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-28
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-29
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-29
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-30
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-30
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-31
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-31
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-32
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-32
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-33
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-33
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-34
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-34
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-35
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-35
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-36
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-36
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-37
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-37
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-38
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-38
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-39
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-39
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-40
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-40
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-41
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-41
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-42
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-42
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-43
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-43
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-44
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-44
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-45
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-45
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-46
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-46
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-47
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-47
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-48
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-48
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-49
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-49
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-50
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-50
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-51
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-51
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-52
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-52
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-53
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-53
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-54
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-54
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-55
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-55
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-56
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-56
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-57
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-57
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-58
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-58
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-59
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-59
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-60
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-60
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-61
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-61
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-62
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-62
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-63
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-63
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-64
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-64
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-65
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-65
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-66
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-66
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-67
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-67
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-68
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-68
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-69
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-69
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-70
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-70
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-71
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-71
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-72
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-72
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-73
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-73
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-74
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-74
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-75
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-75
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-76
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-76
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-77
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-77
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-78
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-78
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-79
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-79
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-80
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-80
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-81
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-81
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-82
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-82
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-83
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-83
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-84
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-84
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-85
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-85
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-86
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-86
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-87
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-87
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-88
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-88
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-89
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-89
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-90
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-90
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-91
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-91
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-92
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-92
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-93
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-93
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-94
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-94
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-95
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-95
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-96
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-96
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-97
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-97
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-98
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-98
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-99
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-99
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-100
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-100
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-101
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-101
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-102
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-102
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-103
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-103
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-104
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-104
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-105
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-105
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-106
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-106
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-107
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-107
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-108
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-108
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-109
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-109
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-110
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-110
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-111
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-111
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-112
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-112
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-113
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-113
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-114
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-114
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-115
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-115
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-116
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-116
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-117
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-117
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-118
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-118
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-119
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-119
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-120
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-120
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-121
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-121
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-122
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-122
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-123
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-123
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-124
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-124
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-125
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-125
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-126
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-126
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-127
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-127
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-128
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-128
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-129
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-129
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-130
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-130
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-131
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-131
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-132
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-132
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-133
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-133
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-134
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-134
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-135
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-135
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-136
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-136
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-137
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-137
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-138
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-138
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-139
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-139
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-140
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-140
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-141
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-141
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-142
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-142
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-143
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-143
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-144
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-144
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-145
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-145
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-146
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-146
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-147
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-147
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-148
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-148
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-149
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-149
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-150
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-150
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-151
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-151
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-152
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-152
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-153
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-153
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-154
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-154
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-155
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-155
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-156
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-156
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-157
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-157
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-158
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-158
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-159
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-159
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-160
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-160
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-161
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-161
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-162
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-162
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-163
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-163
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-164
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-164
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-165
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-165
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-166
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-166
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-167
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-167
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-168
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-168
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-169
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-169
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-170
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-170
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-171
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-171
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-172
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-172
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-173
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-173
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-174
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-174
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-175
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-175
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-176
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-176
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-177
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-177
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-178
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-178
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-179
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-179
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-180
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-180
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-181
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-181
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-182
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-182
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-183
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-183
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-184
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-184
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-185
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-185
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-186
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-186
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-187
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-187
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-188
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-188
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-189
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-189
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-190
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-190
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-191
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-191
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-192
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-192
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-193
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-193
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-194
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-194
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-195
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-195
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-196
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-196
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-197
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-197
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-198
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-198
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-199
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-199
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-200
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-200
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-201
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-201
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-202
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-202
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-203
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-203
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-204
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-204
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-205
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-205
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-206
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-206
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-207
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-207
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-208
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-208
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-209
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-209
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-210
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-210
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-211
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-211
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-212
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-212
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-213
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-213
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-214
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-214
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-215
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-215
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-216
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-216
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-217
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-217
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-218
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-218
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-219
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-219
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-220
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-220
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-221
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-221
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-222
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-222
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-223
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-223
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-224
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-224
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-225
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-225
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-226
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-226
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-227
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-227
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-228
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-228
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-229
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-229
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-230
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-230
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-231
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-231
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-232
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-232
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-233
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-233
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-234
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-234
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-235
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-235
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-236
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-236
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-237
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-237
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-238
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-238
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-239
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-239
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-240
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-240
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-241
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-241
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-242
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-242
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-243
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-243
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-244
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-244
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-245
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-245
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-246
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-246
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-247
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-247
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-248
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-248
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-249
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-249
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-250
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-250
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-251
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-251
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-252
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-252
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-253
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-253
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-254
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-254
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-255
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-255
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-256
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-256
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-257
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-257
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-258
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-258
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-259
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-259
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-260
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-260
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-261
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-261
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-262
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-262
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-263
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-263
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-264
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-264
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-265
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-265
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-266
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-266
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-267
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-267
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-268
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-268
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-269
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-269
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-270
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-270
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-271
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-271
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-272
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-272
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-273
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-273
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-274
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-274
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-275
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-275
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-276
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-276
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-277
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-277
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-278
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-278
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-279
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-279
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-280
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-280
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-281
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-281
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-282
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-282
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-283
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-283
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-284
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-284
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-285
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-285
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-286
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-286
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-287
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-287
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-288
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-288
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-289
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-289
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-290
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-290
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-291
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-291
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-292
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-292
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-293
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-293
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-294
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-294
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-295
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-295
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-296
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-296
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-297
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-297
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-298
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-298
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-299
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-299
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-300
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-300
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-301
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-301
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-302
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-302
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-303
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-303
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-304
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-304
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-305
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-305
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-306
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-306
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-307
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-307
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-308
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-308
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-309
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-309
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-310
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-310
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-311
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-311
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-312
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-312
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-313
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-313
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-314
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-314
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-315
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-315
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-316
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-316
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-317
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-317
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-318
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-318
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-319
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-319
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-320
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-320
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-321
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-321
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-322
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-322
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-323
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-323
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-324
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-324
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-325
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-325
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-326
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-326
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-327
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-327
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-328
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-328
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-329
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-329
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-330
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-330
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-331
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-331
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-332
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-332
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-333
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-333
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-334
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-334
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-335
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-335
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-336
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-336
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-337
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-337
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-338
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-338
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-339
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-339
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-340
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-340
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-341
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-341
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-342
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-342
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-343
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-343
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-344
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-344
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-345
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-345
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-346
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-346
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-347
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-347
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-348
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-348
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-349
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-349
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-350
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-350
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-351
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-351
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-352
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-352
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-353
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-353
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-354
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-354
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-355
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-355
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-356
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-356
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-357
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-357
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-358
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-358
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-359
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-359
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-360
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-360
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-361
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-361
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-362
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-362
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-363
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-363
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-364
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-364
+         1         1      1.00                                        #A23 - PERLEN,NSTP,TSMULT          SP-365
+       1.0       100     1.000     0.000                              #A25 - DT0,MXSTRN,TTSMULT,TTSMAX   SP-365

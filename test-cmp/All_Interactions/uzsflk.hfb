@@ -1,0 +1,13 @@
+#Example model for testing MT3D accuracy with UZF, SFR, and LAK packages active.
+#This model was originally a 5x5 model that was extended
+#so to keep gw flow from leaving the mountain block, adding a HFB
+#NPHFB MXFB NHFBNP  Option
+     0    0      8 NOPRINT
+ 2  5  1  6  1      1E-06
+ 2  5  2  6  2      1E-06
+ 2  5  3  6  3      1E-06
+ 2  5  4  6  4      1E-06
+ 3  5  1  6  1      1E-06
+ 3  5  2  6  2      1E-06
+ 3  5  3  6  3      1E-06
+ 3  5  4  6  4      1E-06
