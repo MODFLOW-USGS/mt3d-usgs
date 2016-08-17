@@ -1,7 +1,9 @@
 #SFR Input file for SFR-UZF-LAK MT3DMS example problem
 #Item 2: KRCH IRCH JRCH ISEG IREACH RCHLEN [STRTOP]      [SLOPE] [STRTHICK] [STRHC1] [THTS] [THTI] [EPS] [UHC]
-REACHINPUT                                                  #Item 1a
-TABFILES 4 367                                              #Item 1b
+OPTIONS
+  REACHINPUT                                                #Item 1a
+  TABFILES 4 367                                            #Item 1b
+END
 32  12  0  0  86400  0.0001 -1  0  3  5  5  80              #Item 1c: NSTRM NSS NSFRPAR NPARSEG CONST DLEAK ISTCB1  ISTCB2 [ISFROPT] [NSTRAIL] [ISUZN] [NSFRSETS] [IRTFLG] [NUMTIM] [WEIGHT] [FLWTOL]
             2    3    3    1      1    141   99.99   0.008794326       0.5       1.0   0.35   0.25   3.5   1.0  #Item 2 arguments listed above
             2    4    3    2      1    141   104.0   0.037234043       0.5       1.0   0.35   0.25   3.5   1.0
