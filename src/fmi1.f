@@ -1296,7 +1296,7 @@ C-------MAP TO SFT ARRAYS
           END SELECT
         ENDDO
 C
-C-------CHECK NRCHCON=0 - NO LAKE-TO-LAKE CONNECTIONS
+C-------CHECK NRCHCON=0 - NO LAKE-TO-LAKE CONNECTIONS ("Coalescing" lakes)
         IF(NRCHCON.GT.0) THEN
           WRITE(*,*) 'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
           WRITE(IOUT,*) 
@@ -1666,6 +1666,7 @@ C      DO K=1,NLAY
         DO I=1,NROW                     
           DO J=1,NCOL                   
             K=IGWET(J,I)
+            IF(K.EQ.0) CYCLE
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)             
             IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN 
