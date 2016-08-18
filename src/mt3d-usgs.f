@@ -105,10 +105,11 @@ C--Get CPU time at the start of simulation
 C
 C--WRITE AN IDENTIFIER TO SCREEN
       WRITE(*,101) VID
-  101 FORMAT(1X,'MT3D-USGS - Modular 3D Multi-Species Transport Model ',
+  101 FORMAT(
+     & /1X,'MT3D-USGS - Modular 3D Multi-Species Transport Model ',
      & A14,/1X,'and based on MT3DMS. MT3D-USGS developed in ',
      & 'cooperation by ',/1X,'S.S. Papadopulos & Associates ',
-     & 'and the U.S. Geological Survey')
+     & 'and the U.S. Geological Survey',/)
 C
 C--INITIALIZE CHARACTER VARIABLES
       FLNAME=' '
