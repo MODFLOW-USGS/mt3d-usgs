@@ -1850,6 +1850,12 @@ c
           return
         endif
         nentry = ia(i+1)-ia(i)-1
+
+        if(i.eq.n.and.nentry.eq.0) then
+          continue
+          exit
+        endif
+
         call xmdshell(ja(ia(i)+1),nentry)
       enddo
 

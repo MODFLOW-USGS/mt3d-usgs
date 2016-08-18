@@ -359,6 +359,7 @@ C      DO K=1,NLAY
         DO I=1,NROW                                                 
           DO J=1,NCOL                                               
            K=IGWET(J,I)
+           IF(K.EQ.0) CYCLE
            IF(GWET(J,I).EQ.0) CYCLE                              
             IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        
@@ -462,6 +463,7 @@ C      DO K=1,NLAY
         DO I=1,NROW                                                
           DO J=1,NCOL                                              
             K=IGWET(J,I)
+            IF(K.EQ.0) CYCLE
             IF(GWET(J,I).EQ.0) CYCLE                             
             IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                      
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                       
@@ -596,6 +598,7 @@ C      DO K=1,NLAY
         DO I=1,NROW                                                 
           DO J=1,NCOL                                               
             K=IGWET(J,I)
+            IF(K.EQ.0) CYCLE
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                      
             CTMP=CGWET(J,I,ICOMP)                                 
             IF(GWET(J,I).LT.0.AND.(CTMP.LT.0 .OR.                 
