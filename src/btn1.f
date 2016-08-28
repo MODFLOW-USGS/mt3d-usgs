@@ -1578,9 +1578,6 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
             ELSE
               IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
                 IF(IDRY2.GT.0) THEN
-                  IF(ABS(QSTO(J,I,K)).GE.1.E-3) THEN
-                    CONTINUE
-                  ENDIF
                   CMML=QSTO(J,I,K)*DH(J,I,K)*DELR(J)*DELC(I)
      1                   *COLDFLW(J,I,K,ICOMP)*(HT2-TIME2)
                   CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
