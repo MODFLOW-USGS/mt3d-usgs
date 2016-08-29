@@ -51,7 +51,7 @@ C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INDSP
  1030 FORMAT(/1X,'DSP1 -- DISPERSION PACKAGE,',
-     & ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
+     &           ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
 C
 C--PRINT A HEADER
       WRITE(IOUT,1000)
@@ -69,29 +69,18 @@ C--READ INPUT KEYWORDS AS A TEXT STRING
       ENDIF
 C
 C--NO KEYWORD LINE, REWIND INPUT FILE      
-   20 BACKSPACE(IN) !REWIND(IN)
+   20 BACKSPACE(IN) 
       IMSD=0
       GOTO 50     
 C       
 C--DECODE KEYWORD LINE
-   30 CONTINUE !LLOC=2
+   30 CONTINUE 
       BACKSPACE(IN)
       CALL DSPKEYWORDS(IN,IMSD)
 C
 C--WRITE STATUS OF NOCROSS FLAG
       IF(INOCROSS.EQ.1) WRITE(IOUT,1010)
  1010 FORMAT(1X,'CROSS DISPERSION DEACTIVATED (NOCROSS)')
-C      CALL URWORD(LINE,LLOC,INAM1,INAM2,1,N,R,IOUT,IN)
-C      IFLEN=INAM2-INAM1+1
-C      KEYWORD(1:IFLEN)=LINE(INAM1:INAM2)   
-C      IF(KEYWORD(1:IFLEN).EQ.'MULTIDIFFUSION') THEN
-C        WRITE(IOUT,40) KEYWORD(1:IFLEN)       
-C      ELSE
-C        WRITE(IOUT,42) 
-C        CALL USTOP('ERROR: INVALID DISPERSION PACKAGE INPUT KEYWORDS')
-C      ENDIF   
-C   40 FORMAT(1X,'DISPERSION PACKAGE INPUT KEYWORDS: ',A)  
-C   42 FORMAT(1X,'ERROR: INVALID DISPERSION PACKAGE INPUT KEYWORDS')
 C
 C--CALL RARRAY TO READ LONGITUDINAL DISPERSIVITY ONE LAYER A TIME
    50 DO K=1,NLAY
@@ -192,18 +181,18 @@ C--CALCULATE VALUES AT INTERFACES
             AL=ALPHAL(J,I,K)*WW+ALPHAL(JP1,I,K)*(1.-WW)
             AT=AL*TRPT(K)
             AV=AL*TRPV(K)
-            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(JP1,I,K,ICOMP)*(1.-WW))
-     &       *(PRSITY(J,I,K)*WW+PRSITY(JP1,I,K)*(1.-WW))
+            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(JP1,I,K,ICOMP)*(1.-WW))*
+     &         (PRSITY(J,I,K)*WW+PRSITY(JP1,I,K)*(1.-WW))
             VX=QX(J,I,K)
             IF(NROW.GT.1) THEN
-              VY=0.5*(QY(J,IM1,K)+QY(J,I,K))*WW
-     &         +0.5*(QY(JP1,IM1,K)+QY(JP1,I,K))*(1.-WW)
+              VY=0.5*(QY(J,IM1,K)+QY(J,I,K))*WW+
+     &           0.5*(QY(JP1,IM1,K)+QY(JP1,I,K))*(1.-WW)
             ELSE
               VY=0
             ENDIF
             IF(NLAY.GT.1) THEN
-              VZ=0.5*(QZ(J,I,KM1)+QZ(J,I,K))*WW
-     &         +0.5*(QZ(JP1,I,KM1)+QZ(JP1,I,K))*(1.-WW)
+              VZ=0.5*(QZ(J,I,KM1)+QZ(J,I,K))*WW+
+     &           0.5*(QZ(JP1,I,KM1)+QZ(JP1,I,K))*(1.-WW)
             ELSE
               VZ=0
             ENDIF
@@ -215,8 +204,8 @@ C--CALCULATE DISPERSION COEFFICIENTS
               IF(NROW.GT.1) DXY(J,I,K)=0
               IF(NLAY.GT.1) DXZ(J,I,K)=0
             ELSE
-              DXX(J,I,K,ICOMP)=
-     &         AL*VX*VX/V/PF+AT*VY*VY/V/PF+AV*VZ*VZ/V/PF+DM
+              DXX(J,I,K,ICOMP)=AL*VX*VX/V/
+     &                         PF+AT*VY*VY/V/PF+AV*VZ*VZ/V/PF+DM
               IF(INOCROSS.EQ.1) THEN       
                 IF(NROW.GT.1) DXY(J,I,K)=0.
                 IF(NLAY.GT.1) DXZ(J,I,K)=0.
@@ -250,18 +239,18 @@ C--CALCULATE VALUES AT INTERFACES
             AL=ALPHAL(J,I,K)*WW+ALPHAL(J,IP1,K)*(1.-WW)
             AT=AL*TRPT(K)
             AV=AL*TRPV(K)
-            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(J,IP1,K,ICOMP)*(1.-WW))
-     &       *(PRSITY(J,I,K)*WW+PRSITY(J,IP1,K)*(1.-WW))
+            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(J,IP1,K,ICOMP)*(1.-WW))*
+     &         (PRSITY(J,I,K)*WW+PRSITY(J,IP1,K)*(1.-WW))
             VY=QY(J,I,K)
             IF(NCOL.GT.1) THEN
-              VX=0.5*(QX(J,I,K)+QX(JM1,I,K))*WW
-     &         +0.5*(QX(J,IP1,K)+QX(JM1,IP1,K))*(1.-WW)
+              VX=0.5*(QX(J,I,K)+QX(JM1,I,K))*WW+
+     &           0.5*(QX(J,IP1,K)+QX(JM1,IP1,K))*(1.-WW)
             ELSE
               VX=0
             ENDIF
             IF(NLAY.GT.1) THEN
-              VZ=0.5*(QZ(J,I,K)+QZ(J,I,KM1))*WW
-     &         +0.5*(QZ(J,IP1,K)+QZ(J,IP1,KM1))*(1.-WW)
+              VZ=0.5*(QZ(J,I,K)+QZ(J,I,KM1))*WW+
+     &           0.5*(QZ(J,IP1,K)+QZ(J,IP1,KM1))*(1.-WW)
             ELSE
               VZ=0
             ENDIF
@@ -273,8 +262,8 @@ C--CALCULATE DISPERSION COEFFICIENTS
               IF(NCOL.GT.1) DYX(J,I,K)=0
               IF(NLAY.GT.1) DYZ(J,I,K)=0
             ELSE
-              DYY(J,I,K,ICOMP)=
-     &         AL*VY*VY/V/PF+AT*VX*VX/V/PF+AV*VZ*VZ/V/PF+DM
+              DYY(J,I,K,ICOMP)=AL*VY*VY/V/PF+
+     &                         AT*VX*VX/V/PF+AV*VZ*VZ/V/PF+DM
               IF(INOCROSS.EQ.1) THEN       
                 IF(NCOL.GT.1) DYX(J,I,K)=0.
                 IF(NLAY.GT.1) DYZ(J,I,K)=0.
@@ -307,21 +296,21 @@ C--CALCULATE VALUES AT INTERFACES
             PF=1.
             AL=ALPHAL(J,I,K)*WW+ALPHAL(J,I,KP1)*(1.-WW)
             AT=ALPHAL(J,I,K)*TRPT(K)*WW+
-     &       ALPHAL(J,I,KP1)*TRPT(KP1)*(1.-WW)
+     &         ALPHAL(J,I,KP1)*TRPT(KP1)*(1.-WW)
             AV=ALPHAL(J,I,K)*TRPV(K)*WW+
-     &       ALPHAL(J,I,KP1)*TRPV(KP1)*(1.-WW)
-            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(J,I,KP1,ICOMP)*(1.-WW))
-     &       *(PRSITY(J,I,K)*WW+PRSITY(J,I,KP1)*(1.-WW))
+     &         ALPHAL(J,I,KP1)*TRPV(KP1)*(1.-WW)
+            DM=(DMCOEF(J,I,K,ICOMP)*WW+DMCOEF(J,I,KP1,ICOMP)*(1.-WW))*
+     &         (PRSITY(J,I,K)*WW+PRSITY(J,I,KP1)*(1.-WW))
             VZ=QZ(J,I,K)
             IF(NCOL.GT.1) THEN
-              VX=0.5*(QX(JM1,I,K)+QX(J,I,K))*WW
-     &         +0.5*(QX(JM1,I,KP1)+QX(J,I,KP1))*(1.-WW)
+              VX=0.5*(QX(JM1,I,K)+QX(J,I,K))*WW+
+     &           0.5*(QX(JM1,I,KP1)+QX(J,I,KP1))*(1.-WW)
             ELSE
               VX=0
             ENDIF
             IF(NROW.GT.1) THEN
-              VY=0.5*(QY(J,IM1,K)+QY(J,I,K))*WW
-     &         +0.5*(QY(J,IM1,KP1)+QY(J,I,KP1))*(1.-WW)
+              VY=0.5*(QY(J,IM1,K)+QY(J,I,K))*WW+
+     &           0.5*(QY(J,IM1,KP1)+QY(J,I,KP1))*(1.-WW)
             ELSE
               VY=0
             ENDIF
@@ -333,8 +322,8 @@ C--CALCULATE DISPERSION COEFFICIENTS
               IF(NCOL.GT.1) DZX(J,I,K)=0
               IF(NROW.GT.1) DZY(J,I,K)=0
             ELSE
-              DZZ(J,I,K,ICOMP)=
-     &         AL*VZ*VZ/V/PF+AV*VX*VX/V/PF+AV*VY*VY/V/PF+DM
+              DZZ(J,I,K,ICOMP)=AL*VZ*VZ/V/PF+
+     &                         AV*VX*VX/V/PF+AV*VY*VY/V/PF+DM
               IF(INOCROSS.EQ.1) THEN       
                 IF(NCOL.GT.1) DZX(J,I,K)=0.
                 IF(NROW.GT.1) DZY(J,I,K)=0.
@@ -431,36 +420,35 @@ C
 C--CALCULATE MAXIMUM TIME INCREMENT WHICH MEETS STABILITY CRITERION
 C--FOR SOLVING THE EXPLICIT FINITE-DIFFERENCE DISPERSION EQUATIONS
       DO K=1,NLAY
-      DO I=1,NROW
-      DO J=1,NCOL
-C
-        IF(ICBUND(J,I,K,1).NE.0) THEN
-          TD=0.
-          IF(NCOL.GT.1.AND.J.LT.NCOL) THEN
-            IF(ICBUND(J+1,I,K,1).NE.0)
-     &       TD=TD+DXX(J,I,K,ICOMP)/(0.5*DELR(J)+0.5*DELR(J+1))**2
-          ENDIF
-          IF(NROW.GT.1.AND.I.LT.NROW) THEN
-            IF(ICBUND(J,I+1,K,1).NE.0)
-     &       TD=TD+DYY(J,I,K,ICOMP)/(0.5*DELC(I)+0.5*DELC(I+1))**2
-          ENDIF
-          IF(NLAY.GT.1.AND.K.LT.NLAY) THEN
-            IF(ICBUND(J,I,K+1,1).NE.0)
-     &       TD=TD+DZZ(J,I,K,ICOMP)/(0.5*DH(J,I,K)+0.5*DH(J,I,K+1))**2
-          ENDIF
-          IF(TD.GT.0) THEN
-            TD=0.5/TD*PRSITY(J,I,K)
-            IF(TD.LT.DTDISP) THEN
-              DTDISP=TD
-              JD=J
-              ID=I
-              KD=K
+        DO I=1,NROW
+          DO J=1,NCOL
+C         
+            IF(ICBUND(J,I,K,1).NE.0) THEN
+              TD=0.
+              IF(NCOL.GT.1.AND.J.LT.NCOL) THEN
+                IF(ICBUND(J+1,I,K,1).NE.0)
+     &            TD=TD+DXX(J,I,K,ICOMP)/(0.5*DELR(J)+0.5*DELR(J+1))**2
+              ENDIF
+              IF(NROW.GT.1.AND.I.LT.NROW) THEN
+                IF(ICBUND(J,I+1,K,1).NE.0)
+     &            TD=TD+DYY(J,I,K,ICOMP)/(0.5*DELC(I)+0.5*DELC(I+1))**2
+              ENDIF
+              IF(NLAY.GT.1.AND.K.LT.NLAY) THEN
+                IF(ICBUND(J,I,K+1,1).NE.0) TD=TD+DZZ(J,I,K,ICOMP)/
+     &                                (0.5*DH(J,I,K)+0.5*DH(J,I,K+1))**2
+              ENDIF
+              IF(TD.GT.0) THEN
+                TD=0.5/TD*PRSITY(J,I,K)
+                IF(TD.LT.DTDISP) THEN
+                  DTDISP=TD
+                  JD=J
+                  ID=I
+                  KD=K
+                ENDIF
+              ENDIF
             ENDIF
-          ENDIF
-        ENDIF
-C
-      ENDDO
-      ENDDO
+          ENDDO
+        ENDDO
       ENDDO
 C
 C--PRINT OUT DISPERSION COEFFICIENT IF REQUESTED
@@ -468,28 +456,28 @@ C--PRINT OUT DISPERSION COEFFICIENT IF REQUESTED
 C
       WRITE(IOUT,510) 
   510 FORMAT(/1X,'PRINTED DISPERSION COEFFICIENTS ARE APPARENT Dij',
-     & ' CALCULATED USING DARCY FLUX RATHER THAN SEEPAGE VELOCITY')   
+     &      ' CALCULATED USING DARCY FLUX RATHER THAN SEEPAGE VELOCITY')
 C
       IF(NCOL.LT.2) GOTO 920
       TEXT='Dxx^ Comp. # XXX'
       WRITE(TEXT(14:16),'(I3.3)') ICOMP
       DO K=1,NLAY
         CALL RPRINT(DXX(1:NCOL,1:NROW,K,ICOMP),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
       IF(NROW.LT.2.OR.ICOMP.GT.1) GOTO 910
       TEXT='Dxy^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DXY(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   910 IF(NLAY.LT.2.OR.ICOMP.GT.1) GOTO 920
       TEXT='Dxz^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DXZ(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   920 IF(NROW.LT.2) GOTO 950
@@ -497,21 +485,21 @@ C
       WRITE(TEXT(14:16),'(I3.3)') ICOMP
       DO K=1,NLAY
         CALL RPRINT(DYY(1:NCOL,1:NROW,K,ICOMP),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
       IF(NCOL.LT.2.OR.ICOMP.GT.1) GOTO 940
       TEXT='Dyx^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DYX(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   940 IF(NLAY.LT.2.OR.ICOMP.GT.1) GOTO 950
       TEXT='Dyz^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DYZ(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   950 IF(NLAY.LT.2) GOTO 980
@@ -519,21 +507,21 @@ C
       WRITE(TEXT(14:16),'(I3.3)') ICOMP      
       DO K=1,NLAY
         CALL RPRINT(DZZ(1:NCOL,1:NROW,K,ICOMP),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
       IF(NCOL.LT.2.OR.ICOMP.GT.1) GOTO 970
       TEXT='Dzx^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DZX(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   970 IF(NROW.LT.2.OR.ICOMP.GT.1) GOTO 980
       TEXT='Dzy^ Comp. ALL  '
       DO K=1,NLAY
         CALL RPRINT(DZY(1:NCOL,1:NROW,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
+     &              0,KSTP,KPER,NCOL,NROW,K,IFMTDP,IOUT)
       ENDDO
 C
   980 CONTINUE
@@ -555,19 +543,19 @@ C--ALONG THE X-DIRECTION: DXX, DXY AND DXZ
             WW=DELR(JP1)/(DELR(J)+DELR(JP1))
             AREA=DELC(I)*(DH(J,I,K)*WW+DH(JP1,I,K)*(1.-WW))
             IF(NCOL.GT.1.AND.AREA.GT.0) THEN
-              DXX(J,I,K,ICOMP)=
-     &         AREA*DXX(J,I,K,ICOMP)/(0.5*DELR(JP1)+0.5*DELR(J))
+              DXX(J,I,K,ICOMP)=AREA*DXX(J,I,K,ICOMP)/
+     &                         (0.5*DELR(JP1)+0.5*DELR(J))
               IF(NROW.GT.1) THEN
                 IF(ABS(DXY(J,I,K)-0.).GT.1.0E-6) THEN
                 DXY(J,I,K)=AREA*DXY(J,I,K)/
-     &           (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
+     &                     (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
                 ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
                 IF(ABS(DXZ(J,I,K)-0.).GT.1.0E-6) THEN
-                DXZ(J,I,K)=AREA*DXZ(J,I,K)/((0.5*DH(J,I,KM1)
-     &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(JP1,I,KM1)
-     &           +DH(JP1,I,K)+0.5*DH(JP1,I,KP1))*(1.-WW) )
+                DXZ(J,I,K)=AREA*DXZ(J,I,K)/((0.5*DH(J,I,KM1)+DH(J,I,K)+
+     &                     0.5*DH(J,I,KP1))*WW+(0.5*DH(JP1,I,KM1)+
+     &                     DH(JP1,I,K)+0.5*DH(JP1,I,KP1))*(1.-WW))
                 ENDIF
               ENDIF
             ENDIF
@@ -576,19 +564,19 @@ C--ALONG THE Y-DIRECTION: DYX, DYY AND DYZ
             WW=DELC(IP1)/(DELC(I)+DELC(IP1))
             AREA=DELR(J)*(DH(J,I,K)*WW+DH(J,IP1,K)*(1.-WW))
             IF(NROW.GT.1.AND.AREA.GT.0) THEN
-              DYY(J,I,K,ICOMP)=
-     &         AREA*DYY(J,I,K,ICOMP)/(0.5*DELC(IP1)+0.5*DELC(I))
+              DYY(J,I,K,ICOMP)=AREA*DYY(J,I,K,ICOMP)/
+     &                         (0.5*DELC(IP1)+0.5*DELC(I))
               IF(NCOL.GT.1) THEN
                 IF(ABS(DYX(J,I,K)-0.).GT.1.0E-6) THEN
-                DYX(J,I,K)=AREA*DYX(J,I,K)/
-     &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
+                DYX(J,I,K)=AREA*DYX(J,I,K)/(0.5*DELR(JM1)+DELR(J)+0.5*
+     &                     DELR(JP1))
                 ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
                 IF(ABS(DYZ(J,I,K)-0.).GT.1.0E-6) THEN
-                DYZ(J,I,K)=AREA*DYZ(J,I,K)/((0.5*DH(J,I,KM1)
-     &           +DH(J,I,K)+0.5*DH(J,I,KP1))*WW + (0.5*DH(J,IP1,KM1)
-     &           +DH(J,IP1,K)+0.5*DH(J,IP1,KP1))*(1.-WW) )
+                DYZ(J,I,K)=AREA*DYZ(J,I,K)/((0.5*DH(J,I,KM1)+DH(J,I,K)+
+     &                     0.5*DH(J,I,KP1))*WW+(0.5*DH(J,IP1,KM1)+
+     &                     DH(J,IP1,K)+0.5*DH(J,IP1,KP1))*(1.-WW) )
                 ENDIF
               ENDIF
             ENDIF
@@ -597,21 +585,20 @@ C--ALONG THE Z DIRECTION: DZX, DZY AND DZZ
             AREA=DELR(J)*DELC(I)
             IF(NLAY.GT.1.AND.AREA.GT.0) THEN
               DZZ(J,I,K,ICOMP)=AREA*DZZ(J,I,K,ICOMP)/
-     &         (0.5*DH(J,I,KP1)+0.5*DH(J,I,K))
+     &                         (0.5*DH(J,I,KP1)+0.5*DH(J,I,K))
               IF(NCOL.GT.1) THEN
                 IF(ABS(DZX(J,I,K)-0.).GT.1.0E-6) THEN
                 DZX(J,I,K)=AREA*DZX(J,I,K)/
-     &           (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
+     &                     (0.5*DELR(JM1)+DELR(J)+0.5*DELR(JP1))
                 ENDIF
               ENDIF
               IF(NROW.GT.1) THEN
                 IF(ABS(DZY(J,I,K)-0.).GT.1.0E-6) THEN
                 DZY(J,I,K)=AREA*DZY(J,I,K)/
-     &           (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
+     &                     (0.5*DELC(IM1)+DELC(I)+0.5*DELC(IP1))
                 ENDIF
               ENDIF
             ENDIF
-C
           ENDDO
         ENDDO
       ENDDO
@@ -621,9 +608,9 @@ C
 C--PRINT OUT INFORMATION ON DTDISP
       WRITE(IOUT,1500) DTDISP,KD,ID,JD
  1500 FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
-     & ' OF THE DISPERSION TERM'/1X,'=',G11.4,
-     & '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
-     & ', J=',I4)            
+     &           ' OF THE DISPERSION TERM'/1X,'=',G11.4,
+     &           '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
+     &           ', J=',I4)            
 C
 C--RETURN
       RETURN
@@ -688,14 +675,14 @@ C...........TAKE CARE OF DRY CELLS
               WZP=0                   
             ELSE                      
               IF(DH(J,I,K).EQ.0.AND.DH(J,I,KP1).EQ.0) GOTO 10 
-                WZP=DH(J,I,KP1)/(DH(J,I,K)+DH(J,I,KP1))
+              WZP=DH(J,I,KP1)/(DH(J,I,K)+DH(J,I,KP1))
             ENDIF                     
 C...........TAKE CARE OF DRY CELLS    
   10        IF(DH(J,I,KM1).LE.0.) THEN
               WZM=1                   
             ELSE                      
               IF(DH(J,I,KM1).EQ.0.AND.DH(J,I,K).EQ.0) GOTO 20 
-                WZM=DH(J,I,K)/(DH(J,I,KM1)+DH(J,I,K))
+              WZM=DH(J,I,K)/(DH(J,I,KM1)+DH(J,I,K))
             ENDIF
   20        IF(K.EQ.1) WZM=1.
 C      
@@ -731,7 +718,7 @@ C--COEF. FOR (J,I,K-1)
             IF(K.GT.1) THEN
               TEMP1(2)=DZZ(J,I,KM1,ICOMP)
               TEMP2(2)=-DXZ(J,I,K)*WXP+DXZ(JM1,I,K)*(1-WXM)
-     &                -DYZ(J,I,K)*WYP+DYZ(J,IM1,K)*(1-WYM)
+     &                 -DYZ(J,I,K)*WYP+DYZ(J,IM1,K)*(1-WYM)
 C--BOUNDARY CONDITION
               IF(J.EQ.1)    TEMP2(2)=TEMP2(2)+DZX(J,I,KM1)*WZM
               IF(J.EQ.NCOL) TEMP2(2)=TEMP2(2)-DZX(J,I,KM1)*WZM
@@ -743,7 +730,7 @@ C--COEF. FOR (J,I,K+1)
             IF(K.LT.NLAY) THEN
               TEMP1(3)=DZZ(J,I,K,ICOMP)
               TEMP2(3)=+DXZ(J,I,K)*WXP-DXZ(JM1,I,K)*(1-WXM)
-     &                +DYZ(J,I,K)*WYP-DYZ(J,IM1,K)*(1-WYM)
+     &                 +DYZ(J,I,K)*WYP-DYZ(J,IM1,K)*(1-WYM)
 C--BOUNDARY CONDITION
               IF(J.EQ.1)    TEMP2(3)=TEMP2(3)-DZX(J,I,K)*(1-WZP)
               IF(J.EQ.NCOL) TEMP2(3)=TEMP2(3)+DZX(J,I,K)*(1-WZP)
@@ -767,7 +754,7 @@ C--COEF. FOR (J,I+1,K)
             IF(I.LT.NROW) THEN
               TEMP1(5)=DYY(J,I,K,ICOMP)
               TEMP2(5)=+DXY(J,I,K)*WXP-DXY(JM1,I,K)*(1-WXM)
-     &                +DZY(J,I,K)*WZP-DZY(J,I,KM1)*(1-WZM)
+     &                 +DZY(J,I,K)*WZP-DZY(J,I,KM1)*(1-WZM)
 C--BOUNDARY CONDITION
               IF(J.EQ.1)    TEMP2(5)=TEMP2(5)-DYX(J,I,K)*(1-WYP)
               IF(J.EQ.NCOL) TEMP2(5)=TEMP2(5)+DYX(J,I,K)*(1-WYP)
@@ -779,7 +766,7 @@ C--COEF. FOR (J-1,I,K)
             IF(J.GT.1) THEN
               TEMP1(6)=DXX(JM1,I,K,ICOMP)
               TEMP2(6)=-DYX(J,I,K)*WYP+DYX(J,IM1,K)*(1-WYM)
-     &                -DZX(J,I,K)*WZP+DZX(J,I,KM1)*(1-WZM)
+     &                 -DZX(J,I,K)*WZP+DZX(J,I,KM1)*(1-WZM)
 C--BOUNDARY CONDITION
          IF(I.EQ.1)    TEMP2(6)=TEMP2(6)+DXY(JM1,I,K)*WXM
          IF(I.EQ.NROW) TEMP2(6)=TEMP2(6)-DXY(JM1,I,K)*WXM
@@ -791,7 +778,7 @@ C--COEF. FOR (J+1,I,K)
             IF(J.LT.NCOL) THEN
               TEMP1(7)=DXX(J,I,K,ICOMP)
               TEMP2(7)=+DYX(J,I,K)*WYP-DYX(J,IM1,K)*(1-WYM)
-     &                +DZX(J,I,K)*WZP-DZX(J,I,KM1)*(1-WZM)
+     &                 +DZX(J,I,K)*WZP-DZX(J,I,KM1)*(1-WZM)
 C--BOUNDARY CONDITION
          IF(I.EQ.1)    TEMP2(7)=TEMP2(7)-DXY(J,I,K)*(1-WXP)
          IF(I.EQ.NROW) TEMP2(7)=TEMP2(7)+DXY(J,I,K)*(1-WXP)
@@ -879,7 +866,6 @@ C--SHIFT CROSSING TERMS TO THE RIGHT-HAND-SIDE, OTHERWISE
                  ENDIF
                ENDIF
             ENDDO
-C
           ENDDO
         ENDDO
       ENDDO
@@ -940,25 +926,25 @@ C
 C--COMPONENTS ACROSS LEFT AND RIGHT FACES IN THE X-DIRECTION
             IF(NCOL.GT.1) THEN
               DCFLUX=DCFLUX+DXX(J,I,K,ICOMP)*(BUFF(JP1,I,K)-BUFF(J,I,K))
-     &         -DXX(JM1,I,K,ICOMP)*(BUFF(J,I,K)-BUFF(JM1,I,K))
+     &               -DXX(JM1,I,K,ICOMP)*(BUFF(J,I,K)-BUFF(JM1,I,K))
               IF(NROW.GT.1) THEN
-                DCFLUX=DCFLUX+DXY(J,I,K)*(BUFF(JP1,IP1,K)*(1.-WXP)
-     &           +BUFF(J,IP1,K)*WXP
-     &           -BUFF(JP1,IM1,K)*(1.-WXP)-BUFF(J,IM1,K)*WXP)
+                DCFLUX=DCFLUX+DXY(J,I,K)*(BUFF(JP1,IP1,K)*(1.-WXP)+
+     &                 BUFF(J,IP1,K)*WXP-BUFF(JP1,IM1,K)*(1.-WXP)-
+     &                 BUFF(J,IM1,K)*WXP)
                 IF(J.GT.1) THEN
-                  DCFLUX=DCFLUX-DXY(JM1,I,K)*(BUFF(J,IP1,K)*(1.-WXM)
-     &             +BUFF(JM1,IP1,K)*WXM
-     &             -BUFF(J,IM1,K)*(1.-WXM)-BUFF(JM1,IM1,K)*WXM)
+                  DCFLUX=DCFLUX-DXY(JM1,I,K)*(BUFF(J,IP1,K)*(1.-WXM)+
+     &                   BUFF(JM1,IP1,K)*WXM-BUFF(J,IM1,K)*(1.-WXM)-
+     &                   BUFF(JM1,IM1,K)*WXM)
                 ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
-                DCFLUX=DCFLUX+DXZ(J,I,K)*(BUFF(JP1,I,KP1)*(1.-WXP)
-     &           +BUFF(J,I,KP1)*WXP
-     &           -BUFF(JP1,I,KM1)*(1.-WXP)-BUFF(J,I,KM1)*WXP)
+                DCFLUX=DCFLUX+DXZ(J,I,K)*(BUFF(JP1,I,KP1)*(1.-WXP)+
+     &                 BUFF(J,I,KP1)*WXP-BUFF(JP1,I,KM1)*(1.-WXP)-
+     &                 BUFF(J,I,KM1)*WXP)
                 IF(J.GT.1) THEN
-                  DCFLUX=DCFLUX-DXZ(JM1,I,K)*(BUFF(J,I,KP1)*(1.-WXM)
-     &             +BUFF(JM1,I,KP1)*WXM
-     &             -BUFF(J,I,KM1)*(1.-WXM)-BUFF(JM1,I,KM1)*WXM)
+                  DCFLUX=DCFLUX-DXZ(JM1,I,K)*(BUFF(J,I,KP1)*(1.-WXM)+
+     &                   BUFF(JM1,I,KP1)*WXM-BUFF(J,I,KM1)*(1.-WXM)-
+     &                   BUFF(JM1,I,KM1)*WXM)
                 ENDIF
               ENDIF
             ENDIF
@@ -966,25 +952,25 @@ C
 C--COMPONENTS ACROSS BACK AND FRONT FACES IN THE Y-DIRECTION
             IF(NROW.GT.1) THEN
               DCFLUX=DCFLUX+DYY(J,I,K,ICOMP)*(BUFF(J,IP1,K)-BUFF(J,I,K))
-     &         -DYY(J,IM1,K,ICOMP)*(BUFF(J,I,K)-BUFF(J,IM1,K))
+     &               -DYY(J,IM1,K,ICOMP)*(BUFF(J,I,K)-BUFF(J,IM1,K))
               IF(NCOL.GT.1) THEN
-                DCFLUX=DCFLUX+DYX(J,I,K)*(BUFF(JP1,IP1,K)*(1.-WYP)
-     &           +BUFF(JP1,I,K)*WYP
-     &           -BUFF(JM1,IP1,K)*(1.-WYP)-BUFF(JM1,I,K)*WYP)
+                DCFLUX=DCFLUX+DYX(J,I,K)*(BUFF(JP1,IP1,K)*(1.-WYP)+
+     &                 BUFF(JP1,I,K)*WYP-BUFF(JM1,IP1,K)*(1.-WYP)-
+     &                 BUFF(JM1,I,K)*WYP)
                 IF(I.GT.1) THEN
-                  DCFLUX=DCFLUX-DYX(J,IM1,K)*(BUFF(JP1,I,K)*(1.-WYM)
-     &             +BUFF(JP1,IM1,K)*WYM
-     &             -BUFF(JM1,I,K)*(1.-WYM)-BUFF(JM1,IM1,K)*WYM)
+                  DCFLUX=DCFLUX-DYX(J,IM1,K)*(BUFF(JP1,I,K)*(1.-WYM)+
+     &                   BUFF(JP1,IM1,K)*WYM-BUFF(JM1,I,K)*(1.-WYM)-
+     &                   BUFF(JM1,IM1,K)*WYM)
                 ENDIF
               ENDIF
               IF(NLAY.GT.1) THEN
-                DCFLUX=DCFLUX+DYZ(J,I,K)*(BUFF(J,IP1,KP1)*(1.-WYP)
-     &           +BUFF(J,I,KP1)*WYP
-     &           -BUFF(J,IP1,KM1)*(1.-WYP)-BUFF(J,I,KM1)*WYP)
+                DCFLUX=DCFLUX+DYZ(J,I,K)*(BUFF(J,IP1,KP1)*(1.-WYP)+
+     &                 BUFF(J,I,KP1)*WYP-BUFF(J,IP1,KM1)*(1.-WYP)-
+     &                 BUFF(J,I,KM1)*WYP)
                 IF(I.GT.1) THEN
-                  DCFLUX=DCFLUX-DYZ(J,IM1,K)*(BUFF(J,I,KP1)*(1.-WYM)
-     &             +BUFF(J,IM1,KP1)*WYM
-     &             -BUFF(J,I,KM1)*(1.-WYM)-BUFF(J,IM1,KM1)*WYM)
+                  DCFLUX=DCFLUX-DYZ(J,IM1,K)*(BUFF(J,I,KP1)*(1.-WYM)+
+     &                   BUFF(J,IM1,KP1)*WYM-BUFF(J,I,KM1)*(1.-WYM)-
+     &                   BUFF(J,IM1,KM1)*WYM)
                 ENDIF
               ENDIF
             ENDIF
@@ -992,25 +978,25 @@ C
 C--COMPONENTS ACROSS UPPER AND LOWER FACES IN THE Z-DIRECTION
             IF(NLAY.GT.1) THEN
               DCFLUX=DCFLUX+DZZ(J,I,K,ICOMP)*(BUFF(J,I,KP1)-BUFF(J,I,K))
-     &         -DZZ(J,I,KM1,ICOMP)*(BUFF(J,I,K)-BUFF(J,I,KM1))
+     &               -DZZ(J,I,KM1,ICOMP)*(BUFF(J,I,K)-BUFF(J,I,KM1))
               IF(NCOL.GT.1) THEN
-                DCFLUX=DCFLUX+DZX(J,I,K)*(BUFF(JP1,I,KP1)*(1.-WZP)
-     &           +BUFF(JP1,I,K)*WZP
-     &           -BUFF(JM1,I,KP1)*(1.-WZP)-BUFF(JM1,I,K)*WZP)
+                DCFLUX=DCFLUX+DZX(J,I,K)*(BUFF(JP1,I,KP1)*(1.-WZP)+
+     &                 BUFF(JP1,I,K)*WZP-BUFF(JM1,I,KP1)*(1.-WZP)-
+     &                 BUFF(JM1,I,K)*WZP)
                 IF(K.GT.1) THEN
-                  DCFLUX=DCFLUX-DZX(J,I,KM1)*(BUFF(JP1,I,K)*(1.-WZM)
-     &             +BUFF(JP1,I,KM1)*WZM
-     &             -BUFF(JM1,I,K)*(1.-WZM)-BUFF(JM1,I,KM1)*WZM)
+                  DCFLUX=DCFLUX-DZX(J,I,KM1)*(BUFF(JP1,I,K)*(1.-WZM)+
+     &                   BUFF(JP1,I,KM1)*WZM-BUFF(JM1,I,K)*(1.-WZM)-
+     &                   BUFF(JM1,I,KM1)*WZM)
                 ENDIF
               ENDIF
               IF(NROW.GT.1) THEN
-                DCFLUX=DCFLUX+DZY(J,I,K)*(BUFF(J,IP1,KP1)*(1.-WZP)
-     &           +BUFF(J,IP1,K)*WZP
-     &           -BUFF(J,IM1,KP1)*(1.-WZP)-BUFF(J,IM1,K)*WZP)
+                DCFLUX=DCFLUX+DZY(J,I,K)*(BUFF(J,IP1,KP1)*(1.-WZP)+
+     &                 BUFF(J,IP1,K)*WZP-BUFF(J,IM1,KP1)*(1.-WZP)-
+     &                 BUFF(J,IM1,K)*WZP)
                 IF(K.GT.1) THEN
-                  DCFLUX=DCFLUX-DZY(J,I,KM1)*(BUFF(J,IP1,K)*(1.-WZM)
-     &             +BUFF(J,IP1,KM1)*WZM
-     &             -BUFF(J,IM1,K)*(1.-WZM)-BUFF(J,IM1,KM1)*WZM)
+                  DCFLUX=DCFLUX-DZY(J,I,KM1)*(BUFF(J,IP1,K)*(1.-WZM)+
+     &                   BUFF(J,IP1,KM1)*WZM-BUFF(J,IM1,K)*(1.-WZM)-
+     &                   BUFF(J,IM1,KM1)*WZM)
                 ENDIF
               ENDIF
             ENDIF
@@ -1021,7 +1007,6 @@ C--ACCUMULATE MASS IN OR OUT.
             ELSE
               RMASIO(6,1,ICOMP)=RMASIO(6,1,ICOMP)-DCFLUX*DTRANS
             ENDIF
-C
           ENDDO
         ENDDO
       ENDDO
@@ -1038,12 +1023,12 @@ C ********************************************************
       USE MT3DMS_MODULE, ONLY: IOUT,INOCROSS
       USE MT3DUTIL
 C
-      IMPLICIT  NONE
-      LOGICAL KEYFOUND,KEYFOUND2
+      IMPLICIT       NONE
+      LOGICAL        KEYFOUND,KEYFOUND2
       CHARACTER*1000 LINE
-      CHARACTER*30, ALLOCATABLE :: KEYWORDS(:)
-      INTEGER IN,OUT,NKEYWORDS,LLOC,ISTART,ISTOP,I,IKEY,IMSD
-      REAL R
+      CHARACTER*30,  ALLOCATABLE :: KEYWORDS(:)
+      INTEGER        IN,OUT,NKEYWORDS,LLOC,ISTART,ISTOP,I,IKEY,IMSD
+      REAL           R
 C
 C SET NUMBER OF KEYWORDS AND KEYWORDS
       NKEYWORDS=2
@@ -1063,10 +1048,6 @@ C
         KEYFOUND2=.FALSE.
         DO IKEY=1,NKEYWORDS
           IF(LINE(ISTART:ISTOP).EQ.TRIM(KEYWORDS(IKEY))) THEN
-C            IF(.NOT.KEYFOUND) THEN
-C              WRITE(IOUT,'(A)') 'BTN PACKAGE INPUT KEYWORDS: '
-C            ENDIF
-C            WRITE(IOUT,'(A)') LINE(ISTART:ISTOP)
             KEYFOUND=.TRUE.
             KEYFOUND2=.TRUE.
             EXIT
