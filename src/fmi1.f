@@ -6,24 +6,24 @@ C FOR ARRAYS THAT MAY BE NEEDED BY FLOW MODEL-INTERFACE (FMI) PACKAGE.
 C **********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,MXTRNOP,iUnitTRNOP,NPERFL,ISS,
-     &                         IVER,IFTLFMT,
-     &         NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
-     &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
-     &         FSWT,FSFR,FUZF,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
-     &         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF
+     &                         IVER,IFTLFMT,NPERFL,ISS,IVER,FWEL,FDRN,
+     &                         FRCH,FEVT,FRIV,FGHB,FSTR,FRES,FFHB,FIBS,
+     &                         FTLK,FLAK,FMNW,FDRT,FETS,FSWT,FSFR,FUZF,
+     &                         NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
+     &                         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,
+     &                         FLAKUZF,FSNKUZF
       USE SFRVARS, ONLY: ISFTTR
-      IMPLICIT  NONE
-      INTEGER   
-     &          MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB,MTCHD,
-     &          MTSTR,MTFHB,MTRES,MTTLK,MTIBS,MTLAK,
-     &          MTDRT,MTETS,MTMNW,MTSWT,MTSFR,MTUZF,IERR,IPCKG
-      CHARACTER VERSION*11
+      IMPLICIT     NONE
+      INTEGER      MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB,MTCHD,
+     &             MTSTR,MTFHB,MTRES,MTTLK,MTIBS,MTLAK,
+     &             MTDRT,MTETS,MTMNW,MTSWT,MTSFR,MTUZF,IERR,IPCKG
+      CHARACTER    VERSION*11
       CHARACTER*20 TEXT1
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INFTL
  1030 FORMAT(1X,'FMI1 -- FLOW MODEL INTERFACE PACKAGE,',
-     & ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
+     &          ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
 C
 C--ALLOCATE
       ALLOCATE(NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
@@ -79,28 +79,27 @@ C--INITIALIZE
 C
 C--READ HEADER OF FLOW-TRANSPORT LINK FILE
       IF(IFTLFMT.EQ.0) THEN
-        READ(INFTL,ERR=100,IOSTAT=IERR) VERSION,MTWEL,MTDRN,MTRCH,
-     &   MTEVT,MTRIV,MTGHB,MTCHD,ISS,NPERFL
+        READ(INFTL,ERR=100,IOSTAT=IERR) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,
+     &                                  MTRIV,MTGHB,MTCHD,ISS,NPERFL
       ELSEIF(IFTLFMT.EQ.1) THEN
         READ(INFTL,*,ERR=100,IOSTAT=IERR) VERSION,MTWEL,MTDRN,MTRCH,
-     &   MTEVT,MTRIV,MTGHB,MTCHD,ISS,NPERFL
+     &                                    MTEVT,MTRIV,MTGHB,MTCHD,ISS,
+     &                                    NPERFL
       ENDIF
 C
   100 IF((VERSION(1:4).NE.'MT3D'.AND.VERSION(1:4).NE.'MTGS').OR.
-     1   IERR.NE.0) THEN
+     &   IERR.NE.0) THEN
         GOTO 500
       ELSEIF(VERSION(1:11).EQ.'MT3D4.00.00') THEN
         REWIND(INFTL)
         IF(IFTLFMT.EQ.0) THEN
-          READ(INFTL) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,            !5
-     &     MTRIV,MTGHB,MTCHD,ISS,NPERFL,                          !10
-     &     MTSTR,MTRES,MTFHB,MTDRT,MTETS,MTTLK,MTIBS,MTLAK,MTMNW, !19
-     &     MTSWT,MTSFR,MTUZF                                      !22
+          READ(INFTL) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB, 
+     &                MTCHD,ISS,NPERFL,MTSTR,MTRES,MTFHB,MTDRT,MTETS,
+     &                MTTLK,MTIBS,MTLAK,MTMNW,MTSWT,MTSFR,MTUZF
         ELSEIF(IFTLFMT.EQ.1) THEN
-          READ(INFTL,*) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,
-     &     MTRIV,MTGHB,MTCHD,ISS,NPERFL,
-     &     MTSTR,MTRES,MTFHB,MTDRT,MTETS,MTTLK,MTIBS,MTLAK,MTMNW,
-     &     MTSWT,MTSFR,MTUZF
+          READ(INFTL,*) VERSION,MTWEL,MTDRN,MTRCH,MTEVT,MTRIV,MTGHB,
+     &                  MTCHD,ISS,NPERFL,MTSTR,MTRES,MTFHB,MTDRT,MTETS,
+     &                  MTTLK,MTIBS,MTLAK,MTMNW,MTSWT,MTSFR,MTUZF
         ENDIF
       ELSEIF(VERSION(1:11).EQ.'MTGS1.00.00') THEN
         IF(IFTLFMT.EQ.0) THEN
@@ -168,8 +167,8 @@ C
 C--DETERMINE IF THE SSM PACKAGE IS REQUIRED
   200 IF(iUnitTRNOP(3).EQ.0) THEN
         IF(FWEL.OR.FDRN.OR.FRCH.OR.FEVT.OR.FRIV.OR.FGHB.OR.
-     &   FSTR.OR.FRES.OR.FFHB.OR.FIBS.OR.FTLK.OR.FLAK.OR.FMNW.OR.
-     &   FDRT.OR.FETS.OR.FSWT.OR.FSFR.OR.FUZF) THEN
+     &     FSTR.OR.FRES.OR.FFHB.OR.FIBS.OR.FTLK.OR.FLAK.OR.FMNW.OR.
+     &     FDRT.OR.FETS.OR.FSWT.OR.FSFR.OR.FUZF) THEN
           WRITE(*,300)
           CALL USTOP(' ')
         ELSEIF(MTCHD.GT.0) THEN
@@ -180,15 +179,16 @@ C--DETERMINE IF THE SSM PACKAGE IS REQUIRED
           CALL USTOP(' ')
         ENDIF
       ENDIF
-  300 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED',
-     & ' IN THE CURRENT SIMULATION',
-     & /1X,'BECAUSE THE FLOW MODEL INCLUDES A SINK/SOURCE PACKAGE.')
-  302 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED',
-     & ' IN THE CURRENT SIMULATION',
-     & /1X,'BECAUSE THE FLOW MODEL CONTAINS CONSTANT-HEAD CELLS.')
-  304 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED',
-     & ' IN THE CURRENT SIMULATION',
-     & /1X,'BECAUSE THE FLOW MODEL IS TRANSIENT.')
+  300 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED ',
+     &           'IN THE CURRENT SIMULATION',
+     &       /1X,'BECAUSE THE FLOW MODEL INCLUDES A SINK/SOURCE ',
+     &           'PACKAGE.')
+  302 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED ',
+     &           'IN THE CURRENT SIMULATION',
+     &       /1X,'BECAUSE THE FLOW MODEL CONTAINS CONSTANT-HEAD CELLS.')
+  304 FORMAT(/1X,'ERROR: THE SSM PACKAGE MUST BE USED ',
+     &           'IN THE CURRENT SIMULATION',
+     &       /1X,'BECAUSE THE FLOW MODEL IS TRANSIENT.')
 C
 C--PRINT KEY INFORMATION OF THE FLOW MODEL
       IF(ISS.EQ.0) THEN
@@ -244,13 +244,13 @@ C--ERROR READING THE FLOW-TRANSPORT LINK FILE
   500 WRITE(*,600)
       WRITE(IOUT,600)
       CALL USTOP(' ')
-  600 FORMAT(/1X,'Error Reading Flow-Transport Link File',
-     & ' Possibly Caused by:',
-     & /1X,'1. Incompatible Styles of Unformatted Files',
-     & ' Used by MODFLOW and MT3DMS;'
-     & /1X,'2. Unformatted Flow-Transport Link File Saved by',
-     & ' Verison 1 of LinkMT3D',
-     & /1X,'   Package Which Is No Longer Supported by MT3DMS.')
+  600 FORMAT(/1X,'Error Reading Flow-Transport Link File ',
+     &           'Possibly Caused by:',
+     &       /1X,'1. Incompatible Styles of Unformatted Files ',
+     &           'Used by MODFLOW and MT3DMS;'
+     &       /1X,'2. Unformatted Flow-Transport Link File Saved by ',
+     &           'Verison 1 of LinkMT3D',
+     &       /1X,'   Package Which Is No Longer Supported by MT3DMS.')
 C
  1000 RETURN
       END
@@ -286,30 +286,6 @@ C
       KTRACK=0
 C
       INUF=INFTL
-CC
-CC--READ UNSAT ZONE WATER CONTENT (UNITLESS)
-C      IF(FUZF) THEN 
-C        IF(IUZFOPTG.EQ.0) THEN
-C          TEXT='WATER CONTENT   '
-C          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-C     &                WC,FPRT)                                
-C        ENDIF
-C                                                             
-CC--READ UPPER-FACE FLUX TERMS                                 
-C        TEXT='UZ FLUX         '                               
-C        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
-C     &              UZFLX,FPRT)                               
-CC                                                             
-CC--READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)          
-C        TEXT='UZQSTO          '                               
-C        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
-C     &              UZQSTO,FPRT)                              
-C!C                                                            
-C!C--READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                 
-C!        TEXT='GWQOUT          '                              
-C!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT, 
-C!     &              SURFLK,FPRT)                             
-C      ENDIF                                                   
 C
 C--READ SATURATED THICKNESS (UNIT: L).
       IF(IVER.EQ.2) THEN
@@ -348,80 +324,6 @@ C--READ STORAGE TERM (UNIT: L**3/T).
       IF(IVER.EQ.2.AND.ISS.EQ.0) THEN
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,QSTO,FPRT)
       ENDIF
-CC
-CC--ONLY PERFORM THE NEXT BIT OF CODE IF UZF IS ACTIVE IN THE
-CC--CURRENT CELL                                      
-C      IF(FUZF) THEN
-C      IF(IUZFOPTG.EQ.0) THEN                    
-CC--IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD 
-C        IF(KPER.NE.1 .OR. KSTP.NE.1) THEN            
-C          DO K=1,NLAY                                
-C            DO I=1,NROW                              
-C              DO J=1,NCOL                            
-C                IF(IUZFBND(J,I).GT.0) THEN           
-C                  SATOLD(J,I,K)=SATNEW(J,I,K)        
-C                ENDIF                                
-C              ENDDO                                  
-C            ENDDO                                    
-C          ENDDO                                      
-C        ENDIF                                        
-CC                                                    
-CC--COMPUTE SATURATION                                
-C        PRSITY=>PRSITYSAV                            
-C        DO K=1,NLAY                                  
-C          DO I=1,NROW                                
-C            DO J=1,NCOL                              
-C              IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
-C                SATNEW(J,I,K)=1                      
-C              ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
-C     &        .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
-C                IF(INT(DH(J,I,K)).EQ.-111) THEN      
-C                  SATNEW(J,I,K)=1                    
-C                ELSE                                 
-C                  SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
-C     &                          WC(J,I,K)/PRSITY(J,I,K)+          
-C     &                          DH(J,I,K)/DZ(J,I,K)*1             
-C                ENDIF                                             
-C              ENDIF                                               
-C            ENDDO                                                 
-C          ENDDO                                                   
-C        ENDDO                                                     
-CC                                                                 
-CC--MELD UZFLX AND QZZ ARRAY SO THAT UZFLX DOESN'T NEED TO BE DEALT
-CC--WITH LATER IN THE CODE, IT'LL INSTEAD BE IMPLICIT IN QZ        
-C        DO K=1,(NLAY-1)                                           
-C          DO I=1,NROW                                             
-C            DO J=1,NCOL                                           
-C              IF(ICBUND(J,I,K,1).NE.0) THEN                       
-CC--THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,  
-CC  ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
-C                IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
-C                IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
-C     &              UZFLX(J,I,K+1).LE.0.0) THEN                        
-C                  QZ(J,I,K)=UZFLX(J,I,K+1)                        
-C                ENDIF                                             
-C              ENDIF                                               
-C            ENDDO                                                 
-C          ENDDO                                                   
-C        ENDDO                                                     
-CC                                                                 
-CC--PRSITY IS USED BELOW AND THEREFORE NEEDS TO BE UPDATED HERE    
-CC--FOR BOTH THE SATURATED AND UNSATURATED CASE                    
-C        DO K=1,NLAY                                               
-C          DO I=1,NROW                                             
-C            DO J=1,NCOL
-C              IF(IUZFBND(J,I).EQ.0)THEN
-C                WC(J,I,K)=PRSITY(J,I,K)
-C              ELSE
-C                WC(J,I,K)=SATNEW(J,I,K)*PRSITY(J,I,K)               
-C              ENDIF
-C            ENDDO                                                 
-C          ENDDO                                                   
-C        ENDDO                                                     
-C        PRSITYSAV=>PRSITY                                         
-C        PRSITY=>WC                                                
-C      ENDIF                                                       
-C      ENDIF                                                       
 C
 C--SET ICBUND=0 IF CELL IS DRY OR INACTIVE (INDICATED BY FLAG 1.E30)
 C--AND REACTIVATE DRY CELL IF REWET AND ASSIGN CONC AT REWET CELL
@@ -443,8 +345,8 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
                   ELSE
                   CTMP=CREWET(NCOL,NROW,NLAY,CNEW(:,:,:,INDEX),
      &                        ICBUND,XBC,YBC,ZBC,J,I,K)
-                  CTMP=(COLD(J,I,K,INDEX)*(RETA(J,I,K,INDEX)-1.0)+CTMP)
-     &                /RETA(J,I,K,INDEX)
+                  CTMP=(COLD(J,I,K,INDEX)*(RETA(J,I,K,INDEX)-1.0)+CTMP)/
+     &                  RETA(J,I,K,INDEX)
                   ENDIF
                   IF(NOCREWET.EQ.1) CTMP=0.
                   CNEW(J,I,K,INDEX)=CTMP
@@ -457,8 +359,8 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
           ENDDO
         ENDDO
   122   FORMAT(/1X,'DRY CELL REACTIVATED AT K =',I4,',   I=',I4,
-     &   ',   J=',I4/1X,'FOR SPECIES ',I3.3,
-     &   ' WITH STARTING CONCENTRATION =',G13.5)
+     &             ',   J=',I4/1X,'FOR SPECIES ',I3.3,
+     &             ' WITH STARTING CONCENTRATION =',G13.5)
       ENDIF 
 C
 C--SET SATURATED THICKNESS [DH] TO LAYER THICKNESS [DZ]
@@ -539,13 +441,13 @@ C--ICBUND ARRAY SHOULD REMAIN UNTOUCHED
           ENDDO
         ENDDO
   355   FORMAT(/1X,'WARNING: SATURATED THICKNESS =',G13.5,
-     &   ' NOT ALLOWED IN TRANSPORT MODEL'
-     &   /10X,'AT ACTIVE CELL K =',I4,',   I=',I4,',   J=',I4,
-     &   ';  RESET AS INACTIVE')
+     &             ' NOT ALLOWED IN TRANSPORT MODEL'
+     &        /10X,'AT ACTIVE CELL K =',I4,',   I=',I4,',   J=',I4,
+     &             ';  RESET AS INACTIVE')
   365   FORMAT(/1X,'WARNING: SATURATED THICKNESS =',G13.5,
-     &   ' BELOW SPECIFIED MINIMUM =',G13.5,
-     &   /10X,'AT ACTIVE CELL K =',I4,',   I=',I4,',   J=',I4,
-     &   ';  RESET AS INACTIVE')
+     &             ' BELOW SPECIFIED MINIMUM =',G13.5,
+     &        /10X,'AT ACTIVE CELL K =',I4,',   I=',I4,',   J=',I4,
+     &             ';  RESET AS INACTIVE')
       ENDIF
 C
 C--DETERMINE MAXIMUM TIME INCREMENT DURING WHICH ANY PARTICLE
@@ -556,7 +458,6 @@ C
       DO K=1,NLAY
         DO I=1,NROW
           DO J=2,NCOL
-C
             IF(ICBUND(J,I,K,1).NE.0) THEN
               TK=0.5*(QX(J-1,I,K)+QX(J,I,K))
               IF(TK.EQ.0) CYCLE
@@ -568,7 +469,6 @@ C
                 KTRACK=K
               ENDIF
             ENDIF
-C
           ENDDO
         ENDDO
       ENDDO
@@ -577,7 +477,6 @@ C
       DO K=1,NLAY
         DO J=1,NCOL
           DO I=2,NROW
-C
             IF(ICBUND(J,I,K,1).NE.0) THEN
               TK=0.5*(QY(J,I-1,K)+QY(J,I,K))
               IF(TK.EQ.0) CYCLE
@@ -589,7 +488,6 @@ C
                 KTRACK=K
               ENDIF
             ENDIF
-C
           ENDDO
         ENDDO
       ENDDO
@@ -599,7 +497,6 @@ C
       DO J=1,NCOL
         DO I=1,NROW
           DO K=2,NLAY
-C
             IF(ICBUND(J,I,K,1).NE.0) THEN
               TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
               IF(TK.EQ.0) CYCLE
@@ -611,7 +508,6 @@ C
                 KTRACK=K
               ENDIF
             ENDIF
-C
           ENDDO
         ENDDO
       ENDDO
@@ -619,9 +515,9 @@ C
 C--PRINT INFORMATION ON DTRACK
   430 WRITE(IOUT,500) DTRACK,KTRACK,ITRACK,JTRACK
   500 FORMAT(/1X,'MAXIMUM STEPSIZE DURING WHICH ANY PARTICLE CANNOT',
-     & ' MOVE MORE THAN ONE CELL'/1X,'=',G11.4,
-     & '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
-     & ', J=',I4)
+     &           ' MOVE MORE THAN ONE CELL'/1X,'=',G11.4,
+     &           '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
+     &           ', J=',I4)
 C
 C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
 C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
@@ -652,9 +548,9 @@ C
 C--PRINT INFORMATION ON DTRACK2
       WRITE(IOUT,550) DTRACK2,KTRACK,ITRACK,JTRACK
   550 FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
-     & ' OF THE ADVECTION TERM'/1X,
-     & '(FOR PURE FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
-     & '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
+     &           ' OF THE ADVECTION TERM'/1X,'(FOR PURE ',
+     &           'FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
+     &           '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
 C
 C--DIVIDE VOLUMETRIC QX, QY AND QZ BY AREAS
 C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
@@ -767,7 +663,7 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
             ELSE
               IF(iUnitTRNOP(7).GT.0) THEN
                 QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
-     &                       (THKSAT*DELR(J)*DELC(I))    
+     &                      (THKSAT*DELR(J)*DELC(I))    
                 IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
               ELSE                                       
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
@@ -874,14 +770,14 @@ C--READ CONSTANT-HEAD FLOW TERM (UNIT: L**3/T).
       TEXT='CNH'
       IQ=1
       CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     & BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &            BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
 C
 C--READ WELL FLOW TERM (L**3/T) IF WELL OPTION USED IN FLOW MODEL.
       IF(FWEL) THEN
         TEXT='WEL'
         IQ=2
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ DRAIN FLOW TERM (L**3/T) IF DRAIN OPTION USED IN FLOW MODEL.
@@ -889,7 +785,7 @@ C--READ DRAIN FLOW TERM (L**3/T) IF DRAIN OPTION USED IN FLOW MODEL.
         TEXT='DRN'
         IQ=3
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ RECHARGE FLOW TERM (L**3/T)
@@ -897,14 +793,14 @@ C--IF RECHARGE OPTION USED IN FLOW MODEL
       IF(FRCH) THEN
         TEXT='RCH'
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   RECH,IRCH,FPRT)
+     &              RECH,IRCH,FPRT)
       ENDIF
 C
 C--READ ET FLOW TERM (L**3/T) IF EVT OPTION USED IN FLOW MODEL
       IF(FEVT) THEN
         TEXT='EVT'
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   EVTR,IEVT,FPRT)
+     &              EVTR,IEVT,FPRT)
       ENDIF
 C
 C--READ RIVER FLOW TERM (L**3/T) IF RIVER OPTION USED IN FLOW MODEL.
@@ -912,7 +808,7 @@ C--READ RIVER FLOW TERM (L**3/T) IF RIVER OPTION USED IN FLOW MODEL.
         TEXT='RIV'
         IQ=4
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ GERENAL HEAD DEPENDENT BOUNDARY FLOW TERM (L**3/T)
@@ -921,7 +817,7 @@ C--IF GHB OPTION IS USED IN FLOW MODEL.
         TEXT='GHB'
         IQ=5
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ STREAMFLOW-ROUTING FLOW TERM (L**3/T)
@@ -930,7 +826,7 @@ C--IF STR OPTION IS USED IN FLOW MODEL.
         TEXT='STR'
         IQ=21
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ RESERVOIR FLOW TERM (L**3/T)
@@ -939,7 +835,7 @@ C--IF RES OPTION IS USED IN FLOW MODEL.
         TEXT='RES'
         IQ=22
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ SPECIFIED FLOW AND HEAD BOUNDARY FLOW TERM (L**3/T)
@@ -948,7 +844,7 @@ C--IF FHB OPTION IS USED IN FLOW MODEL.
         TEXT='FHB'
         IQ=23
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ DRAIN-RETURN FLOW TERM (L**3/T)
@@ -957,7 +853,7 @@ C--IF DRT OPTION IS USED IN FLOW MODEL.
         TEXT='DRT'
         IQ=28
         CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ ET FLOW TERM (L**3/T) IF SEGMENTED ET USED IN FLOW MODEL
@@ -965,7 +861,7 @@ C--READ ET FLOW TERM (L**3/T) IF SEGMENTED ET USED IN FLOW MODEL
         TEXT='ETS'
         IQ=29
         CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   EVTR,IEVT,FPRT)
+     &              EVTR,IEVT,FPRT)
       ENDIF
 C
 C--READ MULTI-NODE WELL FLOW TERM (L**3/T)
@@ -974,7 +870,7 @@ C--IF MNW OPTION IS USED IN FLOW MODEL.
         TEXT='MNW'
         IQ=27
         CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ENDIF
 C
 C--READ UZF FLOW TERMS
@@ -1008,11 +904,6 @@ C-------READ UNSATURATED ZONE STORAGE TERM (UNIT: L**3/T)
         TEXT='UZQSTO          '                               
         CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,  
      &              UZQSTO,FPRT)                              
-!C                                                            
-!C-------READ SURFACE LEAKANCE TERM (UNIT: L**3/T)                 
-!        TEXT='GWQOUT          '                              
-!        CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT, 
-!     &              SURFLK,FPRT)                             
 C
 C-------READ UZ-ET FLOW TERM (L**3/T) IF IETFLG>0 IN UZF PACKAGE   
 C-------NOTE THAT EITHER THE ET PACKAGE OR THE UZF PACKAGE, BUT NOT
@@ -1027,12 +918,8 @@ C
 C-------Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge 
         IF(IETFLG) THEN
           TEXT='GW-ET'
-C          ALLOCATE(GWET(NCOL,NROW),IGWET(NCOL,NROW))
           CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &      GWET,IGWET,FPRT)
-C          TEXT='GW-ET' 
-C          CALL READHQ(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-C     &                GWET,FPRT)
+     &                GWET,IGWET,FPRT)
         ENDIF                   
 C
 C-------MODIFY ARRAYS
@@ -1059,7 +946,7 @@ C-------COMPUTE SATURATION
                 IF(DH(J,I,K).GE.DZ(J,I,K)) THEN        
                   SATNEW(J,I,K)=1                      
                 ELSEIF(DH(J,I,K).LT.DZ(J,I,K).AND.     
-     &          .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
+     &                 .NOT.ICBUND(J,I,K,1).EQ.0) THEN        
                   IF(INT(DH(J,I,K)).EQ.-111) THEN      
                     SATNEW(J,I,K)=1                    
                   ELSE                                 
@@ -1118,7 +1005,7 @@ C--SET DH EQUAL TO DZ FOR THE CASE WHEN THE UZF PACKAGE IS ACTIVE
                     DH(J,I,K)=DZ(J,I,K)                             
                   ENDIF                                             
                 ELSEIF(iUnitTRNOP(7).GT.0.AND.IUZFOPTG.EQ.1) THEN   
-                  !don't need to do anything in this case           
+                  CONTINUE          
                 ENDIF
               ENDDO
             ENDDO
@@ -1132,7 +1019,7 @@ C-------DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
               THKSAT=DH(J,I,K)  ! WHEN UZT ACTIVE, DH IS DZ
               IF(iUnitTRNOP(7).GT.0) THEN
                 QSTO(J,I,K)=QSTO(J,I,K)+(UZQSTO(J,I,K))/ 
-     &                       (THKSAT*DELR(J)*DELC(I))    
+     &                      (THKSAT*DELR(J)*DELC(I))    
               ENDIF
               IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
             ENDDO
@@ -1158,7 +1045,6 @@ C--CANNOT MOVE MORE THAN ONE CELL IN THE Z-DIRECTION.
         DO J=1,NCOL
           DO I=1,NROW
             DO K=2,NLAY
-C       
               IF(ICBUND(J,I,K,1).NE.0) THEN
                 TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
                 IF(TK.EQ.0) CYCLE
@@ -1170,7 +1056,6 @@ C
                   KTRACK=K
                 ENDIF
               ENDIF
-C       
             ENDDO
           ENDDO
         ENDDO
@@ -1183,9 +1068,9 @@ C
 C--PRINT INFORMATION ON DTRACK
   440   WRITE(IOUT,500) DTRACK,KTRACK,ITRACK,JTRACK
   500   FORMAT(/1X,'MAXIMUM STEPSIZE DURING WHICH ANY PARTICLE CANNOT',
-     &   ' MOVE MORE THAN ONE CELL IN Z-DIRECTION'/1X,'=',G11.4,
-     &   '(WHEN MIN. R.F.=1) AT K=',I4,', I=',I4,', J=',I4)
-501   CONTINUE
+     &             ' MOVE MORE THAN ONE CELL IN Z-DIRECTION'/1X,'=',
+     &       G11.4,'(WHEN MIN. R.F.=1) AT K=',I4,', I=',I4,', J=',I4)
+  501   CONTINUE
 C
 C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
 C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
@@ -1211,9 +1096,9 @@ C
 C--PRINT INFORMATION ON DTRACK2
         WRITE(IOUT,550) DTRACK2,KTRACK,ITRACK,JTRACK
   550   FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
-     &   ' OF THE ADVECTION TERM'/1X,
-     &   '(FOR PURE FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
-     &   '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
+     &             ' OF THE ADVECTION TERM'/1X,'(FOR PURE ',
+     &             'FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
+     &             '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
 C
         IF(NLAY.LT.2) GOTO 990
         DO J=1,NCOL
@@ -1257,44 +1142,34 @@ C--IF LAK OPTION IS USED IN FLOW MODEL.
         TEXT='LAK'                                           
         IQ=26
         CALL READGS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ELSEIF(FLAKFLOWS) THEN
         TEXT='LAK FLOWS'                                  
         IQ=26
-C        CALL READLAK(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-C     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT,NCOMP)         
-C        ALLOCATE(NLAKES,LKNODE,NLKINIT)
-        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   ICBUND,FPRT,NCOMP,LKNODE,1,LAKL,LAKR,LAKC,QLAKGW,ICID,QAUX,
-     &   NLKINIT,NLAKES,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
-     &   NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
+        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,ICBUND,
+     &                 FPRT,NCOMP,LKNODE,1,LAKL,LAKR,LAKC,QLAKGW,ICID,
+     &                 QAUX,NLKINIT,NLAKES,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
+     &                 NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
 C
 C-------ALLOCATE AND INITIALIZE LKT ARRAYS
         ALLOCATE(LAKNUMGW(LKNODE))
         LAKNUMGW=ICID
-C        ALLOCATE(QPRECLAK(NLAKES),QRUNOFLAK(NLAKES),QWDRLLAK(NLAKES),
-C     &  QETLAK(NLAKES),VOLOLAK(NLAKES),VOLNLAK(NLAKES),
-C     &  DELVOLLAK(NLAKES))
-C        QPRECLAK=0.
-C        QRUNOFLAK=0.
-C        QWDRLLAK=0.
-C        QETLAK=0.
 C
 C-------MAP TO SFT ARRAYS
         DO IFL=1,NFLOWTYPE
           FLWTYP=CFLOWTYPE(IFL)
           SELECT CASE (FLWTYP)
-            CASE("PRECIP              ") !L3/T
+            CASE("PRECIP              ")  !L3/T
               QPRECLAK(:)=PKGFLOWS(IFL,:)
-            CASE("RUNOFF              ") !L3/T
+            CASE("RUNOFF              ")  !L3/T
               QRUNOFLAK(:)=PKGFLOWS(IFL,:)
             CASE("WITHDRAW             ") !L3/T
               QWDRLLAK(:)=PKGFLOWS(IFL,:)
-            CASE("EVAP                ") !L3/T
+            CASE("EVAP                ")  !L3/T
               QETLAK(:)=PKGFLOWS(IFL,:)
-            CASE("VOLUME              ") !L3 - OLD VOLUME
+            CASE("VOLUME              ")  !L3 - OLD VOLUME
               VOLOLAK(:)=PKGFLOWS(IFL,:)
-            CASE("DELVOL              ") !L3/T
+            CASE("DELVOL              ")  !L3/T
               DELVOLLAK(:)=PKGFLOWS(IFL,:)
             CASE DEFAULT
               WRITE(*,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
@@ -1306,8 +1181,7 @@ C
 C-------CHECK NRCHCON=0 - NO LAKE-TO-LAKE CONNECTIONS ("Coalescing" lakes)
         IF(NRCHCON.GT.0) THEN
           WRITE(*,*) 'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
-          WRITE(IOUT,*) 
-     &    'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
+          WRITE(IOUT,*) 'INVALID LAK CONNECTIONS IN FTL FILE',NRCHCON
           CALL USTOP(' ')
         ENDIF
 C
@@ -1318,7 +1192,7 @@ C-------INITIALIZE OLD=NEW FOR THE FIRST TIME
 C
 C-------DEALLOCATE TEMP ARRAYS
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF
 C
 C--READ SFR FLOW TERMS                              
@@ -1328,7 +1202,7 @@ C--IF SFR OPTION IS USED IN FLOW MODEL.
         TEXT='SFR'                                  
         IQ=30                                       
         CALL READPS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
+     &              BUFF,IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT)
       ELSEIF(FSFRFLOWS) THEN
         IF(ISFTTR.EQ.0) THEN
           TEXT='SFR FLOWS SS'                                  
@@ -1337,32 +1211,28 @@ C--IF SFR OPTION IS USED IN FLOW MODEL.
         ENDIF
         IQ=30                                       
         ALLOCATE(NSTRM)
-        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
-     &   ICBUND,FPRT,NCOMP,NNGW,0,ISFL,ISFR,ISFC,QSFGW,ICID,QAUX,
-     &   NSFINIT,NSTRM,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
-     &   NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
+        CALL READFLOWS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,ICBUND,
+     &                 FPRT,NCOMP,NNGW,0,ISFL,ISFR,ISFC,QSFGW,ICID,QAUX,
+     &                 NSFINIT,NSTRM,NFLOWTYPE,PKGFLOWS,CFLOWTYPE,
+     &                 NRCHCON,INOD1,INOD2,IDISP,QAREA,QN2N)
 C
 C-------CHECK NNGW=NSTRM
         IF(NNGW.NE.NSTRM) THEN
           WRITE(*,*) 'INVALID NUMBER OF GW CONNECTIONS IN FTL FILE',NNGW
           WRITE(IOUT,*) 
-     &    'INVALID NUMBER OF GW CONNECTIONS IN FTL FILE',NNGW
+     &               'INVALID NUMBER OF GW CONNECTIONS IN FTL FILE',NNGW
           CALL USTOP(' ')
         ENDIF
 C
 C-------ALLOCATE AND INITIALIZE SFT ARRAYS
         NSF2SF=NRCHCON
-C        ALLOCATE(QPRECSF(NSTRM),QRUNOFSF(NSTRM),
-C     &  QETSF(NSTRM),IEXIT(NSTRM),QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
-C     &  QOUTSF(NSTRM),QOUTSFO(NSTRM),VOLSFO(NSTRM),VOLSFN(NSTRM),
-C     &  SFLEN(NSTRM))
         QPRECSF=0.
         QRUNOFSF=0.
         QETSF=0.
         IEXIT=0
         QOUTSF=0.
         ALLOCATE(SFNAREA(NSF2SF),SFOAREA(NSF2SF),IDSPFLG(NSF2SF),
-     &  INOD1SF(NSF2SF),INOD2SF(NSF2SF),QN2NSF(NSF2SF))
+     &           INOD1SF(NSF2SF),INOD2SF(NSF2SF),QN2NSF(NSF2SF))
         INOD1SF=INOD1
         INOD2SF=INOD2
         IDSPFLG=IDISP
@@ -1384,7 +1254,7 @@ C-------MAP TO SFT ARRAYS
             CASE("RCHLEN              ") !L
               SFLEN(:)=PKGFLOWS(IFL,:)
             CASE DEFAULT
-              WRITE(*,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
+              WRITE(*,*)    'INCORRECT CFLOWTYPE IN FTL FILE'
               WRITE(IOUT,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
               STOP
           END SELECT
@@ -1419,18 +1289,8 @@ C-------INITIALIZE OLD=NEW FOR THE FIRST TIME
 C
 C-------DEALLOCATE TEMP ARRAYS
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF                                                  
-C                                                            
-C--READ UZF -> SFR & UZF -> LAK FLOWS (L**3/T)               
-C--IF UZF AND SFR OR UZF AND LAKE OR BOTH ARE USED IN THE FLOW MODEL
-C      IF((iUnitTRNOP(7).GT.0.AND.FSFR).OR.
-C     &   (iUnitTRNOP(7).GT.0.AND.FLAK)) THEN                   
-C        TEXT='UZF CONNECTIONS'                                 
-C        IQ=32                                                  
-C        CALL READUZFCONNECT(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,
-C     &   TEXT,NCOMP)                                           
-C      ENDIF                                                    
 C
 C--READ PACKAGE TO PACKAGE FLOWS
 C
@@ -1440,10 +1300,10 @@ C--SFR-LAK
       IF(FSFRLAK) THEN
         TEXT='CONNECT SFR LAK'
         CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
-     1  NSFR2LAK,INOD1SFLK,INOD2SFLK,QSFR2LAK,IP2PFLG)
+     1                   NSFR2LAK,INOD1SFLK,INOD2SFLK,QSFR2LAK,IP2PFLG)
 C
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF
 C
 C--SFR-UZF
@@ -1452,7 +1312,7 @@ C--SFR-UZF
       IF(FSFRUZF) THEN
         TEXT='CONNECT SFR UZF'
         CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
-     1  NSFR2UZF,INOD1SFUZ,INOD2SFUZ,QSFR2UZF,IP2PFLG)
+     1                   NSFR2UZF,INOD1SFUZ,INOD2SFUZ,QSFR2UZF,IP2PFLG)
 C
         IF(NSFR2UZF.GT.0) THEN
           ALLOCATE(IUZCODESF(NSFR2UZF))
@@ -1460,7 +1320,7 @@ C
         ENDIF
 C
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF
 C
 C--LAK-UZF
@@ -1469,7 +1329,7 @@ C--LAK-UZF
       IF(FLAKUZF) THEN
         TEXT='CONNECT LAK UZF'
         CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
-     1  NLAK2UZF,INOD1LKUZ,INOD2LKUZ,QLAK2UZF,IP2PFLG)
+     1                   NLAK2UZF,INOD1LKUZ,INOD2LKUZ,QLAK2UZF,IP2PFLG)
 C
         IF(NLAK2UZF.GT.0) THEN
           ALLOCATE(IUZCODELK(NLAK2UZF))
@@ -1477,7 +1337,7 @@ C
         ENDIF
 C
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF
 C
 C--UZF-SNK
@@ -1486,7 +1346,7 @@ C--UZF-SNK
       IF(FSNKUZF) THEN
         TEXT='CONNECT SNK UZF'
         CALL PKG2PKGFLOW(INUF,IOUT,KSTP,KPER,TEXT,FPRT,
-     1  NSNK2UZF,INOD1SKUZ,INOD2SKUZ,QSNK2UZF,IP2PFLG)
+     1                   NSNK2UZF,INOD1SKUZ,INOD2SKUZ,QSNK2UZF,IP2PFLG)
 C
         IF(NSNK2UZF.GT.0) THEN
           ALLOCATE(IUZCODESK(NSNK2UZF))
@@ -1494,19 +1354,20 @@ C
         ENDIF
 C
         CALL DEALOCTEMPARR(PKGFLOWS,QAREA,QN2N,CFLOWTYPE,INOD1,
-     &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
+     &                     INOD2,IDISP,ICID,QAUX,IP2PFLG)
       ENDIF
 C
 C--CHECK IF MAXIMUM NUMBER OF POINT SINKS/SOURCES EXCEEDED.
 C--IF SO STOP
       WRITE(IOUT,801) NTSS
   801 FORMAT(//1X,'TOTAL NUMBER OF POINT SOURCES/SINKS PRESENT',
-     & ' IN THE FLOW MODEL =',I6)
+     &            ' IN THE FLOW MODEL =',I6)
       IF(NTSS.GT.MXSS) THEN
         WRITE(*,802) MXSS
   802   FORMAT(/1X,'ERROR: MAXIMUM NUMBER OF SINKS/SOURCES ALLOWED',
-     &   ' [MXSS] =',I6
-     &   /1X,'INCREASE VALUE OF [MXSS] IN [SSM] PACKAGE INPUT FILE')
+     &             ' [MXSS] =',I6
+     &         /1X,'INCREASE VALUE OF [MXSS] IN [SSM] PACKAGE INPUT ',
+     &             'FILE')
         CALL USTOP(' ')
       ENDIF
 C
@@ -1527,8 +1388,7 @@ C-----------SET ICBUND TO NEGATIVE FOR CONSTANT CONCENTRATION BOUNDARY
             IF(SSMC(INDEX,NUM).GE.0) THEN                  
               CNEW(J,I,K,INDEX)=SSMC(INDEX,NUM)            
               ICBUND(J,I,K,INDEX)=-ABS(ICBUND(J,I,K,INDEX))
-            ENDIF                                          
-C                                                          
+            ENDIF                                                  
           ENDDO                                            
         ENDIF                                              
       ENDDO                                                
@@ -1578,7 +1438,6 @@ C
           ELSE
             RECH(J,I)=RECH(J,I)/VOLAQU
           ENDIF
-C          IF(ABS(VOLAQU-0.).LT.1.0E-5) RECH(J,I)=0.
           IF(RECH(J,I).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
           TM=PRSITY(J,I,K)/RECH(J,I)
           IF(ABS(TM).LT.DTSSM) THEN
@@ -1630,7 +1489,6 @@ C
           ELSE
             EVTR(J,I)=EVTR(J,I)/VOLAQU
           ENDIF
-C          IF(ABS(VOLAQU-0.).LT.1.0E-5) EVTR(J,I)=0.
           IF(EVTR(J,I).EQ.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
             TM=PRSITY(J,I,K)/EVTR(J,I)
             IF(ABS(TM).LT.DTSSM) THEN
@@ -1711,7 +1569,6 @@ C
         ELSE
           SS(5,NUM)=SS(5,NUM)/VOLAQU
         ENDIF
-C        IF(ABS(VOLAQU-0.).LT.1.0E-5) SS(5,NUM)=0.
         IF(SS(5,NUM).LE.0 .OR. ICBUND(J,I,K,1).EQ.0) CYCLE
         TM=PRSITY(J,I,K)/SS(5,NUM)
         IF(ABS(TM).LT.DTSSM) THEN
@@ -1725,9 +1582,9 @@ C
 C--PRINT INFORMATION ON DTSSM
   970 WRITE(IOUT,1000) DTSSM,KSSM,ISSM,JSSM
  1000 FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
-     & ' OF THE SINK & SOURCE TERM'/1X,'=',G11.4,
-     & '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
-     & ', J=',I4)
+     &           ' OF THE SINK & SOURCE TERM'/1X,'=',G11.4,
+     &           '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
+     &           ', J=',I4)
 C
 C--SYNCHRONIZE ICBUND CONDITIONS OF ALL SPECIES
       IF(NCOMP.EQ.1) GOTO 1999
@@ -1777,7 +1634,6 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(13hReadHQ REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -1802,28 +1658,29 @@ C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
       IPRTFM=1
       DO K=1,NLAY
         WRITE(IOUT,50) K
-        CALL RPRINT(BUFF(1,1,K),TEXT,
-     &    0,KSTP,KPER,NCOL,NROW,0,IPRTFM,IOUT)
+        CALL RPRINT(BUFF(1,1,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
       ENDDO
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE.'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
    10 FORMAT(/44X,'LAYER LOCATION OF ',A16,'FLOW TERM'
-     & /44X,43('-'))
+     &       /44X,43('-'))
    50 FORMAT(/61X,'LAYER ',I3)
 C
 C--RETURN
@@ -1889,28 +1746,29 @@ C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
       IF(FPRT.NE.'Y'.AND.FPRT.NE.'y') RETURN
       IPRTFM=1
       CALL RPRINT(BUFF(1,1),TEXT,
-     & 0,KSTP,KPER,NCOL,NROW,0,IPRTFM,IOUT)
+     &            0,KSTP,KPER,NCOL,NROW,0,IPRTFM,IOUT)
       IPRTFM=3
       WRITE(IOUT,10)
       CALL IPRINT(LOCLAY(1,1),TEXT,0,KSTP,KPER,NCOL,NROW,
-     & 0,IPRTFM,IOUT)
+     &            0,IPRTFM,IOUT)
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE.'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
    10 FORMAT(/60X,'LAYER INDEX')
 C
 C--RETURN
@@ -1946,7 +1804,6 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(13hReadPS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -2016,20 +1873,21 @@ C--OTHERWISE, ADD TO THE SS ARRAY
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
    50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
 C
 C--RETURN
@@ -2065,7 +1923,6 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(13hReadGS REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         CALL USTOP(' ')
@@ -2088,8 +1945,8 @@ C--EACH POINT SINK OR SOURCE
         ELSEIF(IFTLFMT.EQ.1) THEN
           READ(INUF,*) K,I,J,QSTEMP,IGROUP,QSW
         ENDIF
-        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &   WRITE(IOUT,50) K,I,J,QSTEMP,IGROUP,QSW
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') WRITE(IOUT,50) K,I,J,QSTEMP,
+     &                                                IGROUP,QSW
 C
 C--IF ALREADY DEFINED AS A SOURCE OF USER-SPECIFIED CONCENTRATION,
 C--STORE FLOW RATE QSTEMP                               
@@ -2146,22 +2003,23 @@ C--OTHERWISE, ADD TO THE SS ARRAY
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
    50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7,
-     & ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
+     &          ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
 C
 C--RETURN
       RETURN
@@ -2301,69 +2159,21 @@ C
       REAL      BUFF,SS,QSS,QSTEMP,QSW
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),SS(8,MXSS)
-C      INTEGER   ISEG,IREACH
-C      COMMON /FTL/IFTLFMT
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
 C
-C--READ IDENTIFYING RECORD
-      IF(IFTLFMT.EQ.0) THEN
-C        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,MXRCH
-      ELSEIF(IFTLFMT.EQ.1) THEN
-C        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NSTRM,NINTOT,MXSGMT,
-C     1    MXRCH
-      ENDIF
-C
-C--DEALLOCATE AND ALLOCATE ARRAYS FOR STORING FLOW TERMS
-cvsb      IF(ALLOCATED(ISFL)) DEALLOCATE(ISFL)
-cvsb      IF(ALLOCATED(ISFR)) DEALLOCATE(ISFR)
-cvsb      IF(ALLOCATED(ISFC)) DEALLOCATE(ISFC)
-cvsb      IF(ALLOCATED(ISEG)) DEALLOCATE(ISEG)
-cvsb      IF(ALLOCATED(IREACH)) DEALLOCATE(IREACH)
-cvsb      IF(ALLOCATED(SFLEN)) DEALLOCATE(SFLEN)
-cvsb      IF(ALLOCATED(SFNAREA)) DEALLOCATE(SFNAREA)
-C      IF(ALLOCATED(SFOAREA)) DEALLOCATE(SFOAREA)
-cvsb      IF(ALLOCATED(QPRECSF)) DEALLOCATE(QPRECSF)
-cvsb      IF(ALLOCATED(QRUNOFSF)) DEALLOCATE(QRUNOFSF)
-C      IF(ALLOCATED(QPRECSFO)) DEALLOCATE(QPRECSFO)
-C      IF(ALLOCATED(QRUNOFSFO)) DEALLOCATE(QRUNOFSFO)
-cvsb      IF(ALLOCATED(QSFGW)) DEALLOCATE(QSFGW)
-cvsb      IF(ALLOCATED(QOUTSF)) DEALLOCATE(QOUTSF)
-C      IF(ALLOCATED(QOUTSFO)) DEALLOCATE(QOUTSFO)
-cvsb      IF(ALLOCATED(QETSF)) DEALLOCATE(QETSF)
-cvsb      IF(ALLOCATED(NIN)) DEALLOCATE(NIN)
-C.....NINTOT SIZED ARRAYS
-cvsb      IF(ALLOCATED(QINSF)) DEALLOCATE(QINSF)
-C      IF(ALLOCATED(QINSFO)) DEALLOCATE(QINSFO)
-cvsb      IF(ALLOCATED(INSEG)) DEALLOCATE(INSEG)
-cvsb      IF(ALLOCATED(INRCH)) DEALLOCATE(INRCH)
-cvsb      IF(ALLOCATED(IDSPFLG)) DEALLOCATE(IDSPFLG)
-cvsb      IF(ALLOCATED(IDXNIN)) DEALLOCATE(IDXNIN)
-C.....INDEXING TO GET ISTRM FROM SEG AND RCH NUMBERS
-cvsb      IF(ALLOCATED(ISTRM)) DEALLOCATE(ISTRM)
-C
       ALLOCATE(ISFL(NSTRM),ISFR(NSTRM),ISFC(NSTRM),ISEG(NSTRM),
-     1  SFLEN(NSTRM),SFNAREA(NSTRM),IREACH(NSTRM), !SFOAREA(NSTRM),
-     1  QPRECSF(NSTRM),QRUNOFSF(NSTRM),
-!     1  QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
-C     1  QSFGW(NSTRM),QOUTSF(NSTRM),QETSF(NSTRM),NIN(NSTRM),
-     1  IEXIT(NSTRM)) !,QOUTSFO(NSTRM))
-C      ALLOCATE(QINSF(NINTOT),INSEG(NINTOT),INRCH(NINTOT),
-C     1  IDSPFLG(NINTOT),IDXNIN(NSTRM+1)) !,QINSFO(NINTOT))
-C      ALLOCATE(ISTRM(MXRCH,MXSGMT))
-C      ISTRM=0
-C      IDXNIN=0
+     &         SFLEN(NSTRM),SFNAREA(NSTRM),IREACH(NSTRM),QPRECSF(NSTRM),
+     &         QRUNOFSF(NSTRM),IEXIT(NSTRM)) 
       IEXIT=1
 C
       IF(KKPER.EQ.1.AND.KKSTP.EQ.1) THEN
         ALLOCATE(SFOAREA(NSTRM),QPRECSFO(NSTRM),QRUNOFSFO(NSTRM),
-     1    QOUTSFO(NSTRM))
-C        ALLOCATE(QINSFO(NINTOT))
+     &           QOUTSFO(NSTRM))
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -2388,121 +2198,37 @@ C
       IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &   WRITE(IOUT,10) 
 10    FORMAT(1X,' GW-L GW-R GW-C SEG# RCH# ',
-     &  '   LENGTH       AREA         FLOW-GW      FLOWOUT      RUNOFF',
-     &  '        PRECIP       EVAP     IN-NODES',/,
-     &  1X,5(1X,4('-')),7(1X,12('-')),1X,8('-'))
+     &          '   LENGTH       AREA         FLOW-GW      FLOWOUT    ',
+     &          '  RUNOFF        PRECIP       EVAP     IN-NODES',/,
+     &       1X,5(1X,4('-')),7(1X,12('-')),1X,8('-'))
 C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH LAKE INFLOWS AND OUTFLOWS
       ICNT=0
-      DO N=1,NSTRM
-
-        IF(N.EQ.4)THEN
-        CONTINUE
-        ENDIF
-
-        IF(IFTLFMT.EQ.0) THEN
-C          READ(INUF) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-C          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
-C          DO I=1,NIN(N)
-C            ICNT=ICNT+1
-C            READ(INUF) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-C     1        IDSPFLG(ICNT)
-C          ENDDO
-        ELSEIF(IFTLFMT.EQ.1) THEN
-C          READ(INUF,*) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-C          IF(NIN(N).GT.0) IDXNIN(N)=ICNT+1
-C          DO I=1,NIN(N)
-C            ICNT=ICNT+1
-C            READ(INUF,*) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-C     1        IDSPFLG(ICNT)
-C          ENDDO
-        ENDIF
-C.......STORE N
-C        ISTRM(IREACH(N),ISEG(N))=N
-      ENDDO  
-C      IDXNIN(NSTRM+1)=ICNT+1
-CC
-CC--CHECK IF NINTOT MATCHES THE SUM OF NIN(1:NSTRM)
-C      IF(NINTOT.NE.ICNT) THEN
-C        WRITE(*,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
-C        WRITE(IOUT,*) 'MISMATCH IN FTL FILE NINTOT<>ICNT'
-C        CALL USTOP(' ')
-C      ENDIF
-CC
-CC--INITIALIZE OLD=NEW FOR THE FIRST TIME
-C      IF(KKPER.EQ.1.AND.KKSTP.EQ.1) THEN
-C        QPRECSFO=QPRECSF
-C        QRUNOFSFO=QRUNOFSF
-C        QOUTSFO=QOUTSF
-C        QINSFO=QINSF
-C        SFOAREA=SFNAREA
-C      ENDIF
-CC
-CC--WRITE TO OUTPUT FILE
-C      ICNT=0
-C      DO N=1,NSTRM
-C        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
-C          WRITE(IOUT,51) ISFL(N),ISFR(N),ISFC(N),ISEG(N),
-C     1      IREACH(N),SFLEN(N),SFNAREA(N),QSFGW(N),QOUTSF(N),
-C     1      QRUNOFSF(N),QPRECSF(N),QETSF(N),NIN(N)
-C          DO I=1,NIN(N)
-C            ICNT=ICNT+1
-C            WRITE(IOUT,52) INSEG(ICNT),INRCH(ICNT),QINSF(ICNT),
-C     1        IDSPFLG(ICNT)
-C          ENDDO
-C        ENDIF
-C      ENDDO  
-CC
-CC--IDENTIFY NODES THAT DO NOT FEED WATER TO DOWNSTREAM NODES
-C      ICNT=0
-C      DO N=1,NSTRM
-C        DO NC=1,NIN(N)
-C          ICNT=ICNT+1
-C          IS=INSEG(ICNT)
-C          IR=INRCH(ICNT)
-C          IF(IS.GT.0.AND.IR.GT.0) THEN
-CC...........INFLOW FROM STREAM
-C            NN=ISTRM(IR,IS)
-C            IEXIT(NN)=0
-C          ENDIF
-C        ENDDO
-C      ENDDO
-CC
-CC--IDENTIFY CONSTANT CONCENTRATION NODES AND SET IBNDSF ARRAY
-C      IBNDSF=1
-C      DO I=1,NSSSF
-C        IS=ISEGBC(I)
-C        IR=IRCHBC(I)
-C        N=ISTRM(IR,IS)
-C        IF(ISFBCTYP(I).EQ.3) IBNDSF(N)=-1
-C      ENDDO
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
     5 FORMAT(1X,'ERROR: INVALID NUMBER OF STREAM REACHES',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STREAM REACHES IN FLOW-TRANSPORT LINK FILE =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF STREAM REACHES IN FLOW-TRANSPORT LINK FILE ',
+     &          '=',I5)
    50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7,
-     & ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
+     &          ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
 51    FORMAT(1X,5I5,7(1X,G12.5),1X,I5)
 52    FORMAT('SEG,RCH,QIN,IDISP: ',1X,2I5,1(1X,G12.5),I5)
 C
@@ -2526,7 +2252,6 @@ C
       REAL      BUFF,SS,QSS,QSTEMP,QSW
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),SS(8,MXSS)
-C      COMMON /FTL/IFTLFMT
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -2569,25 +2294,24 @@ C
 C--RETURN IF NLAKES,LKNODE,NSFRLAK=0
       IF(NLAKES.EQ.0 .AND. LKNODE.EQ.0 .AND. NSFRLAK.EQ.0) RETURN
 C
-      IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &   WRITE(IOUT,10) 
+      IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') WRITE(IOUT,10)
 10    FORMAT(1X,'LAKE#    VOLUME_OLD     DEL_V        PRECIP ',
-     &  '          ET        RUNOFF    WITHDRAWAL',/,
-     &  1X,5('-'),6(1X,12('-')))
+     &          '          ET        RUNOFF    WITHDRAWAL',/,
+     &       1X,5('-'),6(1X,12('-')))
 C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH LAKE INFLOWS AND OUTFLOWS
       DO N=1,NLAKES
         IF(IFTLFMT.EQ.0) THEN
           READ(INUF) I,VOLOLAK(N),DELVOLLAK(N),QPRECLAK(N),QETLAK(N),
-     1    QRUNOFLAK(N),QWDRLLAK(N)
+     &               QRUNOFLAK(N),QWDRLLAK(N)
         ELSEIF(IFTLFMT.EQ.1) THEN
           READ(INUF,*) I,VOLOLAK(N),DELVOLLAK(N),QPRECLAK(N),QETLAK(N),
-     1    QRUNOFLAK(N),QWDRLLAK(N)
+     &                 QRUNOFLAK(N),QWDRLLAK(N)
         ENDIF
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &   WRITE(IOUT,51) I,VOLOLAK(N),DELVOLLAK(N),QPRECLAK(N),QETLAK(N),
-     1    QRUNOFLAK(N),QWDRLLAK(N)
+     &                  QRUNOFLAK(N),QWDRLLAK(N)
       ENDDO  
 C
 C
@@ -2595,7 +2319,7 @@ C
       IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &   WRITE(IOUT,12) 
 12    FORMAT(/1X,'LAKE# LAYER  ROW COLUMN GW-FLOW',/,
-     &  4(1X,5('-')),1(1X,12('-')))
+     &      4(1X,5('-')),1(1X,12('-')))
       ENDIF
 C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
@@ -2632,25 +2356,26 @@ C--EACH LAKE-SFR CONNECTION
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
     5 FORMAT(1X,'ERROR: INVALID NUMBER OF LAKES',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF LAKES IN FLOW-TRANSPORT LINK FILE =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF LAKES IN FLOW-TRANSPORT LINK FILE =',I5)
    50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7,
-     & ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
+     &          ' SS CODE',I5,5X,'EXTERNAL FLOW',G15.7)  
 51    FORMAT(1X,I5,6(1X,G12.5))
 52    FORMAT(1X,4I5,1(1X,G12.5))
 53    FORMAT(1X,3I5,1(1X,G12.5))
@@ -2667,154 +2392,72 @@ C THIS SUBROUTINE READS UZF->SFR & UZF->LAK CONNECTIONS
 C *********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: IFTLFMT
-C      USE UZTVARS,       ONLY: !UZQ,NCON,NCONLK,NCONSF,MXUZCON,IROUTE,
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,INUF,NCOL,NROW,NLAY,IOUT,K,I,J,KKSTP,KKPER,
      &          NC,NR,NL,NUM,N,MXSS,NTSS,NSS,ICBUND,IQ,ID,
      &          KK,II,JJ,ITEMP,IGROUP,NCOMP
       INTEGER   ISTSG,NREACH,ILAK,LK
       REAL      Q,LENFRAC
-      !CHARACTER LABEL*16,TEXT*16
       CHARACTER LABEL16*16,LABEL*4,TEXT*4,BUFFER*100
-C      COMMON /FTL/IFTLFMT
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
 C
 C--READ IDENTIFYING RECORD
-      IF(IFTLFMT.EQ.0) THEN
-        !READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
-C        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
-      ELSEIF(IFTLFMT.EQ.1) THEN
-        !READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL,NCON
-C        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL16,NCON
-      ENDIF
-C      WRITE(*,'(14hReadUZF REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
-C
-C--CLEAN AND INITIALIZE TO ZERO
-C      DO II=1,MXUZCON
-C        DO JJ=1,7
-C          IROUTE(JJ,II)=0
-C        ENDDO
-C        UZQ(II)=0.
-C      ENDDO
-C      NCONLK=0
-C      NCONSF=0
 C
 C--READ CONNECTIONS INFORMATION
-C      DO I=1,NCON
-        IF(IFTLFMT.EQ.0) THEN
-          READ(INUF) LABEL,TEXT
-        ELSEIF(IFTLFMT.EQ.1) THEN
-          READ(INUF,'(A100)') BUFFER
-          READ(BUFFER,2) LABEL,TEXT
-  2       FORMAT(2X,A4,2X,A4)
-          !BACKSPACE(INUF)
-        ENDIF
-      !BACKSPACE (INUF)
-C
-C--LOOP THROUGH EACH CONNECTION
-      !DO I=1,NCON
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) LABEL,TEXT
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,'(A100)') BUFFER
+        READ(BUFFER,2) LABEL,TEXT
+  2     FORMAT(2X,A4,2X,A4)
+      ENDIF
 C
 C--IF UZF -> SFR, READ 9 VALUES
-        ! IF(LABEL.EQ.'SFR') THEN
-        IF(LABEL.EQ.'SFR ') THEN
-          IF(IFTLFMT.EQ.0) THEN
-            !READ(INUF) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
-            READ(INUF) KK,II,JJ,ISTSG,NREACH,Q
-          ELSEIF(IFTLFMT.EQ.1) THEN
-            !READ(INUF,*)  LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
-C            READ(INUF,2)  KK,II,JJ,ISTSG,NREACH,Q
-            READ(BUFFER,3) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
-   3        FORMAT(2X,A4,2X,A4,5I6,F20.10)
-          ENDIF
-C          IROUTE(1,I)=1  !1:SFR, 2:LAK, 3:SNK
-C          IROUTE(2,I)=KK
-C          IROUTE(3,I)=II
-C          IROUTE(4,I)=JJ
-C          IROUTE(5,I)=ISTSG
-C          IROUTE(6,I)=NREACH
-C          IF(TEXT.EQ.'GRW ') THEN
-C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'EXC ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'REJ ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ENDIF
-C          UZQ(I)=Q
-C          NCONSF=NCONSF+1
+      IF(LABEL.EQ.'SFR ') THEN
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) KK,II,JJ,ISTSG,NREACH,Q
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(BUFFER,3) LABEL,TEXT,KK,II,JJ,ISTSG,NREACH,Q
+   3      FORMAT(2X,A4,2X,A4,5I6,F20.10)
+        ENDIF
 C
 C--IF UZF -> LAK, READ 7 VALUES
-        !ELSEIF(LABEL.EQ.'LAK') THEN
-        ELSEIF(LABEL.EQ.'LAK ') THEN
-          IF(IFTLFMT.EQ.0) THEN
-            !READ(INUF) LABEL,TEXT,KK,II,JJ,ILAK,Q
-            READ(INUF) KK,II,JJ,ILAK,Q
-          ELSEIF(IFTLFMT.EQ.1) THEN
-            READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
-          ENDIF
-C          IROUTE(1,I)=2  !1:SFR, 2:LAK, 3:SNK
-C          IROUTE(2,I)=KK
-C          IROUTE(3,I)=II
-C          IROUTE(4,I)=JJ
-C          IROUTE(5,I)=ILAK
-C          !IROUTE(6,I) ALREADY EQUALS ZERO
-C          IF(TEXT.EQ.'GRW ') THEN
-C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'EXC ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'REJ ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ENDIF
-C          UZQ(I)=Q
-C          NCONLK=NCONLK+1
+      ELSEIF(LABEL.EQ.'LAK ') THEN
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) KK,II,JJ,ILAK,Q
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) LABEL,TEXT,KK,II,JJ,ILAK,Q
+        ENDIF
 C
 C--IF UZF -> SNK, READ 6 VALUES
-        ! ELSEIF(LABEL.EQ.'SNK') THEN
-        ELSEIF(LABEL.EQ.'SNK ') THEN
-          IF(IFTLFMT.EQ.0) THEN
-            !READ(INUF) LABEL,TEXT,KK,II,JJ,Q
-            READ(INUF) KK,II,JJ
-            IF(TEXT.EQ.'GRW ') THEN
-              READ(INUF) Q
-            ELSEIF(TEXT.EQ.'EXC ') THEN
-              READ(INUF) Q
-            ELSEIF(TEXT.EQ.'REJ ') THEN
-              READ(INUF) LK,Q
-            ENDIF
-          ELSEIF(IFTLFMT.EQ.1) THEN
-            IF(TEXT.EQ.'GRW ') THEN
-              READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
-            ELSEIF(TEXT.EQ.'EXC ') THEN
-              READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
-            ELSEIF(TEXT.EQ.'REJ ') THEN
-              READ(INUF,*) LABEL,TEXT,KK,II,JJ,LK,Q
-            ENDIF
+      ELSEIF(LABEL.EQ.'SNK ') THEN
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) KK,II,JJ
+          IF(TEXT.EQ.'GRW ') THEN
+            READ(INUF) Q
+          ELSEIF(TEXT.EQ.'EXC ') THEN
+            READ(INUF) Q
+          ELSEIF(TEXT.EQ.'REJ ') THEN
+            READ(INUF) LK,Q
           ENDIF
-C          IROUTE(1,I)=3  !1:SFR, 2:LAK, 3:SNK
-C          IROUTE(2,I)=KK
-C          IROUTE(3,I)=II
-C          IROUTE(4,I)=JJ
-C          !IROUTE(5,I) ALREADY EQUALS ZERO
-C          !IROUTE(6,I) ALREADY EQUALS ZERO
-C          IF(TEXT.EQ.'GRW ') THEN
-C            IROUTE(7,I)=1    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'EXC ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ELSEIF(TEXT.EQ.'REJ ') THEN
-C            IROUTE(7,I)=2    !1:GRW, 2:EXC, 3:REJ
-C          ENDIF
-C          UZQ(I)=Q
-C          NCONLK=NCONLK+1
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          IF(TEXT.EQ.'GRW ') THEN
+            READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+          ELSEIF(TEXT.EQ.'EXC ') THEN
+            READ(INUF,*) LABEL,TEXT,KK,II,JJ,Q
+          ELSEIF(TEXT.EQ.'REJ ') THEN
+            READ(INUF,*) LABEL,TEXT,KK,II,JJ,LK,Q
+          ENDIF
         ENDIF
-C        
-C      ENDDO
-C
+      ENDIF
       WRITE(*,*) I,LABEL,TEXT
+C
       RETURN
       END
 C
@@ -2838,15 +2481,15 @@ C
      &          KKK,III,JJJ,ITEMP,NCOMP,ICNT,IS,IR,NN,NNINIT
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION ICBUND(NCOL,NROW,NLAY)
-      INTEGER NSFINIT,NNODES,NFLOWTYPE,NRCHCON,NNGW
-      INTEGER, DIMENSION(:), POINTER :: INFL,INFR,INFC
-      REAL,    DIMENSION(:), POINTER :: QNGW
-      REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
-     1  QN2N(:)
-      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
-      INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
-      INTEGER,      ALLOCATABLE      :: ICID(:)
-      REAL,         ALLOCATABLE      :: QAUX(:)
+      INTEGER   NSFINIT,NNODES,NFLOWTYPE,NRCHCON,NNGW
+      INTEGER,  DIMENSION(:), POINTER :: INFL,INFR,INFC
+      REAL,     DIMENSION(:), POINTER :: QNGW
+      REAL,         ALLOCATABLE       :: PKGFLOWS(:,:),QAREA(:),
+     &                                  QN2N(:)
+      CHARACTER*20, ALLOCATABLE       :: CFLOWTYPE(:)
+      INTEGER,      ALLOCATABLE       :: INOD1(:),INOD2(:),IDISP(:)
+      INTEGER,      ALLOCATABLE       :: ICID(:)
+      REAL,         ALLOCATABLE       :: QAUX(:)
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -2859,7 +2502,6 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -2947,7 +2589,7 @@ C--READ CFLOWTYPE IDENTIFIER TEXT
 C
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &  WRITE(IOUT,'(/A10,50A20)') 
-     &  '  NODE    ',(CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
+     &             '  NODE    ',(CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
 C
 C--READ BOUNDARY AND OTHER FLOW TERMS
         DO N=1,NNODES
@@ -2966,11 +2608,12 @@ C--READ THIS BLOCK FOR NODE-TO-NODE FLOWS
 C
 C--ALLOCATE
         ALLOCATE(INOD1(NRCHCON),INOD2(NRCHCON),IDISP(NRCHCON),
-     1  QAREA(NRCHCON),QN2N(NRCHCON))
+     &           QAREA(NRCHCON),QN2N(NRCHCON))
 C
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &  WRITE(IOUT,'(/3A5,A15,A15)') 
-     &  ' NOD1',' NOD2',' IDIV','      FLOW RATE','      AREA'
+     &             ' NOD1',' NOD2',' IDIV','      FLOW RATE',
+     &             '      AREA'
 C
 C--READ NODE-TO-NODE INFO
         DO N=1,NRCHCON
@@ -2979,36 +2622,37 @@ C--READ NODE-TO-NODE INFO
      1                 QN2N(N),QAREA(N)
           ELSEIF(IFTLFMT.EQ.1) THEN
             READ(INUF,*) INOD1(N),INOD2(N),IDISP(N),
-     1                 QN2N(N),QAREA(N)
+     1                   QN2N(N),QAREA(N)
           ENDIF
           IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &      WRITE(IOUT,52) INOD1(N),INOD2(N),IDISP(N),
-     1                 QN2N(N),QAREA(N)
+     1                     QN2N(N),QAREA(N)
         ENDDO  
       ENDIF
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
     5 FORMAT(1X,'ERROR: INVALID NUMBER OF NODES',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
    50 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
    55 FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7,
-     & ' CELL ID',I5,5X,'AUXILIARY FLOW',G15.7)  
+     &          ' CELL ID',I5,5X,'AUXILIARY FLOW',G15.7)  
    51 FORMAT(I10,100(1X,G19.7))
    52 FORMAT(3I5,1X,G14.7,1X,G14.7)
 C
@@ -3043,7 +2687,6 @@ C--READ IDENTIFYING RECORD
       ENDIF
 C
 C--CHECK INTERFACE
-C      WRITE(*,'(14hReadSFR REQD: ,a10,6hREAD: ,a10)') TEXT,LABEL
       IF(LABEL.NE.TEXT) THEN
         WRITE(*,4) TEXT,LABEL
         WRITE(IOUT,4) TEXT,LABEL
@@ -3059,7 +2702,7 @@ C--RETURN
 C
 C--ALLOCATE
       ALLOCATE(INOD1(NPKG2PKG),INOD2(NPKG2PKG),QN1N2(NPKG2PKG),
-     &  IP2PFLG(NPKG2PKG))
+     &         IP2PFLG(NPKG2PKG))
 C
 C--READ FLOW RATES
       DO N=1,NPKG2PKG
@@ -3074,23 +2717,24 @@ C--READ FLOW RATES
 C
 C--PRINT FORMATS
     1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
-     & ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
-     & /20X,92('-'))
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
     2 FORMAT(1X,'ERROR: INVALID NUMBER OF COLUMNS, ROWS OR LAYERS',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
-     & /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
-     & /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF COLUMNS IN FLOW-TRANSPORT LINK FILE =',I5
+     &      /1X,'NUMBER OF ROWS IN FLOW-TRANSPORT LINK FILE    =',I5,
+     &      /1X,'NUMBER OF LAYERS FLOW-TRANSPORT LINK FILE     =',I5)
     3 FORMAT(/1X,'ERROR: INVALID NUMBER OF STRESS PERIOD OR TIME STEP',
-     &  ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
-     & /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
+     &           ' IN FLOW-TRANSPORT LINK FILE.'
+     &   /1X,'NUMBER OF STRESS PERIOD IN FLOW-TRANSPORT LINK FILE =',I3,
+     &   /1X,'NUMBER OF TIME STEP IN FLOW-TRANSPORT LINK FILE     =',I3)
     4 FORMAT(/1X,'ERROR READING FLOW-TRANSPORT LINK FILE'/1X,
-     & 'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
-     & 'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK FILE =',A16)
+     &           'NAME OF THE FLOW TERM REQUIRED =',A16/1X,
+     &           'NAME OF THE FLOW TERM SAVED IN FLOW-TRANSPORT LINK ',
+     &           'FILE =',A16)
     5 FORMAT(1X,'ERROR: INVALID NUMBER OF NODES',
-     & ' IN FLOW-TRANSPORT LINK FILE.'
-     & /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
+     &          ' IN FLOW-TRANSPORT LINK FILE.'
+     &      /1X,'NUMBER OF NODES IN FLOW-TRANSPORT LINK FILE =',I5)
    50 FORMAT(1X,'NODE1',I5,5X,'NODE1',I5,5X,'RATE',G15.7,5X,'FLAG',I4)
 C
       RETURN
@@ -3124,7 +2768,7 @@ C
      &  INOD2,IDISP,ICID,QAUX,IP2PFLG)
 C
       REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
-     1  QN2N(:)
+     &                                  QN2N(:)
       CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
       INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
       INTEGER,      ALLOCATABLE      :: ICID(:)
