@@ -15,25 +15,21 @@ C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INUZT
  1030 FORMAT(/1X,'UZT1 -- UNSATURATED-ZONE TRANSPORT PACKAGE,',
-     & ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
+     &           ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
 C
 C--ALLOCATE VARIABLES USED IN FMI
-      ALLOCATE(ICBCUZ,IETFLG,IUZFOPTG) !MXUZCON,NCON,
-C      ALLOCATE(NCONLK,NCONSF)
+      ALLOCATE(ICBCUZ,IETFLG,IUZFOPTG)
       IETFLG=.FALSE.
       IUZFOPTG=1
 C--READ HEADER LINE
       ALLOCATE(IUZFBND(NCOL,NROW))
  9    READ(iUnitTRNOP(7),'(A)',IOSTAT=IERR) LINE
-      IF(LINE(1:1).EQ.'#') THEN !READ NEXT  
+      IF(LINE(1:1).EQ.'#') THEN 
         GOTO 9
       ELSE
         BACKSPACE(iUnitTRNOP(7))
       ENDIF
-      READ(INUZT,*) ICBCUZ,IET !MXUZCON
-C      WRITE(IOUT,14) MXUZCON
-C14    FORMAT(1X,'MAX NUMBER OF ANTICIPATED UZF->SFR & UZF->LAK ',
-C     &       'CONNECTIONS: ',I6)
+      READ(INUZT,*) ICBCUZ,IET
       IF(IET.EQ.1) THEN
         IETFLG=.TRUE.
       ELSE
@@ -41,13 +37,12 @@ C     &       'CONNECTIONS: ',I6)
       ENDIF
       IF(IETFLG) THEN
         WRITE(IOUT,'(A)') 'ET IS BEING SIMULATED, READ UZET AND ',
-     &       'GWET TERMS'
+     &                    'GWET TERMS'
       ELSE
         WRITE(IOUT,'(A)') 'ET IS NOT BEING SIMULATED'
       ENDIF
 C
 C--ALLOCATE INITIAL AND BOUNDARY CONDITION ARRAYS
-C      ALLOCATE(IROUTE(7,MXUZCON),UZQ(MXUZCON))
       ALLOCATE(IUZFOPT(NCOL,NROW))            
       ALLOCATE(IUZFBND(NCOL,NROW))            
       ALLOCATE(UZFLX(NCOL,NROW,NLAY))         
@@ -124,9 +119,6 @@ C--CALCULATE SATURATION AND STORE IN SATOLD
         ENDDO
       ENDIF
 C
-C--CUMULATIVE BUDGET TERMS
-!      ALLOCATE(CUZT2SFR(NCOMP),CUZT2LAK(NCOMP))
-C
 C--RETURN
       RETURN
       END
@@ -157,7 +149,7 @@ C--IF INCUZINF<0, CONC.REUSED FROM LAST STRESS PERIOD
         GOTO 14                                                     
       ENDIF                                                         
     3 FORMAT(/1X,'CONCENTRATION OF APPLIED WATER',                  
-     & ' REUSED FROM LAST STRESS PERIOD')                           
+     &           ' REUSED FROM LAST STRESS PERIOD')
 C                                                                   
 C--IF INCUINF>=0, READ AN ARRAY CONTAINING CONC. OF APPL.           
 C--WATER [CIUZNF]                                                   
@@ -169,7 +161,7 @@ C--WATER [CIUZNF]
      &              0,INUZT,IOUT)                                      
       ENDDO                                                         
     4 FORMAT(/1X,'CONCENTRATION OF APPLIED WATER',                  
-     & ' WILL BE READ IN STRESS PERIOD',I3)                         
+     &           ' WILL BE READ IN STRESS PERIOD',I3) 
 C
 C--READ CONCENTRATION OF ET FLUX WHEN UZF ET IS BEING               
 C--SIMULATED.                                                       
@@ -194,7 +186,7 @@ C
         GOTO 17                                                     
       ENDIF                                                         
    15 FORMAT(/1X,'CONCENTRATION OF UZET FLUXES',                    
-     & ' REUSED FROM LAST STRESS PERIOD')                           
+     &           ' REUSED FROM LAST STRESS PERIOD')
 C                                                                   
       WRITE(IOUT,16) KPER                                           
       ANAME='UZET. CONC. COMP. NO.'                                 
@@ -217,7 +209,7 @@ C--LAYERS
         ENDDO                                                     
       ENDDO                                                       
    16 FORMAT(/1X,'CONCENTRATION OF UZET FLUXES',                  
-     & ' WILL BE READ IN STRESS PERIOD',I3)                       
+     &           ' WILL BE READ IN STRESS PERIOD',I3)
 C                                                                 
 C--READ CONCENTRATION OF GWET FLUX WHEN UZF ET IS BEING           
 C--SIMULATED.                                                     
@@ -225,13 +217,11 @@ C--SIMULATED.
 C                                                                 
       IF(KPER.EQ.1) THEN                                          
         DO INDEX=1,NCOMP                                          
-C          DO KK=1,NLAY                                            
-            DO II=1,NROW                                          
-              DO JJ=1,NCOL                                        
-                CGWET(JJ,II,INDEX)=-1.E-30                     
-              ENDDO                                               
-            ENDDO                                                 
-C          ENDDO                                                   
+          DO II=1,NROW                                          
+            DO JJ=1,NCOL                                        
+              CGWET(JJ,II,INDEX)=-1.E-30                     
+            ENDDO                                               
+          ENDDO                                                 
         ENDDO                                                     
       ENDIF                                                       
       READ(INUZT,'(I10)') INCGWET                                    
@@ -240,7 +230,7 @@ C          ENDDO
         GOTO 20                                                   
       ENDIF                                                       
    18 FORMAT(/1X,'CONCENTRATION OF GWET FLUXES',                  
-     & ' REUSED FROM LAST STRESS PERIOD')                         
+     &           ' REUSED FROM LAST STRESS PERIOD')  
 C                                                                 
       WRITE(IOUT,19) KPER                                         
       ANAME='GWET. CONC. COMP. NO.'                               
@@ -250,7 +240,7 @@ C
      &              1,INUZT,IOUT)                                 
       ENDDO                                                       
    19 FORMAT(/1X,'CONCENTRATION OF GWET FLUXES',                  
-     & ' WILL BE READ IN STRESS PERIOD',I3)                       
+     &           ' WILL BE READ IN STRESS PERIOD',I3)
 C
 C--RETURN
    20 RETURN
@@ -288,7 +278,7 @@ C--(INFILTRATED)
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(FINFil(J,I).GT.0) THEN                         
               RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*        
-     &                      DELR(J)*DELC(I)*DH(J,I,K)             
+     &               DELR(J)*DELC(I)*DH(J,I,K)             
             ENDIF                                                 
           ENDIF                                                   
         ENDDO                                                     
@@ -298,39 +288,39 @@ C--(SURFACE LEAKANCE - HANDLE FOR SINK ON THE GW SYSTEM)
       IF(NSNK2UZF+NLAK2UZF+NSFR2UZF.LT.1) GOTO 12
 C-----SNK
       DO II=1,NSNK2UZF
-          IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2SKUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QSNK2UZF(II)
-            IF(GWQOUT.GT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2SKUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QSNK2UZF(II)
+          IF(GWQOUT.GT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
+        ENDIF
       ENDDO
 C-----LAK
       DO II=1,NLAK2UZF
-          IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2LKUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QLAK2UZF(II)
-            IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2LKUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QLAK2UZF(II)
+          IF(GWQOUT.LT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
+        ENDIF
       ENDDO
 C-----SFR
       DO II=1,NSFR2UZF
-          IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2SFUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QSFR2UZF(II)
-            IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2SFUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QSFR2UZF(II)
+          IF(GWQOUT.LT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
+        ENDIF
       ENDDO
 C                                                                   
 C--(UZET)                                                           
@@ -347,34 +337,31 @@ C--(UZET)
      &                     DELR(J)*DELC(I)*DH(J,I,K)                
               ELSEIF(CUZET(J,I,K,ICOMP).GT.0) THEN                  
                 RHS(N)=RHS(N)-UZET(J,I,K)*CUZET(J,I,K,ICOMP)*       
-     &                     DELR(J)*DELC(I)*DH(J,I,K)                
+     &                 DELR(J)*DELC(I)*DH(J,I,K)                
               ENDIF                                                 
             ENDIF                                                   
           ENDDO                                                     
         ENDDO                                                       
       ENDDO                                                         
 C                                                                   
-C--(GWET)                                                           
-C      DO K=1,NLAY                                                   
-        DO I=1,NROW                                                 
-          DO J=1,NCOL                                               
-           K=IGWET(J,I)
-           IF(K.EQ.0) CYCLE
-           IF(GWET(J,I).EQ.0) CYCLE                              
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        
-              IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
-     &         CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN       
-                IF(UPDLHS) A(N)=A(N)+GWET(J,I)*                   
-     &              DELR(J)*DELC(I)*DH(J,I,K)                       
-              ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN                  
-                RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)*       
-     &              DELR(J)*DELC(I)*DH(J,I,K)                       
-              ENDIF                                                 
-            ENDIF                                                   
-          ENDDO                                                     
-        ENDDO                                                       
-C      ENDDO
+C--(GWET)                                                                                                             
+      DO I=1,NROW                                                 
+        DO J=1,NCOL                                               
+         K=IGWET(J,I)
+         IF(K.EQ.0) CYCLE
+         IF(GWET(J,I).EQ.0) CYCLE                              
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                       
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        
+            IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
+     &                 CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+              IF(UPDLHS) A(N)=A(N)+GWET(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
+            ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN                  
+              RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)*       
+     &               DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF                                                 
+          ENDIF                                                   
+        ENDDO                                                     
+      ENDDO                                                       
 C
 C--DONE WITH EULERIAN SCHEMES
    20 GOTO 2000
@@ -392,7 +379,7 @@ C--(INFILTRATED)
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(FINFIL(J,I).GT.0) THEN
               RHS(N)=RHS(N)-FINFIL(J,I)*CUZINF(J,I,ICOMP)*
-     &                        DELR(J)*DELC(I)*DH(J,I,K)
+     &               DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF                                                
           ENDIF                                                  
         ENDDO                                                      
@@ -402,39 +389,39 @@ C--(SURFACE LEAKANCE)
       IF(NSNK2UZF+NLAK2UZF+NSFR2UZF.LT.1) GOTO 14
 C-----SNK
       DO II=1,NSNK2UZF
-          IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2SKUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QSNK2UZF(II)
-            IF(GWQOUT.GT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODESK(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2SKUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QSNK2UZF(II)
+          IF(GWQOUT.GT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
+        ENDIF
       ENDDO
 C-----LAK
       DO II=1,NLAK2UZF
-          IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2LKUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QLAK2UZF(II)
-            IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2LKUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QLAK2UZF(II)
+          IF(GWQOUT.LT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT)
           ENDIF
+        ENDIF
       ENDDO
 C-----SFR
       DO II=1,NSFR2UZF
-          IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2SFUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QSFR2UZF(II)
-            IF(GWQOUT.LT.0) THEN                           
-              IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) !*DELR(J)*DELC(I)*DH(J,I,K)
-            ENDIF
+        IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2SFUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QSFR2UZF(II)
+          IF(GWQOUT.LT.0) THEN                           
+            IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT)
           ENDIF
+        ENDIF
       ENDDO
 C
 C--(UZET)                                                          
@@ -446,40 +433,38 @@ C--(UZET)
             IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                      
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                       
               IF(UZET(J,I,K).LT.0.AND.(CUZET(J,I,K,ICOMP).LT.0 .OR.
-     &         CUZET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN      
+     &                 CUZET(J,I,K,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
                 CYCLE                                              
               ELSEIF(CUZET(J,I,K,ICOMP).GE.0) THEN                 
-                IF(UPDLHS) A(N)=A(N)-UZET(J,I,K)                   
-     &                     *DELR(J)*DELC(I)*DH(J,I,K)              
+                IF(UPDLHS) A(N)=A(N)-UZET(J,I,K)
+     &                          *DELR(J)*DELC(I)*DH(J,I,K)
                 RHS(N)=RHS(N)-UZET(J,I,K)*CUZET(J,I,K,ICOMP)       
-     &                     *DELR(J)*DELC(I)*DH(J,I,K)              
+     &                 *DELR(J)*DELC(I)*DH(J,I,K)              
               ENDIF                                                
             ENDIF                                                  
           ENDDO                                                    
         ENDDO                                                      
       ENDDO                                                        
 C--(GWET)                                                          
-C      DO K=1,NLAY                                                  
-        DO I=1,NROW                                                
-          DO J=1,NCOL                                              
-            K=IGWET(J,I)
-            IF(K.EQ.0) CYCLE
-            IF(GWET(J,I).EQ.0) CYCLE                             
-            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                      
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                       
-              IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR.
-     &         CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN      
-                CYCLE                                              
-              ELSEIF(CGWET(J,I,ICOMP).GE.0) THEN                 
-                IF(UPDLHS) A(N)=A(N)-GWET(J,I)                   
-     &                   *DELR(J)*DELC(I)*DH(J,I,K)                
-                RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)       
-     &                   *DELR(J)*DELC(I)*DH(J,I,K)                
-              ENDIF                                                
-            ENDIF                                                  
-          ENDDO                                                    
-        ENDDO                                                      
-C      ENDDO                                                        
+      DO I=1,NROW                                                
+        DO J=1,NCOL                                              
+          K=IGWET(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(GWET(J,I).EQ.0) CYCLE                             
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN                      
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                       
+            IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR.
+     &                CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
+              CYCLE                                              
+            ELSEIF(CGWET(J,I,ICOMP).GE.0) THEN                 
+              IF(UPDLHS) A(N)=A(N)-GWET(J,I)                   
+     &                        *DELR(J)*DELC(I)*DH(J,I,K)
+              RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)       
+     &               *DELR(J)*DELC(I)*DH(J,I,K)                
+            ENDIF                                                
+          ENDIF                                                  
+        ENDDO                                                    
+      ENDDO                                                      
 C--DONE WITH EULERIAN-LAGRANGIAN SCHEMES
  2000 CONTINUE
 C
@@ -511,15 +496,15 @@ C--(INFILTRATED)
         DO J=1,NCOL                                                
           K=ABS(IUZFBND(J,I))
           IF(K.EQ.0) CYCLE         !ROW/COL COMBO INACTIVE IN FLOW MODEL
-          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE !THIS COULD BE PROBLEMATIC, WHAT IF WRONG K USED?
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
           CTMP=CUZINF(J,I,ICOMP)
           IF(FINFIL(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)              
           IF(FINFIL(J,I).GT.0) THEN                                
-            RMASIO(53,1,ICOMP)=RMASIO(53,1,ICOMP)+FINFIL(J,I)*     
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)              
+            RMASIO(53,1,ICOMP)=RMASIO(53,1,ICOMP)+FINFIL(J,I)*
+     &                         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
           ELSE                                                     
             RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)+FINFIL(J,I)*     
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)              
+     &                         CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
           ENDIF                                                    
         ENDDO                                                      
       ENDDO                                                        
@@ -536,37 +521,37 @@ C-----SNK
             CTMP=CNEW(J,I,K,ICOMP)
             IF(GWQOUT.GT.0) THEN                           
                 RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)-ABS(GWQOUT)*
-     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
+     &                             CTMP*DTRANS
             ENDIF
           ENDIF
       ENDDO
 C-----LAK
       DO II=1,NLAK2UZF
-          IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2LKUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QLAK2UZF(II)
-            CTMP=CNEW(J,I,K,ICOMP)
-            IF(GWQOUT.LT.0) THEN                           
-                RMASIO(26,2,ICOMP)=RMASIO(26,2,ICOMP)-ABS(GWQOUT)*
-     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
-            ENDIF
+        IF(IUZCODELK(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2LKUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QLAK2UZF(II)
+          CTMP=CNEW(J,I,K,ICOMP)
+          IF(GWQOUT.LT.0) THEN                           
+              RMASIO(26,2,ICOMP)=RMASIO(26,2,ICOMP)-ABS(GWQOUT)*
+     &                           CTMP*DTRANS 
           ENDIF
+        ENDIF
       ENDDO
 C-----SFR
       DO II=1,NSFR2UZF
-          IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
-            N=INOD2SFUZ(II)
-            CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-            GWQOUT=QSFR2UZF(II)
-            CTMP=CNEW(J,I,K,ICOMP)
-            IF(GWQOUT.LT.0) THEN                           
-                RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)-ABS(GWQOUT)*
-     &           CTMP*DTRANS !*DELR(J)*DELC(I)*DH(J,I,K)               
-            ENDIF
+        IF(IUZCODESF(II).EQ.1) THEN !GW DISCHARGE
+          N=INOD2SFUZ(II)
+          CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+          GWQOUT=QSFR2UZF(II)
+          CTMP=CNEW(J,I,K,ICOMP)
+          IF(GWQOUT.LT.0) THEN                           
+              RMASIO(30,2,ICOMP)=RMASIO(30,2,ICOMP)-ABS(GWQOUT)*
+     &                           CTMP*DTRANS
           ENDIF
+        ENDIF
       ENDDO
 C                                                                   
 C--(UZET)                                                           
@@ -584,39 +569,37 @@ C--(UZET)
             ENDIF                                                   
             IF(UZET(J,I,K).GT.0) THEN                               
               RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+UZET(J,I,K)*    
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
+     &                           CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
             ELSE                                                    
               RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+UZET(J,I,K)*    
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
+     &                           CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF                                                   
           ENDDO                                                     
         ENDDO                                                       
       ENDDO                                                         
 C                                                                   
-C--(GWET)                                                           
-C      DO K=1,NLAY                                                   
-        DO I=1,NROW                                                 
-          DO J=1,NCOL                                               
-            K=IGWET(J,I)
-            IF(K.EQ.0) CYCLE
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                      
-            CTMP=CGWET(J,I,ICOMP)                                 
-            IF(GWET(J,I).LT.0.AND.(CTMP.LT.0 .OR.                 
-     &                             CTMP.GE.CNEW(J,I,K,ICOMP))) THEN 
-              CTMP=CNEW(J,I,K,ICOMP)                                
-            ELSEIF(CTMP.LT.0) THEN                                  
-              CTMP=0.                                               
-            ENDIF                                                   
-            IF(GWET(J,I).GT.0) THEN                               
-              RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*    
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
-            ELSE                                                    
-              RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*    
-     &          CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
-            ENDIF                                                   
-          ENDDO                                                     
-        ENDDO                                                       
-C      ENDDO                                                         
+C--(GWET)                                                                                                             
+      DO I=1,NROW                                                 
+        DO J=1,NCOL                                               
+          K=IGWET(J,I)
+          IF(K.EQ.0) CYCLE
+          IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE                      
+          CTMP=CGWET(J,I,ICOMP)                                 
+          IF(GWET(J,I).LT.0.AND.(CTMP.LT.0 .OR.                 
+     &                           CTMP.GE.CNEW(J,I,K,ICOMP))) THEN 
+            CTMP=CNEW(J,I,K,ICOMP)                                
+          ELSEIF(CTMP.LT.0) THEN                                  
+            CTMP=0.                                               
+          ENDIF                                                   
+          IF(GWET(J,I).GT.0) THEN                               
+            RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*    
+     &        CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
+          ELSE                                                    
+            RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*    
+     &        CTMP*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)               
+          ENDIF                                                   
+        ENDDO                                                     
+      ENDDO                                                       
 C
 C--RETURN
 200   RETURN
@@ -638,7 +621,6 @@ C
         DO J=1,NCOL
           IF(IUZFBND(J,I).LE.0) CYCLE
           DO K=1,NLAY
-C            N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
             SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
      1          +SATOLD(J,I,K)
             THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
@@ -656,7 +638,7 @@ C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
 C ********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: NLAY,NCOL,NROW,PRSITY,THETAW2,ICBUND,
-     1  DELR,DELC,DH,QSTO,DZ
+     1                         DELR,DELC,DH,QSTO,DZ
 C
       INTEGER K,I,J
       REAL HT,TIME
@@ -668,10 +650,9 @@ C
             N=(K-1)*NCOL*NROW + (I-1)*NCOL + J
             IF(ICBUND(J,I,K,1).LE.0) CYCLE
             VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)*DH(J,I,K)
-     &                *QSTO(J,I,K)/PRSITY(J,I,K)*(HT-TIME)
+     &          *QSTO(J,I,K)/PRSITY(J,I,K)*(HT-TIME)
             VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
             VOL=MIN(VOL,VCELL)
-C
             THETAW2(J,I,K)=VOL*PRSITY(J,I,K)/VCELL
           ENDDO
         ENDDO
