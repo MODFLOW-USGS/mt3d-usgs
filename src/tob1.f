@@ -118,35 +118,35 @@ C--DECODE OUTPUT FILE UNITS
       inSaveObs=IU           
 C
 C--OPEN OUTPUT FILES      
-      if(inConcObs.gt.0) then
+      IF(inConcObs.gt.0) THEN
         ftmp=fname(1:iflen)//'.ocn'
         CALL OPENFL(inConcObs,0,ftmp,1,ftmp)          
-        write(inConcObs,10)
-      endif
-      if(inFluxObs.gt.0) then
+        WRITE(inConcObs,10)
+      ENDIF
+      IF(inFluxObs.gt.0) THEN
         ftmp=fname(1:iflen)//'.mfx'
         CALL OPENFL(inFluxObs,0,ftmp,1,ftmp)            
-        write(inFluxObs,20)
-      endif
-      if(inSaveObs.gt.0) then
+        WRITE(inFluxObs,20)
+      ENDIF
+      IF(inSaveObs.gt.0) THEN
         header='MT3DMS_TOB_5.00'
         ftmp=fname(1:iflen)//'.pst'
         CALL OPENFL(-inSaveObs,0,ftmp,1,ftmp)        
-        write(inSaveObs) header
-      endif      
-   10 format(/1x,'CONCENTRATION OBSERVATION OUTPUT FILE',
+        WRITE(inSaveObs) header
+      ENDIF      
+   10 FORMAT(/1x,'CONCENTRATION OBSERVATION OUTPUT FILE',
      &       /1X,37('='))   
-   20 format(/1x,'MASS FLUX OBJECT OBSERVATION OUTPUT FILE',
+   20 FORMAT(/1x,'MASS FLUX OBJECT OBSERVATION OUTPUT FILE',
      &       /1X,40('='))             
 C
 C--get input data for concentration observation wells
-      if(inConcObs.le.0) goto 1000
+      IF(inConcObs.le.0) GOTO 1000
 C      
-      read(intob,*) nConcObs,CScale,iOutCobs,iConcLOG,iConcINTP
-      write(iout,98) 
-   98 format(//1x,'TRANSPORT OBSERVATION INPUT DATA'/1x,32('-'))
-      write(iout,100) nCOncObs,CScale,iOutCobs,iConcLOG,iConcINTP
-  100 format(/1x,'NUMBER OF CONCENTRATION OBSERVATION WELLS: ',i5,
+      READ(intob,*) nConcObs,CScale,iOutCobs,iConcLOG,iConcINTP
+      WRITE(iout,98) 
+   98 FORMAT(//1x,'TRANSPORT OBSERVATION INPUT DATA'/1x,32('-'))
+      WRITE(iout,100) nCOncObs,CScale,iOutCobs,iConcLOG,iConcINTP
+  100 FORMAT(/1x,'NUMBER OF CONCENTRATION OBSERVATION WELLS: ',i5,
      &       /1x,'   MULTIPLIER FOR OBSERVED CONCENTRATIONS: ',g12.4,
      &       /1x,'   OPTION FOR CALCULATING RESIDUAL ERRORS: ',i5,
      &       /1x,'        OPTION FOR LOGARITHMIC CONVERSION: ',i5,
@@ -155,21 +155,21 @@ C
      &        3x,'ROW_OFFSET',2x,'COL_OFFSET',4x,'WEIGHT',6x,'OBS_CONC',
      &       /1x,99('.'))
 C      
-      IF(nConcObs.gt.MaxConcObs) then
-        write(*,102)
-  102   format(1x,'Number of conc. observation wells',
+      IF(nConcObs.gt.MaxConcObs) THEN
+        WRITE(*,102)
+  102   FORMAT(1x,'Number of conc. observation wells',
      &   ' exceeds specified maximum')
-        call ustop(' ')
+        CALL ustop(' ')
       ENDIF
 C      
       DO n=1, nConcObs
-      
-        read(intob,*) NAMTMP,kp,ip,jp,icomp,
+C 
+        READ(intob,*) NAMTMP,kp,ip,jp,icomp,
      &                TimeObs,Roff,Coff,weight,COBS
-        write(iout,120) NAMTMP,kp,ip,jp,icomp,
+        WRITE(iout,120) NAMTMP,kp,ip,jp,icomp,
      &                  TimeObs,Roff,Coff,weight,COBS    
-  120   format(1x,a12,3i5,2x,i5,3x,4g12.4,g14.5)
-  
+  120   FORMAT(1x,a12,3i5,2x,i5,3x,4g12.4,g14.5)
+C
         COBSNAM(n)=NAMTMP   
         cobswel(1,n)=kp     
         cobswel(2,n)=ip
@@ -180,106 +180,106 @@ C
         cobswel(7,n)=Coff
         cobswel(8,n)=weight
         cobswel(9,n)=cobs * CScale  
-
-        IF(iOutCobs.gt.0 .and. iConcLOG.gt.0) then
-          if(weight.gt.0 .and. Cobs.le.0) then
-            write(*,121)
-  121       format(1x,'Observed conc. invalid for log conversion')
-            call ustop(' ')
-          endif  
+C
+        IF(iOutCobs.gt.0 .and. iConcLOG.gt.0) THEN
+          IF(weight.gt.0 .and. Cobs.le.0) THEN
+            WRITE(*,121)
+  121       FORMAT(1x,'Observed conc. invalid for log conversion')
+            CALL ustop(' ')
+          ENDIF  
         ENDIF        
-     
-        if(kp.lt.0) then
-          read(intob,*)   (mLayer(kk,n),prLayer(kk,n), kk=1,iabs(kp))          
-          write(iout,122) (mLayer(kk,n),prLayer(kk,n), kk=1,iabs(kp))
-        endif
-  122   format(1x,'  @Layer',i4,'  Proportion=',g12.4)                    
-        
+C
+        IF(kp.lt.0) THEN
+          READ(intob,*)   (mLayer(kk,n),prLayer(kk,n), kk=1,iABS(kp))
+          WRITE(iout,122) (mLayer(kk,n),prLayer(kk,n), kk=1,iABS(kp))
+        ENDIF
+  122   FORMAT(1x,'  @Layer',i4,'  Proportion=',g12.4)
+C 
       ENDDO
 C
 C--get input data for mass flux objects
- 1000 if(inFluxObs.le.0) goto 2000
+ 1000 IF(inFluxObs.le.0) GOTO 2000
 C
-      read(intob,*) nFluxGroup,FScale,iOutFlux
-      write(iout,200) nFluxGroup,FScale,iOutFlux
-  200 format(/1x,'           NUMBER OF MASS FLUX OBJECTS: ',i5,
+      READ(intob,*) nFluxGroup,FScale,iOutFlux
+      WRITE(iout,200) nFluxGroup,FScale,iOutFlux
+  200 FORMAT(/1x,'           NUMBER OF MASS FLUX OBJECTS: ',i5,
      &       /1x,'   MULTIPLIER FOR OBSERVED MASS FLUXES: ',g12.4,
      &       /1x,'OPTION FOR CALCULATING RESIDUAL ERRORS: ',i5)
 C      
-      if(nFluxGroup.gt.MaxFluxObs) then
-        write(*,202)
-  202   format(1x,'Number of mass flux objects',
+      IF(nFluxGroup.gt.MaxFluxObs) THEN
+        WRITE(*,202)
+  202   FORMAT(1x,'Number of mass flux objects',
      &   ' exceeds specified maximum')
-        call ustop(' ')        
-      endif 
+        CALL ustop(' ')        
+      ENDIF 
 C      
       nFluxObs=0
       DO ig=1, nFluxGroup
-      
-        read(intob,*) nFluxTimeObs,nCells,iSSType
-        write(iout,220) ig,nFluxTimeObs,nCells,TYPESS(iSSType)
-  220   format(/1x,'          MASS FLUX OBJECT NO.: ',i5,
+C
+        READ(intob,*) nFluxTimeObs,nCells,iSSType
+        WRITE(iout,220) ig,nFluxTimeObs,nCells,TYPESS(iSSType)
+  220   FORMAT(/1x,'          MASS FLUX OBJECT NO.: ',i5,
      &         /1x,'   NUMBER OF OBSERVATION TIMES: ',i5,
      &         /1x,'NUMBER OF MODEL CELLS INCLUDED: ',i5,
      &         /1x,'      TYPE OF MASS FLUX OBJECT: ',a15,
      &        //1x,'OBS_NAME',4x,'SPECIES',2x,'OBS_TIME',
      &          5x,'WEIGHT',7x,'OBS_FLUX'/1x,55('.'))
-        
-        if(nCells.gt.MaxFluxCells) then
-          write(*,222)
-  222     format(1x,'Number of cells in a flux object',
-     &     ' exceeds specified maximum')
-          call ustop(' ')
-        endif  
-        if(iSSType.lt.0) then
-          write(*,224)
-  224     format(1x,'iSSType code supported must be > 0')
-          call ustop(' ')
-        endif
-                      
+C
+        IF(nCells.gt.MaxFluxCells) THEN
+          WRITE(*,222)
+  222     FORMAT(1x,'Number of cells in a flux object',
+     &              ' exceeds specified maximum')
+          CALL ustop(' ')
+        ENDIF  
+        IF(iSSType.lt.0) THEN
+          WRITE(*,224)
+  224     FORMAT(1x,'iSSType code supported must be > 0')
+          CALL ustop(' ')
+        ENDIF
+C                      
         FluxGroup(1,ig)=nFluxTimeObs
         FluxGroup(2,ig)=nCells       
         FluxGroup(3,ig)=iSSType
-        
-        do it=1, nFluxTimeObs
-          
-          read(intob,*) NAMTMP,icomp,TimeObs,weight,FluxObs
-          write(iout,240) NAMTMP,icomp,TimeObs,weight,FluxObs
-  240     format(1x,a12,i5,3x,2g12.4,g14.5)
-      
+C       
+        DO it=1, nFluxTimeObs
+C         
+          READ(intob,*) NAMTMP,icomp,TimeObs,weight,FluxObs
+          WRITE(iout,240) NAMTMP,icomp,TimeObs,weight,FluxObs
+  240     FORMAT(1x,a12,i5,3x,2g12.4,g14.5)
+C
           nFluxObs = nFluxObs+1
-          
-          if(nFluxObs.gt.MaxFluxObs) then
-            write(*,242)
-  242       format(1x,'Number of total observations for',
-     &       ' all mass flux objects exceeds specified maximum')
-            call ustop(' ')
-          endif                   
-          
+C
+          IF(nFluxObs.gt.MaxFluxObs) THEN
+            WRITE(*,242)
+  242       FORMAT(1x,'Number of total observations for ',
+     &                'all mass flux objects exceeds specified maximum')
+            CALL ustop(' ')
+          ENDIF                   
+C
           FOBSNAM(nFluxObs)=NAMTMP
           GroupData(1,nFluxObs)=ig     
           GroupData(2,nFluxObs)=icomp
           GroupData(3,nFluxObs)=TimeObs
           GroupData(4,nFluxObs)=weight 
           GroupData(5,nFluxObs)=FluxObs * FScale
-          
-        enddo
-                  
-        do icell=1,nCells
-          read(intob,*) kc, ic, jc, fraction
-          write(iout,260) kc, ic, jc, fraction
+C
+        ENDDO
+C
+        DO icell=1,nCells
+          READ(intob,*) kc, ic, jc, fraction
+          WRITE(iout,260) kc, ic, jc, fraction
           FluxGroup(3+icell,ig)= (kc-1)*ncol*nrow + (ic-1)*ncol + jc
           FluxGroup(3+MaxFluxCells+icell,ig)=fraction
-          if(fraction.gt.1 .or. fraction.lt.0) then
-            write(*,244)
-  244       format(1x,'contributing fraction for any cell',
-     &       ' in a mass flux object must be between 0 and 1')
-            call ustop(' ')
-          endif  
-        enddo
-  260   format(1x,'@Layer:',i4,'; Row:',i5,'; Column:',i5,
-     &   '; Fraction:',f8.3)    
-        
+          IF(fraction.gt.1 .or. fraction.lt.0) THEN
+            WRITE(*,244)
+  244       FORMAT(1x,'contributing fraction for any cell',
+     &                ' in a mass flux object must be between 0 and 1')
+            CALL ustop(' ')
+          ENDIF  
+        ENDDO
+  260   FORMAT(1x,'@Layer:',i4,'; Row:',i5,'; Column:',i5,
+     &            '; Fraction:',f8.3)    
+C
       ENDDO
 C
 C--normal return
@@ -290,7 +290,7 @@ C
 C  
       SUBROUTINE TOB1OT(KPER,KSTP,NTRANS,TIME1,TIME2)
 C **********************************************************************
-C This subroutine calls the sconcobs and smassfluxobs subroutines
+C This subroutine CALLs the sconcobs and smassfluxobs subroutines
 C to compute observed residuals between observed and simulated 
 C values
 C **********************************************************************          
@@ -300,20 +300,20 @@ C **********************************************************************
       REAL :: TIME1,TIME2
 C
 C--CONCENTRATION OBSERVATIONS
-      if(inConcOBS.GT.0) then
-        call SConcObs(iout,kper,kstp,ntrans,time1,time2)
-      endif
+      IF(inConcOBS.GT.0) THEN
+        CALL SConcObs(iout,kper,kstp,ntrans,time1,time2)
+      ENDIF
 C
 C--MASS FLUX OBSERVATIONS
-      if(inFluxObs.GT.0) then
-        call SMassFluxObs(iout,kper,kstp,ntrans,time1,time2)
-      endif
+      IF(inFluxObs.GT.0) THEN
+        CALL SMassFluxObs(iout,kper,kstp,ntrans,time1,time2)
+      ENDIF
 C
       RETURN
       END
 C
 C
-      Subroutine SConcObs(iout,kper,kstp,ntrans,time1,time2)
+      SUBROUTINE SConcObs(iout,kper,kstp,ntrans,time1,time2)
 C **********************************************************************
 C This subroutine gets calculated concentration values at observation
 C points and computes residual errors between calculated and observed
@@ -347,33 +347,33 @@ C
       ELSEIF(iOutCobs.eq.0) THEN
         WRITE(inConcObs,8)
       ENDIF  
-    2 format(//1x,30('*'),
+    2 FORMAT(//1x,30('*'),
      &        /1x,'     STRESS PERIOD:    ',i5,
      &        /1x,'         TIME STEP:    ',i5,
      &        /1x,'    TRANSPORT STEP:    ',i5,
      &        /1x,'TOTAL ELAPSED TIME: ',g12.4, 
      &        /1x,30('*')/)           
-    4 format(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
-     & ' SPECIES  CALCULATED   OBSERVED   WEIGHT    (CAL.-OBS.)'
+    4 FORMAT(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
+     &         ' SPECIES  CALCULATED   OBSERVED   WEIGHT    (CAL.-OBS.)'
      &      /1x,108('.'))  
-    6 format(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
-     & ' SPECIES  CALCULATED   OBSERVED   WEIGHT  LogCAL-LogOBS'
+    6 FORMAT(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
+     &         ' SPECIES  CALCULATED   OBSERVED   WEIGHT  LogCAL-LogOBS'
      &      /1x,110('.'))
-    8 format(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
-     & ' SPECIES  CALCULATED  '
+    8 FORMAT(1x,'WELLID        X_GRID      Y_GRID     LAYER ROW COLUMN',
+     &          ' SPECIES  CALCULATED  '
      &      /1x,75('.'))           
-    
+C
 C--reset accumulators
-
+C
       nobs_active=0
       nobs_current=0
       errsum=0
       abserrsum=0
-
+C
 C--loop over all observation wells
-
-      do n=1,nConcObs
-      
+C
+      DO n=1,nConcObs
+C     
         kp=     cobswel(1,n)
         ip=     cobswel(2,n)
         jp=     cobswel(3,n)
@@ -383,56 +383,56 @@ C--loop over all observation wells
         Coff=   cobswel(7,n)
         weight= cobswel(8,n)
         cobs=   cobswel(9,n)
-
-        if(TimeObs.lt.0) then
-          itmp=-int(TimeObs)
-          if(mod(ntrans,itmp).ne.0) then
-            cycle          !skip if not even multiple
-          else
+C
+        IF(TimeObs.lt.0) THEN
+          itmp=-INT(TimeObs)
+          IF(MOD(ntrans,itmp).ne.0) THEN
+            CYCLE          !skip if not even multiple
+          ELSE
             TimeObs=time2
-          endif  
-        elseif(TimeObs.le.time1 .or. TimeObs.gt.time2) then
-          cycle            !skip if not at current time step
-        endif
-
+          ENDIF  
+        ELSEIF(TimeObs.le.time1 .or. TimeObs.gt.time2) THEN
+          CYCLE            !skip if not at current time step
+        ENDIF
+C
         nobs_current=nobs_current+1
         xx2=xbc(jp)+Coff*delr(jp)
         yy2=ybc(ip)+Roff*delc(ip)
         jlo=max(1,jp-1)
         ilo=max(1,ip-1)
-        if(xx2.gt.xbc(jp)) jlo=jp
-        if(yy2.gt.ybc(ip)) ilo=ip
+        IF(xx2.gt.xbc(jp)) jlo=jp
+        IF(yy2.gt.ybc(ip)) ilo=ip
         jhi=min(jlo+1,ncol)
         ihi=min(ilo+1,nrow)
-
-        if(kp.gt.0) then
+C
+        IF(kp.gt.0) THEN
           kstart=1
           kend=1
-        else
+        ELSE
           kstart=1
-          kend=abs(kp)
-        endif
-
+          kend=ABS(kp)
+        ENDIF
+C
         cwgt=0
         ncal=0
-        do ktmp=kstart,kend
-
-          if(kp.gt.0) then
+        DO ktmp=kstart,kend
+C
+          IF(kp.gt.0) THEN
             layer=kp
             wlayer=1.
-          elseif(kp.lt.0) then
+          ELSEIF(kp.lt.0) THEN
             layer=mLayer(ktmp,n)
             wlayer=prLayer(ktmp,n)
-          endif
-
-          if(icbund(jp,ip,layer,iComp).eq.0) then
+          ENDIF
+C
+          IF(icbund(jp,ip,layer,iComp).eq.0) THEN
             wlayer=0
             ccal=cinact
-          else
+          ELSE
             ncal=ncal+1
             ccal=cnew(jp,ip,layer,iComp)
-
-            IF(iConcINTP.gt.0) then   !interpolate if requested
+C
+            IF(iConcINTP.gt.0) THEN   !interpolate if requested
               IF(JLO.NE.JHI) THEN
                 WX=(xx2-XBC(JLO))/(0.5*DELR(JHI)+0.5*DELR(JLO))
               ELSE
@@ -446,99 +446,98 @@ C--loop over all observation wells
               ccal=0
               CTMP=cnew(JLO,ILO,layer,iComp)
               IF(ICBUND(JLO,ILO,layer,iComp).EQ.0) 
-     &                     CTMP=cnew(JP,IP,layer,iComp)
+     &           CTMP=cnew(JP,IP,layer,iComp)
               ccal=ccal+(1.-WX)*(1.-WY)*CTMP
               CTMP=cnew(JLO,IHI,layer,iComp)
               IF(ICBUND(JLO,IHI,layer,iComp).EQ.0) 
-     &                     CTMP=cnew(JP,IP,layer,iComp)
+     &           CTMP=cnew(JP,IP,layer,iComp)
               ccal=ccal+(1.-WX)*WY*CTMP
               CTMP=cnew(JHI,ILO,layer,iComp)
               IF(ICBUND(JHI,ILO,layer,iComp).EQ.0) 
-     &                     CTMP=cnew(JP,IP,layer,iComp)
+     &           CTMP=cnew(JP,IP,layer,iComp)
               ccal=ccal+WX*(1.-WY)*CTMP
               CTMP=cnew(JHI,IHI,layer,iComp)
               IF(ICBUND(JHI,IHI,layer,iComp).EQ.0) 
-     &                     CTMP=cnew(JP,IP,layer,iComp)
+     &           CTMP=cnew(JP,IP,layer,iComp)
               ccal=ccal+WX*WY*CTMP
-            endif   !end of interpolation block
-
-          endif
-
+            ENDIF   !end of interpolation block
+C
+          ENDIF
+C
           cwgt = cwgt + ccal * wlayer
-
-        enddo ! end of multi-layer weighting
+C
+        ENDDO ! end of multi-layer weighting
 
         iErrMsg=0
         ErrMsg=' '
-        if(ncal.le.0) then              !obs at dry cell
+        IF(ncal.le.0) THEN              !obs at dry cell
           iErrMsg=1
           ErrMsg='obs well at a dry cell'
           cwgt=cinact
-        elseif(iOutCobs*iConcLOG.gt.0 .and. cwgt.le.0) then
+        ELSEIF(iOutCobs*iConcLOG.gt.0 .and. cwgt.le.0) THEN
           iErrMsg=2
           ErrMsg='invalid log conversion'                  
-        elseif(weight .lt. 0) then      !for well without obs conc.
+        ELSEIF(weight .lt. 0) THEN      !for well without obs conc.
           iErrMsg=-1
           ErrMsg='no observed conc given'
-        elseif(iOutCobs.gt.0) then      !active
+        ELSEIF(iOutCobs.gt.0) THEN      !active
           nobs_active=nobs_active+1
-          if(iConcLOG.le.0) then
+          IF(iConcLOG.le.0) THEN
             temp(nobs_active,1)=cobs
             temp(nobs_active,2)=cwgt
             error=(cwgt-cobs)*weight            
-          elseif(iConcLOG.gt.0) then
+          ELSEIF(iConcLOG.gt.0) THEN
             temp(nobs_active,1)=log10(cobs)
             temp(nobs_active,2)=log10(cwgt)
             error=(log10(cwgt)-log10(cobs))*weight
-          endif
+          ENDIF
           errsum=errsum+error*error
-          abserrsum=abserrsum+abs(error)
+          abserrsum=abserrsum+ABS(error)
           temp(nobs_active,3)=error          
-        endif
-        
-        if(iOutCobs.gt.0 .and. iErrMsg.eq.0) then
-          write(inConcObs,30)
+        ENDIF
+C
+        IF(iOutCobs.gt.0 .and. iErrMsg.eq.0) THEN
+          WRITE(inConcObs,30)
      &     cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt,cobs,weight,error
-        elseif(iOutCobs.gt.0 .and. iErrMsg.ne.0) then
-          write(inConcObs,32)
-     &     cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt,ErrMsg
-        elseif(iOutCobs.eq.0 .and. iErrMsg.eq.0) then
-          write(inConcObs,34)
-     &     cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt
-        elseif(iOutCobs.eq.0 .and. iErrMsg.gt.0) then
-          write(inConcObs,36)
-     &     cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt,ErrMsg     
-        endif
-        if(inSaveObs.gt.0) then
-          write(inSaveObs) cobsnam(n),TimeObs,cwgt
-        endif  
-
-      enddo !end of obs wel loop
-            
-   30 format(1x,a12,1p,2g12.4,3i5,3x,i4,2x,4g12.4)
-   32 format(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4,3x,a) 
-   34 format(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4)   
-   36 format(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4,3x,a)       
-
+        ELSEIF(iOutCobs.gt.0 .and. iErrMsg.ne.0) THEN
+          WRITE(inConcObs,32) cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt,
+     &                        ErrMsg
+        ELSEIF(iOutCobs.eq.0 .and. iErrMsg.eq.0) THEN
+          WRITE(inConcObs,34) cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt
+        ELSEIF(iOutCobs.eq.0 .and. iErrMsg.gt.0) THEN
+          WRITE(inConcObs,36) cobsnam(n),xx2,yy2,kp,ip,jp,icomp,cwgt,
+     &                        ErrMsg 
+        ENDIF
+        IF(inSaveObs.gt.0) THEN
+          WRITE(inSaveObs) cobsnam(n),TimeObs,cwgt
+        ENDIF  
+C
+      ENDDO !end of obs wel loop
+C
+   30 FORMAT(1x,a12,1p,2g12.4,3i5,3x,i4,2x,4g12.4)
+   32 FORMAT(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4,3x,a) 
+   34 FORMAT(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4)   
+   36 FORMAT(1x,a12,1p,2g12.4,3i5,3x,i4,2x,1g12.4,3x,a)       
+C
 c--calculate statistics
-      if(iOutCobs.gt.0.and.nobs_active.gt.1) then
+      IF(iOutCobs.gt.0.and.nobs_active.gt.1) THEN
         CALL MOMENT(temp(:,3),nobs_active,AVE,ADEV,SDEV,VAR,SKEW,CURT)
         CALL PEARSN(temp(:,1),temp(:,2),nobs_active,R,PROB,Z)
-      else
-        goto 1000
-      endif
-
+      ELSE
+        GOTO 1000
+      ENDIF
+C
 c--print statastics
-      write(inConcObs,50) nobs_active
-      write(inConcObs,60) AVE
-      write(inConcObs,62) SDEV
-      write(inConcObs,64) abserrsum/nobs_active
-      write(inConcObs,66) SQRT(ERRSUM/nobs_active)     
-      if(nobs_active.gt.2) then
-        write(inConcObs,70) R
-        write(inConcObs,72) PROB       
-      endif
-
+      WRITE(inConcObs,50) nobs_active
+      WRITE(inConcObs,60) AVE
+      WRITE(inConcObs,62) SDEV
+      WRITE(inConcObs,64) abserrsum/nobs_active
+      WRITE(inConcObs,66) SQRT(ERRSUM/nobs_active)     
+      IF(nobs_active.gt.2) THEN
+        WRITE(inConcObs,70) R
+        WRITE(inConcObs,72) PROB       
+      ENDIF
+C
    50 FORMAT(/1x,'   NUMBER OF ACTIVE OBSERVATION POINTS = ',I5)
    60 FORMAT( 1x,'                 MEAN OF RESIDUALS (M) = ',G15.7)
    62 FORMAT( 1x,'STANDARD DEVIATION OF RESIDUALS (SDEV) = ',G15.7)
@@ -546,8 +545,8 @@ c--print statastics
    66 FORMAT( 1x,'     ROOT MEAN SQUARED RESIDUALS (RMS) = ',G15.7)
    70 FORMAT( 1x,'               CORRELATION COEFFICIENT = ',G15.7)
    72 FORMAT( 1x,'         PROBABILITY OF UN-CORRELATION = ',G15.7)
-c
- 1000 IF(nobs_current.le.0) write(inConcObs,1080)
+C
+ 1000 IF(nobs_current.le.0) WRITE(inConcObs,1080)
  1080 FORMAT(1x,'[No obs wells active at current transport step]')
 C
 C--normal return
@@ -555,7 +554,7 @@ C--normal return
       END
 C
 C
-      Subroutine SMassFluxObs(iout,kper,kstp,ntrans,time1,time2)
+      SUBROUTINE SMassFluxObs(iout,kper,kstp,ntrans,time1,time2)
 C **********************************************************************
 C This subroutine gets calculated mass fluxes at user specified
 C locations and computes residual errors between calculated and
@@ -592,36 +591,37 @@ c
       ELSEIF(iOutFlux.eq.0) THEN
         WRITE(inFluxObs,6)
       ENDIF
-    2 format(//1x,30('*'),
+    2 FORMAT(//1x,30('*'),
      &        /1x,'     STRESS PERIOD:    ',i5,
      &        /1x,'         TIME STEP:    ',i5,
      &        /1x,'    TRANSPORT STEP:    ',i5,
      &        /1x,'TOTAL ELAPSED TIME: ',g12.4,     
      &        /1x,30('*')/)                
-    4 format(1x,'  NO. NAME            TIME   SPECIES      ',
-     & 'CALCULATED   OBSERVED   WEIGHT     (CAL.-OBS.)'/1x,88('.'))  
-    6 format(1x,'  NO. NAME            TIME   SPECIES      ',
-     & 'CALCULATED  '/1x,54('.'))   
-c
+    4 FORMAT(1x,'  NO. NAME            TIME   SPECIES      ',
+     &          'CALCULATED   OBSERVED   WEIGHT     (CAL.-OBS.)'/1x,
+     &          88('.'))  
+    6 FORMAT(1x,'  NO. NAME            TIME   SPECIES      ',
+     &          'CALCULATED  '/1x,54('.'))   
+C
 c--reset accumulators
-c
+C
       nobs_active=0
       nobs_current=0
       errsum=0
       abserrsum=0            
-c
+C
 c--clear temporary storage arrays
-c
-      do n=1,nfluxobs       
+C
+      DO n=1,nfluxobs       
         GroupTmp(n,1)=0.       
         GroupTmp(n,2)=0.       
         GroupTmp(n,3)=0.
-      enddo
-c
+      ENDDO
+C
 c--loop through all mass flux observations
-c
-      do n=1,nfluxobs
-
+C
+      DO n=1,nfluxobs
+C
         iGroup= GroupData(1,n)
         iComp=  GroupData(2,n)
         TimeObs=GroupData(3,n)         
@@ -629,160 +629,160 @@ c
         FluxObs=GroupData(5,n)
         GroupData(6,n)=0.
         GroupData(7,n)=0.
-               
-        if(TimeObs.lt.0) then
-          itmp=-int(TimeObs)
-          if(mod(ntrans,itmp).ne.0) then
-            cycle   !skip if not even multiple
-          else
+C
+        IF(TimeObs.lt.0) THEN
+          itmp=-INT(TimeObs)
+          IF(MOD(ntrans,itmp).ne.0) THEN
+            CYCLE                   !skip if not even multiple
+          ELSE
             TimeObs=time2
-          endif
-        elseif(TimeObs.le.time1 .or. TimeObs.gt.time2) then
-          cycle                     !skip if not at current time step
-        endif        
-
+          ENDIF
+        ELSEIF(TimeObs.le.time1 .or. TimeObs.gt.time2) THEN
+          CYCLE                     !skip if not at current time step
+        ENDIF        
+C
   100   nFluxTimeObs=FluxGroup(1,iGroup)
         nCells=FluxGroup(2,iGroup)
         iSSType=FluxGroup(3,iGroup)
-
+C
 c--loop through all cells in the current flux object
-        
-        do icell=1,nCells
-
-          inode=int( FluxGroup(3+icell,iGroup) )
+C
+        DO icell=1,nCells
+C
+          inode=INT( FluxGroup(3+icell,iGroup) )
           kp = (inode-1) / (ncol*nrow) + 1
-          ip = mod((inode-1),ncol*nrow)/ncol + 1
-          jp = mod((inode-1),ncol) + 1
+          ip = MOD((inode-1),ncol*nrow)/ncol + 1
+          jp = MOD((inode-1),ncol) + 1
           fraction=FluxGroup(3+MaxFluxCells+icell,iGroup)
-          
+C
 c--if recharge flux
-
-          if(iSSType.eq.7 .and. FRCH) then
-            if(kp.ne.irch(jp,ip)) cycle
-            if(icbund(jp,ip,kp,icomp).le.0) cycle
+C
+          IF(iSSType.eq.7 .and. FRCH) THEN
+            IF(kp.ne.irch(jp,ip)) CYCLE
+            IF(icbund(jp,ip,kp,icomp).le.0) CYCLE
             ctmp=crch(jp,ip,icomp)
             qss=rech(jp,ip)
-            if(qss.lt.0) ctmp=cnew(jp,ip,kp,icomp)
+            IF(qss.lt.0) ctmp=cnew(jp,ip,kp,icomp)
 c--get volumetric Q*C and Q                      
             QC=qss*delr(jp)*delc(ip)*dh(jp,ip,kp)*ctmp
             Q =qss*delr(jp)*delc(ip)*dh(jp,ip,kp)
 c--cumulate in GroupData
             GroupData(6,n) = GroupData(6,n) + QC * fraction
-            GroupData(7,n) = GroupData(7,n) + Q  * fraction                   
-            cycle
-          endif              
-          
+            GroupData(7,n) = GroupData(7,n) + Q  * fraction 
+            CYCLE
+          ENDIF              
+C
 c--if evapotranspiration flux
-
-          if(iSSType.eq.8 .and. (FEVT.or.FETS) ) then                 
-            if(kp.ne.ievt(jp,ip)) cycle
-            if(icbund(jp,ip,kp,icomp).le.0) cycle
+C
+          IF(iSSType.eq.8 .and. (FEVT.or.FETS) ) THEN                 
+            IF(kp.ne.ievt(jp,ip)) CYCLE
+            IF(icbund(jp,ip,kp,icomp).le.0) CYCLE
             ctmp=cevt(jp,ip,icomp)
             qss=evtr(jp,ip)
-            if(qss.lt.0 .and. (ctmp.lt.0. or. 
-     &                 ctmp.ge.cnew(jp,ip,kp,icomp))) then
+            IF(qss.lt.0 .and. (ctmp.lt.0. or. 
+     &                 ctmp.ge.cnew(jp,ip,kp,icomp))) THEN
               ctmp=cnew(jp,ip,kp,icomp)
-            elseif(ctmp.lt.0) then
+            ELSEIF(ctmp.lt.0) THEN
               ctmp=0.
-            endif  
+            ENDIF  
 c--get volumetric Q*C and Q            
             QC=qss*delr(jp)*delc(ip)*dh(jp,ip,kp)*ctmp
             Q =qss*delr(jp)*delc(ip)*dh(jp,ip,kp)            
 c--cumulate in GroupData
             GroupData(6,n) = GroupData(6,n) + QC * fraction
-            GroupData(7,n) = GroupData(7,n) + Q  * fraction                   
-            cycle
-          endif              
-
+            GroupData(7,n) = GroupData(7,n) + Q  * fraction 
+            CYCLE
+          ENDIF              
+C
 c--if point sinks/sources
-
-          do num=1,ntss
+C
+          DO num=1,ntss
             k=ss(1,num)
             i=ss(2,num)
             j=ss(3,num)
             ctmp=ss(4,num)
-            if(icomp.gt.1) ctmp=ssmc(icomp,num)
+            IF(icomp.gt.1) ctmp=ssmc(icomp,num)
             qss=ss(5,num)
-            if(qss.lt.0) ctmp=cnew(j,i,k,icomp)
+            IF(qss.lt.0) ctmp=cnew(j,i,k,icomp)
             IQ=ss(6,num)
             issLink=ss(7,num)            
 c--skip if not same ss type
-            if(iSSType.ne.IQ) cycle            
+            IF(iSSType.ne.IQ) CYCLE            
 c--skip if not same cell
-            if(kp.ne.k .or. ip.ne.i .or. jp.ne.j) cycle    
+            IF(kp.ne.k .or. ip.ne.i .or. jp.ne.j) CYCLE    
 c--skip if not an active cell
-            if(icbund(j,i,k,icomp).le.0) cycle         
+            IF(icbund(j,i,k,icomp).le.0) CYCLE         
 c--skip if at a linked group sink/source   
-            if(issLink.gt.0) cycle                
+            IF(issLink.gt.0) CYCLE                
 c--get volumetric Q*C and Q            
             QC=qss*delr(j)*delc(i)*dh(j,i,k)*ctmp
             Q =qss*delr(j)*delc(i)*dh(j,i,k)            
 c--cumulate in GroupData
             GroupData(6,n) = GroupData(6,n) + QC * fraction
             GroupData(7,n) = GroupData(7,n) + Q  * fraction            
-          enddo      !end of point sink/source loop
-          
-        enddo   !end of the cell loop in the current flux object
-        
+          ENDDO      !end of point sink/source loop
+C
+        ENDDO   !end of the cell loop in the current flux object
+C
         nobs_current=nobs_current+1
         iErrMsg=0
         ErrMsg=' '
         fluxcal=GroupData(6,n)
-        if(weight.lt.0) then
+        IF(weight.lt.0) THEN
           iErrMsg=-1
           ErrMsg='no observed flux given'          
-        elseif(iOutFlux.gt.0) then
+        ELSEIF(iOutFlux.gt.0) THEN
           nobs_active=nobs_active+1
           grouptmp(nobs_active,1)=fluxobs
           grouptmp(nobs_active,2)=fluxcal
           error=(fluxcal-fluxobs)*weight
           errsum=errsum+error*error
-          abserrsum=abserrsum+abs(error)
+          abserrsum=abserrsum+ABS(error)
           grouptmp(nobs_active,3)=error                    
-        endif  
-        
-        if(iOutFlux.gt.0 .and. iErrMsg.eq.0) then          
-          write(inFluxObs,30) iGroup,fobsnam(n),timeobs,
-     &     icomp,fluxcal,fluxobs,weight,error
-        elseif(iOutFlux.gt.0 .and. iErrMsg.ne.0) then           
-          write(inFluxObs,32) iGroup,fobsnam(n),timeobs,
-     &     icomp,fluxcal,ErrMsg
-        elseif(iOutFlux.eq.0) then
-          write(inFluxObs,34) iGroup,fobsnam(n),timeobs,
-     &     icomp,fluxcal
-        endif       
-        if(inSaveObs.gt.0) then
-          write(inSaveObs) fobsnam(n),TimeObs,fluxcal
-        endif
-               
-      enddo  !end of mass flux object loop
-              
-   30 format(1x,i4,2x,a12,1p,g12.4,i4,6x,4g12.4)
-   32 format(1x,i4,2x,a12,1p,g12.4,i4,6x,1g12.4,3x,a)
-   34 format(1x,i4,2x,a12,1p,g12.4,i4,6x,1g12.4)
+        ENDIF  
+C
+        IF(iOutFlux.gt.0 .and. iErrMsg.eq.0) THEN          
+          WRITE(inFluxObs,30) iGroup,fobsnam(n),timeobs,
+     &                        icomp,fluxcal,fluxobs,weight,error
+        ELSEIF(iOutFlux.gt.0 .and. iErrMsg.ne.0) THEN           
+          WRITE(inFluxObs,32) iGroup,fobsnam(n),timeobs,
+     &                        icomp,fluxcal,ErrMsg
+        ELSEIF(iOutFlux.eq.0) THEN
+          WRITE(inFluxObs,34) iGroup,fobsnam(n),timeobs,
+     &                        icomp,fluxcal
+        ENDIF       
+        IF(inSaveObs.gt.0) THEN
+          WRITE(inSaveObs) fobsnam(n),TimeObs,fluxcal
+        ENDIF
+C       
+      ENDDO  !end of mass flux object loop
+C    
+   30 FORMAT(1x,i4,2x,a12,1p,g12.4,i4,6x,4g12.4)
+   32 FORMAT(1x,i4,2x,a12,1p,g12.4,i4,6x,1g12.4,3x,a)
+   34 FORMAT(1x,i4,2x,a12,1p,g12.4,i4,6x,1g12.4)
 c
 c--calculate statistics
 c
-      if(iOutFlux.gt.0.and.nobs_active.gt.1) then
+      IF(iOutFlux.gt.0.and.nobs_active.gt.1) THEN
         CALL MOMENT(grouptmp(:,3),nobs_active,AVE,ADEV,
      &              SDEV,VAR,SKEW,CURT)
         CALL PEARSN(grouptmp(:,1),grouptmp(:,2),
      &              nobs_active,R,PROB,Z)
-      else
-        goto 1000
-      endif
+      ELSE
+        GOTO 1000
+      ENDIF
 c
 c--print statastics
 c
-      write(inFluxObs,50) nobs_active
-      write(inFluxObs,60) AVE
-      write(inFluxObs,62) SDEV
-      write(inFluxObs,64) abserrsum/nobs_active
-      write(inFluxObs,66) SQRT(ERRSUM/nobs_active)      
-      if(nobs_active.gt.2) then
-        write(inFluxObs,70) R
-        write(inFluxObs,72) PROB     
-      endif
+      WRITE(inFluxObs,50) nobs_active
+      WRITE(inFluxObs,60) AVE
+      WRITE(inFluxObs,62) SDEV
+      WRITE(inFluxObs,64) abserrsum/nobs_active
+      WRITE(inFluxObs,66) SQRT(ERRSUM/nobs_active)      
+      IF(nobs_active.gt.2) THEN
+        WRITE(inFluxObs,70) R
+        WRITE(inFluxObs,72) PROB     
+      ENDIF
    50 FORMAT(/1x,'   NUMBER OF ACTIVE OBSERVATION POINTS = ',I5)
    60 FORMAT( 1x,'                 MEAN OF RESIDUALS (M) = ',G15.7)
    62 FORMAT( 1x,'STANDARD DEVIATION OF RESIDUALS (SDEV) = ',G15.7)
@@ -790,10 +790,10 @@ c
    66 FORMAT( 1x,'     ROOT MEAN SQUARED RESIDUALS (RMS) = ',G15.7)
    70 FORMAT( 1x,'               CORRELATION COEFFICIENT = ',G15.7)
    72 FORMAT( 1x,'         PROBABILITY OF UN-CORRELATION = ',G15.7)
-c
- 1000 IF(nobs_current.le.0) write(inFluxObs,1080)
+C
+ 1000 IF(nobs_current.le.0) WRITE(inFluxObs,1080)
  1080 FORMAT(1x,'[No flux object active at current transport step]')
-c
+C
 c--normal return
       RETURN
       END
@@ -802,50 +802,49 @@ C
       SUBROUTINE MOMENT(DATA,N,AVE,ADEV,SDEV,VAR,SKEW,CURT)
 C *****************************************************************
 C This subroutine computes mean, variance, skewness, and kurtosis 
-C for an array of data points data(n).
+C for an array of data points DATA(n).
 C *****************************************************************
 C modified from Press et al. (1992)
 C      
       IMPLICIT NONE
       INTEGER n,j
       REAL adev,ave,curt,sdev,skew,var,data,p,s,ep
-      DIMENSION data(n)
-
+      DIMENSION DATA(n)
 C      
-      if(n.le.1) then
-        call ustop('N must be at least 2 in subroutine MOMENT'//
+      IF(n.le.1) THEN
+        CALL ustop('N must be at least 2 in subroutine MOMENT'//
      &             ' used by TOB Package')
-      endif        
+      ENDIF        
       s=0.
-      do j=1,n
-        s=s+data(j)
-      enddo
+      DO j=1,n
+        s=s+DATA(j)
+      ENDDO
       ave=s/n
       adev=0.
       var=0.
       skew=0.
       curt=0.
       ep=0.      
-      do j=1,n
-        s=data(j)-ave
+      DO j=1,n
+        s=DATA(j)-ave
         ep=ep+s
-        adev=adev+abs(s)
+        adev=adev+ABS(s)
         p=s*s
         var=var+p
         p=p*s
         skew=skew+p
         p=p*s
         curt=curt+p
-      enddo      
+      ENDDO      
       adev=adev/n
       var=(var-ep**2/n)/(n-1)
-      sdev=sqrt(var)
-      if(var.ne.0.)then
+      sdev=SQRT(var)
+      IF(var.ne.0.)THEN
         skew=skew/(n*sdev**3)
         curt=curt/(n*var**2)-3.
-      else
+      ELSE
 CZ      pause 'no skew or kurtosis when zero variance in moment'
-      endif      
+      ENDIF      
 C          
       RETURN
       END
@@ -861,33 +860,32 @@ C
       REAL prob,r,z,x,y,ax,ay,df,sxx,sxy,syy,t,xt,yt,betai
       DIMENSION x(n),y(n)
 C     
-      if(n.le.2) goto 1   !added by CZ
+      IF(n.le.2) GOTO 1   !added by CZ
 C      
       ax=0.
       ay=0.
-      do j=1,n
+      DO j=1,n
         ax=ax+x(j)
         ay=ay+y(j)
-      enddo
+      ENDDO
       ax=ax/n
       ay=ay/n
       sxx=0.
       syy=0.
       sxy=0.      
-      do j=1,n
+      DO j=1,n
         xt=x(j)-ax
         yt=y(j)-ay
         sxx=sxx+xt**2
         syy=syy+yt**2
         sxy=sxy+xt*yt
-      enddo
-      r=sxy/(sqrt(sxx*syy) + TINY)   !TINY added by CZ
-      z=0.5*log(((1.+r)+TINY)/((1.-r)+TINY))
+      ENDDO
+      r=sxy/(SQRT(sxx*syy) + TINY)   !TINY added by CZ
+      z=0.5*LOG(((1.+r)+TINY)/((1.-r)+TINY))
       df=n-2     
-      t=r*sqrt(df/(((1.-r)+TINY)*((1.+r)+TINY)))
+      t=r*SQRT(df/(((1.-r)+TINY)*((1.+r)+TINY)))
       prob=betai(0.5*df,0.5,df/(df+t**2+TINY))  !TINY added by CZ
-C     prob=erfcc(abs(z*sqrt(n-1.))/1.4142136)
-
+C
     1 RETURN
       END
 C
@@ -899,23 +897,23 @@ C
       IMPLICIT NONE     
       REAL betai,a,b,x,bt,betacf,gammln
 C      
-      if(x.lt.0. .or. x.gt.1.) then
-        call ustop('Bad argument x in subroutine BETAI'//
+      IF(x.lt.0. .or. x.gt.1.) THEN
+        CALL ustop('Bad argument x in subroutine BETAI'//
      &             ' used by TOB Package')
-      endif  
-      if(x.eq.0. .or. x.eq.1.) then
+      ENDIF  
+      IF(x.eq.0. .or. x.eq.1.) THEN
         bt=0.
-      else
-        bt=exp(gammln(a+b)-gammln(a)-gammln(b)
-     &   +a*log(x)+b*log(1.-x))
-      endif
-      if(x.lt.(a+1.)/(a+b+2.)) then
+      ELSE
+        bt=EXP(gammln(a+b)-gammln(a)-gammln(b)
+     &     +a*LOG(x)+b*LOG(1.-x))
+      ENDIF
+      IF(x.lt.(a+1.)/(a+b+2.)) THEN
         betai=bt*betacf(a,b,x)/a
         return
-      else
+      ELSE
         betai=1.-bt*betacf(b,a,1.-x)/b
         return
-      endif
+      ENDIF
 C      
       END
 C
@@ -936,29 +934,29 @@ C
       qam=a-1.
       c=1.
       d=1.-qab*x/qap
-      if(abs(d).lt.FPMIN) d=FPMIN
+      IF(ABS(d).lt.FPMIN) d=FPMIN
       d=1./d
       h=d
-      do m=1,MAXIT
+      DO m=1,MAXIT
         m2=2*m
         aa=m*(b-m)*x/((qam+m2)*(a+m2))
         d=1.+aa*d
-        if(abs(d).lt.FPMIN) d=FPMIN
+        IF(ABS(d).lt.FPMIN) d=FPMIN
         c=1.+aa/c
-        if(abs(c).lt.FPMIN) c=FPMIN
+        IF(ABS(c).lt.FPMIN) c=FPMIN
         d=1./d
         h=h*d*c
         aa=-(a+m)*(qab+m)*x/((a+m2)*(qap+m2))
         d=1.+aa*d
-        if(abs(d).lt.FPMIN) d=FPMIN
+        IF(ABS(d).lt.FPMIN) d=FPMIN
         c=1.+aa/c
-        if(abs(c).lt.FPMIN) c=FPMIN
+        IF(ABS(c).lt.FPMIN) c=FPMIN
         d=1./d
         del=d*c
         h=h*del
-        if(abs(del-1.).lt.EPS) goto 1
-      enddo      
-      call ustop('a or b too big, or MAXIT too small'//
+        IF(ABS(del-1.).lt.EPS) GOTO 1
+      ENDDO      
+      CALL ustop('a or b too big, or MAXIT too small'//
      &           ' in subroutine BETACF used by TOB Package')
     1 betacf=h
 C
@@ -982,13 +980,13 @@ C
       x=xx
       y=x
       tmp=x+5.5d0
-      tmp=(x+0.5d0)*log(tmp)-tmp
+      tmp=(x+0.5d0)*LOG(tmp)-tmp
       ser=1.000000000190015d0
-      do j=1,6
+      DO j=1,6
         y=y+1.d0
         ser=ser+cof(j)/y
-      enddo
-      gammln=tmp+log(stp*ser/x)
+      ENDDO
+      gammln=tmp+LOG(stp*ser/x)
 C      
       RETURN
       END
