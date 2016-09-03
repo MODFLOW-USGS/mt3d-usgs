@@ -1,4 +1,3 @@
-C
 C THIS FILE CONTAINS SUBROUTINES THAT ARE COMMON TO GENERALIZED-NETWORK-TRANSPORT COMPONENTS
 C
       SUBROUTINE GNT1FM(ICOMP)
@@ -13,77 +12,75 @@ C--SOLVE RIGOROUS TRANSPORT THROUGH SFR IF ISFRBC.NE.1, ELSE SKIP THE SFR SOLUTI
       IF(ISFRBC.NE.1) THEN
 C
 C--ITERATE OVER ALL GENERALIZED-NETWORK-TRANSPORT PACKAGES
-      DO KITERSF=1,MXITERSF
+        DO KITERSF=1,MXITERSF
 C
 C--ASSEMBLE MATRIX FOR DIFFERENT PACKAGES
 C
 C.....SFR PACKAGE
-      IF(iUnitTRNOP(19).GT.0) CALL SFT1FM(ICOMP)
+          IF(iUnitTRNOP(19).GT.0) CALL SFT1FM(ICOMP)
 C
 C.....SWR PACKAGE
-
 C
 C--SOLVE ALL GENERALIZED-NETWORK-TRANSPORT PACKAGES IN ONE SINGLE MATRIX
 C
 C-----CALL XMD SOLVER-------------------------------------------------
-      numactive=NSTRM
-      IF (IDROPTOL.EQ.0 .or.  KITERSF.gt.1) THEN
-        call xmdnfctr(AMATSF, RHSSF, IASF, JASF, NJASF, numactive, ierr)
-      ELSE
-        call xmdprecd(AMATSF, RHSSF, epsrn, IASF, JASF, NJASF,
-     [                       numactive,level, ierr)
-      ENDIF
-      iter = Mxiterxmd
-      CNEWSFTMP=CNEWSF
-      call xmdsolv(AMATSF, RHSSF, CNEWSF, hclosexmd, rrctol, IASF, 
-     [                 JASF,NJASF,numactive, north, iter, iacl, ierr)
-      n_iter = iter
-C     
-      IF(IDSCALE.EQ.1)THEN
+          numactive=NSTRM
+          IF (IDROPTOL.EQ.0 .or.  KITERSF.gt.1) THEN
+            CALL xmdnfctr(AMATSF, RHSSF, IASF, JASF, NJASF, numactive, 
+     &                    ierr)
+          ELSE
+            CALL xmdprecd(AMATSF, RHSSF, epsrn, IASF, JASF, NJASF,
+     &                    numactive,level, ierr)
+          ENDIF
+          iter = Mxiterxmd
+          CNEWSFTMP=CNEWSF
+          CALL xmdsolv(AMATSF, RHSSF, CNEWSF, hclosexmd, rrctol, IASF, 
+     &                 JASF,NJASF,numactive, north, iter, iacl, ierr)
+          n_iter = iter
+C         
+          IF(IDSCALE.EQ.1)THEN
 c  ----------------
 c       recover {x} because diagonal scaling subroutine (xmddgscl) is used
-        do jj = 1, Numactive
-          CNEWSF(jj,ICOMP) = CNEWSF(jj,ICOMP) * dgscal(jj)
-        enddo                  
-      ENDIF
+            DO jj = 1, Numactive
+              CNEWSF(jj,ICOMP) = CNEWSF(jj,ICOMP) * dgscal(jj)
+            ENDDO                  
+          ENDIF
 C--------- XMD SOLVER-------------------------------------------------
 C
 C-----CHECK FOR CONVERGENCE
-      ICNVG=0
-      BIGDIFF=0.
-      BIGDIFF2=0.
-      DO N=1,NSTRM
-        DIFF=CNEWSF(N,ICOMP)-CNEWSFTMP(N,ICOMP)
-        IF(ABS(DIFF).GT.BIGDIFF) THEN
-          BIGDIFF=ABS(DIFF)
-          BIGDIFF2=DIFF
-        ENDIF
-      ENDDO
-      IF(IPRTXMD.GE.2) THEN
-        IF(ierr.EQ.0) THEN
-          WRITE(IOUT,'(A,I3,A,1PG14.4,A,I2)') 'SFT ITER=',KITERSF,
-     1    'CONC DIFF = ',BIGDIFF2,' xMD ITER=',n_iter
-        ELSE
-          WRITE(IOUT,'(A,I3,A,1PG14.4,A)') 'SFT ITER=',KITERSF,
-     1    'CONC DIFF = ',BIGDIFF2,' xMD DID NOT CONVERGE'
+          ICNVG=0
+          BIGDIFF=0.
+          BIGDIFF2=0.
+          DO N=1,NSTRM
+            DIFF=CNEWSF(N,ICOMP)-CNEWSFTMP(N,ICOMP)
+            IF(ABS(DIFF).GT.BIGDIFF) THEN
+              BIGDIFF=ABS(DIFF)
+              BIGDIFF2=DIFF
+            ENDIF
+          ENDDO
+          IF(IPRTXMD.GE.2) THEN
+            IF(ierr.EQ.0) THEN
+              WRITE(IOUT,'(A,I3,A,1PG14.4,A,I2)') 'SFT ITER=',KITERSF,
+     &                   'CONC DIFF = ',BIGDIFF2,' xMD ITER=',n_iter
+            ELSE
+              WRITE(IOUT,'(A,I3,A,1PG14.4,A)') 'SFT ITER=',KITERSF,
+     &                   'CONC DIFF = ',BIGDIFF2,' xMD DID NOT CONVERGE'
+            ENDIF
+          ENDIF
+          IF(BIGDIFF.LT.CCLOSESF) ICNVG=1
+          IF(ICNVG.EQ.1) EXIT
+        ENDDO
+C
+        IF(IPRTXMD.GE.1) THEN
+          IF(ICNVG.EQ.1) THEN
+            WRITE(IOUT,'(A,I3,A)') 
+     &          'xMD CONVERGED IN ',KITERSF,' ITERATIONS'
+          ELSE
+            WRITE(IOUT,'(A)') 
+     &          'xMD DID NOT CONVERGE'
+          ENDIF
         ENDIF
       ENDIF
-      IF(BIGDIFF.LT.CCLOSESF) ICNVG=1
-      IF(ICNVG.EQ.1) EXIT
-C
-      ENDDO !KITERSF
-      IF(IPRTXMD.GE.1) THEN
-        IF(ICNVG.EQ.1) THEN
-          WRITE(IOUT,'(A,I3,A)') 
-     1    'xMD CONVERGED IN ',KITERSF,' ITERATIONS'
-        ELSE
-          WRITE(IOUT,'(A)') 
-     1    'xMD DID NOT CONVERGE'
-        ENDIF
-      ENDIF
-C
-      ENDIF !ISFRBC
-
 C
 C--FILL GW MATRIX COEFFICIENTS FOR ALL GENERALIZED-NETWORK-TRANSPORT PACKAGES
 C
@@ -91,8 +88,6 @@ C.....SFR PACKAGE
       IF(iUnitTRNOP(19).GT.0) CALL SFT1FMGW(ICOMP)
 C
 C.....SWR PACKAGE
-
-
       RETURN
       END
 C
