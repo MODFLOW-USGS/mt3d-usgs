@@ -6,7 +6,7 @@ C      a modular three-dimensional multi-species transport model       %
 C    for simulation of advection, dispersion and chemical reactions    %
 C                of contaminants in groundwater systems                %
 C                                                                      %
-C                  For Technical Information Contact                   %
+C                  For Technical InFORMATion Contact                   %
 C                                                                      %
 C                           Vivek Bedekar                              %
 C                    S.S. Papadopulos & Associates                     %
@@ -106,45 +106,44 @@ C
 C--WRITE AN IDENTIFIER TO SCREEN
       WRITE(*,101) VID
   101 FORMAT(
-     & /1X,'MT3D-USGS - Modular 3D Multi-Species Transport Model ',
-     & A14,/1X,'and based on MT3DMS. MT3D-USGS developed in ',
-     & 'cooperation by ',/1X,'S.S. Papadopulos & Associates ',
-     & 'and the U.S. Geological Survey',/)
+     &      /1X,'MT3D-USGS - Modular 3D Multi-Species Transport Model ',
+     &  A14,/1X,'and based on MT3DMS. MT3D-USGS developed in ',
+     &          'cooperation by ',/1X,'S.S. Papadopulos & Associates ',
+     &          'and the U.S. Geological Survey',/)
 C
 C--INITIALIZE CHARACTER VARIABLES
       FLNAME=' '
 C
 C--The following statement should be uncommented in order to use
-C--GETCL to retrieve a command line argument.  The call to GETCL may
+C--GETCL to retrieve a command line argument.  The CALL( to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
-      CALL GETARG(1,COMLIN)
-c      CALL GETCL(FLNAME)                  
+      CALL GETARG(1,COMLIN)               
 C                                          
       IF(COMLIN.NE.' ') THEN               
         flname=COMLIN                      
       ELSE                                 
 C--Get Name of NAME File from Screen
         IF(FLNAME.EQ.' ') THEN
-          write(*,102)
-  102     format(1x,'Enter Name of the MT3DMS NAME File: ')
-          read(*,'(a)') flname
+          WRITE(*,102)
+  102     FORMAT(1x,'Enter Name of the MT3DMS NAME File: ')
+          READ(*,'(a)') flname
         ENDIF
       ENDIF
 C
 C-Open files using the Name File method as in MODFLOW-2000      
-      iflen=index(flname,' ')-1
-      inquire(file=flname(1:iflen),exist=existed)
-      if(.not.existed) then
+      iflen=INDEX(flname,' ')-1
+      INQUIRE(file=flname(1:iflen),exist=existed)
+      IF(.not.existed) THEN
         flname=flname(1:iflen)//'.nam'
-        inquire(file=flname(1:iflen+4),exist=existed)
-        if(.not.existed) then
-          write(*,103) flname(1:iflen),flname(1:iflen+4)
-          call ustop(' ')
-        endif
-      endif
-  103 format(1x,'STOP. Specified Name file does not exist: ',
-     & a,' or ',a)
+        INQUIRE(file=flname(1:iflen+4),exist=existed)
+        IF(.not.existed) THEN
+          WRITE(*,103) flname(1:iflen),flname(1:iflen+4)
+          CALL( ustop(' ')
+        ENDIF
+      ENDIF
+  103 FORMAT(1x,'STOP. Specified Name file does not exist: ',
+     &        a,' or ',a)
       WRITE(*,104) TRIM(FLNAME)
   104 FORMAT(1x,'Using NAME File: ',a)
       iNameFile=99
@@ -155,13 +154,14 @@ C
 C--WRITE PROGRAM TITLE TO OUTPUT FILE
       WRITE(IOUT,11)
    11 FORMAT(/30X,71('+')/30X,'+',69X,'+'
-     &  /30X,'+',30X,'MT3D-USGS',30X,'+'
-     &  /30X,'+',13X,'A Modular 3D Multi-Species Transport Model ',
-     &           13X,'+'
-     &  /30X,'+', 4X,'For Simulation of Advection, Dispersion and',
-     &           ' Chemical Reactions',3X,'+'
-     &  /30X,'+',16X,'of Contaminants in Groundwater Systems',15X,'+'
-     &  /30X,'+',69X,'+'/30X,71('+')/)
+     &       /30X,'+',30X,'MT3D-USGS',30X,'+'
+     &       /30X,'+',13X,'A Modular 3D Multi-Species Transport Model ',
+     &                13X,'+'
+     &       /30X,'+', 4X,'For Simulation of Advection, Dispersion and',
+     &                ' Chemical Reactions',3X,'+'
+     &       /30X,'+',16X,'of Contaminants in Groundwater Systems',15X,
+     &            '+',
+     &       /30X,'+',69X,'+'/30X,71('+')/)
 C
 C--DEFINE PROBLEM DIMENSION AND SIMULATION OPTIONS
       CALL BTN1AR(INBTN)
@@ -211,9 +211,9 @@ C--GET STRESS TIMING INFORMATION
 C
 C--READ AND PREPARE INPUT INFORMATION WHICH IS CONSTANT
 C--WITHIN EACH STRESS PERIOD
-        IF(iUnitTRNOP(3).GT.0) CALL SSM1RP(KPER)
+        IF(iUnitTRNOP(3).GT.0)  CALL SSM1RP(KPER)
         IF(iUnitTRNOP(20).GT.0) CALL CTS1RP(KPER)
-        IF(iUnitTRNOP(7).GT.0) CALL UZT1RP(KPER)
+        IF(iUnitTRNOP(7).GT.0)  CALL UZT1RP(KPER)
 C--READ LAK AND SFR BOUNDARY CONDITIONS
         IF(iUnitTRNOP(18).GT.0) CALL LKT1SS(KPER)
         IF(iUnitTRNOP(19).GT.0) CALL SFT1SS(KPER)
@@ -229,9 +229,9 @@ C--WRITE AN INDENTIFYING MESSAGE
           WRITE(IOUT,61) KSTP,HT1,HT2
           WRITE(IOUT,'(1X)')
    60     FORMAT(/1X,'TIME STEP NO.',I5
-     &     /1X,'FROM TIME =',G13.5,' TO ',G13.5/)
+     &           /1X,'FROM TIME =',G13.5,' TO ',G13.5/)
    61     FORMAT(//42X,48('=')/57X,'TIME STEP NO.',I5.3/42X,48('=')
-     &     //1X,'FROM TIME =',G13.5,' TO ',G13.5)
+     &          //1X,'FROM TIME =',G13.5,' TO ',G13.5)
 C
 C--READ AND PROCESS SATURATED THICKNESS, VELOCITY COMPONENTS
 C--ACROSS CELL INTERFACES, AND SINK/SOURCE INFORMATION
@@ -254,7 +254,6 @@ C
           ENDIF
 C
           IF(KPER*KSTP.GT.1) THEN
-C            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD2(N)
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD2(N)
           ENDIF
 C
@@ -276,9 +275,6 @@ C
 C--FOR EACH TRANSPORT STEP..............................................
           TIME2=HT1
           DO N=1,MXSTRN
-            if(KPER.eq.1.and.KSTP.eq.1.and.n.ge.10) then
-            continue
-            endif
 C
 C--ADVANCE ONE TRANSPORT STEP
             CALL BTN1AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS,HT1)
@@ -287,7 +283,6 @@ C--UPDATE CONCENTRATIONS OF LAKE VOLUMES
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD(KSTP,KPER,N)
             IF(iUnitTRNOP(7).GT.0) CALL UZT1AD(HT1,HT2,TIME1,TIME2)
             IF(IALTFM.EQ.3) CALL THETA2AD(HT2,TIME2)
-C
 C
 C--FOR EACH COMPONENT......
             DO ICOMP=1,NCOMP
@@ -318,8 +313,8 @@ C--ALWAYS UPDATE MATRIX IF NONLINEAR SORPTION OR MULTICOMPONENT
               IF(NCOMP.GT.1) UPDLHS=.TRUE.
               IF(IALTFM.GE.2) UPDLHS=.TRUE.
               IF(iUnitTRNOP(20).GT.0 .OR.
-     1           iUnitTRNOP(18).GT.0 .OR.
-     1           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.
+     &           iUnitTRNOP(18).GT.0 .OR.
+     &           iUnitTRNOP(19).GT.0) UPDLHS=.TRUE.
 C
 C--FOR EACH OUTER ITERATION...
               DO ITO=1,MXITER
@@ -341,7 +336,7 @@ C--FORMULATE MATRIX COEFFICIENTS
                 CALL BTN1FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
      &                      DTRANS,HT2,TIME2)
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
-     &           .AND. ICOMP.LE.MCOMP)
+     &             .AND. ICOMP.LE.MCOMP)
      &           CALL ADV1FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
                 IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL DSP1FM(ICOMP,ICBUND,A,CNEW)
@@ -356,7 +351,7 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(18).GT.0)                    
      &           CALL LKT1FM(ICOMP)                        
                 IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC
-     1           CALL GNT1FM(ICOMP)                        
+     &           CALL GNT1FM(ICOMP)                        
                 IF(iUnitTRNOP(4).GT.0) 
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
@@ -404,7 +399,7 @@ C
 C--CALCULATE MASS BUDGETS FOR IMPLICIT SCHEMES
 C
               IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
-     &         .AND. ICOMP.LE.MCOMP)
+     &           .AND. ICOMP.LE.MCOMP)
      &         CALL ADV1BD(ICOMP,DTRANS,N,KPER,KSTP)
               IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL DSP1BD(ICOMP,DTRANS)
@@ -424,7 +419,7 @@ C
      &         CALL RCT1BD(ICOMP,DTRANS)
               IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0         
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &           CALL ADVQC1BD(ICOMP)      
+     &         CALL ADVQC1BD(ICOMP)      
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE
               CALL BTN1BD(ICOMP,DTRANS,TIME2,HT2)
@@ -460,7 +455,7 @@ C
           IF(TIME2.LT.HT2) THEN 
             WRITE(IOUT,810) MXSTRN
   810       FORMAT(/1X,'NUMBER OF TRANSPORT STEPS EXCEEDS',
-     &       ' SPECIFIED MAXIMUM (MXSTRN) =',I10)
+     &                 ' SPECIFIED MAXIMUM (MXSTRN) =',I10)
             CALL USTOP(' ')
           ENDIF
   900     CONTINUE
@@ -499,10 +494,9 @@ C--Get CPU time at the end of simulation
 C--and print out total elapsed time in seconds
       Call CPU_TIME(end_time)
       total_time = end_time - start_time
-      Write(*,2010) int(total_time/60.),mod(total_time,60.)
-C      Write(IOUT,2010) int(total_time/60.),mod(total_time,60.)
+      WRITE(*,2010) int(total_time/60.),mod(total_time,60.)
  2010 FORMAT(/1X,'Program completed.   ',
-     & 'Total CPU time:',i5.3,' minutes ',f6.3,' seconds')
+     &           'Total CPU time:',i5.3,' minutes ',f6.3,' seconds')
 C
       STOP
       END
