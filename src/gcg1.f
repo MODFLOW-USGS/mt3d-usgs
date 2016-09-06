@@ -20,7 +20,7 @@ C
 C--PRINT A MESSAGE IDENTIFYING GCG PACKAGE
       WRITE(IOUT,1) INGCG
     1 FORMAT(/1X,'GCG1 -- GENERALIZED CONJUGATE GRADIENT SOLVER PACKAGE'
-     & ,', VERSION 1, OCTOBER 2010',' INPUT READ FROM UNIT',I3)
+     &          ,', VERSION 1, OCTOBER 2010',' INPUT READ FROM UNIT',I3)
 C
 C--READ AND PRINT MXITER AND ISOLVE
       READ(INGCG,*) MXITER,ITER1,ISOLVE,NCRS
@@ -46,11 +46,11 @@ C--READ AND PRINT MXITER AND ISOLVE
       ENDIF
     5 FORMAT(/1X,'ERROR: OUTER ITERATION NUMBER MUST BE > 0.')
     7 FORMAT(/1X,'ERROR: INNER ITERATION NUMBER MUST BE > 0.')
-   13 FORMAT(1X,'THE PRECONDITIONING TYPE SELECTED IS JACOBI.')
-   23 FORMAT(1X,'THE PRECONDITIONING TYPE SELECTED IS SSOR.')
-   33 FORMAT(1X,'THE PRECONDITIONING TYPE SELECTED IS ',
-     &          'MODIFIED INCOMPLETE CHOLESKY (MIC).')
-   43 FORMAT(1X,'ERROR: INVALID PRECONDITIONING TYPE.')
+   13 FORMAT( 1X,'THE PRECONDITIONING TYPE SELECTED IS JACOBI.')
+   23 FORMAT( 1X,'THE PRECONDITIONING TYPE SELECTED IS SSOR.')
+   33 FORMAT( 1X,'THE PRECONDITIONING TYPE SELECTED IS ',
+     &           'MODIFIED INCOMPLETE CHOLESKY (MIC).')
+   43 FORMAT( 1X,'ERROR: INVALID PRECONDITIONING TYPE.')
 C                         
 C--IF DISPERSION PACKAGE IS OFF, MAKE NCRS=0
       IF(iUnitTRNOP(2).EQ.0) NCRS=0
@@ -101,7 +101,7 @@ C
 C--PRINT DATA VALUES JUST READ
       WRITE(IOUT,100)
   100 FORMAT(///47X,'SOLUTION BY THE GENERALIZED CONJUGATE GRADIENT',
-     & ' METHOD'/47X,53('-'))
+     &              ' METHOD'/47X,53('-'))
       WRITE(IOUT,115) MXITER
   115 FORMAT(37X,'MAXIMUM OUTER ITERATIONS ALLOWED FOR CLOSURE =',I9)
       WRITE(IOUT,116) ITER1
@@ -227,17 +227,17 @@ C--NORMALIZE CNEW AND RHS TO AVOID TOO BIG OR TOO SMALL QUANTITIES
 C--NORMALIZATION FACTOR IS MAX (CNEW)
       SCALE = 0.
       DO I = 1,NODES
-         IF (ICBUND(I).NE.0) THEN
-           IF (ABS(CNEW(I)).GT.SCALE) SCALE = CNEW(I)
-         ENDIF
+        IF (ICBUND(I).NE.0) THEN
+          IF (ABS(CNEW(I)).GT.SCALE) SCALE = CNEW(I)
+        ENDIF
       ENDDO
       IF (SCALE .GT. TINY) THEN
-         DO I = 1,NODES
-           IF (ICBUND(I).NE.0) THEN
-             RHS(I) = RHS(I)/SCALE
-             CNEW(I) = CNEW(I)/SCALE
-           ENDIF
-         ENDDO
+        DO I = 1,NODES
+          IF (ICBUND(I).NE.0) THEN
+            RHS(I) = RHS(I)/SCALE
+            CNEW(I) = CNEW(I)/SCALE
+          ENDIF
+        ENDDO
       ENDIF
 C
 C--COMPUTE RESIDUAL VECTOR R=RHS-A*CNEW AND TEST FOR SOLUTION
@@ -245,22 +245,22 @@ C--COMPUTE RESIDUAL VECTOR R=RHS-A*CNEW AND TEST FOR SOLUTION
       GSTOP=0.
       RHSNORM = 0.
       DO I = 1,NODES
-         IF (ICBUND(I).NE.0) THEN
-            WK(IWK-1+I) = RHS(I)-WK(IWK-1+I)
-            RHSNORM = RHSNORM+RHS(I)*RHS(I)
-            GSTOP =GSTOP+WK(IWK-1+I)*WK(IWK-1+I)
-         ENDIF
+        IF (ICBUND(I).NE.0) THEN
+          WK(IWK-1+I) = RHS(I)-WK(IWK-1+I)
+          RHSNORM = RHSNORM+RHS(I)*RHS(I)
+          GSTOP =GSTOP+WK(IWK-1+I)*WK(IWK-1+I)
+        ENDIF
       ENDDO
       RHSNORM = SQRT(RHSNORM)
       GSTOP = SQRT(GSTOP)
       IF (RHSNORM.NE.0) GSTOP = GSTOP / RHSNORM
       IF(GSTOP.LE. MIN(1.E-6,CCLOSE) ) THEN
-          CHANGE = 0.
-          IPLACE = 1
-          ITP = ITP + 1
-          LITP= LITP+ 1
-          IF(UPDLHS.AND.METHOD.EQ.3) CALL MIC (NODES,NCRS,A,Q)
-          GO TO 300
+        CHANGE = 0.
+        IPLACE = 1
+        ITP = ITP + 1
+        LITP= LITP+ 1
+        IF(UPDLHS.AND.METHOD.EQ.3) CALL MIC (NODES,NCRS,A,Q)
+        GO TO 300
       ENDIF
 C
 C--COMPUTE PSEUDO-RESIDUAL DELTA = Q^-1*(RHS-A*CNEW)
@@ -279,14 +279,14 @@ C--BRANCH FOR THE NONSYMMETRIC CASE
 C--LANCZOS/ORTHOMIN ACCELERATION IS USED
       IF (ISPD.NE.0) GO TO 200
       DO II = 1,NODES
-         WK(IPN-1+II) = WK(IDELTA-1+II)
-         WK(IRDEL-1+II) = WK(IDELTA-1+II)
-         WK(IPA-1+II) = WK(IDELTA-1+II)
+        WK(IPN-1+II) = WK(IDELTA-1+II)
+        WK(IRDEL-1+II) = WK(IDELTA-1+II)
+        WK(IPA-1+II) = WK(IDELTA-1+II)
       ENDDO
       DELC = 0.
       DO II = 1,NODES
-         IF (ICBUND(II).NE.0)
-     &       DELC = DELC + WK(IDELTA-1+II)*WK(IRDEL-1+II)
+        IF (ICBUND(II).NE.0)
+     &      DELC = DELC + WK(IDELTA-1+II)*WK(IRDEL-1+II)
       ENDDO
       GO TO 100
 C
@@ -295,13 +295,13 @@ C--COMPUTE DIRECTION VECTORS
       DCOLD = DELC
       DELC = 0.
       DO II = 1, NODES
-         IF (ICBUND(II).NE.0)
-     &       DELC = DELC + WK(IDELTA-1+II)*WK(IRDEL-1+II)
+        IF (ICBUND(II).NE.0)
+     &      DELC = DELC + WK(IDELTA-1+II)*WK(IRDEL-1+II)
       ENDDO
       ALN = DELC / DCOLD
       DO I = 1,NODES
-         WK(IPN-1+I) = WK(IDELTA-1+I) + ALN * WK(IPN-1+I)
-         WK(IPA-1+I) = WK(IRDEL-1+I) + ALN * WK(IPA-1+I)
+        WK(IPN-1+I) = WK(IDELTA-1+I) + ALN * WK(IPN-1+I)
+        WK(IPA-1+I) = WK(IRDEL-1+I) + ALN * WK(IPA-1+I)
       ENDDO
 C
 C--COMPUTE NEW ITERATES
@@ -320,22 +320,22 @@ C
       CALL MTVPRD (NODES,NCRS,ICBUND,A,WK(IWK:),WK(IATPN:))
       APNPA = 0.
       DO II = 1, NODES
-         IF(ICBUND(II).NE.0)
-     &      APNPA = APNPA + WK(IAPN-1+II)*WK(IPA-1+II)
+        IF(ICBUND(II).NE.0)
+     &    APNPA = APNPA + WK(IAPN-1+II)*WK(IPA-1+II)
       ENDDO
       IF(APNPA.NE.0) RLN = DELC / APNPA
       CHANGE = 0.0
       IPLACE = 1
       DO I = 1,NODES
-         CTEMP = CNEW(I)
-         CNEW(I) = CNEW(I) + RLN * WK(IPN-1+I)
-         WK(IDELTA-1+I) = WK(IDELTA-1+I) - RLN * WK(IAPN-1+I)
-         WK(IRDEL-1+I) = WK(IRDEL-1+I) - RLN * WK(IATPN-1+I)
-         CHTMP = ABS(CNEW(I)-CTEMP)
-         IF (CHTMP.GT.CHANGE) THEN
-            CHANGE = CHTMP
-            IPLACE = I
-         ENDIF
+        CTEMP = CNEW(I)
+        CNEW(I) = CNEW(I) + RLN * WK(IPN-1+I)
+        WK(IDELTA-1+I) = WK(IDELTA-1+I) - RLN * WK(IAPN-1+I)
+        WK(IRDEL-1+I) = WK(IRDEL-1+I) - RLN * WK(IATPN-1+I)
+        CHTMP = ABS(CNEW(I)-CTEMP)
+        IF (CHTMP.GT.CHANGE) THEN
+          CHANGE = CHTMP
+          IPLACE = I
+        ENDIF
       ENDDO
       GO TO 300
  200  CONTINUE
@@ -343,7 +343,7 @@ C
 C--THE FOLLOWING IS FOR THE SYMMETRIC CASE
 C--ORDINARY CG ACCELERATION IS USED
       DO II = 1, NODES
-         WK(IPN-1+II) = WK(IDELTA-1+II)
+        WK(IPN-1+II) = WK(IDELTA-1+II)
       ENDDO
       GO TO 220
 C
@@ -351,12 +351,12 @@ C--COMPUTE DIRECTION VECTORS
  210  CONTINUE
       DELAPN = 0.
       DO II = 1, NODES
-         IF(ICBUND(II).NE.0)
-     &      DELAPN = DELAPN + WK(IDELTA-1+II)*WK(IAPN-1+II)
+        IF(ICBUND(II).NE.0)
+     &    DELAPN = DELAPN + WK(IDELTA-1+II)*WK(IAPN-1+II)
       ENDDO
       ALN = -DELAPN / PNAPN
       DO I = 1,NODES
-         WK(IPN-1+I) = WK(IDELTA-1+I) + ALN * WK(IPN-1+I)
+        WK(IPN-1+I) = WK(IDELTA-1+I) + ALN * WK(IPN-1+I)
       ENDDO
 C
 C--COMPUTE NEW ITERATES
@@ -365,8 +365,8 @@ C--COMPUTE NEW ITERATES
       LITP = LITP + 1
       DELPN = 0.
       DO II = 1, NODES
-         IF(ICBUND(II).NE.0)
-     &      DELPN = DELPN + WK(IDELTA-1+II)*WK(IPN-1+II)
+        IF(ICBUND(II).NE.0)
+     &    DELPN = DELPN + WK(IDELTA-1+II)*WK(IPN-1+II)
       ENDDO
       CALL MVPRD (NODES,NCRS,ICBUND,A,WK(IPN:),WK(IWK:))
       IF(METHOD.EQ.1.OR.METHOD.EQ.2) THEN
@@ -376,21 +376,21 @@ C--COMPUTE NEW ITERATES
       ENDIF
       PNAPN = 0.
       DO II = 1, NODES
-         IF(ICBUND(II).NE.0)
-     &      PNAPN = PNAPN + WK(IAPN-1+II)*WK(IPN-1+II)
+        IF(ICBUND(II).NE.0)
+     &    PNAPN = PNAPN + WK(IAPN-1+II)*WK(IPN-1+II)
       ENDDO
       IF(PNAPN.NE.0) RLN = DELPN / PNAPN
       CHANGE = 0.0
       IPLACE = 1
       DO I = 1,NODES
-         CTEMP = CNEW(I)
-         CNEW(I) = CNEW(I) + RLN * WK(IPN-1+I)
-         WK(IDELTA-1+I) = WK(IDELTA-1+I) - RLN * WK(IAPN-1+I)
-         CHTMP = ABS(CNEW(I)-CTEMP)
-         IF (CHTMP.GT.CHANGE) THEN
-            CHANGE = CHTMP
-            IPLACE = I
-         ENDIF
+        CTEMP = CNEW(I)
+        CNEW(I) = CNEW(I) + RLN * WK(IPN-1+I)
+        WK(IDELTA-1+I) = WK(IDELTA-1+I) - RLN * WK(IAPN-1+I)
+        CHTMP = ABS(CNEW(I)-CTEMP)
+        IF (CHTMP.GT.CHANGE) THEN
+          CHANGE = CHTMP
+          IPLACE = I
+        ENDIF
       ENDDO
 C
  300  CONTINUE
@@ -401,17 +401,17 @@ C--STORE MAXIMUM CHANGE VALUE AND LOCATION
       IJ = IPLACE - (KLAYER-1)*NCOL*NROW
       IROW = (IJ-1)/NCOL + 1
       JCOLMN = IJ - (IROW-1)*NCOL
-        LRCH(1,ITP) = KLAYER
-        LRCH(2,ITP) = IROW
-        LRCH(3,ITP) = JCOLMN
+      LRCH(1,ITP) = KLAYER
+      LRCH(2,ITP) = IROW
+      LRCH(3,ITP) = JCOLMN
 C
       WRITE(*,1111) ITO,LITP,CHANGE,KLAYER,IROW,JCOLMN
  1111 FORMAT(1X,'Outer Iter.',I3,'  Inner Iter.',I3,
-     &  ':  Max. DC =',G12.4,'  [K,I,J]',3I5)
+     &          ':  Max. DC =',G12.4,'  [K,I,J]',3I5)
 C
 C--CHECK CONVERGENCE ......
       IF(CHANGE.LE.CCLOSE) THEN
-         LICNVG=1
+        LICNVG=1
       ENDIF
       IF(MXITER.EQ.1) THEN
         IF(LICNVG.EQ.1) ICNVG=1
@@ -432,25 +432,25 @@ C--LOCAL CONVERGENCE NOT MET, LOOP BACK
  1000 FORMAT(/1X)
       WRITE(IOUT,1010) ITO,NTRANS,KSTP,KPER,ITP
  1010 FORMAT(1X,I5,' CALLS TO GCG PACKAGE FOR TRANSPORT TIME STEP',I6,
-     & ' IN FLOW TIME STEP',I6,' STRESS PERIOD',I6,
-     & /1X,I6,' TOTAL ITERATIONS')
+     &             ' IN FLOW TIME STEP',I6,' STRESS PERIOD',I6,
+     &      /1X,I6,' TOTAL ITERATIONS')
 C
       IF(ICNVG.EQ.0 .OR. TIME2.GE.HT2 .OR. MOD(NTRANS,IPRGCG).EQ.0)
-     & CALL SGCG1P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
+     &  CALL SGCG1P(CNCG,LRCH,ITP,MXITER,ITER1,IOUT)
 C
   600 CONTINUE
 C
 C--BEFORE RETURN UNSCALE CNEW AND RHS
-         IF (SCALE .GT. TINY) THEN
-            DO I = 1,NODES
-              IF (ICBUND(I).NE.0) THEN
-                RHS(I) = RHS(I)*SCALE
-                CNEW(I) = CNEW(I)*SCALE
-              ELSE
-                CNEW(I)=CINACT
-              ENDIF
-            ENDDO
-         ENDIF
+      IF (SCALE .GT. TINY) THEN
+        DO I = 1,NODES
+          IF (ICBUND(I).NE.0) THEN
+            RHS(I) = RHS(I)*SCALE
+            CNEW(I) = CNEW(I)*SCALE
+          ELSE
+            CNEW(I)=CINACT
+          ENDIF
+        ENDDO
+      ENDIF
       RETURN
       END
 C
@@ -471,13 +471,13 @@ C
       IDIAG = 7
       IF(NCRS.GT.0) IDIAG = 19
       DO I = 1,N
-         Y(I) = 0.
-         DO K = 1,IDIAG
-            JCOL = I + L(K)
-            IF (JCOL.GE.1.AND.JCOL.LE.N) THEN
-             IF(ICBUND(JCOL).NE.0) Y(I) = Y(I)+A(I,K)*X(JCOL)
-            ENDIF
-         ENDDO
+        Y(I) = 0.
+        DO K = 1,IDIAG
+          JCOL = I + L(K)
+          IF (JCOL.GE.1.AND.JCOL.LE.N) THEN
+            IF(ICBUND(JCOL).NE.0) Y(I) = Y(I)+A(I,K)*X(JCOL)
+          ENDIF
+        ENDDO
       ENDDO
 C
       RETURN
@@ -499,22 +499,22 @@ C
       IDIAG = 7
       IF(NCRS.GT.0) IDIAG = 19
       DO I = 1,N
-         Y(I) = 0.
+        Y(I) = 0.
       ENDDO
       DO I = 1,N
-         DO J = 1,IDIAG
-            JCOL = I + L(J)
-            IF(JCOL.GE.1.AND.JCOL.LE.N) THEN
-             IF (ICBUND(JCOL).NE.0) Y(JCOL) = Y(JCOL)+A(I,J)*X(I)
-            ENDIF
-         ENDDO
+        DO J = 1,IDIAG
+          JCOL = I + L(J)
+          IF(JCOL.GE.1.AND.JCOL.LE.N) THEN
+            IF (ICBUND(JCOL).NE.0) Y(JCOL) = Y(JCOL)+A(I,J)*X(I)
+          ENDIF
+        ENDDO
       ENDDO
 C
       RETURN
       END
 C
 C
-        SUBROUTINE QSOLVE(N,METHOD,RELAX,NCRS,A,SY,Y)
+      SUBROUTINE QSOLVE(N,METHOD,RELAX,NCRS,A,SY,Y)
 C*********************************************************************
 C*... FUNCTION:
 C*
@@ -543,7 +543,7 @@ C
       DIMENSION Y(N),SY(N),A(N,*),LL(9),LU(9)
 C
       DO II = 1,N
-         Y(II) = SY(II)
+        Y(II) = SY(II)
       ENDDO
 C
       IF (METHOD .NE. 1) GO TO 5
@@ -562,9 +562,9 @@ C
  5    CONTINUE
       IF (METHOD .NE. 2) RELAX = 1.0
       IF (NCRS.GT.0) THEN
-         IDIAG = 9
+        IDIAG = 9
       ELSE
-         IDIAG = 3
+        IDIAG = 3
       ENDIF
 C
       LL(1) = 2
@@ -574,50 +574,50 @@ C
       LU(2) = 5
       LU(3) = 7
       IF (NCRS.GT.0) THEN
-         LL(4) = 8
-         LL(5) = 9
-         LL(6) = 10
-         LL(7) = 11
-         LL(8) = 16
-         LL(9) = 17
-         LU(4) = 12
-         LU(5) = 13
-         LU(6) = 14
-         LU(7) = 15
-         LU(8) = 18
-         LU(9) = 19
+        LL(4) = 8
+        LL(5) = 9
+        LL(6) = 10
+        LL(7) = 11
+        LL(8) = 16
+        LL(9) = 17
+        LU(4) = 12
+        LU(5) = 13
+        LU(6) = 14
+        LU(7) = 15
+        LU(8) = 18
+        LU(9) = 19
       ENDIF
 C
 C ... SOLVE LOWER TRIANGULAR SYSTEM FOR THE SSOR METHOD
 C
       DO I=1,N
-         DO J = 1,IDIAG
-            JCOL = I + L(LL(J)) 
-            IF (JCOL.GT.0) Y(I) = Y(I) - A(I,LL(J))*Y(JCOL)
-         ENDDO
-         Y(I) = RELAX*Y(I) / A(I,1)
+        DO J = 1,IDIAG
+          JCOL = I + L(LL(J)) 
+          IF (JCOL.GT.0) Y(I) = Y(I) - A(I,LL(J))*Y(JCOL)
+        ENDDO
+        Y(I) = RELAX*Y(I) / A(I,1)
       ENDDO
 C
 C     SOLVE DY=Y
 C
       IF (METHOD .EQ. 2) THEN
-         DO I = 1,N
-            Y(I) = (2.0-RELAX)/RELAX * Y(I) * A(I,1)
-         ENDDO
+        DO I = 1,N
+          Y(I) = (2.0-RELAX)/RELAX * Y(I) * A(I,1)
+        ENDDO
       ELSE
-         DO I=1,N
-            Y(I)=Y(I)*A(I,1)
-         ENDDO
+        DO I=1,N
+          Y(I)=Y(I)*A(I,1)
+        ENDDO
       ENDIF
 C
 C     SOLVE UY=Y
 C
       DO I=N,1,-1
-         DO K=1,IDIAG
-            JCOL = I + L(LU(K))
-            IF (JCOL.LE.N) Y(I)=Y(I)-A(I,LU(K))*Y(JCOL)
-         ENDDO
-         Y(I)=RELAX*Y(I)/A(I,1)
+        DO K=1,IDIAG
+          JCOL = I + L(LU(K))
+          IF (JCOL.LE.N) Y(I)=Y(I)-A(I,LU(K))*Y(JCOL)
+        ENDDO
+        Y(I)=RELAX*Y(I)/A(I,1)
       ENDDO
 C
       RETURN
@@ -670,9 +670,9 @@ C
  5    CONTINUE
       IF (METHOD .NE. 2) RELAX = 1.0
       IF (NCRS.GT.0) THEN
-         IDIAG = 9
+        IDIAG = 9
       ELSE
-         IDIAG = 3
+        IDIAG = 3
       ENDIF
 C
       LL(1) = 2
@@ -699,33 +699,33 @@ C
 C ... SOLVE (UT)Y = Y
 C
       DO I=1,N
-         Y(I) = RELAX * Y(I) / A(I,1)
-         DO J = 1,IDIAG
-            JCOL = I + L(LU(J))
-            IF (JCOL.LE.N) Y(JCOL) = Y(JCOL) - A(I,LU(J))*Y(I)
-         ENDDO
+        Y(I) = RELAX * Y(I) / A(I,1)
+        DO J = 1,IDIAG
+          JCOL = I + L(LU(J))
+          IF (JCOL.LE.N) Y(JCOL) = Y(JCOL) - A(I,LU(J))*Y(I)
+        ENDDO
       ENDDO
 C
 C     SOLVE DY=Y
 C
       IF (METHOD .EQ. 2) THEN
-         DO I = 1,N
-            Y(I) = (2.0-RELAX)/RELAX * Y(I) * A(I,1)
-         ENDDO
+        DO I = 1,N
+          Y(I) = (2.0-RELAX)/RELAX * Y(I) * A(I,1)
+        ENDDO
       ELSE
-         DO I=1,N
-            Y(I)=Y(I)*A(I,1)
-         ENDDO
+        DO I=1,N
+          Y(I)=Y(I)*A(I,1)
+        ENDDO
       ENDIF
 C
 C     SOLVE (LT)Y=Y
 C
       DO I=N,1,-1
-         Y(I) = RELAX * Y(I) / A(I,1)
-         DO K = 1,IDIAG
-            JCOL = I + L(LL(K))
-            IF (JCOL.GT.0) Y(JCOL) = Y(JCOL) - A(I,LL(K))*Y(I) 
-         ENDDO
+        Y(I) = RELAX * Y(I) / A(I,1)
+        DO K = 1,IDIAG
+          JCOL = I + L(LL(K))
+          IF (JCOL.GT.0) Y(JCOL) = Y(JCOL) - A(I,LL(K))*Y(I) 
+        ENDDO
       ENDDO
 C
       RETURN
@@ -767,26 +767,26 @@ C
       LU(2) = 5
       LU(3) = 7
       IF (NCRS.GT.0) THEN
-         LU(4) = 12
-         LU(5) = 13
-         LU(6) = 14
-         LU(7) = 15
-         LU(8) = 18
-         LU(9) = 19
+        LU(4) = 12
+        LU(5) = 13
+        LU(6) = 14
+        LU(7) = 15
+        LU(8) = 18
+        LU(9) = 19
       ENDIF
       IF (NCRS.GT.0) THEN
-          IDIAG = 19
-          ILST  = 9
+        IDIAG = 19
+        ILST  = 9
       ELSE
-          IDIAG = 7
-          ILST  = 3
-          IF(NCOL.EQ.1) ILST = 2
-          IF(NRC.EQ.1)  ILST = 1
+        IDIAG = 7
+        ILST  = 3
+        IF(NCOL.EQ.1) ILST = 2
+        IF(NRC.EQ.1)  ILST = 1
       ENDIF
       DO K = 1,N
-         DO J = 1, IDIAG
-            Q(K,J) = A(K,J)
-         ENDDO
+        DO J = 1, IDIAG
+          Q(K,J) = A(K,J)
+        ENDDO
       ENDDO
       IF(ABS(Q(1,1)).LT.TINY) Q(1,1)=1.
 C
@@ -804,11 +804,11 @@ C
             JCOL = IPVT + L(LU(LL))
             IERR = 1
             DO IJ = 1,IDIAG
-               JP = IROW + L(IJ)
-               IF(JP .EQ. JCOL) THEN
-                 IERR = 0
-                 EXIT
-               ENDIF
+              JP = IROW + L(IJ)
+              IF(JP .EQ. JCOL) THEN
+                IERR = 0
+                EXIT
+              ENDIF
             ENDDO
             IF(IERR.EQ.0) THEN
               Q(IROW,IJ)=Q(IROW,IJ)-QMULT*Q(IPVT,LU(LL))/Q(IPVT,1)
