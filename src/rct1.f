@@ -1094,12 +1094,14 @@ C
 C                                                                   
                 IF(ICOMP.LE.NED) THEN                               
                   RHS(N)=RHS(N)-DCDT(ICOMP)*PRSITY(N)*
-     +                   DELR(J)*DELC(I)*DH(N)
-                  RHS(N)=RHS(N)-DCDTYLD(ICOMP)*PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+     &                   DELR(J)*DELC(I)*DH(N)
+                  RHS(N)=RHS(N)-DCDTYLD(ICOMP)*PRSITY(N)*DELR(J)*DELC(I)
+     &                   *DH(N)
                 ELSE                                                
                   DO MM=1,NED                                       
 			      DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)       
-			      RHS(N)=RHS(N)-DEA_ED_DT(MM)*PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+			      RHS(N)=RHS(N)-DEA_ED_DT(MM)*PRSITY(N)*DELR(J)*DELC(I)
+     &                     *DH(N)
                   ENDDO
                 ENDIF
               ENDIF
