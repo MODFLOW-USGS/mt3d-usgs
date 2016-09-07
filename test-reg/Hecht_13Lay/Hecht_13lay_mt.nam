@@ -1,0 +1,39 @@
+# input files for MT3DMS
+#
+LIST    0   Hecht_13lay.lst
+BTN     0   Hecht_13lay.btn
+ADV     0   Hecht_13lay.adv
+DSP     0   Hecht_13lay.dsp
+SSM     0   Hecht_13lay.ssm
+RCT     0   Hecht_13lay.rct
+GCG     0   Hecht_13lay.gcg
+FTL     0   Hecht_13lay.ftl
+#
+DATA   20   delr.in
+DATA   21   delc.in
+DATA   35   Hecht_13lay.con1
+DATA   36   Hecht_13lay.con2
+DATA   37   Hecht_13lay.con3
+DATA   38   Hecht_13lay.con4
+DATA   39   Hecht_13lay.con5
+DATA   40   Hecht_13lay.con6
+DATA   41   Hecht_13lay.con7
+DATA   42   Hecht_13lay.con8
+DATA   43   Hecht_13lay.con9
+DATA   44   Hecht_13lay.con10
+DATA   45   Hecht_13lay.con11
+DATA   46   Hecht_13lay.con12
+DATA   47   Hecht_13lay.con13
+DATA   48   Hecht_13lay.in1
+DATA   49   Hecht_13lay.in2
+DATA   50   Hecht_13lay.in3
+DATA   51   Hecht_13lay.in4
+DATA   52   Hecht_13lay.in5
+DATA   53   Hecht_13lay.in6
+DATA   54   Hecht_13lay.in7
+DATA   55   Hecht_13lay.in8
+DATA   56   Hecht_13lay.in9
+DATA   57   Hecht_13lay.in10
+DATA   58   Hecht_13lay.in11
+DATA   59   Hecht_13lay.in12
+DATA   60   Hecht_13lay.in13
