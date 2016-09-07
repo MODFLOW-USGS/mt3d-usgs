@@ -1,0 +1,13 @@
+#input files for MT3DMS
+
+LIST       0       Hecht_1lay.lst
+BTN        0       Hecht_1lay.btn
+ADV        0       Hecht_1lay.adv
+DSP        0       Hecht_1lay.dsp
+SSM        0       Hecht_1lay.ssm
+RCT        0       Hecht_1lay.rct
+GCG        0       Hecht_1lay.gcg
+FTL        0       Hecht_1lay.ftl
+DATA      20       delr.in
+DATA      21       delc.in
+DATA      39       Hecht_1lay.con

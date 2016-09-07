@@ -1,0 +1,17 @@
+LIST          7      Hecht_1lay.lst
+BAS6          8      Hecht_1lay.ba6
+BCF6          9      Hecht_1lay.bc6
+DIS          10      Hecht_1lay.dis
+PCG          11      Hecht_1lay.pcg
+#
+FHB          12      Hecht_1lay.fhb
+LMT6         66      Hecht_1lay.lmt
+DATA         50      Hecht_1lay.geo
+#DATA        51      Hecht_1lay.flo
+DATA         52      Hecht_1lay.hea
+DATA         53      head.sal
+DATA         54      flow.sal
+DATA         55      icb.sal
+DATA(binary) 56      Hecht_1lay.cbc
+DATA         20      delr.in
+DATA         21      delc.in
