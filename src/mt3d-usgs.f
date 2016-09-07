@@ -139,7 +139,7 @@ C-Open files using the Name File method as in MODFLOW-2000
         INQUIRE(file=flname(1:iflen+4),exist=existed)
         IF(.not.existed) THEN
           WRITE(*,103) flname(1:iflen),flname(1:iflen+4)
-          CALL( ustop(' ')
+          CALL ustop(' ')
         ENDIF
       ENDIF
   103 FORMAT(1x,'STOP. Specified Name file does not exist: ',

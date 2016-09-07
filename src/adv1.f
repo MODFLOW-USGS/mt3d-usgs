@@ -3981,8 +3981,8 @@ C--if with zeroth-order reaction
      &                                RETA2(J,I,K,ICOMP)*
      &                                SRCONC(J,I,K,ICOMP)-RC1TMP*
      &                                PRSITY2(J,I,K)*DTRANS-RC2TMP*
-     &                                (1.-FRAC(J,I,K))*RHOB(J,I,K)*DTRANS)
-     &                                /TERM2
+     &                                (1.-FRAC(J,I,K))*RHOB(J,I,K)*
+     &                                DTRANS)/TERM2
                 ENDIF         
               ENDIF
 C--CALCULATE CHANGE IN CONCENTRATION OF IMMOBILE-LIQUID PHASE
