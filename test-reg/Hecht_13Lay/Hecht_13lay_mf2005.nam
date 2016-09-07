@@ -22,7 +22,6 @@ DATA         82     Hecht_13Lay.geo13
 
 # OUTPUT
 DATA         52     Hecht_13Lay.hea
-OC           14     Hecht_13Lay.out
 DATA         53     head.sal
 DATA         54     flow.sal
 DATA         55     icb.sal
