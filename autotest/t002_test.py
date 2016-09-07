@@ -5,7 +5,7 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['P07', 'zeroth', ] 
+test_dirs = ['P07', 'zeroth', 'hecht_1lay', 'hecht_13lay']  #'hsstest'
 
 def run_mt3d(mfnamefile, mtnamefile, regression=True):
     """

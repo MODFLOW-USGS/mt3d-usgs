@@ -5,7 +5,7 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10']
+test_dirs = ['Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb']  #'Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb'
 
 def run_mt3d(mfnamefile, mtnamefile, comparison=True):
     """
@@ -82,7 +82,7 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
                              os.path.split(os.path.join(testpth, nam))[0],
                              'ucn.cmp')
                 success_ucn = pymake.compare_concs(namefile1, namefile2,
-                                                   ctol=0.001,
+                                                   ctol=0.002,
                                                    outfile=outfileucn,
                                                    files2=files_cmp)
                 if success_cmp and success_ucn:
