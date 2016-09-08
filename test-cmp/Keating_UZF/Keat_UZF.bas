@@ -1,5 +1,5 @@
-# MODFLOW2005 Basic Package
-#MODFLOW Data Set Created by Groundwater Vistas
+# MODFLOW-NWT Basic Package
+# MODFLOW-NWT Data Set 
 #   
 
          0         1(25I3)                      -1     IBOUND Layer   1

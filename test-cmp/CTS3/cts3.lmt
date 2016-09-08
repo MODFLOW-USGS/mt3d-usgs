@@ -1,4 +1,4 @@
-# MODFLOW2000 - Link-MT3DMS Package Input File
+# MODFLOW-NWT - Link-MT3D-USGS Package Input File
 OUTPUT_FILE_NAME cts3.ftl
 OUTPUT_FILE_UNIT 34
 OUTPUT_FILE_HEADER Extended

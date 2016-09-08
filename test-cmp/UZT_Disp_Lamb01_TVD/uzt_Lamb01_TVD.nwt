@@ -1,4 +1,4 @@
-# MODFLOW2005 NWT Input File
+# MODFLOW-NWT Input File
 # Test Problem 4 MT3D/UZF taken from UZF doc
 1.0E-3 1.0 500 1.0e-6  2  1 1 SPECIFIED 0.98 0.0001 0.100  0.00 0  20 2.0 0.6  linmeth=1 (GMRES); =2 (xmd)  
 2 0 8 2 0 0.0 1 1.0E-3 1.0e-4      100 2  2  1.0e-9  20  4       XMD (faster results--6.7 seconds)

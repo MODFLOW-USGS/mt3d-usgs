@@ -1,5 +1,5 @@
-# MODFLOW2000 Basic Package
-#MODFLOW Data Set Created by Groundwater Vistas
+# MODFLOW-NWT Basic Package
+# MODFLOW Data Set 
 
 INTERNAL 1 (free) -1                                                  #IBOUND Layer 1 Elevation
  -1  1  1  1  1  0

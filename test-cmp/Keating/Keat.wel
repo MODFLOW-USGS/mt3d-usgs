@@ -1,4 +1,4 @@
-# MODFLOW2000 Well Package
+# MODFLOW-NWT Well Package
 PARAMETER  0  0
        192        50
        192         0               Stress Period 1

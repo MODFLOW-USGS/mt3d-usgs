@@ -256,7 +256,7 @@
 
  
  # MODFLOW2005 Basic Package                                                     
- #MODFLOW Data Set Created by Groundwater Vistas                                 
+ #MODFLOW Data Set                                  
  #
 
            BOUNDARY ARRAY =              1 FOR LAYER   1

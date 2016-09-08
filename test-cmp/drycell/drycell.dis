@@ -1,4 +1,4 @@
-# MODFLOW2000 Discretization File
+# MODFLOW-NWT Discretization File
 #NLAY NROW NCOL NPER  ITMUNI LENUNI  (ITMUNI=4: DAYS)
     2    1    6    1       4      0
  0 0                                                   #LAYCBD

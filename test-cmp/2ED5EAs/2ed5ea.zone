@@ -1,4 +1,4 @@
-# MODFLOW2000 Zone File
+# MODFLOW-NWT Zone File
 # Groundwater Vistas writes all zones regardless of whether
 # they are being used.  These zones include:
 #     kxzone##, kzzone##, szone##, rzone, and etzone, where

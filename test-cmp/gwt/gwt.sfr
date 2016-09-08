@@ -1,4 +1,4 @@
-# StreamFlow Routing test case for MODFLOW-2000 
+# StreamFlow Routing test case for MODFLOW-NWT based on problem originally appearing in MODFLOW2000 
    38    4   0   0   128390.  1e-5   -1    0   
   1  1 23  1  1  400. 
   1  2 23  1  2  200. 

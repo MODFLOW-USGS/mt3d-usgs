@@ -1,4 +1,4 @@
-# MODFLOW2000 General Head Boundary Package
+# MODFLOW-NWT General Head Boundary Package
 PARAMETER  0  0
         36        50
         36         0                      Stress Period 1
