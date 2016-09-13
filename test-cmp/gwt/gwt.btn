@@ -870,7 +870,9 @@ CONSTANT     0.000                                   INITIAL CONCENTRATION Layer
 CONSTANT     0.000                                   INITIAL CONCENTRATION Layer   8
 -1.000e+00 1.000e-03
          0         0         0         0         T         F
-        -1
+        11                                                                          # NPRS
+       100      1000      2000      3000      4000      5000      6000      7000    # TIMPRS(NPRS)
+      8000      9000      9131
          0        10
          T        10
     9131.0         1 1.000e+00

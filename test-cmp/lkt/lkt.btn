@@ -33,7 +33,8 @@ D   FT  LB
        000     0.000(10E12.4)                   -1     INITIAL CONCENTRATION Layer   5
 -1.000e+00 1.000e-03
          0         0         0         0         T         F
-        -1
+         6                                                      # NPRS
+       100      1000      2000      3000      4000      5000    # TIMPRS(NPRS)
          0        10
          T        10
 5.0000e+03       1001.0200e+00
