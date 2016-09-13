@@ -27,8 +27,8 @@ C
 C
 C--ALLOCATE AND INITIALIZE
       ALLOCATE(IREACT,IRCTOP,IGETSC,IFESLD,ISORBIMONLY,ISP1IM,
-     1  rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,IUMETH,
-     1  RVAL,NSOLID)
+     &         rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,
+     &         IUMETH,RVAL,NSOLID)
       ALLOCATE(FRAC(NCOL,NROW,NLAY))
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
@@ -43,11 +43,11 @@ C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INRCT
  1000 FORMAT(/1X,'RCT1 -- CHEMICAL REACTION PACKAGE,',
-     & ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
+     &           ' VERSION 1, MAY 2016, INPUT READ FROM UNIT',I3)
 C
 C--READ AND ECHO SORPTION ISOTHERM TYPE AND FLAG IREACT
       READ(INRCT,'(6I10)',ERR=100,IOSTAT=IERR)
-     & ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION !,IFESLD
+     &     ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION 
   100 IF(IERR.NE.0) THEN
         IRCTOP=1
         IGETSC=0
@@ -63,7 +63,6 @@ C
         ISOTHM=6                             
       ENDIF                                  
 C                                            
-CVSB      IREACTION=0                        
       IF(IREACT.EQ.90.OR.IREACT.EQ.91) THEN  
         IREACTION=1                          
         IREACT=IREACT-90                     
@@ -100,7 +99,7 @@ C
 C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED      
       IF(IREACT.EQ.2.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN     
         WRITE(IOUT,*) 'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'   
-        WRITE(*,*) 'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'      
+        WRITE(*,*)    'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'      
         READ(*,*)                                               
         STOP                                                    
       ENDIF                                                     
@@ -108,7 +107,7 @@ C
 C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED      
       IF(IREACT.EQ.3.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN     
         WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'   
-        WRITE(*,*) 'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'      
+        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'      
         READ(*,*)                                               
         STOP                                                    
       ENDIF                                                     
@@ -116,7 +115,7 @@ C
 C-----NEED MULTIPLE SPECIED WITH IREACT=3                       
       IF(IREACT.EQ.3.AND.NCOMP.LT.2) THEN                       
         WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'
-        WRITE(*,*) 'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'   
+        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'   
         READ(*,*)                                               
         STOP                                                    
       ENDIF                                                     
@@ -128,7 +127,7 @@ C
       ELSEIF(IREACTION.EQ.0) THEN                               
       ELSE                                                      
         WRITE(IOUT,*) 'IREACTION MUST BE 0, 1, OR 2'            
-        WRITE(*,*) 'IREACTION MUST BE 0, 1, OR 2'               
+        WRITE(*,*)    'IREACTION MUST BE 0, 1, OR 2'               
         READ(*,*)                                               
         STOP                                                    
       ENDIF                                                     
@@ -142,7 +141,7 @@ C
  1028 FORMAT(1X,'NO SORPTION [OR DUAL-DOMAIN MODEL] IS SIMULATED')
  1030 FORMAT(1X,'NO FIRST-ORDER RATE REACTION IS SIMULATED')
  1032 FORMAT(1X,'FIRST-ORDER IRREVERSIBLE REACTION',
-     & ' [RADIOACTIVE DECAY OR BIODEGRADATION] IS SIMULATED')
+     &          ' [RADIOACTIVE DECAY OR BIODEGRADATION] IS SIMULATED')
  1033 FORMAT(1X,'MONOD KINETIC REACTION IS SIMULATED')
  1035 FORMAT(1X,'FIRST-ORDER CHAIN REACTION IS SIMULATED')
  1034 FORMAT(1X,'ZEROTH-ORDER DECAY OR PRODUCTION IS SIMULATED')
@@ -158,8 +157,8 @@ C
         WRITE(IOUT,1052)
       ENDIF
  1050 FORMAT(/1X,'WARNING: INPUT FILE FOR VER 1 OF [RCT] PACKAGE',
-     & ' DETECTED;'/1X,'REACTION COEFFICIENTS ASSIGNED ONE VALUE',
-     & ' PER LAYER'/)
+     &           ' DETECTED;'/1X,'REACTION COEFFICIENTS ASSIGNED',
+     &           ' ONE VALUE PER LAYER'/)
  1052 FORMAT(1X,'REACTION COEFFICIENTS ASSIGNED CELL-BY-CELL')
       IF(IGETSC.EQ.0) THEN
         WRITE(IOUT,1060)
@@ -170,12 +169,12 @@ C
         WRITE(IOUT,1062)
       ENDIF
  1060 FORMAT(1X,'INITIAL SORBED/IMMOBILE PHASE CONCENTRATION',
-     & ' ASSIGNED BY DEFAULT')
+     &          ' ASSIGNED BY DEFAULT')
  1061 FORMAT(1X,'ERROR: INITIAL SORBED CONCENTRATION FOR',
-     & ' EQUILIBRIUM-CONTROLLED SORPTION CANNOT BE SPECIFIED;',
-     & /1X,'INPUT VALUE FOR [IGETSC] MUST BE SET TO ZERO')
+     &          ' EQUILIBRIUM-CONTROLLED SORPTION CANNOT BE SPECIFIED;',
+     &      /1X,'INPUT VALUE FOR [IGETSC] MUST BE SET TO ZERO')
  1062 FORMAT(1X,'INITIAL SORBED/IMMOBILE PHASE CONCENTRATION',
-     & ' READ FROM INPUT FILE')
+     &          ' READ FROM INPUT FILE')
 C
 C--ALLOCATE IF IREACTION=1                          
       IF(IREACTION.EQ.1) THEN                       
@@ -237,15 +236,14 @@ C
         ENDIF
       ENDIF
  2046 FORMAT(1X,'SAVE SORBED/IMMOBILE PHASE CONCENTRATIONS ',
-     & 'IN UNFORMATTED FILES [MT3DnnnS.UCN]'/1X,' FOR EACH SPECIES ',
-     & 'ON UNITS ',I3,' AND ABOVE, ',
-     & 'IF SORPTION/MASS TRANSFER SIMULATED')
-
+     &          'IN UNFORMATTED FILES [MT3DnnnS.UCN]'/1X,' FOR EACH ',
+     &          'SPECIES ON UNITS ',I3,' AND ABOVE, ',
+     &          'IF SORPTION/MASS TRANSFER SIMULATED')
 C
 C--PRINT A HEADER
       WRITE(IOUT,2001)
  2001 FORMAT(//1X,'SORPTION AND 1ST/0TH ORDER REACTION PARAMETERS',
-     & /1X,46('-')/)
+     &        /1X,46('-')/)
 C
 C--CALL RARRAY TO READ IN SORPTION PARAMETERS IF SORPTION SIMULATED
       IF(ISOTHM.LE.0 .AND. IREACTION.NE.2) GOTO 2000 
@@ -406,7 +404,7 @@ C
 C--CALL RARRAY TO READ IN 1st/0th ORDER REACTION RATE CONSTANTS
 C--IF NECESSARY
       IF(IREACT.ne.1.and.IREACT.ne.100.and.IREACT.ne.2.and.
-     1   IREACT.ne.3) GOTO 3000                            
+     &   IREACT.ne.3) GOTO 3000                            
 C
       DO INDEX=1,NCOMP
         ANAME='SOLUTE RXN RATE: COMP NO'
@@ -474,8 +472,8 @@ C
         DO INDEX=1,NCOMP-1                          
           READ(IN,*) YLD(INDEX)                     
           WRITE(IOUT,'(18X,2(A,I3),A,G13.6)')       
-     1      'YIELD COEFFICIENT BETWEEN SPECIES ',INDEX,
-     1      ' AND ',INDEX+1,' = ', YLD(INDEX)          
+     &               'YIELD COEFFICIENT BETWEEN SPECIES ',INDEX,
+     &               ' AND ',INDEX+1,' = ', YLD(INDEX)          
         ENDDO                                          
       ENDIF                                            
 C                                                      
@@ -486,9 +484,9 @@ C-----READ REACTION RELATED DATA
         READ(IN,'(2I10,F10.0)') IED,IEA,FEDEA
         WRITE(IOUT,104) IED,IEA,FEDEA        
 104     FORMAT(1X,'SIMULATED REACTION: ED + FEDEA*EA --> PRODUCT'
-     1        /1X,'ELECTRON DONOR COMPONENT (IED)         = ',I3
-     1        /1X,'ELECTRON ACCEPTOR COMPONENT (IEA)      = ',I3
-     1        /1X,'STOICHIOMETRIC RATIO (FEDEA)           = ',G12.4)
+     &        /1X,'ELECTRON DONOR COMPONENT (IED)         = ',I3
+     &        /1X,'ELECTRON ACCEPTOR COMPONENT (IEA)      = ',I3
+     &        /1X,'STOICHIOMETRIC RATIO (FEDEA)           = ',G12.4)
 C.......CHECK FOR POSSIBLE ERRORS                              
         IF(IED.GT.NCOMP .OR. IEA.GT.NCOMP) THEN                
           WRITE(*,*) 'IEA OR IED GREATER THAN NCOMP'           
@@ -825,11 +823,11 @@ C
 C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
               RC2TMP=0.
               IF(IREACT.eq.1.or.IREACT.eq.100.or.IREACT.eq.2.or.
-     1           IREACT.eq.3)                                   
-     1           RC2TMP=RC2(N,ICOMP)                            
+     &           IREACT.eq.3)                                   
+     &           RC2TMP=RC2(N,ICOMP)                            
 C--IF with no reaction or with first-order reaction             
               IF(IREACT.EQ.0.OR.IREACT.EQ.1.OR.IREACT.EQ.2.OR.  
-     1           IREACT.EQ.3) THEN                              
+     &           IREACT.EQ.3) THEN                              
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
      &                          (1.-SP2(N,ICOMP)/SP1(N,ICOMP)/
      &                         (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP)
@@ -839,7 +837,7 @@ C--IF with no reaction or with first-order reaction
      &                 (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP)+
      &                 RC2TMP*RHOB(N))
                 IF(ireact.eq.3.AND.ICOMP.GT.1)           
-     1            RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)*
+     &            RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)*
      &                   DELR(J)*DELC(I)*DH(N)*RHOB(N)*SRCONC(N,ICOMP-1)
 C--IF with zeroth-order reaction     
               ELSEIF(IREACT.EQ.100) THEN
@@ -1264,7 +1262,7 @@ C--CALCULATE MASS BUDGETS FOR
 C--1st/0th ORDER IRREVERSIBLE REACTION
 C
       IF(IREACT.ne.1.and.IREACT.ne.100.and.IREACT.ne.2.and.IREACT.ne.3)
-     1  GOTO 9999                                                      
+     &  GOTO 9999                                                      
 C
 C--SKIP IF NOT SINGLE-DOMAIN MODEL
       IF(ISOTHM.EQ.5.OR.ISOTHM.EQ.6) GOTO 1000
@@ -1560,10 +1558,10 @@ C
 C
       IF(ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
         CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
-     &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
-     &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
-     &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
-     &   SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+     &              CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
+     &              SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
+     &              RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &              SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
       ENDIF
 C
 C--RETURN
@@ -1587,10 +1585,10 @@ C
 C
       IF(ISOTHM.EQ.1.OR.ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
         CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),THETAW,
-     &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
-     &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
-     &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
-     &   SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+     &              CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
+     &              SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
+     &              RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &              SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
       ENDIF
 C
 C--RETURN
@@ -1613,10 +1611,10 @@ C
 C
       IF(ISOTHM.EQ.1.OR.ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
         CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),THETAW2,
-     &   CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
-     &   SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
-     &   RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
-     &   SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+     &              CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
+     &              SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
+     &              RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &              SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
       ENDIF
 C
 C--RETURN
@@ -1629,7 +1627,7 @@ C THIS SUBROUTINE CALCULATES FLASH CONCENTRATIONS AFTER APPLYING
 C REACTION: ED + FEAED*EA --> PRODUCT
 C ********************************************************************
       USE MT3DMS_MODULE, ONLY: NCOMP,NLAY,NROW,NCOL,ICBUND,CNEW,RETA,
-     1                         CADV
+     &                         CADV
       USE RCTMOD
       IMPLICIT NONE
       INTEGER ICOMP,K,I,J,N
@@ -1692,7 +1690,8 @@ C-----OPEN FILE ON AN UNUSED UNIT NUMBER
       ENDIF
       OPEN(INUNIT,FILE=rec_FileName)
       WRITE(IOUT,'(/1X,4A,I5)') 'KINETIC REACTION PARAMETERS READ',
-     1    ' FROM FILE: ',TRIM(rec_FileName),' ON UNIT NUMBER',INUNIT
+     &           ' FROM FILE: ',TRIM(rec_FileName),' ON UNIT NUMBER',
+     &           INUNIT
 C
       NSPECIAL=0
       NSTORE=0
@@ -1710,19 +1709,19 @@ C
       READ(LINE,*) NED,NEA,NSPECIAL,IFESLD
       WRITE(IOUT,100) NED,NEA,NSPECIAL
 100   FORMAT(/1X,'NUMBER OF ELECTRON DONORS    = ',I3,
-     1       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3,
-     1       /1X,'NUMBER OF SPECIAL COMPONENTS = ',I3)
+     &       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3,
+     &       /1X,'NUMBER OF SPECIAL COMPONENTS = ',I3)
 C
       WRITE(IOUT,*)
       WRITE(IOUT,'(2(A,I2))') 'ELECTRON DONORS:    SPECIES ',1,' - ',NED
       WRITE(IOUT,'(2(A,I2))') 'ELECTRON ACCEPTERS: SPECIES ',NED+1,
-     1                        ' - ',NEA+NED
+     &                        ' - ',NEA+NED
 C
       ALLOCATE(RCOLD(NCOMP),RCNEW(NCOMP),SPECIAL(NCOMP))
       ALLOCATE(MAXEC(NCOMP),SWITCH(NCOMP),INHIB(NCOMP),
-     1         DECAY(NED,NCOMP-NED))
+     &         DECAY(NED,NCOMP-NED))
       ALLOCATE(YIELDC(NED,NCOMP),DEA_ED_DT(NED),DCDT(NCOMP),
-     1         DCDTYLD(NCOMP))
+     &         DCDTYLD(NCOMP))
 C
       ALLOCATE(MASS_NEG(NCOMP),CON_NEG(NCOMP))
       MASS_NEG=0.0
@@ -1731,7 +1730,7 @@ C
       IF(NSPECIAL.GE.1) THEN
         WRITE(IOUT,110)
 110     FORMAT(/1x,'Species no.',5x,'Case code' , 5x, 'Max EFC',
-     1         /1x,'-----------',5x,'---------' , 5x, '-------')
+     &         /1x,'-----------',5x,'---------' , 5x, '-------')
       ENDIF
       DO I=1,NSPECIAL
         READ(INUNIT,'(A)') LINE
@@ -1746,8 +1745,8 @@ C.......'SOLID' ONLY APPLICABLE FOR EAs
           IF(N.LE.NED) THEN
             WRITE(IOUT,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
             WRITE(IOUT,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
-            WRITE(*,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
-            WRITE(*,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
+            WRITE(*,*)    'INVALID SPECIES NO./KEYWORD (SOLID)'
+            WRITE(*,*)    'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
             READ(*,*)
             STOP
           ENDIF
@@ -1759,22 +1758,22 @@ C
         IF(NCOMP.EQ.MCOMP) THEN
           IFESLD=0
           WRITE(IOUT,'(/,2A)') 'SET NCOMP>MCOMP TO SIMULATE IMMOBILE',
-     1                         ' SOLID-PHASE SPECIES, IFESLD RESET TO 0'
+     &                         ' SOLID-PHASE SPECIES, IFESLD RESET TO 0'
         ELSEIF(NSOLID.EQ.0) THEN
           IFESLD=0
           WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
-     1                         ', IFESLD RESET TO 0'
+     &                         ', IFESLD RESET TO 0'
         ELSE
           WRITE(IOUT,1040) NSOLID,NCOMP
         ENDIF
       ENDIF
 1040  FORMAT(/1X,'SOLID PHASE FOR SPECIES ',I3,
-     1           ' IS SIMULATED AS IMMOBILE SPECIES ',I3)
+     &           ' IS SIMULATED AS IMMOBILE SPECIES ',I3)
 C
       WRITE(IOUT,'(/,2A)') 'EA#  SPECIES#  HALF SATURATION CONSTANT',
-     1                     ' INHIBITION CONSTANT'
+     &                     ' INHIBITION CONSTANT'
       WRITE(IOUT,'(2A)') '---  --------  ------------------------',
-     1                   ' -------------------'
+     &                   ' -------------------'
       DO I=1,NEA
         READ(INUNIT,*) SWITCH(I),INHIB(I)
         WRITE(IOUT,130) I,NED+I,SWITCH(I),INHIB(I)
@@ -1790,7 +1789,7 @@ C
 140   FORMAT(I3,5X,I3,100(3X,1PG15.5))
 C
       WRITE(IOUT,'(/,2A)') 'EA/ED  SPECIES#   YIELD COEFFICIENTS ',
-     1           'ED(1:NED)'
+     &           'ED(1:NED)'
       WRITE(IOUT,'(A)') '-----  --------   ------------------'
       DO I=1,NED+NEA
         READ(INUNIT,*) (YIELDC(J,I),J=1,NED)
@@ -1819,7 +1818,7 @@ C
       ENDIF
 C
       ALLOCATE(DCDT_FE(NODES,NCOMP-NED,NED),DCDT_S(NODES,NCOMP),
-     1         DCDT_SYLD(NODES,NCOMP))
+     &         DCDT_SYLD(NODES,NCOMP))
 C
       RETURN
 C
@@ -2004,7 +2003,7 @@ C
       SUBROUTINE DTS(ICOMP)
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL,CNEW,
-     1                         ICBUND,COLD,RHOB
+     &                         ICBUND,COLD,RHOB
       INTEGER ICOMP
       REAL DTRANS
 C
