@@ -1,0 +1,25 @@
+release.txt
+
+
+                           MT3D-USGS Release Notes
+
+
+This file describes changes introduced into MT3D-USGS with each official
+release; these changes may substantially affect users. Executable files for 
+personal computers are provided as well as the source code at the DOI:
+
+http://dx.doi.org/10.3133/tm6A53
+
+MT3D-USGS Files: Up-to-date descriptions of the input requirements for all 
+MT3D-USGS Packages and Processes are provided in input_instructions.pdf 
+distributed with MT3D-USGS, available in the doc directory.
+
+
+NOTE: Any use of trade, product or firm names is for descriptive purposes
+only and does not imply endorsement by the U.S. Government.
+
+o Version 1.0.0 09/30/2016:
+
+MT3D-USGS version 1.0.0 is built upon MT3DMS version 5.3 and includes 
+many new capabilities described in the manual available found in the doc
+directory.

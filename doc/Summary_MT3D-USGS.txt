@@ -1,0 +1,114 @@
+SUMMARY OF MT3D-USGS
+
+
+NOTE: Any use of trade, product, or firm names is for descriptive purposes only
+      and does not imply endorsement by the U.S. Government.
+
+
+ABSTRACT 
+
+     MT3D-USGS, a U.S. Geological Survey updated releaseof the groundwater  
+solute transport code MT3DMS, includes new transport modeling capabilities 
+to accommodate flow terms calculated by MODFLOW packages that were previously 
+unsupported by MT3DMS and to provide greater flexibility in the simulation 
+of solute transport and reactive solute transport. Unsaturated-zone transport 
+and transport within streams and lakes, including solute exchange with 
+connected groundwater, are among the new capabilities included in the MT3D-USGS 
+code. MT3D-USGS also includes the capability to route a solute through dry 
+cells that may occur in the Newton-Raphson formulation of MODFLOW (that is,
+MODFLOW-NWT). New chemical reaction Package options include the ability to 
+simulate interspecies reactions and parent-daughter chain reactions. A new
+pump-and-treat recirculation package enables the simulation of dynamic 
+recirculation with or without treatment for combinations of wells that are 
+represented in the flow model, mimicking the above-ground treatment of 
+extracted water.  A reformulation of the treatment of transient mass storage
+improves conservation of mass and yields solutions for better agreement with 
+analytical benchmarks. Several additional features of MT3D-USGS are (1) the 
+separate specification of the partitioning coefficient (Kd) within mobile and 
+immobile domains; (2) the capability to assign prescribed concentrations to the 
+top-most active layer; (3) the change in mass storage owing to the change in 
+water volume now appears as its own budget item in the global mass balance 
+summary; (4) the ability to ignore cross-dispersion terms; (5) the definition
+of Hydrocarbon Spill-Source Package (HSS) mass loading zones using regular and 
+irregular polygons, in addition to the currently supported circular zones; and 
+(6) the ability to specify an absolute minimum thickness rather than the 
+default percent minimum thickness in dry-cell circumstances. 
+     Benchmark problems that implement the new features and packages test the 
+accuracy of new code through comparison to analytical benchmarks, as well as to 
+solutions from other published codes. The input file structure for MT3D-USGS 
+adheres to MT3DMS conventions for backward compatibility: the new capabilities 
+and packages described herein are readily invoked by adding three-letter 
+package name acronyms to the name file or by setting input flags as needed. 
+Memory is managed in MT3D-USGS using FORTRAN modules in order to simplify
+code development and expansion.
+     MT3D-USGS is described in the documentation report by Bedekar and others 
+(2016).
+
+
+HISTORY
+
+      MT3D-USGS Version 1.0.0 09/30/2016 - Initial release. 
+
+        
+SYSTEM REQUIREMENTS
+
+     MT3D-USGS is written in Fortran 90 programming language. The code has 
+     been used on personal computers running various forms of the Microsoft
+     Windows operating system.
+
+
+FUNTIONALITY
+
+     MT3D-USGS can be run from the command line by first typing the name of 
+     the executive file followed by the MT3D-USGS simulation's name file (e.g.,
+     'c:\MT3D-USGS.exe modelname_mt.nam'). MT3D-USGS is backward compatible and
+     therefore supports the following MT3DMS Packages (Zheng and Wang, 1999):
+    
+     MT3DMS packages supported in MT3D-USGS:
+         ADV -- Advection Package
+         BTN -- Basic Package
+         DSP -- Dispersion Package
+         FMI -- Flow-Model Interface
+         GCG -- Generalized Conjugate Gradient Solver Package
+         HSS -- Hydrocarbon Spill Source Package
+         RCT -- Reactions Package
+         SSM -- Source-Sink Mixing 
+         TOB -- Time Observation Package
+         
+     New MT3D-USGS packages not available in MT3DMS:
+         CTS -- Contaminant Treatment System Package
+         LKT -- Lake Transport Package        
+         SFT -- Streamflow Transport Package
+         UZT –- Unsaturated-Zone Transport Package
+     
+
+DOCUMENTATION
+
+Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS 
+version 1: A U.S. Geological Survey release of MT3DMS updated with new and 
+expanded transport capabilities for use with MODFLOW: U.S. Geological Survey 
+Techniques and Methods 6-A53, 69 p., Available online at 
+http://dx.doi.org/10.3133/tm6A53
+
+
+REFERENCE
+
+Zheng, C., and Wang, P., 1999, MT3DMS: A modular three-dimensional multispecies
+transport model for simulation of advection, dispersion, and chemical reactions
+of contaminants in groundwater systems; Documentation and user’s guide: 
+Contract Report SERDP-99-1: Vicksburg, Miss., U. S. Army Engineer Research
+and Development Center.  Available online at: http://hydro.geo.ua.edu/mt3d/ 
+
+CONTACT
+
+    Vivek Bedekar
+    S.S. Papadopulos & Assoc.
+    7944 Wisconsin Ave.
+    Bethesda, MD 20814
+    (301) 718-8900
+
+    Eric Morway
+    U.S. Geological Survey
+    2730 N. Deer Run Rd. 
+    Carson City, NV 89701
+    (775) 887-7668
