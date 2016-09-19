@@ -1,2 +1,2 @@
-         5      2000         3         1       ITER1,MXITER,ISOLVE,NCRS
+        20      2000         3         1       ITER1,MXITER,ISOLVE,NCRS
      1.000     1.E-6         0                 ACCL,CCLOSE,IPRGCG

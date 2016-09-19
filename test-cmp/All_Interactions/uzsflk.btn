@@ -119,7 +119,7 @@
          0  0.0                                                       #A15 - SCONC (lay 1)
          0  0.0                                                       #A15 - SCONC (lay 2)
          0  0.0                                                       #A15 - SCONC (lay 3)
-      -999      0.01                                                  #A16 - CINACT,THKMIN
+      -999     -0.20                                                  #A16 - CINACT,THKMIN
         12         0         0         0         T                    #A17 - IFMTCN,IFMTNP,IFMTRF,IFMTDP,SAVUCN
         -1                                                            #A18 - NPRS (>0 skip TIMPRS)
         12         1                                                  #A20 - NOBS,NPROBS (skip KOBS,IOBS,JOBS)          
