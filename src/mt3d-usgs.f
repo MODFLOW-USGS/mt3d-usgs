@@ -6,7 +6,7 @@ C      a modular three-dimensional multi-species transport model       %
 C    for simulation of advection, dispersion and chemical reactions    %
 C                of contaminants in groundwater systems                %
 C                                                                      %
-C                  For Technical InFORMATion Contact                   %
+C                  For Technical Information Contact                   %
 C                                                                      %
 C                           Vivek Bedekar                              %
 C                    S.S. Papadopulos & Associates                     %
@@ -115,10 +115,10 @@ C--INITIALIZE CHARACTER VARIABLES
       FLNAME=' '
 C
 C--The following statement should be uncommented in order to use
-C--GETCL to retrieve a command line argument.  The CALL( to GETCL may
+C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
-      CALL GETARG(1,COMLIN)               
+      CALL GETARG(1,COMLIN)
 C                                          
       IF(COMLIN.NE.' ') THEN               
         flname=COMLIN                      

@@ -290,7 +290,7 @@ C
 C  
       SUBROUTINE TOB1OT(KPER,KSTP,NTRANS,TIME1,TIME2)
 C **********************************************************************
-C This subroutine CALLs the sconcobs and smassfluxobs subroutines
+C This subroutine calls the sconcobs and smassfluxobs subroutines
 C to compute observed residuals between observed and simulated 
 C values
 C **********************************************************************          
@@ -885,7 +885,8 @@ C
       df=n-2     
       t=r*SQRT(df/(((1.-r)+TINY)*((1.+r)+TINY)))
       prob=betai(0.5*df,0.5,df/(df+t**2+TINY))  !TINY added by CZ
-C
+C     prob=erfcc(abs(z*sqrt(n-1.))/1.4142136)
+
     1 RETURN
       END
 C

@@ -372,7 +372,7 @@ c
 C        
       ENDDO
 C
-C--normal RETURN
+C--normal return
  1000 CONTINUE
       RETURN
       END
@@ -396,7 +396,7 @@ C
       INTEGER   ICOMP,ICBUND,is,it,icell,IGRID,
      &          N,iStep,iHSSComp
       INTEGER   K,I,J,NUM
-      REAL      ctmp,ctmp1,ctmp2,tstart,tEND,time1,time2,DTRANS,RSOL,
+      REAL      ctmp,ctmp1,ctmp2,tstart,tend,time1,time2,DTRANS,RSOL,
      &          FDSS
       DIMENSION ICBUND(NODES,NCOMP)
 C
@@ -478,7 +478,7 @@ C
       INTEGER   ICOMP,ICBUND,is,it,icell,N,iStep,IGRID,
      &          iHSSComp,IQ   
       INTEGER   K,I,J,NUM,IPHS,II
-      REAL      DTRANS,ctmp,ctmp1,ctmp2,tstart,tEND,time1,time2,RSOL,
+      REAL      DTRANS,ctmp,ctmp1,ctmp2,tstart,tend,time1,time2,RSOL,
      &          FDSS
       DIMENSION ICBUND(NODES,NCOMP)
 C
@@ -566,11 +566,11 @@ C
       INTEGER   NCOL,NROW,NLAY,isource,it,icell,
      &          iStep,MaxHSSSource,iTime1,iTime2,
      &          MaxHSSCells,MaxHSSStep,nHSSSource,iHSSComp
-      REAL      ctmp,ctmp1,ctmp2,tstart,tEND,time1,time2,HSSData,
-     &          cmtmp,tmtmp,cTime1,cTime2,cstart,cEND,ttmp     
+      REAL      ctmp,ctmp1,ctmp2,tstart,tend,time1,time2,HSSData,
+     &          cmtmp,tmtmp,cTime1,cTime2,cstart,cend,ttmp     
       DIMENSION HSSData(4+MaxHSSCells,MaxHSSStep,MaxHSSSource)
 c
-c--get starting and ENDing indices of transport step in source series    
+c--get starting and ending indices of transport step in source series    
       iTime2=1
       DO it=MaxHSSStep,1,-1
         ttmp=HSSData(1,it,iSource)
@@ -589,26 +589,26 @@ c
         ENDIF
       ENDDO               
 c          
-c--get interpolated conc at beginning and ENDing of transport step         
+c--get interpolated conc at beginning and ending of transport step         
       cTime1=0.
       IF(iTime1.lt.MaxHSSStep) THEN                
         cstart=HSSData(4+icell,iTime1,  isource)
         cEND=  HSSData(4+icell,iTime1+1,isource)
         tstart=HSSData(1,iTime1,  isource)
-        tEND  =HSSData(1,iTime1+1,isource)       
-        IF(tEND.ne.tstart.and.time1.ge.tstart.and.time1.le.tEND) THEN
-          cTime1=((cEND-cstart)/(tEND-tstart))*(time1-tstart)+cstart
+        tend  =HSSData(1,iTime1+1,isource)       
+        IF(tend.ne.tstart.and.time1.ge.tstart.and.time1.le.tend) THEN
+          cTime1=((cend-cstart)/(tend-tstart))*(time1-tstart)+cstart
         ENDIF
       ENDIF  
 c      
       cTime2=0.
       IF(iTime2.lt.MaxHSSStep) THEN                     
         cstart=HSSData(4+icell,iTime2,  isource)
-        cEND=  HSSData(4+icell,iTime2+1,isource)
+        cend=  HSSData(4+icell,iTime2+1,isource)
         tstart=HSSData(1,iTime2,  isource)
-        tEND  =HSSData(1,iTime2+1,isource)       
-        IF(tEND.ne.tstart.and.time2.ge.tstart.and.time2.le.tEND) THEN
-          cTime2=((cEND-cstart)/(tEND-tstart))*(time2-tstart)+cstart
+        tend  =HSSData(1,iTime2+1,isource)       
+        IF(tend.ne.tstart.and.time2.ge.tstart.and.time2.le.tend) THEN
+          cTime2=((cend-cstart)/(tend-tstart))*(time2-tstart)+cstart
         ENDIF
       ENDIF      
 c       
@@ -618,27 +618,27 @@ c--integrate time-averaged mass loading rate over source series
       ctmp=0.      
       do it=iTime1,iTime2 
         tstart=HSSData(1,it,  isource)
-        tEND  =HSSData(1,it+1,isource)
+        tend  =HSSData(1,it+1,isource)
         cstart=HSSData(4+icell,it,  isource)
-        cEND=  HSSData(4+icell,it+1,isource)
-        IF(tEND.lt.tstart) THEN
-          tEND=tstart
-          cEND=cstart
+        cend=  HSSData(4+icell,it+1,isource)
+        IF(tend.lt.tstart) THEN
+          tend=tstart
+          cend=cstart
         ENDIF
-        IF(time2.lt.tstart.or.time1.gt.tEND) THEN
+        IF(time2.lt.tstart.or.time1.gt.tend) THEN
           CYCLE
         ENDIF
 c        
-        IF(time1.gt.tstart.and.time1.le.tEND) THEN
+        IF(time1.gt.tstart.and.time1.le.tend) THEN
           tstart=time1
           cstart=cTime1         
         ENDIF
-        IF(time2.gt.tstart.and.time2.le.tEND) THEN    
-          tEND=time2
-          cEND=cTime2         
+        IF(time2.gt.tstart.and.time2.le.tend) THEN    
+          tend=time2
+          cend=cTime2         
         ENDIF           
-        cmtmp=cmtmp+0.5*(cstart+cEND)*(tEND-tstart)
-        tmtmp=tmtmp+(tEND-tstart)                                   
+        cmtmp=cmtmp+0.5*(cstart+cend)*(tend-tstart)
+        tmtmp=tmtmp+(tend-tstart)                                   
       ENDDO
       IF(time2.ne.time1) ctmp=cmtmp/(time2-time1)      
 C
@@ -708,8 +708,8 @@ C
 C .........................................................
 C This function checks whether a point P1 is inside
 C a polygon defined by a [NP] number of points P.  If yes,
-C the function RETURNs a logical value .TRUE.  Otherwise,
-C it RETURNs .FAUSE.
+C the function returns a logical value .TRUE.  Otherwise,
+C it returns .FAUSE.
 C .........................................................
 C
       REAL P,P1,P2,PL1,PL2

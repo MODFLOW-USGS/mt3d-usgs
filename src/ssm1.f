@@ -1476,7 +1476,7 @@ C
       SUBROUTINE cgroup(ncol,nrow,nlay,ncomp,icomp,mxss,ntss,
      & ss,ssmc,ssg,icbund,cnew,delr,delc,dh)
 c **********************************************************************
-c this SUBROUTINE calculates the average concentration for a linked
+c this subroutine calculates the average concentration for a linked
 c group sink/source such as a multi-node well
 c **********************************************************************
 c last modification: 02-15-2005
@@ -1559,7 +1559,7 @@ c
         ssg(4,iGroup) = cavg
       ENDDO
 c
-c--normal RETURN
+c--normal return
 c
       RETURN
       END

@@ -760,7 +760,7 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: SP2
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC1
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC2
-!--RCT-Vivek
+!--RCT
         INTEGER,          SAVE,                       POINTER :: ICTSOUT 
         INTEGER,          SAVE,                       POINTER :: MXCTS   
         INTEGER,          SAVE,                       POINTER :: MXEXT   
@@ -1035,7 +1035,10 @@ CONTAINS
       IF(ASSOCIATED(FSWT))         DEALLOCATE(FSWT)
       IF(ASSOCIATED(FSFR))         DEALLOCATE(FSFR)
 !
-      IF(ASSOCIATED(ISSGOUT))      DEALLOCATE(NTSS)
+      IF(ASSOCIATED(ISSGOUT))      DEALLOCATE(ISSGOUT)
+      IF(ASSOCIATED(MXSS))         DEALLOCATE(MXSS)
+      IF(ASSOCIATED(NSS))          DEALLOCATE(NSS)
+      IF(ASSOCIATED(NTSS))         DEALLOCATE(NTSS)
       IF(ASSOCIATED(RECH))         DEALLOCATE(RECH)
       IF(ASSOCIATED(IRCH))         DEALLOCATE(IRCH)
       IF(ASSOCIATED(CRCH))         DEALLOCATE(CRCH)

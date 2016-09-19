@@ -763,7 +763,6 @@ C--IF with no reaction or with first-order reaction
      &                (RETA2(J,I,K)-1.)
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+PRSITY2(J,I,K)*
      &                RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))/TERM1
-     &                
 C--IF with zeroth-order reaction     
               ELSEIF(ireact.eq.100) THEN 
                 TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
