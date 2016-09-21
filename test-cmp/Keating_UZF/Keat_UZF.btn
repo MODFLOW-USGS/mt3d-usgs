@@ -329,11 +329,12 @@ day  FT  LB
   CONSTANT     0.000 (10E12.4)                   -1     INITIAL CONCENTRATION Layer   78
   CONSTANT     0.000 (10E12.4)                   -1     INITIAL CONCENTRATION Layer   79
   CONSTANT     0.000 (10E12.4)                   -1     INITIAL CONCENTRATION Layer   80
--1.000e+00 -5.00e-06                                    #CINACT, THKMIN
-         3         0         0         0         T         F          #IFMTCN
+-1.000e+00 -5.00e-06                                                                   #CINACT, THKMIN
+         3         0         0         0         T         F                           #IFMTCN
         10                                                                             # NPRS
      10730     11500     12000     12500     13000     14000     15000     20000       # TIMPRS(NPRS)
      30000     40000                                                                   # TIMPRS(NPRS)
+         0        10
          T        10
 10000.0e+0         1  1.00e+00                          PERLEN, NSTP, TSMULT
 10000.0e+0     30000 1.000e+00 100.0e+02                DT0, MXSTRN, TTSMULT, TTSMAX
