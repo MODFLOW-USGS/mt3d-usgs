@@ -34,15 +34,10 @@ C U.S. Geological Survey with the iterative solver routine by Tsun-Zee
 C Mai.  Funding for MT3D-USGS development is provided, in part, by
 C U.S. Geological Survey's Groundwater Resources Program.
 C
-C Copyright, 2016, . All rights reserved.
-C
 C This program is provided without any warranty.
 C No author or distributor accepts any responsibility
 C to anyone for the consequences of using it
 C or for whether it serves any particular purpose.
-C The program may be copied, modified and redistributed,
-C but ONLY under the condition that the above copyright notice
-C and this notice remain intact.
 C
 C=======================================================================
 C Version history: xx-xx-2016 (1.00)
