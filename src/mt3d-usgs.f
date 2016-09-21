@@ -34,10 +34,21 @@ C U.S. Geological Survey with the iterative solver routine by Tsun-Zee
 C Mai.  Funding for MT3D-USGS development is provided, in part, by
 C U.S. Geological Survey's Groundwater Resources Program.
 C
-C This program is provided without any warranty.
-C No author or distributor accepts any responsibility
-C to anyone for the consequences of using it
-C or for whether it serves any particular purpose.
+C Please refer to the USGS Water Resources Software User Rights Notice 
+C
+C    http://water.usgs.gov/software/help/notice/
+C
+C for complete use, copyright, and distribution information. This 
+C software has been approved for release by the U.S. Geological Survey 
+C (USGS). Although the software has been subjected to rigorous review, 
+C the USGS reserves the right to update the software as needed pursuant 
+C to further analysis and review. No warranty, expressed or implied, is 
+C made by the USGS or the U.S. Government as to the functionality of 
+C the software and related material nor shall the fact of release 
+C constitute any such warranty. Furthermore, the software is released 
+C on condition that neither the USGS nor the U.S. Government shall be 
+C held liable for any damages resulting from its authorized or 
+C unauthorized use.
 C
 C=======================================================================
 C Version history: xx-xx-2016 (1.00)
