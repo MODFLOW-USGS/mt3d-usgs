@@ -15,6 +15,10 @@ C
 C    Standard Fortran -- Use unless there is a reason to do otherwise.
       DATA ACCESS/'SEQUENTIAL'/
 C
+C    Use the following in combination with 'UNFORMATTED' below to
+C    create portable binary files.  This combination seems to work
+C    well when using gfortran.
+C     DATA ACCESS/'STREAM'/
 C
 C  FORM specifier --
 C
