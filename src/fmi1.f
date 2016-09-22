@@ -519,6 +519,8 @@ C--PRINT INFORMATION ON DTRACK
      &           '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,
      &           ', J=',I4)
 C
+      IF(FUZFFLOWS) GOTO 991
+C
 C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
 C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
       DTRACK2=1.E30
@@ -531,8 +533,9 @@ C
             IF(J.GT.1) TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
             IF(I.GT.1) TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
             IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
-            IF(TK.EQ.0) CYCLE
+            IF(TK.EQ.0.) CYCLE
             TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
+            IF(TK.LE.0.) CYCLE
             IF(TK.LT.DTRACK2) THEN
               DTRACK2=TK
               JTRACK=J
@@ -631,7 +634,6 @@ C
       ENDDO
 C
   920 IF(NLAY.LT.2) GOTO 990
-      IF(FUZFFLOWS) GOTO 990
       DO J=1,NCOL
         DO I=1,NROW
           DO K=1,NLAY
@@ -652,7 +654,6 @@ C
 C
 C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
   990 CONTINUE
-      IF(FUZFFLOWS) GOTO 991
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
@@ -737,7 +738,7 @@ C
      &                         iUnitTRNOP,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,
      &                         FSFRFLOWS,FUZFFLOWS,FSWR,FSWRFLOWS,
      &                         FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF,
-     &                         DZ,QZ,PRSITY,QSTO
+     &                         DZ,QZ,PRSITY,QSTO,QX,QY
       USE INTERFACE1
 C
       IMPLICIT  NONE
@@ -746,7 +747,7 @@ C
      &          NUM,KPER,KSTP,IQ,KSSM,ISSM,JSSM,
      &          JJ,II,KK,JM1,JP1,IM1,IP1,KM1,KP1,INDEX,IFL,N,IFROM,ITO
       INTEGER   INCTS,KOLD  
-      REAL      VOLAQU,TM,THKSAT,TK,DTTEMP
+      REAL      VOLAQU,TM,THKSAT,TK,DTTEMP,WW
       CHARACTER TEXT*16
       INTEGER   NFLOWTYPE,NRCHCON,NNGW
       REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
@@ -1068,15 +1069,127 @@ C--PRINT INFORMATION ON DTRACK
      &       G11.4,'(WHEN MIN. R.F.=1) AT K=',I4,', I=',I4,', J=',I4)
   501   CONTINUE
 C
-        IF(NLAY.LT.2) GOTO 990
+C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
+C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
+        DTRACK2=1.E30
+C
+        DO K=1,NLAY
+        DO I=1,NROW
+          DO J=1,NCOL
+            IF(ICBUND(J,I,K,1).EQ.0) CYCLE
+            TK=0.
+            IF(J.GT.1) TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
+            IF(I.GT.1) TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
+            IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            IF(TK.EQ.0.) CYCLE
+            TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
+            IF(TK.LE.0.) CYCLE
+            IF(TK.LT.DTRACK2) THEN
+              DTRACK2=TK
+              JTRACK=J
+              ITRACK=I
+              KTRACK=K
+            ENDIF
+          ENDDO
+        ENDDO
+        ENDDO
+C
+C--PRINT INFORMATION ON DTRACK2
+        WRITE(IOUT,550) DTRACK2,KTRACK,ITRACK,JTRACK
+  550   FORMAT(/1X,'MAXIMUM STEPSIZE WHICH MEETS STABILITY CRITERION',
+     &             ' OF THE ADVECTION TERM'/1X,'(FOR PURE ',
+     &             'FINITE-DIFFERENCE OPTION, MIXELM=0) '/1X,'=',G11.4,
+     &             '(WHEN MIN. R.F.=1)  AT K=',I4,', I=',I4,', J=',I4)
+C
+C--DIVIDE VOLUMETRIC QX, QY AND QZ BY AREAS
+C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
+        IF(NCOL.LT.2) GOTO 910
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL-1
+              WW=DELR(J+1)/(DELR(J+1)+DELR(J))
+              THKSAT=DH(J,I,K)*WW+DH(J+1,I,K)*(1.-WW)
+              IF(DOMINSAT) THEN                       
+                IF(DH(J,I,K).LE.0. .OR. DH(J+1,I,K).LE.0.) THEN 
+                  IF(DH(J,I,K).GT.0.) THEN                      
+                    THKSAT=DH(J,I,K)*WW                         
+                  ELSEIF(DH(J+1,I,K).GT.0.) THEN                
+                    THKSAT=DH(J+1,I,K)*WW                       
+                  ELSE                                          
+                    THKSAT=1.0E30                               
+                  ENDIF                                         
+                ENDIF                                           
+                THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J+1,I,K))*(1.-WW)
+              ENDIF                                              
+              IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
+                IF(DOMINSAT) THEN           
+                  IF(THKSAT.EQ.0.0) THEN
+                    QX(J,I,K)=0.
+                  ELSE
+                    QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
+                  ENDIF
+                ELSE                                  
+                  QX(J,I,K)=0
+                  IF(J.GT.1) QX(J-1,I,K)=0.
+                ENDIF
+              ELSE
+                QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
+              ENDIF
+            ENDDO
+            IF(.NOT.DOMINSAT) THEN 
+              IF(ICBUND(NCOL,I,K,1).EQ.0) QX(NCOL-1,I,K)=0.
+            ENDIF
+          ENDDO
+        ENDDO
+C
+  910   IF(NROW.LT.2) GOTO 920
+        DO K=1,NLAY
+          DO J=1,NCOL
+            DO I=1,NROW-1
+              WW=DELC(I+1)/(DELC(I+1)+DELC(I))
+              THKSAT=DH(J,I,K)*WW+DH(J,I+1,K)*(1.-WW)
+              IF(DOMINSAT) THEN 
+                IF(DH(J,I,K).LE.0. .OR. DH(J,I+1,K).LE.0.) THEN
+                  IF(DH(J,I,K).GT.0.) THEN      
+                    THKSAT=DH(J,I,K)*WW         
+                  ELSEIF(DH(J,I+1,K).GT.0.) THEN
+                    THKSAT=DH(J,I+1,K)*WW       
+                  ELSE                          
+                    THKSAT=1.0E30               
+                  ENDIF                         
+                ENDIF                           
+                THKSAT=ABS(DH(J,I,K))*WW+ABS(DH(J,I+1,K))*(1.-WW)
+              ENDIF                                              
+              IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
+                IF(DOMINSAT) THEN           
+                  IF(THKSAT.EQ.0.0) THEN
+                    QY(J,I,K)=0.
+                  ELSE
+                    QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
+                  ENDIF
+                ELSE                                  
+                  QY(J,I,K)=0
+                  IF(I.GT.1) QY(J,I-1,K)=0.
+                ENDIF
+              ELSE
+                QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
+              ENDIF
+            ENDDO
+            IF(.NOT.DOMINSAT) THEN
+              IF(ICBUND(J,NROW,K,1).EQ.0) QY(J,NROW-1,K)=0.
+            ENDIF
+          ENDDO
+        ENDDO
+C
+  920   IF(NLAY.LT.2) GOTO 990
         DO J=1,NCOL
           DO I=1,NROW
             DO K=1,NLAY
               THKSAT=DH(J,I,K)
               IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
-                IF(DOMINSAT) THEN
-                  QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I))
-                ELSE
+                IF(DOMINSAT) THEN             
+                  QZ(J,I,K)=QZ(J,I,K)/(DELR(J)*DELC(I)) 
+                ELSE                                    
                   QZ(J,I,K)=0
                   IF(K.GT.1) QZ(J,I,K-1)=0.
                 ENDIF
@@ -1092,27 +1205,34 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-              THKSAT=DH(J,I,K)
+              THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
               IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
                 IF(DOMINSAT) THEN  
-                  QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
-                  IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
+                  IF(THKSAT.EQ.0.0) THEN
+                    QSTO(J,I,K)=0.
+                  ELSE
+                    QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
+                  ENDIF
                 ELSE                                              
                   QSTO(J,I,K)=0
                 ENDIF 
               ELSE
                 IF(iUnitTRNOP(7).GT.0) THEN
-                  QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
-     &                         (THKSAT*DELR(J)*DELC(I))    
-                  IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
+                  IF(THKSAT.EQ.0.0) THEN
+                    QSTO(J,I,K)=0.
+                  ELSE
+                    QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
+     &                        (THKSAT*DELR(J)*DELC(I))    
+                  ENDIF                
                 ELSE                                       
                   QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
-                ENDIF
-            ENDIF
-            IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
+                ENDIF                                             
+              ENDIF
+              IF(ABS(THKSAT-0.).LT.1.0E-5) QSTO(J,I,K)=0.
             ENDDO
           ENDDO
         ENDDO
+C
       ENDIF
 C                                                            
 C--READ LAK FLOW TERMS                                       
