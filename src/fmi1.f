@@ -572,8 +572,11 @@ C--TO GET SPECIFIC DISCHAGES ACROSS EACH CELL INTERFACE
             ENDIF                                              
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN           
-                QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
-                IF(THKSAT.EQ.0.0) QX(J,I,K)=0.
+                IF(THKSAT.EQ.0.0) THEN
+                  QX(J,I,K)=0.
+                ELSE
+                  QX(J,I,K)=QX(J,I,K)/(DELC(I)*THKSAT)
+                ENDIF
               ELSE                                  
                 QX(J,I,K)=0
                 IF(J.GT.1) QX(J-1,I,K)=0.
@@ -608,8 +611,11 @@ C
             ENDIF                                              
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN           
-                QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
-                IF(THKSAT.EQ.0.0) QY(J,I,K)=0.
+                IF(THKSAT.EQ.0.0) THEN
+                  QY(J,I,K)=0.
+                ELSE
+                  QY(J,I,K)=QY(J,I,K)/(DELR(J)*THKSAT)
+                ENDIF
               ELSE                                  
                 QY(J,I,K)=0
                 IF(I.GT.1) QY(J,I-1,K)=0.
@@ -653,16 +659,22 @@ C--DIVIDE STORAGE BY CELL VOLUME TO GET DIMENSION (1/TIME)
             THKSAT=DH(J,I,K)  !WHEN UZT ACTIVE, DH IS DZ
             IF(THKSAT.LE.0.OR.ICBUND(J,I,K,1).EQ.0) THEN
               IF(DOMINSAT) THEN  
-                QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
-                IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
+                IF(THKSAT.EQ.0.0) THEN
+                  QSTO(J,I,K)=0.
+                ELSE
+                  QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
+                ENDIF
               ELSE                                              
                 QSTO(J,I,K)=0
               ENDIF 
             ELSE
               IF(iUnitTRNOP(7).GT.0) THEN
-                QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
+                IF(THKSAT.EQ.0.0) THEN
+                  QSTO(J,I,K)=0.
+                ELSE
+                  QSTO(J,I,K)=(QSTO(J,I,K)+UZQSTO(J,I,K))/ 
      &                      (THKSAT*DELR(J)*DELC(I))    
-                IF(THKSAT.EQ.0.0) QSTO(J,I,K)=0.
+                ENDIF                
               ELSE                                       
                 QSTO(J,I,K)=QSTO(J,I,K)/(THKSAT*DELR(J)*DELC(I))
               ENDIF                                             
