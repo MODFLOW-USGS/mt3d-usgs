@@ -417,9 +417,9 @@ INTERNAL 1 (free) -1              #Layer 207
 INTERNAL 1 (free) -1              #Layer 208
 1  1  1
 INTERNAL 1 (free) -1              #Layer 209
--1 1 -1
+1  1  1
 INTERNAL 1 (free) -1              #Layer 210
--1 -1 -1  
+1 -1 1  
 -999       #HNOFLO
 INTERNAL 1 (free) -1              #40 Layers
 1.5  1.5  1.5
