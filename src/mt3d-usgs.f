@@ -51,15 +51,9 @@ C held liable for any damages resulting from its authorized or
 C unauthorized use.
 C
 C=======================================================================
-C Version history: xx-xx-2016 (1.00)
+C Version history: 09-30-2016 (1.00)
 C
-C  =====================================================================
-C
-C
-C--There appears to be a bug when PERCEL (ADV input file) is set 
-C--to something that causes sub-time stepping.  Mass is not      
-C--conserved in this scenario and may need to be addressed before
-C--code is distributed.                                          
+C  =====================================================================                                        
 C
       USE RCTMOD                                                 
       USE MIN_SAT                                                
