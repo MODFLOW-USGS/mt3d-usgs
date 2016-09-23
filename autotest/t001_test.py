@@ -2,7 +2,7 @@ from __future__ import print_function
 import os
 import flopy
 import pymake
-from pymake.autotest import get_namefiles, compare_budget, compare_heads
+from pymake.autotest import get_namefiles
 import config
 
 test_dirs = ['Saturated_Transient_Storage',
@@ -28,11 +28,27 @@ test_dirs = ['Saturated_Transient_Storage',
              'Legacy99Storage',
              'AltWTSorb']
 
-def run_mt3d(mfnamefile, mtnamefile, comparison=True):
+def run_mt3d(spth, comparison=True):
     """
     Run the simulations.
 
     """
+
+    # Path to folder containing tests
+    pth = config.testpaths[0]
+
+    # -- get modflow name files
+    tpth = os.path.join(pth, spth)
+    namefilesmf = []
+    namefilesmf += get_namefiles(tpth, exclude='mt')
+
+    # -- get mt3d name files
+    tpth = os.path.join(pth, spth)
+    namefilesmt = []
+    namefilesmt += get_namefiles(tpth, exclude='mf')
+
+    mfnamefile = namefilesmf[0]
+    mtnamefile = namefilesmt[0]
     print(mfnamefile, mtnamefile)
 
     # Set root as the directory name where namefile is located
@@ -127,32 +143,10 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
 
 def test_mt3d():
     for spth in test_dirs:
-        # -- get modflow name files
-        namefilesmf = []
-        pth = config.testpaths[0]
-        tpth = os.path.join(pth, spth)
-        namefilesmf += get_namefiles(tpth, exclude='mt')
-        # -- get mt3d name files
-        namefilesmt = []
-        tpth = os.path.join(pth, spth)
-        namefilesmt += get_namefiles(tpth, exclude='mf')
-        # -- process name files
-        for (nm1, nm2) in zip(namefilesmf, namefilesmt):
-            yield run_mt3d, nm1, nm2
+        yield run_mt3d, spth
     return
 
 
 if __name__ == '__main__':
     for spth in test_dirs:
-        # -- get modflow name files
-        namefilesmf = []
-        pth = config.testpaths[0]
-        tpth = os.path.join(pth, spth)
-        namefilesmf += get_namefiles(tpth, exclude='mt')
-        # -- get mt3d name files
-        namefilesmt = []
-        tpth = os.path.join(pth, spth)
-        namefilesmt += get_namefiles(tpth, exclude='mf')
-        # -- process name files
-        for (nm1, nm2) in zip(namefilesmf, namefilesmt):
-            run_mt3d(nm1, nm2)
+        run_mt3d(spth)
