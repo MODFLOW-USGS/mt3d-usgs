@@ -5,7 +5,28 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb']  #'Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb'
+test_dirs = ['Saturated_Transient_Storage',
+             'lkt',
+             'SFT_CrnkNic',
+             'SFT_Full_Imp',
+             'UZT_Disp_Lamb01',
+             'UZT_Disp_Lamb01_TVD',
+             'UZT_Disp_Lamb1',
+             'UZT_Disp_Lamb10',
+             'Keating',
+             'Keating_UZF',
+             'UZT_NonLin',
+             'UZT_NonEq',
+             'cts0',
+             'cts1',
+             'cts2',
+             'cts3',
+             'cts4',
+             'Saturated_Transient_Storage',
+             'drycell',
+             'gwt',
+             'Legacy99Storage',
+             'AltWTSorb']
 
 def run_mt3d(mfnamefile, mtnamefile, comparison=True):
     """
@@ -40,7 +61,7 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
                                         normal_msg='program completed')
 
     success_cmp = True
-    if comparison:
+    if success and comparison:
         action = pymake.setup_comparison(mfnamefile, testpth)
         action = pymake.setup_comparison(mtnamefile, testpth, 
                                          remove_existing=False)
@@ -51,10 +72,17 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
                 files_cmp = []
                 files = os.listdir(testpth_cmp)
                 for file in files:
-                    files_cmp.append(
-                            os.path.abspath(os.path.join(testpth_cmp, file)))
-                success_cmp = True
-                #print(files_cmp)
+                    files1 = os.path.join(testpth, file[:-4])
+                    files2 = os.path.join(testpth_cmp, file)
+                    outfileucn = os.path.join(testpth, file + '.txt')
+                    success_ucn = pymake.compare_concs(None, None,
+                                                       ctol=0.002,
+                                                       outfile=outfileucn,
+                                                       files1=files1,
+                                                       files2=files2)
+                    if not success_ucn:
+                        success_cmp = False
+
             else:
                 print('running comparison modflow-nwt model...{}'.format(testpth_cmp))
                 key = action.lower().replace('.cmp', '')
@@ -72,19 +100,19 @@ def run_mt3d(mfnamefile, mtnamefile, comparison=True):
                                                         model_ws=testpth_cmp,
                                                         silent=True,
                                                         normal_msg='program completed')
-            #print('success: ', success)
-            #print('success_cmp: ', success_cmp)
-            if success_cmp:
-                nam = os.path.basename(mtnamefile)
-                namefile1 = os.path.join(testpth, nam)
-                namefile2 = os.path.join(testpth_cmp, nam)
-                outfileucn = os.path.join(
-                             os.path.split(os.path.join(testpth, nam))[0],
-                             'ucn.cmp')
-                success_ucn = pymake.compare_concs(namefile1, namefile2,
-                                                   ctol=0.002,
-                                                   outfile=outfileucn,
-                                                   files2=files_cmp)
+
+                if success_cmp:
+                    nam = os.path.basename(mtnamefile)
+                    namefile1 = os.path.join(testpth, nam)
+                    namefile2 = os.path.join(testpth_cmp, nam)
+                    outfileucn = os.path.join(
+                                 os.path.split(os.path.join(testpth, nam))[0],
+                                 'ucn.cmp')
+                    success_ucn = pymake.compare_concs(namefile1, namefile2,
+                                                       ctol=0.002,
+                                                       outfile=outfileucn,
+                                                       files2=files_cmp)
+
                 if success_cmp and success_ucn:
                     success_cmp = True
                 else:
