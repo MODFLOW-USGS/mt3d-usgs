@@ -5,6 +5,29 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
+#  1) 'Saturated_Transient_Storage'
+#  2) 'lkt'
+#  3) 'SFT_CrnkNic'
+#  4) 'SFT_Full_Imp'
+#  5) 'UZT_Disp_Lamb01'
+#  6) 'UZT_Disp_Lamb01_TVD'
+#  7) 'UZT_Disp_Lamb1'
+#  8) 'UZT_Disp_Lamb10'
+#  9) 'Keating'
+# 10) 'Keating_UZF'
+# 11) 'UZT_NonLin'
+# 12) 'UZT_NonEq'
+# 13) 'cts0'
+# 14) 'cts1'
+# 15) 'cts2'
+# 16) 'cts3'
+# 17) 'cts4'
+# 18) 'Saturated_Transient_Storage'
+# 19) 'drycell'
+# 20) 'gwt'
+# 21) 'Legacy99Storage'
+# 22) 'AltWTSorb'
+
 test_dirs = ['Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb']  #'Saturated_Transient_Storage', 'lkt', 'SFT_CrnkNic', 'SFT_Full_Imp', 'UZT_Disp_Lamb01', 'UZT_Disp_Lamb01_TVD', 'UZT_Disp_Lamb1', 'UZT_Disp_Lamb10', 'Keating', 'Keating_UZF', 'UZT_NonLin', 'UZT_NonEq', 'cts0', 'cts1', 'cts2', 'cts3', 'cts4', 'Saturated_Transient_Storage', 'drycell', 'gwt', 'Legacy99Storage', 'AltWTSorb'
 
 def run_mt3d(mfnamefile, mtnamefile, comparison=True):
