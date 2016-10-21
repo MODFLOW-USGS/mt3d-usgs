@@ -1,0 +1,94 @@
+README FILE FOR LMT7 for MODFLOW-2005
+[Version 7.0: 08/08/2008]
+
+INTRODUCTION
+
+LMT7 is a new package for MODFLOW-2005 that enables it to produce 
+the information needed by MT3DMS for multi-species mass transport 
+modeling.  The LMT7 Package is modified from a previous version 
+LMT6 for MODFLOW-2000, as documented in the USGS Open-File 
+Report 01-82 (Zheng and others, 2001), available from
+http://water.usgs.gov/nrp/gwsoftware/modflow2000/ofr01-82.pdf.  
+
+
+REVISION HISTORY
+
+Version 7.0: 08-08-2008
+-----------------------
+Initial release.
+
+
+Notes on the LMT Input File for MODFLOW
+=======================================
+
+The data in the MODFLOW input file for LMT7 are the same as for the
+original LMT6 version of LMT (see above Internet link to
+the documentation for LMT6). The LMT7 input file must have the
+following records:
+
+OUTPUT_FILE_NAME    [***.FTL]
+OUTPUT_FILE_UNIT    [333]
+OUTPUT_FILE_HEADER  [extended]
+OUTPUT_FILE_FORMAT  [unformatted]
+
+The first item in each line is a keyword (shown in all uppercase) that
+must be specified exactly as shown except that either uppercase or
+lowercase can be used. The 2nd item in each line is shown in brackets,
+which indicates the items are optional. If an optional item is specified,
+do not include the brackets.  When any of the optional items are omitted,
+default values as shown above are assigned. Note that the placeholder [***]
+is replaced by the same root name of the LMT input file.
+
+The MODFLOW Name File must include the name of an LMT input file to 
+activate the LMT7 package and cause MODFLOW to create the flow-transport
+link file used by MT3DMS.  The file type in the Name file must be LMT6.
+This file type for the LMT7 package is unchanged from that used for the
+LMT6 package because the input file is unchanged.  Commonly, a file
+extension of ".LMT" is used for the input file.  The following is a
+sample LMT line in the MODFLOW Name File for a file named "test.lmt".
+
+LMT6   45  test.lmt
+
+The second item is an unused file unit that MODFLOW will use to read the
+LMT input file.  In this example, 45 is used for the unit number.
+
+
+Notes on the Implementation of LMT7 in MODFLOW-2005
+===================================================
+
+The source code for the LMT7 package includes two Fortran files, 
+lmt7.inc and lmt7.f.  To implement LMT7 in MODFLOW-2005, do the
+following:
+
+a) Insert the keyword 'LMT6' (all capital) in the 49th element 
+   of the CUNIT array in the MODFLOW-2005 main program;
+b) Add this statement [include 'lmt7.inc'] in the MODFLOW-2005
+   main program immediately after all the calls to the various
+   budget subroutines; and
+c) Put the LMT source files lmt7.inc and lmt7.f together with 
+   other MODFLOW-2005 source files and recompile.
+
+
+Notes on the Flow-Transport Link File
+=====================================
+
+The flow-transport link file produced by MODFLOW-2005 through the 
+LMT7 package can be saved in either an unformatted (binary) file 
+or an ASCII text file with free format.  The former can be read by 
+all versions of MT3DMS while the latter only by MT3DMS version 4.0 
+or later.  Because an ASCII text file requires much more disk space 
+than an equivalent unformatted (binary) file, the ASCII text file option 
+is intended mainly for debugging purposes when the unformatted (binary) 
+option fails to work properly.
+
+The structure of unformatted (binary) files used in MODFLOW-2005 is 
+controlled by a number of "specifiers" in the file 'openspec.inc' 
+as part of MODFLOW-2005 distribution files.  These specifiers are 
+used in the OPEN statement to open the flow-transport link file along 
+with other input/output files.  If non-standard specifiers are used, 
+such as FORM = 'BINARY', it may be necessary to use the same 
+OPEN statement specifiers in the MT3DMS code for the 
+flow-transport link file to be read by MT3DMS correctly.  For MT3DMS 
+version 4.0 or later, the structure of unformatted files is specified 
+in the source file 'filespec.inc', similar to 'openspec.inc' used by 
+MODFLOW-2005. 

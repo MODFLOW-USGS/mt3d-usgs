@@ -1,0 +1,77 @@
+README FILE FOR LMT6 for MODFLOW-2000
+[Version 6.3: 5/10/2005]
+
+
+LMT6 is a package for MODFLOW-2000 that enables it to produce 
+the information needed by MT3DMS for multi-species mass transport 
+modeling.  The LMT6 Package is documented in the USGS Open-File 
+Report 01-82 (Zheng and others, 2001), available from
+http://water.usgs.gov/nrp/gwsoftware/modflow.html.  
+
+
+Revision History
+
+
+Version 6.0: 05-25-2001
+-----------------------
+Initial release.
+
+
+Version 6.1: 05-01-2002
+-----------------------
+This version corrects an inconsistency between the Link-MT3DMS (LMT6)
+package and MT3DMS 4.0.  This inconsistency causes an I/O error when
+the flow-transport link file saved by LMT6 is read by MT3DMS.  The 
+problem only occurs when the STR1 package is used in the flow model, 
+and when the Extended header option is specified for saving the 
+flow-transport link file.
+
+
+Version 6.2: 07-15-2003
+-----------------------
+This version adds support for 3 sink/source packages for MODFLOW-2000,
+i.e., Multi-Node Well (MNW1), Segmented Evapotranspiration (ETS1), 
+and Drain with Return Flow (DRT1), and is compatible with version 2
+of the HUF Package. In addition, this version corrects a minor problem
+that causes a steady-state flow solution to be saved as transient 
+(with zero storage) when the LPF1 Package is used.
+
+
+Version 6.3: 05-10-2005
+-----------------------
+This version fixes a linkage problem with the Multi-Node Well (MNW1) 
+package.  The dimension of the WELL2 array in the MNW1 package has 
+been increased to 18 to provide the most reliable means of storing 
+saving the unique MNW identifier needed by MT3DMS.  Also, the WELL2 
+array has been declared as double precision since 4/05/2005.  This 
+change was reflected in this version of the LMT6 package (requiring 
+changes to both lmt6.f and the calling statments in lmt6.inc inserted 
+to the mf2k main program).  In addition, LMT6.3 supports the 
+Model-Layer Variable-Direction Horizontal Anisotropy (LVDA) 
+capability of the HUF2 package. 
+
+
+Notes on the Flow-Transport Link File
+
+
+The flow-transport link file produced by MODFLOW-2000 through the 
+LMT6 Package can be saved in either an unformatted (binary) file 
+or an ASCII text file with free format.  The former can be read by 
+all versions of MT3DMS while the latter only by MT3DMS version 4.0 
+or later.  Because an ASCII text file requires much more disk space 
+than an equivalent unformatted (binary) file, the ASCII text file option 
+is intended mainly for debugging purposes when the unformatted (binary) 
+option fails to work properly.
+
+The structure of unformatted (binary) files used in MODFLOW-2000 is 
+controlled by a number of "specifiers" in the file 'openspec.inc' 
+as part of MODFLOW-2000 distribution files.  These specifiers are 
+used in the OPEN statement to open the flow-transport link file along 
+with other input/output files.  If non-standard specifiers are used, 
+such as ACCESS = 'TRANSPARENT' or FORM = 'BINARY', it may be necessary 
+to use the same OPEN statement specifiers in the MT3DMS code for the 
+flow-transport link file to be read by MT3DMS correctly.  For MT3DMS 
+version 4.0 or later, the structure of unformatted files is specified 
+in the source file 'filespec.inc', similar to 'openspec.inc' used by 
+MODFLOW-2000. For MT3DMS version 3.5 or earlier, the file opening 
+function is in the subroutine OPENFL of the Utility Package. 
