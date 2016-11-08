@@ -1,0 +1,446 @@
+                                 MODFLOW-2000
+     U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
+                          VERSION 1.19.01 03/25/2010
+
+
+This model run produced both GLOBAL and LIST files.  This is the GLOBAL file.
+
+GLOBAL LISTING FILE: gv131.glo
+                        UNIT    6
+
+OPENING gv131.lst
+FILE TYPE:LIST   UNIT    7   STATUS:REPLACE
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.bas
+FILE TYPE:BAS6   UNIT    1   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.dis
+FILE TYPE:DIS   UNIT   29   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.lpf
+FILE TYPE:LPF   UNIT   11   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.zone
+FILE TYPE:ZONE   UNIT   40   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.rch
+FILE TYPE:RCH   UNIT   18   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.oc
+FILE TYPE:OC   UNIT   22   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.pcg
+FILE TYPE:PCG   UNIT   19   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+OPENING gv131.cbb
+FILE TYPE:DATA(BINARY)   UNIT   50   STATUS:UNKNOWN
+FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+OPENING gv131.hds
+FILE TYPE:DATA(BINARY)   UNIT   30   STATUS:UNKNOWN
+FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+OPENING gv131.ddn
+FILE TYPE:DATA(BINARY)   UNIT   31   STATUS:UNKNOWN
+FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+OPENING gv131.lmt
+FILE TYPE:LMT6   UNIT   33   STATUS:OLD    
+FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+
+DISCRETIZATION INPUT DATA READ FROM UNIT   29
+# MODFLOW2000 Discretization File
+  16 LAYERS         1 ROWS       150 COLUMNS
+   1 STRESS PERIOD(S) IN SIMULATION
+MODEL TIME UNIT IS DAYS
+MODEL LENGTH UNIT IS UNDEFINED
+THE GROUND-WATER TRANSPORT PROCESS IS INACTIVE
+
+THE OBSERVATION PROCESS IS INACTIVE
+THE SENSITIVITY PROCESS IS INACTIVE
+THE PARAMETER-ESTIMATION PROCESS IS INACTIVE
+
+MODE: FORWARD
+
+
+ZONE OPTION, INPUT READ FROM UNIT   40
+# MODFLOW2000 Zone File
+# Groundwater Vistas writes all zones regardless of whether
+# they are being used.  These zones include:
+#     kxzone##, kzzone##, szone##, rzone, and etzone, where
+#     ## is the layer number
+   33 ZONE ARRAYS
+ Confining bed flag for each layer:
+  0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+
+     21751  ELEMENTS OF GX ARRAY USED OUT OF      21751
+      2400  ELEMENTS OF GZ ARRAY USED OUT OF       2400
+      7350  ELEMENTS OF IG ARRAY USED OUT OF       7350
+
+                    DELR =   10.0000    
+
+                    DELC =   1.00000    
+
+TOP ELEVATION OF LAYER 1 =   300.000    
+
+  MODEL LAYER BOTTOM EL. =   275.000     FOR LAYER   1
+
+  MODEL LAYER BOTTOM EL. =   250.000     FOR LAYER   2
+
+  MODEL LAYER BOTTOM EL. =   225.000     FOR LAYER   3
+
+  MODEL LAYER BOTTOM EL. =   200.000     FOR LAYER   4
+
+  MODEL LAYER BOTTOM EL. =   175.000     FOR LAYER   5
+
+  MODEL LAYER BOTTOM EL. =   150.000     FOR LAYER   6
+
+  MODEL LAYER BOTTOM EL. =   125.000     FOR LAYER   7
+
+  MODEL LAYER BOTTOM EL. =   100.000     FOR LAYER   8
+
+  MODEL LAYER BOTTOM EL. =   75.0000     FOR LAYER   9
+
+  MODEL LAYER BOTTOM EL. =   50.0000     FOR LAYER  10
+
+  MODEL LAYER BOTTOM EL. =   25.0000     FOR LAYER  11
+
+  MODEL LAYER BOTTOM EL. =   0.00000     FOR LAYER  12
+
+  MODEL LAYER BOTTOM EL. =  -25.0000     FOR LAYER  13
+
+  MODEL LAYER BOTTOM EL. =  -50.0000     FOR LAYER  14
+
+  MODEL LAYER BOTTOM EL. =  -75.0000     FOR LAYER  15
+
+  MODEL LAYER BOTTOM EL. =  -100.000     FOR LAYER  16
+
+
+STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+----------------------------------------------------------------------------
+       1         7305.000          1                    1.200         SS
+
+STEADY-STATE SIMULATION
+
+
+
+
+  ZONE ARRAY: kxzone1    =              1
+
+  ZONE ARRAY: kxzone2    =              1
+
+  ZONE ARRAY: kxzone3    =              1
+
+  ZONE ARRAY: kxzone4    =              1
+
+  ZONE ARRAY: kxzone5    =              1
+
+  ZONE ARRAY: kxzone6    =              1
+
+  ZONE ARRAY: kxzone7    =              1
+
+  ZONE ARRAY: kxzone8    =              1
+
+  ZONE ARRAY: kxzone9    =              1
+
+  ZONE ARRAY: kxzone10   =              1
+
+  ZONE ARRAY: kxzone11   =              1
+
+  ZONE ARRAY: kxzone12   =              1
+
+  ZONE ARRAY: kxzone13   =              1
+
+  ZONE ARRAY: kxzone14   =              1
+
+  ZONE ARRAY: kxzone15   =              1
+
+  ZONE ARRAY: kxzone16   =              1
+
+  ZONE ARRAY: szone1     =              1
+
+  ZONE ARRAY: szone2     =              1
+
+  ZONE ARRAY: szone3     =              1
+
+  ZONE ARRAY: szone4     =              1
+
+  ZONE ARRAY: szone5     =              1
+
+  ZONE ARRAY: szone6     =              1
+
+  ZONE ARRAY: szone7     =              1
+
+  ZONE ARRAY: szone8     =              1
+
+  ZONE ARRAY: szone9     =              1
+
+  ZONE ARRAY: szone10    =              1
+
+  ZONE ARRAY: szone11    =              1
+
+  ZONE ARRAY: szone12    =              1
+
+  ZONE ARRAY: szone13    =              1
+
+  ZONE ARRAY: szone14    =              1
+
+  ZONE ARRAY: szone15    =              1
+
+  ZONE ARRAY: szone16    =              1
+
+  ZONE ARRAY: rzone1     =              1
+
+LPF1 -- LAYER PROPERTY FLOW PACKAGE, VERSION 1, 1/11/2000
+        INPUT READ FROM UNIT   11
+# MODFLOW2000 Layer Property Flow (LPF) Package
+CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+HEAD AT CELLS THAT CONVERT TO DRY= -1.00000E+30
+No named parameters
+
+  LAYER FLAGS:
+LAYER       LAYTYP        LAYAVG         CHANI        LAYVKA        LAYWET
+---------------------------------------------------------------------------
+   1             1             0     1.000E+00             0             0
+   2             3             0     1.000E+00             0             0
+   3             3             0     1.000E+00             0             0
+   4             3             0     1.000E+00             0             0
+   5             3             0     1.000E+00             0             0
+   6             3             0     1.000E+00             0             0
+   7             3             0     1.000E+00             0             0
+   8             3             0     1.000E+00             0             0
+   9             3             0     1.000E+00             0             0
+  10             3             0     1.000E+00             0             0
+  11             3             0     1.000E+00             0             0
+  12             3             0     1.000E+00             0             0
+  13             3             0     1.000E+00             0             0
+  14             3             0     1.000E+00             0             0
+  15             3             0     1.000E+00             0             0
+  16             3             0     1.000E+00             0             0
+
+  INTERPRETATION OF LAYER FLAGS:
+                       INTERBLOCK     HORIZONTAL    DATA IN
+        LAYER TYPE   TRANSMISSIVITY   ANISOTROPY   ARRAY VKA   WETTABILITY
+LAYER      (LAYTYP)      (LAYAVG)       (CHANI)      (LAYVKA)      (LAYWET)
+---------------------------------------------------------------------------
+   1   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   2   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   3   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   4   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   5   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   6   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   7   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   8   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   9   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  10   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  11   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  12   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  13   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  14   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  15   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+  16   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+
+      4800 ELEMENTS IN X ARRAY ARE USED BY LPF
+        96 ELEMENTS IN IX ARRAY ARE USED BY LPF
+
+PCG2 -- CONJUGATE GRADIENT SOLUTION PACKAGE, VERSION 2.4, 12/29/98
+MAXIMUM OF    100 CALLS OF SOLUTION ROUTINE
+MAXIMUM OF     25 INTERNAL ITERATIONS PER CALL TO SOLUTION ROUTINE
+MATRIX PRECONDITIONING TYPE :    1
+      9800 ELEMENTS IN X ARRAY ARE USED BY PCG
+     17500 ELEMENTS IN IX ARRAY ARE USED BY PCG
+      9600 ELEMENTS IN Z ARRAY ARE USED BY PCG
+
+     14600  ELEMENTS OF X ARRAY USED OUT OF      14600
+      9600  ELEMENTS OF Z ARRAY USED OUT OF       9600
+     17596  ELEMENTS OF IX ARRAY USED OUT OF      17596
+         0  ELEMENTS OF XHS ARRAY USED OUT OF          1
+
+
+
+                                   SOLUTION BY THE CONJUGATE-GRADIENT METHOD
+                                  -------------------------------------------
+                   MAXIMUM NUMBER OF CALLS TO PCG ROUTINE =      100
+                       MAXIMUM ITERATIONS PER CALL TO PCG =       25
+                              MATRIX PRECONDITIONING TYPE =        1
+       RELAXATION FACTOR (ONLY USED WITH PRECOND. TYPE 1) =    0.10000E+01
+PARAMETER OF POLYNOMIAL PRECOND. = 2 (2) OR IS CALCULATED :        2
+                        HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-02
+                    RESIDUAL CHANGE CRITERION FOR CLOSURE =    0.10000E+01
+           PCG HEAD AND RESIDUAL CHANGE PRINTOUT INTERVAL =        5
+    PRINTING FROM SOLVER IS LIMITED(1) OR SUPPRESSED (>1) =        0
+                                        DAMPING PARAMETER =    0.10000E+01
+
+WETTING CAPABILITY IS NOT ACTIVE IN ANY LAYER
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   1
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   1
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   2
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   2
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   3
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   3
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   4
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   4
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   5
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   5
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   6
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   6
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   7
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   7
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   8
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   8
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER   9
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER   9
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  10
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  10
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  11
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  11
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  12
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  12
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  13
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  13
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  14
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  14
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  15
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  15
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+             HYD. COND. ALONG ROWS FOR LAYER  16
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+               VERTICAL HYD. COND. FOR LAYER  16
+READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+    0 Recharge parameters

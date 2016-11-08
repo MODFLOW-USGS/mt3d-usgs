@@ -1,0 +1,14 @@
+GLOBAL 3 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.glo
+LIST 2 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.lst
+BAS6 1 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.bas
+LPF 11 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.lpf
+DIS 29 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.dis
+ZONE 40 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.zone
+RCH 18 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.rch
+OC 22 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.oc
+PCG 19 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.pcg
+LMT6 33 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.lmt
+DATA(BINARY) 50 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.cbb
+DATA(BINARY) 30 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.hds
+DATA(BINARY) 31 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.ddn
+DATA(BINARY) 13 C:\Projects\1572 Daly City MTBE\Analysis\Model\Model_001\gv131.ftl

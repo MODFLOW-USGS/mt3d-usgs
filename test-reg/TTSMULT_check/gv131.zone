@@ -1,0 +1,72 @@
+# MODFLOW2000 Zone File
+# Groundwater Vistas writes all zones regardless of whether
+# they are being used.  These zones include:
+#     kxzone##, kzzone##, szone##, rzone, and etzone, where
+#     ## is the layer number
+  33
+kxzone1
+         0         1(50I3)                      -1     K Zones for Layer 1
+kxzone2
+         0         1(50I3)                      -1     K Zones for Layer 2
+kxzone3
+         0         1(50I3)                      -1     K Zones for Layer 3
+kxzone4
+         0         1(50I3)                      -1     K Zones for Layer 4
+kxzone5
+         0         1(50I3)                      -1     K Zones for Layer 5
+kxzone6
+         0         1(50I3)                      -1     K Zones for Layer 6
+kxzone7
+         0         1(50I3)                      -1     K Zones for Layer 7
+kxzone8
+         0         1(50I3)                      -1     K Zones for Layer 8
+kxzone9
+         0         1(50I3)                      -1     K Zones for Layer 9
+kxzone10
+         0         1(50I3)                      -1     K Zones for Layer 10
+kxzone11
+         0         1(50I3)                      -1     K Zones for Layer 11
+kxzone12
+         0         1(50I3)                      -1     K Zones for Layer 12
+kxzone13
+         0         1(50I3)                      -1     K Zones for Layer 13
+kxzone14
+         0         1(50I3)                      -1     K Zones for Layer 14
+kxzone15
+         0         1(50I3)                      -1     K Zones for Layer 15
+kxzone16
+         0         1(50I3)                      -1     K Zones for Layer 16
+szone1
+         0         1(50I3)                      -1     S Zones for Layer 1
+szone2
+         0         1(50I3)                      -1     S Zones for Layer 2
+szone3
+         0         1(50I3)                      -1     S Zones for Layer 3
+szone4
+         0         1(50I3)                      -1     S Zones for Layer 4
+szone5
+         0         1(50I3)                      -1     S Zones for Layer 5
+szone6
+         0         1(50I3)                      -1     S Zones for Layer 6
+szone7
+         0         1(50I3)                      -1     S Zones for Layer 7
+szone8
+         0         1(50I3)                      -1     S Zones for Layer 8
+szone9
+         0         1(50I3)                      -1     S Zones for Layer 9
+szone10
+         0         1(50I3)                      -1     S Zones for Layer 10
+szone11
+         0         1(50I3)                      -1     S Zones for Layer 11
+szone12
+         0         1(50I3)                      -1     S Zones for Layer 12
+szone13
+         0         1(50I3)                      -1     S Zones for Layer 13
+szone14
+         0         1(50I3)                      -1     S Zones for Layer 14
+szone15
+         0         1(50I3)                      -1     S Zones for Layer 15
+szone16
+         0         1(50I3)                      -1     S Zones for Layer 16
+rzone1
+         0         1(50I3)                      -1     Recharge Zones for Stress Period 1
