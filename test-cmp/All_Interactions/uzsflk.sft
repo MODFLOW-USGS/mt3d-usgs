@@ -1,5 +1,5 @@
         32        32        81        82         0                              #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR,MXUZCON
-         1       0.5       1.0    1.0E-6        05       1.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF
+         1       0.5       1.0    1.0E-6        05       1.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF,IPRTxMD
          0      10.0     FMTIN(not used)         0                              #Use constant initial concentration for simplicity
          0      0.15     FMTIN(not used)         0                              #Use constant stream dispersion for simplicity
       12                                                                        #NOBSSF
