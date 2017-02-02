@@ -1555,6 +1555,7 @@ C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL
         DO J=1,NCOL                         
           IF(FINFIL(J,I).EQ.0) CYCLE        
           K=ABS(IUZFBND(J,I))
+          IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)            
           IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
