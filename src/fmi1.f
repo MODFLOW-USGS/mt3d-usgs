@@ -1263,7 +1263,7 @@ C-------MAP TO SFT ARRAYS
               QPRECLAK(:)=PKGFLOWS(IFL,:)
             CASE("RUNOFF              ")  !L3/T
               QRUNOFLAK(:)=PKGFLOWS(IFL,:)
-            CASE("WITHDRAW             ") !L3/T
+            CASE("WITHDRAW            ") !L3/T
               QWDRLLAK(:)=PKGFLOWS(IFL,:)
             CASE("EVAP                ")  !L3/T
               QETLAK(:)=PKGFLOWS(IFL,:)
