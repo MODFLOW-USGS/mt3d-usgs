@@ -752,12 +752,12 @@ C
       INTEGER   NFLOWTYPE,NRCHCON,NNGW
       REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
      1                                  QN2N(:)
-      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+      CHARACTER*16, ALLOCATABLE      :: CFLOWTYPE(:)
       INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
       INTEGER,      ALLOCATABLE      :: ICID(:)
       REAL,         ALLOCATABLE      :: QAUX(:)
       INTEGER,      ALLOCATABLE      :: IP2PFLG(:)
-      CHARACTER*20  FLWTYP
+      CHARACTER*16  FLWTYP
 C
       INUF=INFTL
 C
@@ -2268,8 +2268,8 @@ C
       INTEGER,  DIMENSION(:), POINTER :: INFL,INFR,INFC
       REAL,     DIMENSION(:), POINTER :: QNGW
       REAL,         ALLOCATABLE       :: PKGFLOWS(:,:),QAREA(:),
-     &                                  QN2N(:)
-      CHARACTER*20, ALLOCATABLE       :: CFLOWTYPE(:)
+     &                                   QN2N(:)
+      CHARACTER*16, ALLOCATABLE       :: CFLOWTYPE(:)
       INTEGER,      ALLOCATABLE       :: INOD1(:),INOD2(:),IDISP(:)
       INTEGER,      ALLOCATABLE       :: ICID(:)
       REAL,         ALLOCATABLE       :: QAUX(:)
