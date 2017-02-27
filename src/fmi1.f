@@ -247,10 +247,12 @@ C--ERROR READING THE FLOW-TRANSPORT LINK FILE
   600 FORMAT(/1X,'Error Reading Flow-Transport Link File ',
      &           'Possibly Caused by:',
      &       /1X,'1. Incompatible Styles of Unformatted Files ',
-     &           'Used by MODFLOW and MT3DMS;'
+     &           'Used by MODFLOW and MT3D-USGS, ensure usage ',
+     &       /1X 'of FREE in MT3D-USGS name file matches LMT;',
      &       /1X,'2. Unformatted Flow-Transport Link File Saved by ',
      &           'Verison 1 of LinkMT3D',
-     &       /1X,'   Package Which Is No Longer Supported by MT3DMS.')
+     &       /1X,'   Package Which Is No Longer Supported by ',
+     &           'MT3D-USGS.')
 C
  1000 RETURN
       END
@@ -980,7 +982,7 @@ C-------THE NEXT LINE THAT CHECKS FOR -111 IS DUE TO CONFINED LAYERS,
 C-------ENSURES QZ ISN'T SET TO UZFLX IN THE EVENT DH = -111           
                   IF(INT(DH(J,I,K)).EQ.-111) DH(J,I,K)=DZ(J,I,K)    
                   IF(DH(J,I,K).LT.1E-5 .AND. .NOT. 
-     &                UZFLX(J,I,K+1).LE.0.0) THEN                        
+     &                UZFLX(J,I,K+1).LE.0.0) THEN
                     QZ(J,I,K)=UZFLX(J,I,K+1)                        
                   ENDIF                                             
                 ENDIF                                               
