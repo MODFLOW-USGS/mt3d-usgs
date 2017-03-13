@@ -77,6 +77,8 @@ C
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
+      INTEGER LL,I1
+      CHARACTER X1*20
       CHARACTER FLNAME*5000
       CHARACTER COMLIN*2000               
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
@@ -358,7 +360,21 @@ C--FORMULATE MATRIX COEFFICIENTS
      &                  COLD,CNEW)                          
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &           CALL ADVQC1FM(ICOMP)                       
+     &           CALL ADVQC1FM(ICOMP)
+C
+                DO LL=1,NLAY
+                  COMLIN='(I4.4)'
+                  I1=LL
+                  WRITE(X1,COMLIN) I1
+                  FLNAME='D:\\EDM_LT\\Trout_Lake\\Trout_Lake_4
+     &\\UZT_Ver\\A_mat_Lay_'//TRIM(X1)//'.TXT'
+                  OPEN(271,FILE=FLNAME)
+                  DO II=1,NROW
+                    WRITE(271,'(240E20.10)') (A(I),I=1,NCOL)
+                  ENDDO
+                  CLOSE(271)
+                ENDDO      
+C
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
