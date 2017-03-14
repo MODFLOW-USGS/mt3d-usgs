@@ -17,7 +17,7 @@
           REAL,    DIMENSION(:), POINTER :: QNGW
           REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:), &
                                             QN2N(:)
-          CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+          CHARACTER*16, ALLOCATABLE      :: CFLOWTYPE(:)
           INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
           INTEGER,      ALLOCATABLE      :: ICID(:)
           REAL,         ALLOCATABLE      :: QAUX(:)
@@ -27,7 +27,7 @@
           INOD2,IDISP,ICID,QAUX,IP2PFLG)
           REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:), &
                                             QN2N(:)
-          CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+          CHARACTER*16, ALLOCATABLE      :: CFLOWTYPE(:)
           INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
           INTEGER,      ALLOCATABLE      :: ICID(:)
           REAL,         ALLOCATABLE      :: QAUX(:)

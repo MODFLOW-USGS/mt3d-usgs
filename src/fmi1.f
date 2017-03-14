@@ -1070,8 +1070,6 @@ C--PRINT INFORMATION ON DTRACK
      &             ' MOVE MORE THAN ONE CELL IN Z-DIRECTION'/1X,'=',
      &       G11.4,'(WHEN MIN. R.F.=1) AT K=',I4,', I=',I4,', J=',I4)
   501   CONTINUE
-        !write(*,*) DTTEMP
-        !read(*,*)
 C
 C--DETERMINE STABILITY CRITERION ASSOCIATED WITH EXPLICIT FINITE
 C--DIFFERENCE SOLUTION OF THE ADVECTION TERM
@@ -1263,17 +1261,17 @@ C-------MAP TO SFT ARRAYS
         DO IFL=1,NFLOWTYPE
           FLWTYP=CFLOWTYPE(IFL)
           SELECT CASE (FLWTYP)
-            CASE("PRECIP              ")  !L3/T
+            CASE("PRECIP          ")  !L3/T
               QPRECLAK(:)=PKGFLOWS(IFL,:)
-            CASE("RUNOFF              ")  !L3/T
+            CASE("RUNOFF          ")  !L3/T
               QRUNOFLAK(:)=PKGFLOWS(IFL,:)
-            CASE("WITHDRAW            ") !L3/T
+            CASE("WITHDRAW        ") !L3/T
               QWDRLLAK(:)=PKGFLOWS(IFL,:)
-            CASE("EVAP                ")  !L3/T
+            CASE("EVAP            ")  !L3/T
               QETLAK(:)=PKGFLOWS(IFL,:)
-            CASE("VOLUME              ")  !L3 - OLD VOLUME
+            CASE("VOLUME          ")  !L3 - OLD VOLUME
               VOLOLAK(:)=PKGFLOWS(IFL,:)
-            CASE("DELVOL              ")  !L3/T
+            CASE("DELVOL          ")  !L3/T
               DELVOLLAK(:)=PKGFLOWS(IFL,:)
             CASE DEFAULT
               WRITE(*,*) 'INCORRECT CFLOWTYPE IN FTL FILE'
@@ -1347,15 +1345,15 @@ C-------MAP TO SFT ARRAYS
         DO IFL=1,NFLOWTYPE
           FLWTYP=CFLOWTYPE(IFL)
           SELECT CASE (FLWTYP)
-            CASE("PRECIP              ") !L3/T
+            CASE("PRECIP          ") !L3/T
               QPRECSF(:)=PKGFLOWS(IFL,:)
-            CASE("RUNOFF              ") !L3/T
+            CASE("RUNOFF          ") !L3/T
               QRUNOFSF(:)=PKGFLOWS(IFL,:)
-            CASE("EVAP                ") !L3/T
+            CASE("EVAP            ") !L3/T
               QETSF(:)=PKGFLOWS(IFL,:)
-            CASE("VOLUME              ") !L3 - NEW VOLUME
+            CASE("VOLUME          ") !L3 - NEW VOLUME
               VOLSFN(:)=PKGFLOWS(IFL,:)
-            CASE("RCHLEN              ") !L
+            CASE("RCHLEN          ") !L
               SFLEN(:)=PKGFLOWS(IFL,:)
             CASE DEFAULT
               WRITE(*,*)    'INCORRECT CFLOWTYPE IN FTL FILE'
@@ -2375,7 +2373,7 @@ C--READ CFLOWTYPE IDENTIFIER TEXT
         ENDIF
 C
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &  WRITE(IOUT,'(/A10,50A20)') 
+     &  WRITE(IOUT,'(/A10,50A16)') 
      &             '  NODE    ',(CFLOWTYPE(IFL),IFL=1,NFLOWTYPE)
 C
 C--READ BOUNDARY AND OTHER FLOW TERMS
@@ -2556,7 +2554,7 @@ C
 C
       REAL,         ALLOCATABLE      :: PKGFLOWS(:,:),QAREA(:),
      &                                  QN2N(:)
-      CHARACTER*20, ALLOCATABLE      :: CFLOWTYPE(:)
+      CHARACTER*16, ALLOCATABLE      :: CFLOWTYPE(:)
       INTEGER,      ALLOCATABLE      :: INOD1(:),INOD2(:),IDISP(:)
       INTEGER,      ALLOCATABLE      :: ICID(:)
       REAL,         ALLOCATABLE      :: QAUX(:)

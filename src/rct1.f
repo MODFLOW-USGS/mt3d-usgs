@@ -618,7 +618,7 @@ C ********************************************************************
 C
       USE RCTMOD
       USE UZTVARS,       ONLY: THETAW
-      USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2
+      USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2,iSSTrans
 C                     
       IMPLICIT     NONE
       INTEGER      NCOL,NROW,NLAY,ICBUND,ISOTHM,IREACT,J,I,K,
@@ -758,18 +758,32 @@ C--5/6. DUAL DOMAIN MASS TRANSFER WITHOUT/WITH LINEAR SORPTION
               ENDIF    
 C--IF with no reaction or with first-order reaction            
               IF(ireact.eq.0.or.ireact.eq.1) THEN
-                TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)+
+                IF(iSSTrans.EQ.1) THEN
+                  TERM1=SP2(J,I,K)+
      &                RC1TMP*PRSITY2(J,I,K)+RC2TMP*PRSITY2(J,I,K)*
      &                (RETA2(J,I,K)-1.)
-                SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+PRSITY2(J,I,K)*
+                  SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K))/TERM1
+                ELSE
+                  TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)+
+     &                RC1TMP*PRSITY2(J,I,K)+RC2TMP*PRSITY2(J,I,K)*
+     &                (RETA2(J,I,K)-1.)
+                  SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+PRSITY2(J,I,K)*
      &                RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))/TERM1
+                ENDIF
 C--IF with zeroth-order reaction     
               ELSEIF(ireact.eq.100) THEN 
-                TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
+                IF(iSSTrans.EQ.1) THEN
+                  TERM1=SP2(J,I,K)
+                      SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)-
+     &                RC1TMP*PRSITY2(J,I,K)-RC2TMP*(1.-FRAC(J,I,K))*
+     &                RHOB(J,I,K))/TERM1
+                ELSE
+                  TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
                       SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)-
      &                RC1TMP*PRSITY2(J,I,K)-RC2TMP*(1.-FRAC(J,I,K))*
      &                RHOB(J,I,K)+PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*
      &                SRCONC(J,I,K))/TERM1
+                ENDIF
               END IF         
             ENDDO
           ENDDO
@@ -792,7 +806,7 @@ C *******************************************************************
 C
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,NODES,
-     &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP
+     &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP,iSSTrans
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,ICBUND,K,I,J,N,III
@@ -874,23 +888,37 @@ C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
               ENDIF
 C--IF with no reaction or with first-order reaction
               IF(ireact.eq.0.or.ireact.eq.1) THEN
-                TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)+
+                IF(iSSTrans.EQ.1) THEN
+                  TERM1=SP2(N,ICOMP)+
      &                RC1TMP*PRSITY2(N)+
      &                RC2TMP*PRSITY2(N)*(RETA2(N,ICOMP)-1.)
+                ELSE
+                  TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)+
+     &                RC1TMP*PRSITY2(N)+
+     &                RC2TMP*PRSITY2(N)*(RETA2(N,ICOMP)-1.)
+                ENDIF
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
      &                          (1.-SP2(N,ICOMP)/TERM1)
-                RHS(N)=RHS(N)-SP2(N,ICOMP)*PRSITY2(N)*RETA2(N,ICOMP)*
+                IF(iSSTrans.EQ.0) THEN
+                  RHS(N)=RHS(N)-SP2(N,ICOMP)*PRSITY2(N)*RETA2(N,ICOMP)*
      &                 DELR(J)*DELC(I)*DH(N)*SRCONC(N,ICOMP)/
      &                 (DTRANS*TERM1)
+                ENDIF
 C--IF with zeroth-order reaction      
               ELSEIF(ireact.eq.100) THEN
-                TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)
+                IF(iSSTrans.EQ.1) THEN
+                  TERM1=SP2(N,ICOMP)
+                ELSE
+                  TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)
+                ENDIF
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*
      &                          DH(N)*(1.-SP2(N,ICOMP)/TERM1)
-                RHS(N)=RHS(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
+                IF(iSSTrans.EQ.0) THEN
+                  RHS(N)=RHS(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
      &                 (-RC1TMP*PRSITY2(N)-RC2TMP*(1.-FRAC(N))*RHOB(N)+
      &                 PRSITY2(N)*RETA2(N,ICOMP)*SRCONC(N,ICOMP)/DTRANS)
      &                 /TERM1             
+                ENDIF
               END IF
             ENDDO
           ENDDO
@@ -1122,7 +1150,7 @@ C
      &                         DELR,DELC,DH,ISOTHM,IREACT,RHOB,SP1,SP2,
      &                         SRCONC,RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,
      &                         RETA,RFMIN,RMASIO,
-     &                         COLD 
+     &                         COLD,iSSTrans
       USE RCTMOD                    
 C
       IMPLICIT  NONE
@@ -1232,8 +1260,12 @@ C--DETERMINE WHICH CONC TO USE IF IREACTION=1
               ENDIF                                         
 C                                                           
 C--CALCULATE CHANGE IN CONCENTRATION OF MOBILE-LIQUID PHASE
+              IF(iSSTrans.EQ.1) THEN
+              DCRCT=0.
+              ELSE
               DCRCT=-SP2(J,I,K,ICOMP)*(CTMP-SRCONC(J,I,K,ICOMP))*DTRANS*
      &               DELR(J)*DELC(I)*DH(J,I,K)
+              ENDIF
 C
 C--SAVE LATEST SATURATED VOLUME OF AQUIFER TO HANDLE IMMOBILE DOMAIN IN DRY CELLS
               IF(ICIMDRY.GE.2) VAQSAT(J,I,K)=DELR(J)*DELC(I)*DH(J,I,K)
@@ -1429,6 +1461,7 @@ C--CALCULATE MASS LOSS/GAIN DUE TO REACTION IN IMMOBILE DOMAIN
             ENDIF
 C
 C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
+            IF(iSSTrans.EQ.0) THEN
             IF(CIML.GT.0) THEN
               RMASIO(121,2,ICOMP)=RMASIO(121,2,ICOMP)-CIML
             ELSE
@@ -1438,6 +1471,7 @@ C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
               RMASIO(122,2,ICOMP)=RMASIO(122,2,ICOMP)-CIMS
             ELSE
               RMASIO(122,1,ICOMP)=RMASIO(122,1,ICOMP)-CIMS
+            ENDIF
             ENDIF
           ENDDO
         ENDDO
