@@ -77,7 +77,7 @@ C
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
-      INTEGER LL,I1
+      INTEGER LL,I1,JJ
       CHARACTER X1*20
       CHARACTER FLNAME*5000
       CHARACTER COMLIN*2000               
@@ -370,7 +370,8 @@ C
      &\\UZT_Ver\\A_mat_Lay_'//TRIM(X1)//'.TXT'
                   OPEN(271,FILE=FLNAME)
                   DO II=1,NROW
-                    WRITE(271,'(240E20.10)') (A(I),I=1,NCOL)
+                    WRITE(271,'(240E20.10)') (A((LL-1)*NCOL*NROW+(II-1)*
+     &                                        NCOL+JJ),JJ=1,NCOL)
                   ENDDO
                   CLOSE(271)
                 ENDDO      
