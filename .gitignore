@@ -179,3 +179,5 @@ temp
 *.MAS
 *.UCN
 *.out
+*.sln
+*.vfproj
