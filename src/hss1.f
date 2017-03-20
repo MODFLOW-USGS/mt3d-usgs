@@ -801,7 +801,7 @@ C           PX      - X-COORDINATE OF POINT IN QUESTION.
 C           PY      - Y-COORDINATE OF POINT IN QUESTION.                
 C           XX      - N LONG VECTOR CONTAINING X-COORDINATES OF         
 C                     VERTICES OF POLYGON.                              
-C           YY      - N LONG VECTOR CONTAING Y-COORDINATES OF           
+C           YY      - N LONG VECTOR CONTAINING Y-COORDINATES OF           
 C                     VERTICES OF POLYGON.                              
 C           N       - NUMBER OF VERTICES IN THE POLYGON.                
 C           INOUT   - THE SIGNAL RETURNED:                              
