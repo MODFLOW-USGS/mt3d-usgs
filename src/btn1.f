@@ -1226,6 +1226,7 @@ C
      1                     (HT2-TIME1)/PRSITY(J,I,K)
                     VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                     VOLUME=MIN(VOLUME,VCELL)
+                    IF(VOLUME.LT.0.) VOLUME=0.
                   ENDIF
                   CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
                   CMMS=0.
@@ -1258,6 +1259,7 @@ C
      1                                         (HT2-TIME1)/PRSITY(J,I,K)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOLUME=MIN(VOLUME,VCELL)
+                  IF(VOLUME.LT.0.) VOLUME=0.
                 ENDIF
                 CMML=COLD(J,I,K,INDEX)*PRSITY(J,I,K)*VOLUME
                 CMMS=0.
@@ -1392,6 +1394,7 @@ C--FOR THE CURRENT TRANSPORT STEP
      &              *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
+                  IF(VOL.LT.0.) VOL=0.
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
      &                                             *PRSITY(J,I,K)*VOL
                 ELSE
@@ -1521,6 +1524,7 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
      1                   (HT2-TIME2)/PRSITYSAV(J,I,K)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOLUME=MIN(VOLUME,VCELL)
+                  IF(VOLUME.LT.0.) VOLUME=0.
                 ENDIF
                 CMML=CNEW(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOLUME
                 CMMS=0.
@@ -1553,6 +1557,7 @@ C--CALCULATE TOTAL MASS IN AQUIFER FOR CURRENT TRANSPORT STEP
      1                 (HT2-TIME2)/PRSITY(J,I,K)
                 VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                 VOLUME=MIN(VOLUME,VCELL)
+                IF(VOLUME.LT.0.) VOLUME=0.
               ENDIF
               CMML=CNEW(J,I,K,ICOMP)*PRSITY(J,I,K)*VOLUME
               CMMS=0.
@@ -1975,6 +1980,7 @@ C
      &                QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
+                  IF(VOL.LT.0.) VOL=0.
                   RHS(N)=-TEMP*RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                     *VOL
                 ELSE
@@ -2047,6 +2053,7 @@ C--IF INACTIVE OR CONSTANT CELL
      &                *QSTO(J,I,K)/PRSITY(N)*(HT2-TIME2)
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
+                  IF(VOL.LT.0.) VOL=0.
                   A(N)=-RETA(N,ICOMP)/DTRANS*PRSITY(N)
      &                  *VOL
                 ELSE
