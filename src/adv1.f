@@ -3660,7 +3660,9 @@ C-------TOP FACE
         IF(K.GT.1) THEN
           IF(QC7(J,I,K,1).GT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
-              RHS(N-NCR)=RHS(N-NCR)-QC7(J,I,K,1)*C7(N,ICOMP)
+              IF(ICBUND(J,I,K-1,ICOMP).GE.0)THEN
+                RHS(N-NCR)=RHS(N-NCR)-QC7(J,I,K,1)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -3668,7 +3670,9 @@ C-------BOTTOM FACE
         IF(K.LT.NLAY) THEN
           IF(QC7(J,I,K,6).GT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
-              RHS(N+NCR)=RHS(N+NCR)-QC7(J,I,K,6)*C7(N,ICOMP)
+              IF(ICBUND(J,I,K+1,ICOMP).GE.0)THEN
+                RHS(N+NCR)=RHS(N+NCR)-QC7(J,I,K,6)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -3679,7 +3683,9 @@ C-------BACK FACE
         IF(I.GT.1) THEN
           IF(QC7(J,I,K,2).GT.0.) THEN
             IF(ICBND2(J,I-1,K).EQ.0) THEN
-              RHS(N-NCOL)=RHS(N-NCOL)-QC7(J,I,K,2)*C7(N,ICOMP)
+              IF(ICBUND(J,I-1,K,ICOMP).GE.0)THEN
+                RHS(N-NCOL)=RHS(N-NCOL)-QC7(J,I,K,2)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -3687,7 +3693,9 @@ C-------FRONT FACE
         IF(I.LT.NROW) THEN
           IF(QC7(J,I,K,5).GT.0.) THEN
             IF(ICBND2(J,I+1,K).EQ.0) THEN
-              RHS(N+NCOL)=RHS(N+NCOL)-QC7(J,I,K,5)*C7(N,ICOMP)
+              IF(ICBUND(J,I+1,K,ICOMP).GE.0)THEN
+                RHS(N+NCOL)=RHS(N+NCOL)-QC7(J,I,K,5)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -3698,7 +3706,9 @@ C---------LEFT FACE
         IF(J.GT.1) THEN
           IF(QC7(J,I,K,3).GT.0.) THEN
             IF(ICBND2(J-1,I,K).EQ.0) THEN
-              RHS(N-1)=RHS(N-1)-QC7(J,I,K,3)*C7(N,ICOMP)
+              IF(ICBUND(J-1,I,K,ICOMP).GE.0)THEN
+                RHS(N-1)=RHS(N-1)-QC7(J,I,K,3)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -3706,7 +3716,9 @@ C---------RIGHT FACE
         IF(J.LT.NCOL) THEN
           IF(QC7(J,I,K,4).GT.0.) THEN
             IF(ICBND2(J+1,I,K).EQ.0) THEN
-              RHS(N+1)=RHS(N+1)-QC7(J,I,K,4)*C7(N,ICOMP)
+              IF(ICBUND(J+1,I,K,ICOMP).GE.0)THEN
+                RHS(N+1)=RHS(N+1)-QC7(J,I,K,4)*C7(N,ICOMP)
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -4069,7 +4081,12 @@ C-------TOP FACE
           IF(QC7(J,I,K,1).GT.0.) THEN
             IF(ICBND2(J,I,K-1).EQ.0) THEN
               QCTEMP=QC7(J,I,K,1)*C7(N,ICOMP)*DTRANS
-              RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              IF(ICBUND(J,I,K-1,ICOMP).GE.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              ELSEIF(ICBUND(J,I,K-1,ICOMP).LT.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -4078,7 +4095,12 @@ C-------BOTTOM FACE
           IF(QC7(J,I,K,6).GT.0.) THEN
             IF(ICBND2(J,I,K+1).EQ.0) THEN
               QCTEMP=QC7(J,I,K,6)*C7(N,ICOMP)*DTRANS
-              RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              IF(ICBUND(J,I,K+1,ICOMP).GE.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              ELSEIF(ICBUND(J,I,K+1,ICOMP).LT.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+              ENDIF
             ENDIF
           ENDIF
         ENDIF
@@ -4090,7 +4112,12 @@ C---------BACK FACE
             IF(QC7(J,I,K,2).GT.0.) THEN
               IF(ICBND2(J,I-1,K).EQ.0) THEN
                 QCTEMP=QC7(J,I,K,2)*C7(N,ICOMP)*DTRANS
-                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                IF(ICBUND(J,I-1,K,ICOMP).GE.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J,I-1,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+                ENDIF
               ENDIF
             ENDIF
           ENDIF
@@ -4099,7 +4126,12 @@ C---------FRONT FACE
             IF(QC7(J,I,K,5).GT.0.) THEN
               IF(ICBND2(J,I+1,K).EQ.0) THEN
                 QCTEMP=QC7(J,I,K,5)*C7(N,ICOMP)*DTRANS
-                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                IF(ICBUND(J,I+1,K,ICOMP).GE.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J,I+1,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+                ENDIF
               ENDIF
             ENDIF
           ENDIF
@@ -4111,7 +4143,12 @@ C---------LEFT FACE
             IF(QC7(J,I,K,3).GT.0.) THEN
               IF(ICBND2(J-1,I,K).EQ.0) THEN
                 QCTEMP=QC7(J,I,K,3)*C7(N,ICOMP)*DTRANS
-                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                IF(ICBUND(J-1,I,K,ICOMP).GE.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J-1,I,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+                ENDIF
               ENDIF
             ENDIF
           ENDIF
@@ -4120,7 +4157,12 @@ C---------RIGHT FACE
             IF(QC7(J,I,K,4).GT.0.) THEN
               IF(ICBND2(J+1,I,K).EQ.0) THEN
                 QCTEMP=QC7(J,I,K,4)*C7(N,ICOMP)*DTRANS
-                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                IF(ICBUND(J+1,I,K,ICOMP).GE.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J+1,I,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
+                ENDIF
               ENDIF
             ENDIF
           ENDIF
