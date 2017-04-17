@@ -4083,6 +4083,9 @@ C-------TOP FACE
               QCTEMP=QC7(J,I,K,1)*C7(N,ICOMP)*DTRANS
               IF(ICBUND(J,I,K-1,ICOMP).GE.0)THEN
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              ELSEIF(ICBUND(J,I,K-1,ICOMP).LT.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
               ENDIF
             ENDIF
           ENDIF
@@ -4094,6 +4097,9 @@ C-------BOTTOM FACE
               QCTEMP=QC7(J,I,K,6)*C7(N,ICOMP)*DTRANS
               IF(ICBUND(J,I,K+1,ICOMP).GE.0)THEN
                 RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+              ELSEIF(ICBUND(J,I,K+1,ICOMP).LT.0)THEN
+                RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
               ENDIF
             ENDIF
           ENDIF
@@ -4108,6 +4114,9 @@ C---------BACK FACE
                 QCTEMP=QC7(J,I,K,2)*C7(N,ICOMP)*DTRANS
                 IF(ICBUND(J,I-1,K,ICOMP).GE.0)THEN
                   RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J,I-1,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
                 ENDIF
               ENDIF
             ENDIF
@@ -4119,6 +4128,9 @@ C---------FRONT FACE
                 QCTEMP=QC7(J,I,K,5)*C7(N,ICOMP)*DTRANS
                 IF(ICBUND(J,I+1,K,ICOMP).GE.0)THEN
                   RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J,I+1,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
                 ENDIF
               ENDIF
             ENDIF
@@ -4133,6 +4145,9 @@ C---------LEFT FACE
                 QCTEMP=QC7(J,I,K,3)*C7(N,ICOMP)*DTRANS
                 IF(ICBUND(J-1,I,K,ICOMP).GE.0)THEN
                   RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J-1,I,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
                 ENDIF
               ENDIF
             ENDIF
@@ -4144,6 +4159,9 @@ C---------RIGHT FACE
                 QCTEMP=QC7(J,I,K,4)*C7(N,ICOMP)*DTRANS
                 IF(ICBUND(J+1,I,K,ICOMP).GE.0)THEN
                   RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                ELSEIF(ICBUND(J+1,I,K,ICOMP).LT.0)THEN
+                  RMASIO(12,1,ICOMP)=RMASIO(12,1,ICOMP)+QCTEMP
+                  RMASIO(6,2,ICOMP)=RMASIO(6,2,ICOMP)-QCTEMP
                 ENDIF
               ENDIF
             ENDIF
