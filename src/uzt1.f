@@ -113,6 +113,7 @@ C--CALCULATE SATURATION AND STORE IN SATOLD
                 SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
      &                          WC(J,I,K)/PRSITY(J,I,K)+
      &                          DH(J,I,K)/DZ(J,I,K)*1
+                THETAW(J,I,K)=SATOLD(J,I,K)*PRSITY(J,I,K)  
               ENDIF
             ENDDO
           ENDDO
