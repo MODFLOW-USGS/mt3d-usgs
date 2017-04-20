@@ -1,8 +1,8 @@
 1D Transport problem using example from Vanderborght et al. (2005), modified for UZF/MT3D-USGS link-up
 "A set of analytical benchmarks to test numerical models of flow and transport in soils"
-       210         1        3         61         1         1  !NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
-sec cm  mg                                                    !TUNIT,LUNIT,MUNIT
-T T T F T F F F F F                                           !TRNOP: ADV,DSP,SSM,RCT,GCG...
+       210         1        3         61         1         1         0          !NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
+sec cm  mg                                                                      !TUNIT,LUNIT,MUNIT
+T T T F T F F F F F                                                             !TRNOP: ADV,DSP,SSM,RCT,GCG...
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
