@@ -1,8 +1,8 @@
 1D Transport problem using example from vs2d doc, modified for UZF-MT3D link-up
 (Refer to page 40 of Healy, R.W., 1990, Simulation of solute transport in variably saturated porous media...
-       210         1        3         42         1         1  !NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
-sec cm  LB                                                    !TUNIT,LUNIT,MUNIT
-T T T F T F F F F F                                           !TRNOP: ADV,DSP,SSM,RCT,GCG...
+       210         1        3         42         1         1         0           !NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
+sec cm  LB                                                                       !TUNIT,LUNIT,MUNIT
+T T T F T F F F F F                                                              !TRNOP: ADV,DSP,SSM,RCT,GCG...
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
