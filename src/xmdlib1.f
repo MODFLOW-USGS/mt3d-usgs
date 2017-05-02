@@ -2160,6 +2160,10 @@ c
       integer ierror
 
 
+      if(allocated(icolour)) deallocate(icolour)
+      if(allocated(RBorder)) deallocate(RBorder)
+      if(allocated(iblackend)) deallocate(iblackend)
+      if(allocated(lorder)) deallocate(lorder)
       allocate(icolour(nn), RBorder(nn), iblackend(nn), lorder(nn),
      [         stat = ierror )
       if (ierror /= 0) stop "== not enough memory (xmdprpc) =="
@@ -2188,6 +2192,8 @@ c
       call xmdRedBlack(ia, ja, lorder, icolour, RBorder,
      [               iblackend, nn, nja, nblack, ierr, redsys)
 
+      if(allocated(iaf)) deallocate(iaf)
+      if(allocated(idiagf)) deallocate(idiagf)
       allocate(iaf(nblack+1), idiagf(nblack), stat = ierror )
       if (ierror /= 0) stop "== not enough memory (xmdprpc - af) =="
 

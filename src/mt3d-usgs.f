@@ -264,7 +264,8 @@ C
 C                                           
           IF(iUnitTRNOP(19).GT.0) THEN      
             CALL FILLIASFJASF()
-            IF(KPER*KSTP.EQ.1) CALL XMD7AR()
+            !IF(KPER*KSTP.EQ.1) CALL XMD7AR()
+            CALL XMD7AR()
           ENDIF                             
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
