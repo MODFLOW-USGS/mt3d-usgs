@@ -294,7 +294,7 @@ C-----SNK
           CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
           IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
           GWQOUT=QSNK2UZF(II)
-          IF(GWQOUT.GT.0) THEN                           
+          IF(GWQOUT.LT.0) THEN      !GWQOUT recorded as neg. val in FTL
             IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
         ENDIF
@@ -395,7 +395,7 @@ C-----SNK
           CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
           IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
           GWQOUT=QSNK2UZF(II)
-          IF(GWQOUT.GT.0) THEN                           
+          IF(GWQOUT.LT.0) THEN                           
             IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
           ENDIF
         ENDIF
@@ -520,7 +520,7 @@ C-----SNK
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
             GWQOUT=QSNK2UZF(II)
             CTMP=CNEW(J,I,K,ICOMP)
-            IF(GWQOUT.GT.0) THEN                           
+            IF(GWQOUT.LT.0) THEN                           
                 RMASIO(53,2,ICOMP)=RMASIO(53,2,ICOMP)-ABS(GWQOUT)*
      &                             CTMP*DTRANS
             ENDIF
