@@ -773,7 +773,7 @@ C--(RECHARGE)
         DO J=1,NCOL
           K=IRCH(J,I)
           IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0
-     &              .AND. RECH(J,I).GT.0) THEN
+     &              .AND. RECH(J,I).GT.0 .AND. FUZF) THEN
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(UPDLHS) A(N)=A(N)-RECH(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
             RHS(N)=RHS(N)
