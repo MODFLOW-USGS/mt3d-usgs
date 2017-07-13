@@ -1,24 +1,24 @@
-        38         2        81        82         0                              #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
-         5       0.5       1.0    1.0E-3        10       2.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF,IPRTxMD
-INTERNAL        1.00  (10e12.4)                    1                            #INITIAL CONCENTRATION FOR STREAMS COMP# 1
+        38         2        81        82         0                              # NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
+         5       0.5       1.0    1.0E-3        10       2.0         0          # ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF,IPRTxMD
+INTERNAL        1.00  (10e12.4)                    1                            # INITIAL CONCENTRATION FOR STREAMS COMP# 1
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
-INTERNAL      1.00    (10e12.4)                    1                            #DISPERSION FOR STREAM SEGS COMP# 1
+INTERNAL      1.00    (10e12.4)                    1                            # DISPERSION FOR STREAM SEGS COMP# 1
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
    0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00   0.0000E00
-         3                                                            #NOBSSF [# of observations (to be found on the following 3 lines, in this example)]
-         2        12                                                  #ISOBS,IROBS (iseg, ireach)
-         3        13                                                  #ISOBS,IROBS (iseg, ireach)
-         4         7                                                  #ISOBS,IROBS (iseg, ireach)
-         2                                                            #NTMP (# of STREAM BOUNDARY CONDITIONS)
-         1         1         0 1.000e-05                              #ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
-         3         1         0 1.000e-05                              #ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
-         0                                                            #Repeat NTMP for the next stress period (This model is only one stress period)
-         0                                                            #
+         3                                                                      # NOBSSF [# of observations (to be found on the following 3 lines, in this example)]
+        18                                                                      # ISOBS,IROBS (iseg, ireach)
+        31                                                                      # ISOBS,IROBS (iseg, ireach)
+        38                                                                      # ISOBS,IROBS (iseg, ireach)
+         2                                                                      # NTMP (# of STREAM BOUNDARY CONDITIONS)
+         1         1         0 1.000e-05                                        # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         3         1         0 1.000e-05                                        # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         0                                                                      # Repeat NTMP for the next stress period (This model is only one stress period)
+         0                                                                      # 
 
 
 
