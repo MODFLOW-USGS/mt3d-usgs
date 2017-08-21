@@ -85,7 +85,6 @@ C--ALLOCATE ARRAY AND INITIALIZE
       ALLOCATE(WK(7*NODES))
       ALLOCATE(CNCG(MXITER*ITER1))
       ALLOCATE(RHS(NODES))
-      ALLOCATE(L(19))
       LRCH=0
       A=0.
       Q=0.
@@ -463,17 +462,22 @@ C*******************************************************************
 C
       USE MT3DMS_MODULE, ONLY: L
 C
-      IMPLICIT  NONE
-      INTEGER   N,IDIAG,I,JCOL,K,ICBUND,NCRS
-      REAL      A,X,Y
-      DIMENSION A(N,*), X(N), Y(N), ICBUND(N)
+      INTEGER, INTENT(IN)              :: N,NCRS
+      INTEGER, INTENT(IN), DIMENSION(N):: ICBUND
+      REAL, INTENT(IN),  DIMENSION(N,*):: A
+      REAL, INTENT(IN),  DIMENSION(N)  :: X
+      REAL, INTENT(OUT), DIMENSION(N)  :: Y
+      INTEGER :: IDIAG=7,I,K,LK,JCOL
 C
-      IDIAG = 7
+C     IDIAG = 7
       IF(NCRS.GT.0) IDIAG = 19
       DO I = 1,N
         Y(I) = 0.
-        DO K = 1,IDIAG
-          JCOL = I + L(K)
+      ENDDO
+      DO K = 1,IDIAG
+        LK = L(K)
+        DO I = 1,N
+          JCOL = I + LK
           IF (JCOL.GE.1.AND.JCOL.LE.N) THEN
             IF(ICBUND(JCOL).NE.0) Y(I) = Y(I)+A(I,K)*X(JCOL)
           ENDIF
@@ -492,18 +496,22 @@ C
       USE MT3DMS_MODULE, ONLY: L
 C
       IMPLICIT  NONE
-      INTEGER   N,IDIAG,I,JCOL,ICBUND,NCRS,J
-      REAL      A,X,Y
-      DIMENSION A(N,*),X(N),Y(N),ICBUND(N)
+      INTEGER, INTENT(IN)              :: N,NCRS
+      INTEGER, INTENT(IN), DIMENSION(N):: ICBUND
+      REAL, INTENT(IN),  DIMENSION(N,*):: A
+      REAL, INTENT(IN),  DIMENSION(N)  :: X
+      REAL, INTENT(OUT), DIMENSION(N)  :: Y
+      INTEGER :: IDIAG=7,I,JCOL,J,LJ
 C
-      IDIAG = 7
+C     IDIAG=7
       IF(NCRS.GT.0) IDIAG = 19
       DO I = 1,N
         Y(I) = 0.
       ENDDO
-      DO I = 1,N
-        DO J = 1,IDIAG
-          JCOL = I + L(J)
+      DO J = 1,IDIAG
+        LJ = L(J)
+        DO I = 1,N
+          JCOL = I + LJ
           IF(JCOL.GE.1.AND.JCOL.LE.N) THEN
             IF (ICBUND(JCOL).NE.0) Y(JCOL) = Y(JCOL)+A(I,J)*X(I)
           ENDIF
@@ -535,12 +543,15 @@ C*                    SYSTEM.
 C*         Y       :  OUTPUT REAL ARRAY. CONTAINS THE SOLUTION.
 C*********************************************************************
 C
-      USE MT3DMS_MODULE, ONLY: L
+      USE MT3DMS_MODULE, ONLY: L,LL,LU
 C
       IMPLICIT  NONE
-      INTEGER   N,METHOD,NCRS,LL,LU,I,J,K,II,IDIAG,JCOL
-      REAL      Y,SY,A,RELAX
-      DIMENSION Y(N),SY(N),A(N,*),LL(9),LU(9)
+      INTEGER, INTENT(IN)              :: N,METHOD,NCRS
+      REAL, INTENT(INOUT)              :: RELAX
+      REAL, INTENT(IN),  DIMENSION(N,*):: A
+      REAL, INTENT(IN),  DIMENSION(N)  :: SY
+      REAL, INTENT(OUT), DIMENSION(N)  :: Y
+      INTEGER :: IDIAG=3,I,J,K,II,JCOL
 C
       DO II = 1,N
         Y(II) = SY(II)
@@ -561,32 +572,8 @@ C     SOLVE LDUY=Y
 C
  5    CONTINUE
       IF (METHOD .NE. 2) RELAX = 1.0
-      IF (NCRS.GT.0) THEN
-        IDIAG = 9
-      ELSE
-        IDIAG = 3
-      ENDIF
-C
-      LL(1) = 2
-      LL(2) = 4
-      LL(3) = 6
-      LU(1) = 3
-      LU(2) = 5
-      LU(3) = 7
-      IF (NCRS.GT.0) THEN
-        LL(4) = 8
-        LL(5) = 9
-        LL(6) = 10
-        LL(7) = 11
-        LL(8) = 16
-        LL(9) = 17
-        LU(4) = 12
-        LU(5) = 13
-        LU(6) = 14
-        LU(7) = 15
-        LU(8) = 18
-        LU(9) = 19
-      ENDIF
+C     IDIAG = 3
+      IF (NCRS.GT.0) IDIAG = 9
 C
 C ... SOLVE LOWER TRIANGULAR SYSTEM FOR THE SSOR METHOD
 C
@@ -645,12 +632,15 @@ C*         Y          : OUTPUT REAL ARRAY. IT CONTAINS THE SOLUTION OF
 C*                      THIS SYSTEM.
 C***********************************************************************
 C
-      USE MT3DMS_MODULE, ONLY: L
+      USE MT3DMS_MODULE, ONLY: L,LL,LU
 C
       IMPLICIT  NONE
-      INTEGER   N,METHOD,NCRS,LL,LU,I,J,K,II,IDIAG,JCOL
-      REAL      Y,SY,A,RELAX
-      DIMENSION Y(N),SY(N),A(N,*),LL(9),LU(9)
+      INTEGER, INTENT(IN)              :: N,METHOD,NCRS
+      REAL, INTENT(INOUT)              :: RELAX
+      REAL, INTENT(IN),  DIMENSION(N,*):: A
+      REAL, INTENT(IN),  DIMENSION(N)  :: SY
+      REAL, INTENT(OUT), DIMENSION(N)  :: Y
+      INTEGER :: IDIAG=3,I,J,K,II,JCOL
 C
       DO II = 1,N
         Y(II) = SY(II)
@@ -669,32 +659,8 @@ C ... SOLVE LDU ** (T) * Y = Y
 C
  5    CONTINUE
       IF (METHOD .NE. 2) RELAX = 1.0
-      IF (NCRS.GT.0) THEN
-        IDIAG = 9
-      ELSE
-        IDIAG = 3
-      ENDIF
-C
-      LL(1) = 2
-      LL(2) = 4
-      LL(3) = 6
-      LU(1) = 3
-      LU(2) = 5
-      LU(3) = 7
-      IF (NCRS.GT.0) THEN
-         LL(4) = 8
-         LL(5) = 9
-         LL(6) = 10
-         LL(7) = 11
-         LL(8) = 16
-         LL(9) = 17
-         LU(4) = 12
-         LU(5) = 13
-         LU(6) = 14
-         LU(7) = 15
-         LU(8) = 18
-         LU(9) = 19
-      ENDIF
+C     IDIAG = 3
+      IF (NCRS.GT.0) IDIAG = 9
 C
 C ... SOLVE (UT)Y = Y
 C
@@ -750,30 +716,22 @@ C*                 OF THE MATRIX.
 C*         Q       OUTPUT, CONTAINS THE COMPACT LDU FORM FOR THE MIC
 C**********************************************************************
 C
-      USE MT3DMS_MODULE, ONLY: L
+      USE MT3DMS_MODULE, ONLY: L,LU
 C
       IMPLICIT  NONE
-      INTEGER   K,II,IJ,IPVT,IICOL,ILST,IROW,JP,JCOL,KK,LL,IERR,
-     &          LU,NCRS,IDIAG,N,J,NRC,NCOL
-      REAL      A,Q,QMULT,TINY
-      PARAMETER (TINY=1.E-30)
-      DIMENSION A(N,*),Q(N,*),LU(9)
+      INTEGER, INTENT(IN)               :: N,NCRS
+      REAL, INTENT(IN),  DIMENSION(N,*) :: A
+      REAL, INTENT(OUT), DIMENSION(N,*) :: Q
+      REAL, PARAMETER :: TINY=1.E-30
+      INTEGER :: K,II,IJ,IPVT,IICOL,ILST,IROW,JP,JCOL,KK,LL,IERR,
+     &           IDIAG,J,NRC,NCOL
+      REAL    :: QMULT
 C
 C ... SET INITIAL PARAMETERS
 C
       NRC   = L(3)
       NCOL  = L(5)
-      LU(1) = 3
-      LU(2) = 5
-      LU(3) = 7
-      IF (NCRS.GT.0) THEN
-        LU(4) = 12
-        LU(5) = 13
-        LU(6) = 14
-        LU(7) = 15
-        LU(8) = 18
-        LU(9) = 19
-      ENDIF
+C
       IF (NCRS.GT.0) THEN
         IDIAG = 19
         ILST  = 9
@@ -783,8 +741,9 @@ C
         IF(NCOL.EQ.1) ILST = 2
         IF(NRC.EQ.1)  ILST = 1
       ENDIF
-      DO K = 1,N
-        DO J = 1, IDIAG
+C
+      DO J = 1,IDIAG
+        DO K = 1,N
           Q(K,J) = A(K,J)
         ENDDO
       ENDDO

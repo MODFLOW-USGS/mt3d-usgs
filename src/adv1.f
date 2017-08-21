@@ -2888,20 +2888,25 @@ C      3: TOP  FACE
 C**********************************************************************
 C
       IMPLICIT  NONE
-      INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IP1,IM1,IM2,JP1,JM1,JM2,
-     &          KP1,KM1,KM2,LL,IX,IY,IZ
-      REAL      C,QX,QY,QZ,DELR,DELC,DH,DTRANS,DX,DY,DZ,DXP1,DXM1,DYP1,
-     &          DYM1,DZP1,DZM1,CP,CW,GRADX,GRADY,GRADZ,GRADXP,GRADXM,
-     &          GRADXMM,GRADXPM,GRADYM,GRADYP,GRADYPM,GRADYMM,GRADZM,
-     &          GRADX2,GRADY2,GRADZ2,CURV,TWIST,
-     &          GRADZP,GRADZPM,GRADZMM,CURVX,CURVY,CURVZ,TWISTX,TWISTY,
-     &          TWISTZ,VX,VY,VZ,S2,S3,S4,UL,SL,ULIMIT,WW,CRNT,SETA,
-     &          PRSITY,EPSILON,TINY,CFACE,U
-      DIMENSION C(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),
-     &          QX(NCOL,NROW,NLAY),QY(NCOL,NROW,NLAY),
-     &          QZ(NCOL,NROW,NLAY),DELR(NCOL),DELC(NROW),
-     &          DH(NCOL,NROW,NLAY),PRSITY(NCOL,NROW,NLAY)
-      PARAMETER (IX=1,IY=2,IZ=3,EPSILON=0.5E-6,TINY=1.E-30)
+      INTEGER, INTENT(IN)                  :: NCOL,NROW,NLAY
+      INTEGER, INTENT(IN)                  :: J,I,K,LL
+      REAL,    INTENT(IN)                  :: DTRANS
+      REAL,    INTENT(IN), DIMENSION(NCOL) :: DELR
+      REAL,    INTENT(IN), DIMENSION(NROW) :: DELC
+      REAL,    INTENT(IN), DIMENSION(NCOL,NROW,NLAY):: DH,C,PRSITY,
+     &                                                 QX,QY,QZ
+      INTEGER, INTENT(IN), DIMENSION(NCOL,NROW,NLAY):: ICBUND
+      INTEGER, PARAMETER                :: IX=1,IY=2,IZ=3
+      REAL,    PARAMETER                :: EPSILON=0.5E-6,TINY=1.E-30
+      REAL :: GRADX=0.,GRADXP=0.,GRADXM=0.,GRADXPM=0.,GRADXMM=0.,
+     &        GRADY=0.,GRADYP=0.,GRADYM=0.,GRADYPM=0.,GRADYMM=0.,
+     &        GRADZ=0.,GRADZP=0.,GRADZM=0.,GRADZPM=0.,GRADZMM=0.,
+     &        GRADX2=0.,GRADY2=0.,GRADZ2=0.,CURVX=0.,CURVY=0.,CURVZ=0.,
+     &        TWISTX=0.,TWISTY=0.,TWISTZ=0.,VX=0.,VY=0.,VZ=0.
+      INTEGER :: IP1,IM1,IM2,JP1,JM1,JM2,KP1,KM1,KM2
+      REAL    :: DX,DY,DZ,DXP1,DXM1,DYP1,DYM1,DZP1,DZM1,CP,CW,
+     &           CURV,TWIST,S2,S3,S4,UL,SL,ULIMIT,
+     &           WW,CRNT,SETA,U,CFACE
 C
 C--INITIALIZE
       IP1=MIN(NROW,I+1)
@@ -2913,33 +2918,6 @@ C--INITIALIZE
       KP1=MIN(NLAY,K+1)
       KM1=MAX(1,K-1)
       KM2=MAX(1,K-2)
-      GRADX=0.
-      GRADXP=0.
-      GRADXM=0.
-      GRADXPM=0.
-      GRADXMM=0.
-      GRADY=0.
-      GRADYP=0.
-      GRADYM=0.
-      GRADYPM=0.
-      GRADYMM=0.
-      GRADZ=0.
-      GRADZP=0.
-      GRADZM=0.
-      GRADZPM=0.
-      GRADZMM=0.
-      GRADX2=0.
-      GRADY2=0.
-      GRADZ2=0.
-      CURVX=0.
-      CURVY=0.
-      CURVZ=0.
-      TWISTX=0.
-      TWISTY=0.
-      TWISTZ=0.
-      VX=0.
-      VY=0.
-      VZ=0.
 C
 C--COMPUTE THE DISTANCES BETWEEN CELLS
       DX = 0.5*(DELR(JM1)+DELR(J))

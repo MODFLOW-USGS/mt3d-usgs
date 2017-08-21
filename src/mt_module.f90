@@ -840,7 +840,11 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:),         POINTER :: WK
         REAL,             SAVE, DIMENSION(:),         POINTER :: CNCG
         REAL,             SAVE, DIMENSION(:),         POINTER :: RHS
-        INTEGER,          SAVE, DIMENSION(:),         POINTER :: L
+        INTEGER,          SAVE, DIMENSION(19)                 :: L
+        INTEGER,     PARAMETER, DIMENSION(9)                  :: LL = &
+                          (/ 2, 4, 6, 8, 9, 10, 11, 16, 17 /)
+        INTEGER,     PARAMETER, DIMENSION(9)                  :: LU = &
+                          (/ 3, 5, 7, 12, 13, 14, 15, 18, 19 /)
         INTEGER,          SAVE,                       POINTER :: INOCROSS
 !--HSS                                                
         INTEGER,          SAVE,                       POINTER :: MaxHSSSource
@@ -1096,7 +1100,6 @@ CONTAINS
       IF(ASSOCIATED(WK))           DEALLOCATE(WK)
       IF(ASSOCIATED(CNCG))         DEALLOCATE(CNCG)
       IF(ASSOCIATED(RHS))          DEALLOCATE(RHS)
-      IF(ASSOCIATED(L))            DEALLOCATE(L)
 !
       IF(ASSOCIATED(MaxHSSSource)) DEALLOCATE(MaxHSSSource)
       IF(ASSOCIATED(MaxHSSCells))  DEALLOCATE(MaxHSSCells)
