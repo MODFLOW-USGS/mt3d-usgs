@@ -1,0 +1,2 @@
+D:\WRDAPP~1\MF2K_G~2\Debug\MF2K_G~1.EXE
+Pause

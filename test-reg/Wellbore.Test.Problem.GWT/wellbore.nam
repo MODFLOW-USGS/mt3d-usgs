@@ -1,0 +1,23 @@
+# Data read from D:\Data Sets\MNW\wellbore\GWT_MNW\wellbore.nam
+# File generated on 5/25/2005 10:12:19 AM
+LIST 14 wellbore.lst
+DIS 15 wellbore.dis
+BAS6 18 wellbore.bas
+OC 19 wellbore.oc
+LPF 20 wellbore.lpf
+DATA(BINARY) 2 calced.bhd OLD
+RCH 21 wellbore.rch
+PCG 22 wellbore.pcg
+#MNW2 23 wellbore.mnw
+MNW2 23 wellbore_multiple.mnw
+#MNW2 23 wellbore_inj.mnw
+#MNW2 23 wellbore_pmp.mnw
+#MNW2 23 wellbore_pumploc.mnw
+MNWI 79 wellbore.mnwi
+GWT 24 wellbore.gwt
+DATA 81 wellbore.qsu
+DATA 82 wellbore.byn
+DATA 45 wellbore.wlA
+DATA 46 wellbore.wlB
+DATA(BINARY) 4 wellbore.bhd REPLACE
+DATA(BINARY) 3 wellbore.bud REPLACE

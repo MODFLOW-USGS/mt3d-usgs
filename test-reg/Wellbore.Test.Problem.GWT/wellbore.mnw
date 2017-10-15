@@ -1,0 +1,20 @@
+ 1  -90  2                                                     MNWMAX,IWL2CB,IWELPT
+Well-A   12                                                    WELLID,NNODES, 
+SKIN   0   0  0 0 0                                                 LOSSTYPE,PUMPLOC,QLIMIT
+ 1.333000000000E-001 0.266600013 52.6204224                                Rw,Rskin,Kskin
+2 30 41  
+3 30 41 
+4 30 41
+5 30 41 
+6 30 41 
+7 30 41 
+8 30 41 
+9 30 41 
+10 30 41 
+11 30 41 
+12 30 41 
+13 30 41 
+1                                                              ITMP
+Well-A 00.0 0.0
+
+

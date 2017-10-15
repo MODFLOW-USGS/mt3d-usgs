@@ -1,0 +1,38 @@
+ 3  -90  2                                                     MNWMAX,IMNWCB,MNWPRT
+Well-A   12                                                    WELLID,NNODES, 
+SKIN   0   0  0 0 0                                                 LOSSTYPE,PUMPLOC,QLIMIT
+ 1.333000000000E-001 0.266600013 52.6204224                                Rw,Rskin,Kskin
+2 30 41  
+3 30 41 
+4 30 41
+5 30 41 
+6 30 41 
+7 30 41 
+8 30 41 
+9 30 41 
+10 30 41 
+11 30 41 
+12 30 41 
+13 30 41 
+Well-B   9                                                    WELLID,NNODES, 
+SKIN   0   0  0 0 0                                                 LOSSTYPE,PUMPLOC,QLIMIT
+ 1.111000000000E-001 0.166600013 72.6204224                                Rw,Rskin,Kskin
+2 23 41  
+3 23 41 
+4 23 41
+5 24 41 
+6 24 41 
+7 24 41 
+8 25 41 
+9 25 41 
+10 25 41 
+Well-C   1                                                    WELLID,NNODES, 
+SKIN   0   0  0 0 0                                                 LOSSTYPE,PUMPLOC,QLIMIT
+ 1.000000000000E-001 0.566600013 62.6204224                                Rw,Rskin,Kskin
+2 2 41  
+3                                                              ITMP
+Well-A 00.1 100.0
+Well-C 10.0 5000.0
+Well-B -100.0 0.0
+
+

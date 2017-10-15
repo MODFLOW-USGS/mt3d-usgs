@@ -1,0 +1,11 @@
+# Data read from D:\Data Sets\MNW\wellbore\GWT_MNW\wellbore.gwt
+# File generated on 5/24/2005 10:40:53 AM
+CLST 25 wellbore.out
+MOC 26 wellbore.moc
+#BFLX 27 wellbore.bflx
+CRCH 28 wellbore.crc
+CNCA 29 wellbore.cna
+VELA 30 wellbore.vla
+DATA 47 wellbore.mn1
+OBS 78 wellbore.mob
+DATA 13 wellbore.oba
