@@ -2718,7 +2718,7 @@ C--THE LEFT FACE HAS BEEN COMPUTED AND SAVED AT PREVIOUS RIGHT FACE
                   IF(QX(J-1,I,K).LT.0.) THEN                        
                     CTOTAL2=CTOTAL2-COLD(J,I,K)*QX(J-1,I,K)/DELR(J) 
                     IF(DRYON) THEN                                  
-                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELR(I)        
+                      CMAS2=-COLD(J,I,K)*QX(J-1,I,K)/DELR(J)        
                       CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
                       CMAS2=CMAS2*RETA(J,I,K)*DELR(J)*DELC(I)*
      &                      DH(J,I,K)*PRSITY(J,I,K)       
@@ -2784,7 +2784,7 @@ C--CALCULATE FACE VALUE AT (J+1/2,I,K)
                   IF(QX(J,I,K).GT.0)THEN                            
                     CTOTAL2=CTOTAL2+COLD(J,I,K)*QX(J,I,K)/DELR(J)   
                     IF(DRYON) THEN                                  
-                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELR(I)           
+                      CMAS2=COLD(J,I,K)*QX(J,I,K)/DELR(J)           
                       CMAS2=CMAS2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
                       CMAS2=CMAS2*RETA(J,I,K)*                      
      &                DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)       
