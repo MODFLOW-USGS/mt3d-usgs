@@ -710,7 +710,9 @@ C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
 C                                                 
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
-          QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
+        VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+        IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+        QSS=1./VOLAQU
 C
 C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)          
         ELSEIF(IQ.EQ.27) THEN
@@ -773,11 +775,11 @@ C--(RECHARGE)
         DO J=1,NCOL
           K=IRCH(J,I)
           IF(K.GT.0 .AND. ICBUND(J,I,K,ICOMP).GT.0
-     &              .AND. RECH(J,I).GT.0 .AND. FUZF) THEN
+     &              .AND. RECH(J,I).GT.0) THEN
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(UPDLHS) A(N)=A(N)-RECH(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
             RHS(N)=RHS(N)
-     &            -RECH(J,I)*CUZRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
+     &            -RECH(J,I)*CRCH(J,I,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)
           ELSE
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
