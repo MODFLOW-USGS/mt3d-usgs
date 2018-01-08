@@ -1,6 +1,6 @@
        650       650        81        82         0                              #NSFINIT,MXSFBC,ICBCSF,IOUTOBS,IETSFR
          5       0.5       1.0    1.0E-6        01       1.0         0          #ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,CRNTSF,IPRTXMD
-         0      3.70(10e12.4)                    1                              #INITIAL CONCENTRATION FOR LAKE COMP# 1
+         0      3.70(10e12.4)                    1                              #INITIAL CONCENTRATION FOR STREAM COMP# 1
         19      1.00(10F12.2)                    1                              #DISPERSION COEFFICIENT COMP# 1
         0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12
         0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12        0.12
