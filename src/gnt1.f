@@ -33,9 +33,10 @@ C-----CALL XMD SOLVER-------------------------------------------------
      &                    numactive,level, ierr)
           ENDIF
           iter = Mxiterxmd
-          CNEWSFTMP=CNEWSF
-          CALL xmdsolv(AMATSF, RHSSF, CNEWSF, hclosexmd, rrctol, IASF, 
-     &                 JASF,NJASF,numactive, north, iter, iacl, ierr)
+          CNEWSFTMP(:,ICOMP)=CNEWSF(:,ICOMP)
+          CALL xmdsolv(AMATSF, RHSSF, CNEWSF(:,ICOMP), hclosexmd, 
+     &                 rrctol, IASF, JASF,NJASF,numactive, north,
+     &                 iter, iacl, ierr)
           n_iter = iter
 C         
           IF(IDSCALE.EQ.1)THEN
