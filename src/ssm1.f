@@ -565,7 +565,7 @@ C--(RECHARGE)
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(RECH(J,I).LT.0) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-RECH(J,I)*ABS(VOLAQU)
                 ELSE
@@ -597,7 +597,7 @@ C--(EVAPOTRANSPIRATION)
             IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
      &                CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-EVTR(J,I)*ABS(VOLAQU)
@@ -710,9 +710,10 @@ C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
 C                                                 
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
-        VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-        IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
-        QSS=1./VOLAQU
+          QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
+          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1E-8) THEN
+            QSS=0.
+          ENDIF
 C
 C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)          
         ELSEIF(IQ.EQ.27) THEN
@@ -741,7 +742,7 @@ C
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(QSS.LT.0) THEN
                 QC7(J,I,K,9)=QC7(J,I,K,9)-QSS*ABS(VOLAQU)
               ELSE
@@ -784,7 +785,7 @@ C--(RECHARGE)
             IF(K.GT.0.AND.ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(RECH(J,I).LT.0) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-RECH(J,I)*ABS(VOLAQU)
                 ELSE
@@ -817,7 +818,7 @@ C--(EVAPOTRANSPIRATION)
             IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
      &          CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
                   QC7(J,I,K,9)=QC7(J,I,K,9)-EVTR(J,I)*ABS(VOLAQU)
@@ -955,7 +956,7 @@ C--SKIP IF NOT ACTIVE CELL
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(QSS.LT.0) THEN
                 QC7(J,I,K,9)=QC7(J,I,K,9)-QSS*ABS(VOLAQU)
               ELSE
@@ -1165,7 +1166,7 @@ C
                 CTMP=CRCH(J,I,ICOMP)
                 IF(RECH(J,I).LT.0) CTMP=CNEW(J,I,K,ICOMP)
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(RECH(J,I).LT.0) THEN
                   RMASIO(7,2,ICOMP)=RMASIO(7,2,ICOMP)+RECH(J,I)*CTMP*
      &                              DTRANS*ABS(VOLAQU)
@@ -1215,7 +1216,7 @@ C
                   CTMP=0.
                 ENDIF
                 VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-                IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(EVTR(J,I).LT.0) THEN
                   RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+EVTR(J,I)*CTMP*
      &                              DTRANS*ABS(VOLAQU)
@@ -1359,6 +1360,9 @@ C
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)
         IF(IQ.EQ.15) THEN
           QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
+          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1E-8) THEN
+            QSS=0.
+          ENDIF
 C
 C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)          
         ELSEIF(IQ.EQ.27) THEN
@@ -1400,7 +1404,7 @@ C
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN
             IF(DRYON) THEN
               VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(QSS.LT.0) THEN
                 RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+QSS*CTMP*DTRANS*
      &                             ABS(VOLAQU)

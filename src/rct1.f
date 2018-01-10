@@ -1999,7 +1999,7 @@ C
           DO J=1,NCOL
             IF((cMethane(J,I,K)-MaxEC(ICOMP))>0.) THEN
                MassStor(J,I,K)=MassStor(J,I,K)+(cMethane(J,I,K)-
-     &                         MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(K)*  
+     &                         MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(J)*  
      &                         DELC(I)*DH(J,I,K)*DTRANS*0.5*DTRANS 
                                cMethane(J,I,K)=MaxEC(ICOMP)
             ENDIF                                                   

@@ -362,7 +362,7 @@ C---------GET Q FROM SS ARRAY
               ENDIF
 C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
                 IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
@@ -454,7 +454,7 @@ C---------GET Q FROM SS ARRAY
               ENDIF
 C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
                 IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
@@ -639,7 +639,7 @@ C---------GET Q FROM SS ARRAY
               ENDIF
 C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
                 IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)
@@ -746,7 +746,7 @@ C---------GET Q FROM SS ARRAY
               ENDIF
 C
               VOLAQU=DELR(JJ)*DELC(II)*DH(JJ,II,KK)
-              IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
               IF(ICBUND(JJ,II,KK,1).EQ.0.OR.VOLAQU.LE.0) THEN
                 IF(DRYON) THEN
                   Q=SS(5,IWELL)*ABS(VOLAQU)

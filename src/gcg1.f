@@ -462,6 +462,7 @@ C*******************************************************************
 C
       USE MT3DMS_MODULE, ONLY: L
 C
+      IMPLICIT  NONE
       INTEGER, INTENT(IN)              :: N,NCRS
       INTEGER, INTENT(IN), DIMENSION(N):: ICBUND
       REAL, INTENT(IN),  DIMENSION(N,*):: A

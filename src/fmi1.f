@@ -1530,7 +1530,7 @@ C
           K=IRCH(J,I)
           IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+          IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             IF(DRYON) THEN
               RECH(J,I)=RECH(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
@@ -1559,7 +1559,7 @@ C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL
           K=ABS(IUZFBND(J,I))
           IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)            
-          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+          IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             FINFIL(J,I)=0.                            
           ELSE                                        
@@ -1582,7 +1582,7 @@ C
           K=IEVT(J,I)
           IF(K.EQ.0) CYCLE
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-          IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+          IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
             IF(DRYON) THEN
               EVTR(J,I)=EVTR(J,I)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
@@ -1611,7 +1611,7 @@ C--(UZET)
         DO I=1,NROW           
           DO J=1,NCOL         
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-            IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+            IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
               UZET(J,I,K)=0                             
             ELSE                                        
@@ -1636,7 +1636,7 @@ C      DO K=1,NLAY
             K=IGWET(J,I)
             IF(K.EQ.0) CYCLE
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)             
-            IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+            IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN 
               GWET(J,I)=0                              
             ELSE                                         
@@ -1662,7 +1662,7 @@ C
         IQ=SS(6,NUM)
         IF(IQ.EQ.26.AND.K.EQ.0.AND.I.EQ.0) CYCLE
         VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
-        IF(ABS(VOLAQU).LE.1.E-5) VOLAQU=1.E-5
+        IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
         IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
           IF(DRYON) THEN
             SS(5,NUM)=SS(5,NUM)/ABS(VOLAQU) !MAINTAIN CORRECT SIGN
