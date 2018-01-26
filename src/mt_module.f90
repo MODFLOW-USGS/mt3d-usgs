@@ -759,7 +759,9 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: SP1
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: SP2
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC1
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:,:,:),   POINTER :: FLAM1
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: RC2
+        DOUBLE PRECISION, SAVE, DIMENSION(:,:,:,:),   POINTER :: FLAM2
 !--RCT
         INTEGER,          SAVE,                       POINTER :: ICTSOUT 
         INTEGER,          SAVE,                       POINTER :: MXCTS   
@@ -1061,7 +1063,9 @@ CONTAINS
       IF(ASSOCIATED(SP1))          DEALLOCATE(SP1)
       IF(ASSOCIATED(SP2))          DEALLOCATE(SP2)
       IF(ASSOCIATED(RC1))          DEALLOCATE(RC1)
+      IF(ASSOCIATED(FLAM1))      DEALLOCATE(FLAM1)
       IF(ASSOCIATED(RC2))          DEALLOCATE(RC2)
+      IF(ASSOCIATED(FLAM2))      DEALLOCATE(FLAM2)
 !
       IF(ASSOCIATED(MaxConcObs))   DEALLOCATE(MaxConcObs)
       IF(ASSOCIATED(MaxFluxObs))   DEALLOCATE(MaxFluxObs)

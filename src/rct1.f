@@ -9,7 +9,7 @@ C
      &                         COLD,PRSITY,BUFF,SRCONC,RETA,RHOB,
      &                         PRSITY2,RETA2,ISOTHM,RFMIN,DTRCT,
      &                         IREACT,IRCTOP,IGETSC,IFMTRF,FRAC,SP1,SP2,
-     &                         RC1,RC2,
+     &                         RC1,RC2,FLAM1,FLAM2,
      &                         SAVUCN,IUCN2
       USE MIN_SAT, ONLY: ICIMDRY
 C
@@ -33,12 +33,16 @@ C--ALLOCATE AND INITIALIZE
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(RC1(NCOL,NROW,NLAY,NCOMP))
+      ALLOCATE(FLAM1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(RC2(NCOL,NROW,NLAY,NCOMP))
-      FRAC=0.
+      ALLOCATE(FLAM2(NCOL,NROW,NLAY,NCOMP))
+      FRAC=1.
       SP1=0.
       SP2=0.
       RC1=0.
+      FLAM1=1.0D0
       RC2=0.
+      FLAM2=1.0D0
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INRCT
@@ -626,7 +630,7 @@ C ********************************************************************
 C
       USE RCTMOD
       USE UZTVARS,       ONLY: THETAW
-      USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2,iSSTrans
+      USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2,iSSTrans,FLAM2
 C                     
       IMPLICIT     NONE
       INTEGER      NCOL,NROW,NLAY,ICBUND,ISOTHM,IREACT,J,I,K,
@@ -641,6 +645,7 @@ C
      &             RC1(NCOL,NROW,NLAY),RC2(NCOL,NROW,NLAY),
      &             PRSITY2(NCOL,NROW,NLAY),FRAC(NCOL,NROW,NLAY),
      &             RETA2(NCOL,NROW,NLAY)
+      DOUBLE PRECISION FLIM,FLS
       PARAMETER    (TINY=1.E-30)
 C
 C--EVALUATE RETARDATION FACTOR AND SORBED CONCONCENTRATION
@@ -729,8 +734,10 @@ C--IF with no reaction or with first-order reaction
      &                        RC2TMP*RHOB(J,I,K))
 C--IF with zeroth-order reaction      
               ELSEIF(ireact.eq.100) THEN 
+                FLS=FLAM2(J,I,K,ICOMP)
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+RHOB(J,I,K)/
-     &                        DTRANS*SRCONC(J,I,K)-RC2TMP*RHOB(J,I,K))/
+     &                        DTRANS*SRCONC(J,I,K)-
+     &                        RC2TMP*FLS*RHOB(J,I,K))/
      &                        (RHOB(J,I,K)/DTRANS+SP2(J,I,K)/SP1(J,I,K))
               END IF
             ENDDO
@@ -780,17 +787,19 @@ C--IF with no reaction or with first-order reaction
                 ENDIF
 C--IF with zeroth-order reaction     
               ELSEIF(ireact.eq.100) THEN 
+                FLIM=FLAM2(J,I,K,ICOMP)
                 IF(iSSTrans.EQ.1) THEN
                   TERM1=SP2(J,I,K)
                       SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)-
-     &                RC1TMP*PRSITY2(J,I,K)-RC2TMP*(1.-FRAC(J,I,K))*
-     &                RHOB(J,I,K))/TERM1
+     &                RC1TMP*PRSITY2(J,I,K)*FLIM-RC2TMP*
+     &                (1.-FRAC(J,I,K))*RHOB(J,I,K)*FLIM)/TERM1
                 ELSE
                   TERM1=PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS+SP2(J,I,K)
                       SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)-
-     &                RC1TMP*PRSITY2(J,I,K)-RC2TMP*(1.-FRAC(J,I,K))*
-     &                RHOB(J,I,K)+PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*
-     &                SRCONC(J,I,K))/TERM1
+     &                RC1TMP*PRSITY2(J,I,K)*FLIM-RC2TMP*
+     &                (1.-FRAC(J,I,K))*RHOB(J,I,K)*FLIM+
+     &                PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
+     &                /TERM1
                 ENDIF
               END IF         
             ENDDO
@@ -805,7 +814,7 @@ C
 C
       SUBROUTINE RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
-     &                  COLD,CNEW)
+     &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
 C *******************************************************************
 C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX [A] AND THE 
 C RIGHT-HAND-SIDE MATRIX [RHS] FOR SORPTION AND 1ST/0TH ORDER 
@@ -817,18 +826,28 @@ C
      &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP,iSSTrans
 C
       IMPLICIT  NONE
-      INTEGER   ICOMP,ICBUND,K,I,J,N,III
+      INTEGER   ICOMP,ICBUND,K,I,J,N,III,ITO
       REAL      PRSITY,RHOB,SP1,SP2,RC1,RC2,PRSITY2,FRAC,DTRANS,
      &          SRCONC,DH,RETA2,TERM1,TINY,
      &          RC1TMP,RC2TMP,
-     &          COLD,CNEW
+     &          COLD,CNEW,RETA,FRIM
+      DOUBLE PRECISION FLAM1,FLAM2,FL,FLO,FZOD,FLIM,FLIMO,FLS,FLSO
       DIMENSION ICBUND(NODES,NCOMP),PRSITY(NODES),
      &          RHOB(NODES),SP1(NODES,NCOMP),SP2(NODES,NCOMP),
      &          RC1(NODES,NCOMP),RC2(NODES,NCOMP),SRCONC(NODES,NCOMP),
      &          DH(NODES),PRSITY2(NODES),RETA2(NODES,NCOMP),FRAC(NODES),
-     &          CNEW(NODES,NCOMP),COLD(NODES,NCOMP)
+     &          CNEW(NODES,NCOMP),COLD(NODES,NCOMP),
+     &          FLAM1(NODES,NCOMP),FLAM2(NODES,NCOMP),RETA(NODES,NCOMP)
       PARAMETER (TINY=1.E-30)
       INTEGER   MM
+C
+      FL=1.0D0
+      FLIM=1.0D0
+      FLS=1.0D0
+      IF(ITO.EQ.1) THEN
+        FLAM1=1.0D0
+        FLAM2=1.0D0
+      ENDIF
 C
 C--CONTRIBUTIONS TO [A] AND [RHS] FROM NONEQUILIBRIUM SORPTION
 C
@@ -862,13 +881,24 @@ C--IF with no reaction or with first-order reaction
      &                   DELR(J)*DELC(I)*DH(N)*RHOB(N)*SRCONC(N,ICOMP-1)
 C--IF with zeroth-order reaction     
               ELSEIF(IREACT.EQ.100) THEN
+C
+                IF(RC2TMP.GT.0.) THEN
+                  FLSO=FLAM2(N,ICOMP)
+                  FRIM=0.
+                  FLAM2(N,ICOMP)=FZOD(ITO,
+     1            ISOTHM,DTRANS,RC2TMP,0.,
+     1            1.,0.,1.,
+     1            SRCONC(N,ICOMP),SRCONC(N,ICOMP),FRIM,FLSO)
+                  FLS=FLAM2(N,ICOMP)
+                ENDIF
+C
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*
      &                          DH(N)*(1.-SP2(N,ICOMP)/SP1(N,ICOMP)
      &                          /(RHOB(N)/DTRANS+SP2(N,ICOMP)/
      &                          SP1(N,ICOMP)))
                 RHS(N)=RHS(N)+(SP2(N,ICOMP)/SP1(N,ICOMP)*
      &                 DELR(J)*DELC(I)*DH(N)*RHOB(N)*
-     &                 (RC2TMP-SRCONC(N,ICOMP)/DTRANS))/
+     &                 (RC2TMP*FLS-SRCONC(N,ICOMP)/DTRANS))/
      &                 (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP))
               END IF   
             ENDDO
@@ -919,11 +949,23 @@ C--IF with zeroth-order reaction
                 ELSE
                   TERM1=PRSITY2(N)*RETA2(N,ICOMP)/DTRANS+SP2(N,ICOMP)
                 ENDIF
+C
+                IF(RC1TMP.GT.0..OR.RC2TMP.GT.0.) THEN
+                  FLIMO=FLAM2(N,ICOMP)
+                  FRIM=1.-FRAC(N)
+                  FLAM2(N,ICOMP)=FZOD(ITO,
+     1            ISOTHM,DTRANS,RC1TMP,RC2TMP,
+     1            RETA2(N,ICOMP),RHOB(N),PRSITY2(N),
+     1            SRCONC(N,ICOMP),SRCONC(N,ICOMP),FRIM,FLIMO)
+                  FLIM=FLAM2(N,ICOMP)
+                ENDIF
+C
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*
      &                          DH(N)*(1.-SP2(N,ICOMP)/TERM1)
                 IF(iSSTrans.EQ.0) THEN
                   RHS(N)=RHS(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
-     &                 (-RC1TMP*PRSITY2(N)-RC2TMP*(1.-FRAC(N))*RHOB(N)+
+     &                 (-RC1TMP*PRSITY2(N)*FLIM-RC2TMP*(1.-FRAC(N))
+     &                 *RHOB(N)*FLIM+
      &                 PRSITY2(N)*RETA2(N,ICOMP)*SRCONC(N,ICOMP)/DTRANS)
      &                 /TERM1             
                 ENDIF
@@ -1037,14 +1079,25 @@ C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
               IF(ICBUND(N,ICOMP).LE.0) CYCLE
 C
 C--DISSOLVED PHASE
+              IF(RC1(N,ICOMP).GT.0..OR.RC2(N,ICOMP).GT.0.) THEN
+                FLO=FLAM1(N,ICOMP)
+                FLAM1(N,ICOMP)=FZOD(ITO,
+     1            ISOTHM,DTRANS,RC1(N,ICOMP),RC2(N,ICOMP),
+     1            RETA(N,ICOMP),RHOB(N),PRSITY(N),
+     1            COLD(N,ICOMP),CNEW(N,ICOMP),FRAC(N),FLO)
+                FL=FLAM1(N,ICOMP)
+              ENDIF
               RHS(N)=RHS(N)+RC1(N,ICOMP)*PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+     1               *FL
 C
 C--SORBED PHASE FOR EQUILIBRIUM-CONTROLLED ISOTHERMS
               IF(ISOTHM.EQ.1.OR.ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
                 RHS(N)=RHS(N)+RC2(N,ICOMP)*RHOB(N)*DELR(J)*DELC(I)*DH(N)
+     1               *FL
               ELSEIF(ISOTHM.EQ.6) THEN
                 RHS(N)=RHS(N)+RC2(N,ICOMP)*FRAC(N)*RHOB(N)*
      &                 DELR(J)*DELC(I)*DH(N)
+     1               *FL
               ENDIF
             ENDDO
           ENDDO
@@ -1158,7 +1211,7 @@ C
      &                         DELR,DELC,DH,ISOTHM,IREACT,RHOB,SP1,SP2,
      &                         SRCONC,RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,
      &                         RETA,RFMIN,RMASIO,
-     &                         COLD,iSSTrans
+     &                         COLD,iSSTrans,FLAM1,FLAM2
       USE RCTMOD                    
 C
       IMPLICIT  NONE
@@ -1166,6 +1219,7 @@ C
       REAL      DTRANS,DCRCT,CMML,CMMS,CIML,CIMS,VOLUME,DCRCT2
       REAL      CTMP,DCRCTX,DCRCTX2 
       INTEGER   M,N                 
+      DOUBLE PRECISION FL,FLIM
 C
       DCRCT=0.
       DCRCT2=0.
@@ -1327,7 +1381,7 @@ C--DETERMINE WHICH CONC TO USE IF IREACTION=1
             ENDIF                            
 C                                            
 C--SKIP IF CONCENTRATION IS NOT POSITIVE
-            IF(CTMP.LE.0) CYCLE
+            IF(CTMP.LE.0..AND.IREACT.NE.100) CYCLE
 C
 C--DISSOLVED PHASE
             IF(ireact.eq.1) THEN
@@ -1347,8 +1401,10 @@ C--DISSOLVED PHASE
                 DCRCTX=0.                                        
               ENDIF                                              
             ELSEIF(ireact.eq.100) THEN
-              DCRCT=-RC1(J,I,K,ICOMP)*DTRANS*DELR(J)*DELC(I)*
+                FL=FLAM1(J,I,K,ICOMP)
+                DCRCT=-RC1(J,I,K,ICOMP)*DTRANS*DELR(J)*DELC(I)*
      &               DH(J,I,K)*PRSITY(J,I,K)
+     1               *FL
             ENDIF
 C--SORBED PHASE
             DCRCT2=0.
@@ -1366,8 +1422,10 @@ C--SORBED PHASE
                 DCRCTX2=0.                                   
               ENDIF                                          
             ELSEIF(ISOTHM.GT.0.and.ireact.eq.100) THEN
+              FL=FLAM1(J,I,K,ICOMP)
               DCRCT2=-RC2(J,I,K,ICOMP)*RHOB(J,I,K)*
      &               DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
+     1               *FL
             ENDIF            
 C
 C--CALCULATE MASS LOSS/GAIN DUE TO 1st/0th ORDER REACTION
@@ -1429,7 +1487,7 @@ C--DETERMINE WHICH CONC TO USE IF IREACTION=1
             ENDIF                      
 C                                      
 C--SKIP IF CONCENTRATION IS NOT POSITIVE
-            IF(CTMP.LE.0) CYCLE
+            IF(CTMP.LE.0.AND.IREACT.NE.100) CYCLE
 C
 C--compute mass loss/gain in each cell for all 4 phases: 
 C--mobile liquid, mobile sorbed, immobile liquid, immobile sorbed
@@ -1446,12 +1504,14 @@ C--for 1st-order reaction
               CIMS=-RC2(J,I,K,ICOMP)*CIMS*DTRANS
 C--for zero-order reaction
             ELSEIF(ireact.eq.100) THEN              
-              CMML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY(J,I,K)*DTRANS
+              FL=FLAM1(J,I,K,ICOMP)
+              FLIM=FLAM2(J,I,K,ICOMP)
+              CMML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY(J,I,K)*DTRANS*FL
               CMMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
-     &             *FRAC(J,I,K)
-              CIML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY2(J,I,K)*DTRANS
+     &             *FRAC(J,I,K)*FL
+              CIML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY2(J,I,K)*DTRANS*FLIM
               CIMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
-     &             *(1.-FRAC(J,I,K))
+     &             *(1.-FRAC(J,I,K))*FLIM
             END IF            
 C
 C--CALCULATE MASS LOSS/GAIN DUE TO REACTION IN MOBILE DOMAIN
@@ -2060,5 +2120,53 @@ C
           ENDDO
         ENDDO  
       ENDDO
+      RETURN
+      END
+C
+C
+      DOUBLE PRECISION FUNCTION FZOD(ITO,
+     1            ISOTHM,DTRANS,RC1,RC2,
+     1            RETA,RHOB,PRSITY,
+     1            COLD,CNEW,FRAC,FLO)
+C **********************************************************************
+C THIS FUNCTION CALCULATES FRACTION APPLIED TO ZEROTH-ORDER DECAY RATE
+C **********************************************************************
+      INTEGER ITO,ISOTHM
+      REAL DTRANS,RC1,RC2,
+     1            RETA,RHOB,PRSITY,
+     1            COLD,CNEW,FRAC
+      DOUBLE PRECISION FLO,TERML
+C
+C-----FOR ISOTHM=4, ONLY FIRST TERM IS NEEDED
+      IF(ISOTHM.EQ.4) FRAC=0.
+C
+C-----SET FZOD
+      FZOD=1.D0
+      TERML=DBLE(RC1)*DBLE(DTRANS)/DBLE(RETA) + 
+     1      DBLE(RC2)*DBLE(RHOB)*DBLE(DTRANS)*DBLE(FRAC)/
+     1        (DBLE(RETA)*DBLE(PRSITY))
+      IF(TERML.LE.0.D0) THEN
+        FZOD=1.D0
+        RETURN
+      ENDIF
+      IF(ITO.EQ.1) THEN
+        FZOD=COLD/TERML
+      ELSE
+        FZOD=FLO
+        IF(CNEW.LT.0.) THEN
+          IF(FLO.GT.0.) THEN
+            FZOD=(TERML*FLO - ABS(CNEW))/(TERML) !*FLO)
+!            FZOD=FZOD*FLO
+!            FZOD=FZOD*0.9999
+          ENDIF
+        ELSEIF(CNEW.GT.COLD) THEN
+          FZOD=1.0D0
+        ENDIF
+      ENDIF
+C
+C-----CHECK FOR LIMITS
+      IF(FZOD.LT.0.0D0) FZOD=0.0D0
+      IF(FZOD.GT.1.0D0) FZOD=1.0D0
+C
       RETURN
       END

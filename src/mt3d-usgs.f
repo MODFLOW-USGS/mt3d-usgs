@@ -72,7 +72,7 @@ C
      &                         INTSO,INLKT,INSFT,
      &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
-     &                         IDRY2
+     &                         IDRY2,FLAM1,FLAM2
       USE DSSL
 C
       IMPLICIT  NONE
@@ -356,7 +356,7 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(4).GT.0) 
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
-     &                  COLD,CNEW)                          
+     &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
      &           CALL ADVQC1FM(ICOMP)                       
