@@ -73,9 +73,9 @@ C
       IF(K.GT.0) WRITE(IOUT,20) ANAME,K,IN,FMTIN
       IF(K.LE.0) WRITE(IOUT,22) ANAME,IN,FMTIN
    20 FORMAT(/21X,A24,' FOR LAYER',I3,' READ ON UNIT',
-     & I3,' USING FORMAT: "',A20,'"'/21X,90('-'))
+     & I4,' USING FORMAT: "',A20,'"'/21X,90('-'))
    22 FORMAT(/27X,A24,' READ ON UNIT',
-     & I3,' USING FORMAT: "',A20,'"'/27X,77('-'))
+     & I4,' USING FORMAT: "',A20,'"'/27X,77('-'))
       DO 30 I=1,II
         READ (IN,FMTIN) (IA(J,I),J=1,JJ)
    30 CONTINUE
@@ -276,9 +276,9 @@ C
       IF(K.GT.0) WRITE(IOUT,20) ANAME,K,IN,FMTIN
       IF(K.LE.0) WRITE(IOUT,22) ANAME,IN,FMTIN
    20 FORMAT(/21X,A24,' FOR LAYER',I3,' READ ON UNIT',
-     & I3,' USING FORMAT: "',A20,'"'/21X,90('-'))
+     & I4,' USING FORMAT: "',A20,'"'/21X,90('-'))
    22 FORMAT(/27X,A24,' READ ON UNIT',
-     & I3,' USING FORMAT: "',A20,'"'/27X,77('-'))
+     & I4,' USING FORMAT: "',A20,'"'/27X,77('-'))
       DO 30 I=1,II
         READ (IN,FMTIN) (A(J,I),J=1,JJ)
    30 CONTINUE

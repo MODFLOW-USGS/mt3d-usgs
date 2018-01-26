@@ -710,9 +710,10 @@ C--SKIP 1 LAK ENTRY IN SSM FILE; LAK CONC IS TRANSFERRED IN READGS
 C                                                 
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)        
         IF(IQ.EQ.15) THEN
-          QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
-          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1E-8) THEN
+          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1.E-8) THEN
             QSS=0.
+          ELSE
+            QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
           ENDIF
 C
 C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)          

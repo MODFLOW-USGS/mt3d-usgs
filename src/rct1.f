@@ -845,8 +845,8 @@ C
       FLIM=1.0D0
       FLS=1.0D0
       IF(ITO.EQ.1) THEN
-        FLAM1=1.0D0
-        FLAM2=1.0D0
+        FLAM1(:,ICOMP)=1.0D0
+        FLAM2(:,ICOMP)=1.0D0
       ENDIF
 C
 C--CONTRIBUTIONS TO [A] AND [RHS] FROM NONEQUILIBRIUM SORPTION
@@ -2160,7 +2160,7 @@ C-----SET FZOD
 !            FZOD=FZOD*0.9999
           ENDIF
         ELSEIF(CNEW.GT.COLD) THEN
-          FZOD=1.0D0
+!          FZOD=1.0D0
         ENDIF
       ENDIF
 C
