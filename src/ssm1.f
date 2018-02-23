@@ -650,19 +650,23 @@ C-----GWET
             N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
             IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
      &                 CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
-              IF(UPDLHS) A(N)=A(N)+GWET(J,I)
+              IF(UPDLHS) A(N)=A(N)+GWET(J,I)*DELR(J)*DELC(I)*DH(J,I,K)
             ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
               RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)
+     1              *DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ELSE
             IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
      &                     CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
-                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)*ABS(VOLAQU)
                 ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
                   QC7(J,I,K,7)=QC7(J,I,K,7)-GWET(J,I)*CGWET(J,I,ICOMP)
-                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I) 
+     &            *ABS(VOLAQU)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -871,18 +875,22 @@ C-----GWET
      &               CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN  
               CYCLE
             ELSEIF(CGWET(J,I,ICOMP).GE.0) THEN  
-              IF(UPDLHS) A(N)=A(N)-GWET(J,I) 
-              RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP) 
+              IF(UPDLHS) A(N)=A(N)-GWET(J,I)*DELR(J)*DELC(I)*DH(J,I,K) 
+              RHS(N)=RHS(N)-GWET(J,I)*CGWET(J,I,ICOMP)
+     &        *DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ELSE
             IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
               IF(DRYON) THEN
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(GWET(J,I).LT.0.AND.(CGWET(J,I,ICOMP).LT.0 .OR. 
      &                      CGWET(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
-                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)*ABS(VOLAQU)
                 ELSEIF(CGWET(J,I,ICOMP).GT.0) THEN
                   QC7(J,I,K,7)=QC7(J,I,K,7)-GWET(J,I)*CGWET(J,I,ICOMP)
-                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I)
+     &            *ABS(VOLAQU)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -1287,8 +1295,10 @@ C----GWET
             ENDIF
             IF(GWET(J,I).GT.0) THEN
              RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*CTMP*DTRANS
+     &       *DELR(J)*DELC(I)*DH(J,I,K)
             ELSE
              RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*CTMP*DTRANS
+     &       *DELR(J)*DELC(I)*DH(J,I,K)
             ENDIF
           ELSE
             IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
@@ -1300,15 +1310,17 @@ C----GWET
                 ELSEIF(CTMP.LT.0) THEN        
                   CTMP=0.
                 ENDIF
+                VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+                IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
                 IF(GWET(J,I).LT.0) THEN
                   RMASIO(54,2,ICOMP)=RMASIO(54,2,ICOMP)+GWET(J,I)*CTMP
-     &                               *DTRANS 
-                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)
+     &                               *DTRANS*ABS(VOLAQU)
+                  QC7(J,I,K,9)=QC7(J,I,K,9)-GWET(J,I)*ABS(VOLAQU)
                 ELSE
                   RMASIO(54,1,ICOMP)=RMASIO(54,1,ICOMP)+GWET(J,I)*CTMP
-     &                               *DTRANS 
-                  QC7(J,I,K,7)=QC7(J,I,K,7)-GWET(J,I)*CTMP
-                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I) 
+     &                               *DTRANS*ABS(VOLAQU)
+                  QC7(J,I,K,7)=QC7(J,I,K,7)-GWET(J,I)*CTMP*ABS(VOLAQU)
+                  QC7(J,I,K,8)=QC7(J,I,K,8)-GWET(J,I)*ABS(VOLAQU)
                 ENDIF
               ENDIF
             ENDIF
@@ -1360,9 +1372,10 @@ C--SKIP IF NOT ACTIVE CELL
 C
 C--RESET QSS FOR MASS-LOADING SOURCES (IQ=15)
         IF(IQ.EQ.15) THEN
-          QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
-          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1E-8) THEN
+          IF(DELR(J)*DELC(I)*DH(J,I,K).LT.1.E-8) THEN
             QSS=0.
+          ELSE
+            QSS=1./(DELR(J)*DELC(I)*DH(J,I,K))
           ENDIF
 C
 C--GET AVERAGE CONC FOR LINKED SINK/SOURCE GROUPS (IQ=27)          
