@@ -1561,7 +1561,11 @@ C--DIVIDE INFILTRATED VOL BY AQUIFER VOLUME TO GET PER UNIT AQ. VOL
           VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)            
           IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
           IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
-            FINFIL(J,I)=0.                            
+            IF(DRYON) THEN
+              FINFIL(J,I)=FINFIL(J,I)/ABS(VOLAQU)
+            ELSE
+              FINFIL(J,I)=0.                            
+            ENDIF
           ELSE                                        
             FINFIL(J,I)=FINFIL(J,I)/VOLAQU            
           ENDIF                                       
@@ -1613,7 +1617,11 @@ C--(UZET)
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
             IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN
-              UZET(J,I,K)=0                             
+              IF(DRYON) THEN
+                UZET(J,I,K)=UZET(J,I,K)/ABS(VOLAQU)
+              ELSE
+                UZET(J,I,K)=0                             
+              ENDIF
             ELSE                                        
               UZET(J,I,K)=UZET(J,I,K)/VOLAQU            
             ENDIF                                       
@@ -1638,7 +1646,11 @@ C      DO K=1,NLAY
             VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)             
             IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
             IF(ICBUND(J,I,K,1).EQ.0.OR.VOLAQU.LE.0) THEN 
-              GWET(J,I)=0                              
+              IF(DRYON) THEN
+                GWET(J,I)=GWET(J,I)/ABS(VOLAQU)
+              ELSE
+                GWET(J,I)=0                              
+              ENDIF
             ELSE                                         
               GWET(J,I)=GWET(J,I)/VOLAQU             
             ENDIF                                        

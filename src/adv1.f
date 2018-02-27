@@ -411,7 +411,8 @@ C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
           DO K=1,NLAY    
             DO I=1,NROW  
               DO J=1,NCOL
-                PRSYTMP(J,I,K)=SATOLD(J,I,K)*PRSITYSAV(J,I,K)
+                !PRSYTMP(J,I,K)=SATOLD(J,I,K)*PRSITYSAV(J,I,K)
+                PRSYTMP(J,I,K)=PRSITYSAV(J,I,K)
               ENDDO
             ENDDO  
           ENDDO    
