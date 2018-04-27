@@ -658,11 +658,11 @@ C--1. LINEAR EQUILIBRIUM...
             DO J=1,NCOL
               IF(ICBUND(J,I,K).EQ.0) CYCLE
               IF(iUnitTRNOP(7).GT.0) THEN
-                IF(THETAW(J,I,K).NE.PRSITY(J,I,K)) THEN
+                !IF(THETAW(J,I,K).NE.PRSITY(J,I,K)) THEN
                   RETA(J,I,K)=1.+RHOB(J,I,K)/THETAW(J,I,K)*SP1(J,I,K)
-                ELSE
-                  RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
-                ENDIF
+                !ELSE
+                !  RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
+                !ENDIF
               ELSE
                 RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
                 IF(IALTFM.EQ.3)

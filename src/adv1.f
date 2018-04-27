@@ -379,7 +379,7 @@ C ALSO INCLUDED ARE EXPLICIT UPSTREAM FINITE DIFFERENCE AND THIRD-ORDER
 C TVD (ULTIMATE) SCHEMES.
 C **********************************************************************
 C
-      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV
+      USE UZTVARS,       ONLY: SATOLD,PRSITYSAV,THETAW
       USE MT3DMS_MODULE, ONLY: IOUT,NCOL,NROW,NLAY,MCOMP,MIXELM,
      &                         MXPART,NCOUNT,NPINS,NRC,NPCHEK,XP,YP,ZP,
      &                         INDEXX,INDEXY,INDEXZ,CNPT,ICBUND,DELR,
@@ -412,7 +412,9 @@ C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
             DO I=1,NROW  
               DO J=1,NCOL
                 !PRSYTMP(J,I,K)=SATOLD(J,I,K)*PRSITYSAV(J,I,K)
-                PRSYTMP(J,I,K)=PRSITYSAV(J,I,K)
+                !PRSYTMP(J,I,K)=PRSITYSAV(J,I,K)
+                PRSYTMP(J,I,K)=THETAW(J,I,K)
+                IF(PRSYTMP(J,I,K).LE.1.E-8) PRSYTMP(J,I,K)=1.E-8
               ENDDO
             ENDDO  
           ENDDO    

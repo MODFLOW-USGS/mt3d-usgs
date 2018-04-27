@@ -62,6 +62,9 @@ C
       ALLOCATE(WC(NCOL,NROW,NLAY))     
       ALLOCATE(THETAW(NCOL,NROW,NLAY))
       ALLOCATE(SDH(NCOL,NROW,NLAY))    
+      SATOLD=1.0
+      SATNEW=1.0
+      THETAW=PRSITYSAV
 C
 C--INITIALIZE IUZFBND ARRAY
       DO I=1,NROW
@@ -111,11 +114,11 @@ C--CALCULATE SATURATION AND STORE IN SATOLD
           DO I=1,NROW
             DO J=1,NCOL
               IF(ICBUND(J,I,K,1).GT.0) THEN
-                DH(J,I,K)=SDH(J,I,K)
-                SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
-     &                          WC(J,I,K)/PRSITY(J,I,K)+
-     &                          DH(J,I,K)/DZ(J,I,K)*1
-                THETAW(J,I,K)=SATOLD(J,I,K)*PRSITY(J,I,K)  
+C                DH(J,I,K)=SDH(J,I,K)
+C                SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
+C     &                          WC(J,I,K)/PRSITY(J,I,K)+
+C     &                          DH(J,I,K)/DZ(J,I,K)*1
+C                THETAW(J,I,K)=SATOLD(J,I,K)*PRSITY(J,I,K)  
               ENDIF
             ENDDO
           ENDDO
@@ -843,12 +846,17 @@ C
 C
       DO I=1,NROW
         DO J=1,NCOL
-          IF(IUZFBND(J,I).LE.0) CYCLE
-          DO K=1,NLAY
-            SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
-     1          +SATOLD(J,I,K)
-            THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
-          ENDDO
+          IF(IUZFBND(J,I).LE.0) THEN
+            DO K=1,NLAY
+              THETAW(J,I,K)=PRSITYSAV(J,I,K)
+            ENDDO
+          ELSE
+            DO K=1,NLAY
+              SAT=((SATNEW(J,I,K)-SATOLD(J,I,K))/(HT2-HT1))*(TIME2-HT1)
+     1            +SATOLD(J,I,K)
+              THETAW(J,I,K)=SAT*PRSITYSAV(J,I,K)
+            ENDDO
+          ENDIF
         ENDDO
       ENDDO
 C

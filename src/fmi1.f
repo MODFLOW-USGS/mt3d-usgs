@@ -740,7 +740,7 @@ C
      &                         iUnitTRNOP,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,
      &                         FSFRFLOWS,FUZFFLOWS,FSWR,FSWRFLOWS,
      &                         FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF,
-     &                         DZ,QZ,PRSITY,QSTO,QX,QY
+     &                         DZ,QZ,PRSITY,QSTO,QX,QY,HT1,HT2
       USE INTERFACE1
 C
       IMPLICIT  NONE
@@ -950,6 +950,25 @@ C-------IF NOT THE FIRST TIME STEP, COPY SATNEW TO SATOLD
               ENDDO                                    
             ENDDO                                      
           ENDIF                                        
+C
+C-------CHECK WC (FLOW MODEL) VERSUS POROSITY (BTN FILE)
+          DO K=1,NLAY
+          DO I=1,NROW
+          DO J=1,NCOL
+            IF(WC(J,I,K).GT.PRSITYSAV(J,I,K)+1.0E-3) THEN
+              WRITE(IOUT,*) 'WATER CONTENT > POROSITY, STOPPING!'
+              WRITE(IOUT,'(A,2(1X,1PG12.4),3I6)')
+     1          'WC, POR, Lay, Row, Col',
+     1          WC(J,I,K),PRSITYSAV(J,I,K),K,I,J
+              WRITE(*,*) 'WATER CONTENT > POROSITY, STOPPING!'
+              WRITE(*,'(A,2(1X,1PG12.4),3I6)')
+     1          'WC, POR, Lay, Row, Col',
+     1          WC(J,I,K),PRSITYSAV(J,I,K),K,I,J
+              STOP
+            ENDIF
+          ENDDO
+          ENDDO
+          ENDDO
 C                                                    
 C-------COMPUTE SATURATION                                
           PRSITY=>PRSITYSAV                            
@@ -966,8 +985,19 @@ C-------COMPUTE SATURATION
                     SATNEW(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
      &                            WC(J,I,K)/PRSITY(J,I,K)+          
      &                            DH(J,I,K)/DZ(J,I,K)*1             
+C                    SATNEW(J,I,K)=MIN(1.0,SATNEW(J,I,K))
+C                    SATNEW(J,I,K)=MAX(1.0E-8,SATNEW(J,I,K))
                   ENDIF                                             
                 ENDIF                                               
+                IF(KPER.EQ.1 .AND. KSTP.EQ.1) THEN
+                  IF(ICBUND(J,I,K,1).NE.0) THEN
+                    SATOLD(J,I,K)=SATNEW(J,I,K)-
+     &                QSTO(J,I,K)*(HT2-HT1)/
+     &                (PRSITY(J,I,K)*DELR(J)*DELC(I)*DZ(J,I,K))
+                    SATOLD(J,I,K)=MIN(1.0,SATOLD(J,I,K))
+                    SATOLD(J,I,K)=MAX(1.0E-8,SATOLD(J,I,K))
+                  ENDIF
+                ENDIF
               ENDDO                                                 
             ENDDO                                                   
           ENDDO                                                     
