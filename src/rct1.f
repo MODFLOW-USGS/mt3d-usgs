@@ -75,11 +75,6 @@ C
         ISOTHM=6                             
       ENDIF                                  
 C                                            
-      IF(IREACT.EQ.90.OR.IREACT.EQ.91) THEN  
-        IREACTION=1                          
-        IREACT=IREACT-90                     
-      ENDIF                                  
-C                                            
       IF(ISOTHM.EQ.1) THEN
         WRITE(IOUT,1022)
       ELSEIF(ISOTHM.EQ.2) THEN
