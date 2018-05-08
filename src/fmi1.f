@@ -11,15 +11,16 @@
       subroutine checkReadDoublePrec(INUF,KPER,NCOL,NROW,NLAY,BUFF)
       USE IFLPORT
       use flowfile
+      USE MT3DMS_MODULE, ONLY: IFTLFMT
 
       implicit none 
       INTEGER   KPER,NCOL,NROW,NLAY,K,I,J,INUF,
-     &          KKPER,KKSTP,NC,NR,NL,IFTLFMT
+     &          KKPER,KKSTP,NC,NR,NL
       REAL      BUFF
       CHARACTER LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY)
       real*8, ALLOCATABLE :: arrDbl(:,:,:)
-      COMMON /FTL/IFTLFMT
+C      COMMON /FTL/IFTLFMT
 
       integer filePos, filePos2, seekErr
 
