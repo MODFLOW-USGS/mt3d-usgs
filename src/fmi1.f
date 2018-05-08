@@ -1,3 +1,67 @@
+      module flowfile
+        implicit none
+        public
+        save
+        integer :: m_readDbl ! 0- don't know, 1- single, 2- double
+      end module flowfile
+!-----------------------------------------------------------------------
+! reads part of the flow file and handles both double and single
+!   precision.
+!-----------------------------------------------------------------------
+      subroutine checkReadDoublePrec(INUF,KPER,NCOL,NROW,NLAY,BUFF)
+      USE IFLPORT
+      use flowfile
+
+      implicit none 
+      INTEGER   KPER,NCOL,NROW,NLAY,K,I,J,INUF,
+     &          KKPER,KKSTP,NC,NR,NL,IFTLFMT
+      REAL      BUFF
+      CHARACTER LABEL*16
+      DIMENSION BUFF(NCOL,NROW,NLAY)
+      real*8, ALLOCATABLE :: arrDbl(:,:,:)
+      COMMON /FTL/IFTLFMT
+
+      integer filePos, filePos2, seekErr
+
+      m_readDbl = 1
+      ! get the file position
+      filePos = FTELL(INUF)
+
+      ! try reading the array single precision
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+      ENDIF
+
+      IF(IFTLFMT.EQ.0) THEN
+        READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL
+      ELSEIF(IFTLFMT.EQ.1) THEN
+        READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL
+      ENDIF
+
+      if (KKPER.ne.KPER .or. NC.ne.NCOL .or.
+     &    NR.ne.NROW .or. NL.ne.NLAY) then
+        seekErr = FSEEK(INUF, filePos, 0) ! - is SEEK_SET
+        ALLOCATE (arrDbl(NCOL,NROW,NLAY))
+
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) (((arrDbl(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) (((arrDbl(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+        ENDIF
+
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) KKPER,KKSTP,NC,NR,NL,LABEL
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) KKPER,KKSTP,NC,NR,NL,LABEL
+        ENDIF
+        if (KKPER.eq.KPER .and. NC.eq.NCOL .and.
+     &      NR.eq.NROW .and. NL.eq.NLAY) m_readDbl = 2
+      endif
+
+      seekErr = FSEEK(INUF, filePos, 0) ! 0 is SEEK_SET
+      end subroutine checkReadDoublePrec
 C
       SUBROUTINE FMI1AR()
 C **********************************************************************
@@ -5,6 +69,7 @@ C THIS SUBROUTINE CHECKS FLOW-TRANSPORT LINK FILE AND ALLOCATES SPACE
 C FOR ARRAYS THAT MAY BE NEEDED BY FLOW MODEL-INTERFACE (FMI) PACKAGE.
 C **********************************************************************
 C
+      use flowfile                                                      !emrl
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,MXTRNOP,iUnitTRNOP,NPERFL,ISS,
      &                         IVER,IFTLFMT,NPERFL,ISS,IVER,FWEL,FDRN,
      &                         FRCH,FEVT,FRIV,FGHB,FSTR,FRES,FFHB,FIBS,
@@ -76,6 +141,7 @@ C--INITIALIZE
       MTSWT=0
       MTSFR=0
       MTUZF=0
+      m_readDbl = 0                                                     !emrl
 C
 C--READ HEADER OF FLOW-TRANSPORT LINK FILE
       IF(IFTLFMT.EQ.0) THEN
@@ -1759,6 +1825,7 @@ C THIS SUBROUTINE READS HEADS AND VOLUMETRIC FLUXES ACROSS CELL
 C INTERFACES FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *****************************************************************
 C
+      use flowfile                                                      !emrl
       USE MT3DMS_MODULE, ONLY: IFTLFMT
 C
       IMPLICIT  NONE
@@ -1767,6 +1834,7 @@ C
       REAL      BUFF
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY)
+      real*8, ALLOCATABLE :: arrDbl(:,:,:)                              !emrl
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -1789,14 +1857,33 @@ C--CHECK INTERFACE
         WRITE(*,2) NC,NR,NL
         CALL USTOP(' ')
       ENDIF
+      if (m_readDbl.eq.0) then                                          !emrl
+        call checkReadDoublePrec(INUF,KKPER,NCOL,NROW,NLAY,BUFF)        !emrl
+      endif                                                             !emrl
 C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH CELL IN THE GRID
-      IF(IFTLFMT.EQ.0) THEN
-        READ(INUF) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
-      ELSEIF(IFTLFMT.EQ.1) THEN
-        READ(INUF,*) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
-      ENDIF
+      if (m_readDbl.eq.2) then                                          !emrl
+        ALLOCATE(arrDbl(NCOL,NROW,NLAY))                                !emrl
+        IF(IFTLFMT.EQ.0) THEN                                           !emrl
+          READ(INUF) (((arrDbl(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)     !emrl
+        ELSEIF(IFTLFMT.EQ.1) THEN                                       !emrl
+          READ(INUF,*) (((arrDbl(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)   !emrl
+        ENDIF                                                           !emrl
+        do J=1,NCOL                                                     !emrl
+          do I=1,NROW                                                   !emrl
+            do K=1,NLAY                                                 !emrl
+              BUFF(J,I,K) = REAL(arrDbl(J,I,K))                         !emrl
+            end do                                                      !emrl
+          end do                                                        !emrl
+        end do                                                          !emrl
+      else                                                              !emrl
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) (((BUFF(J,I,K),J=1,NCOL),I=1,NROW),K=1,NLAY)
+        ENDIF
+      end if                                                            !emrl
 C
 C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
       IF(FPRT.NE.'Y'.AND.FPRT.NE.'y') RETURN
@@ -1841,6 +1928,7 @@ C SINK/SOURCE TERMS (RECHARGE AND EVAPOTRANSPIRATION) FROM AN
 C UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *****************************************************************
 C
+      use flowfile                                                      !emrl
       USE MT3DMS_MODULE, ONLY: IFTLFMT
 C
       IMPLICIT  NONE
@@ -1849,6 +1937,7 @@ C
       REAL      BUFF
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW),LOCLAY(NCOL,NROW)
+      real*8, ALLOCATABLE :: arrDbl(:,:)                                !emrl
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -1881,11 +1970,25 @@ C--READ LAYER LOCATION IF FLOW TERM IS RECHARGE OR E.T.
 C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH CELL IN THE GRID
-      IF(IFTLFMT.EQ.0) THEN
-        READ(INUF) ((BUFF(J,I),J=1,NCOL),I=1,NROW)
-      ELSEIF(IFTLFMT.EQ.1) THEN
-        READ(INUF,*) ((BUFF(J,I),J=1,NCOL),I=1,NROW)
-      ENDIF
+      if (m_readDbl.eq.2) then                                          !emrl
+        ALLOCATE(arrDbl(NCOL,NROW))                                     !emrl
+        IF(IFTLFMT.EQ.0) THEN                                           !emrl
+          READ(INUF) ((arrDbl(J,I),J=1,NCOL),I=1,NROW)                  !emrl
+        ELSEIF(IFTLFMT.EQ.1) THEN                                       !emrl
+          READ(INUF,*) ((arrDbl(J,I),J=1,NCOL),I=1,NROW)                !emrl
+        ENDIF                                                           !emrl
+        do J=1,NCOL                                                     !emrl
+          do I=1,NROW                                                   !emrl
+            BUFF(J,I) = REAL(arrDbl(J,I))                               !emrl
+          end do                                                        !emrl
+        end do                                                          !emrl
+      else                                                              !emrl
+        IF(IFTLFMT.EQ.0) THEN
+          READ(INUF) ((BUFF(J,I),J=1,NCOL),I=1,NROW)
+        ELSEIF(IFTLFMT.EQ.1) THEN
+          READ(INUF,*) ((BUFF(J,I),J=1,NCOL),I=1,NROW)
+        ENDIF
+      end if                                                            !emrl
 C
 C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
       IF(FPRT.NE.'Y'.AND.FPRT.NE.'y') RETURN
@@ -1928,6 +2031,7 @@ C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF POINT SINK/SOURCE
 C FLOW TERMS FROM AN UNFORMATTED FILE SAVED BY THE FLOW MODEL.
 C *********************************************************************
 C
+      use flowfile                                                      !emrl
       USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
       IMPLICIT  NONE
@@ -1937,6 +2041,7 @@ C
       REAL      BUFF,SS,QSS,QSTEMP
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),SS(8,MXSS)
+      REAL*8    dbl                                                     !emrl
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -1966,11 +2071,20 @@ C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH POINT SINK OR SOURCE
       DO N=1,NUM
-        IF(IFTLFMT.EQ.0) THEN
-          READ(INUF) K,I,J,QSTEMP
-        ELSEIF(IFTLFMT.EQ.1) THEN
-          READ(INUF,*) K,I,J,QSTEMP
-        ENDIF
+        if (m_readDbl.eq.2) then                                        !emrl
+          IF(IFTLFMT.EQ.0) THEN                                         !emrl
+            READ(INUF) K,I,J,dbl                                        !emrl
+          ELSEIF(IFTLFMT.EQ.1) THEN                                     !emrl
+            READ(INUF,*) K,I,J,dbl                                      !emrl
+          ENDIF                                                         !emrl
+          QSTEMP = REAL(dbl)                                            !emrl
+        else                                                            !emrl
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) K,I,J,QSTEMP
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) K,I,J,QSTEMP
+          ENDIF
+        endif                                                           !emrl
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &              WRITE(IOUT,50) K,I,J,QSTEMP        
 C
@@ -2047,6 +2161,7 @@ C THIS SUBROUTINE READS LOCATIONS AND FLOW RATES OF SINK/SOURCE GROUPS
 C THAT ARE CONNECTED FROM THE FLOW-TRANSPORT LINK FILE
 C *********************************************************************
 C
+      use flowfile                                                      !emrl
       USE MT3DMS_MODULE, ONLY: IFTLFMT,ICTSPKG
 C
       IMPLICIT  NONE
@@ -2056,6 +2171,7 @@ C
       REAL      BUFF,SS,QSS,QSTEMP,QSW
       CHARACTER TEXT*16,FPRT*1,LABEL*16
       DIMENSION BUFF(NCOL,NROW,NLAY),ICBUND(NCOL,NROW,NLAY),SS(8,MXSS)
+      REAL*8    dbl,dbl1                                                !emrl
 C
 C--WRITE IDENTIFYING INFORMATION
       WRITE(IOUT,1) TEXT,KSTP,KPER,INUF
@@ -2085,11 +2201,21 @@ C
 C--READ AN UNFORMATTED RECORD CONTAINING VALUES FOR
 C--EACH POINT SINK OR SOURCE
       DO N=1,NUM
-        IF(IFTLFMT.EQ.0) THEN
-          READ(INUF) K,I,J,QSTEMP,IGROUP,QSW
-        ELSEIF(IFTLFMT.EQ.1) THEN
-          READ(INUF,*) K,I,J,QSTEMP,IGROUP,QSW
-        ENDIF
+        if (m_readDbl.eq.2) then                                        !emrl
+          IF(IFTLFMT.EQ.0) THEN                                         !emrl
+            READ(INUF) K,I,J,dbl,IGROUP,dbl1                            !emrl
+          ELSEIF(IFTLFMT.EQ.1) THEN                                     !emrl
+            READ(INUF,*) K,I,J,dbl,IGROUP,dbl1                          !emrl
+          ENDIF                                                         !emrl
+          QSTEMP = REAL(dbl)                                            !emrl
+          QSW = REAL(dbl)                                               !emrl
+        else                                                            !emrl
+          IF(IFTLFMT.EQ.0) THEN
+            READ(INUF) K,I,J,QSTEMP,IGROUP,QSW
+          ELSEIF(IFTLFMT.EQ.1) THEN
+            READ(INUF,*) K,I,J,QSTEMP,IGROUP,QSW
+          ENDIF
+        endif                                                           !emrl
         IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') WRITE(IOUT,50) K,I,J,QSTEMP,
      &                                                IGROUP,QSW
 C
