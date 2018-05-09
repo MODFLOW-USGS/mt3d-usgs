@@ -64,7 +64,13 @@ C
       ALLOCATE(SDH(NCOL,NROW,NLAY))    
       SATOLD=1.0
       SATNEW=1.0
-      THETAW=PRSITYSAV
+      DO K=1,NLAY
+        DO I=1,NROW
+          DO J=1,NCOL
+            THETAW(J,I,K)=PRSITYSAV(J,I,K)
+          ENDDO
+        ENDDO
+      ENDDO
 C
 C--INITIALIZE IUZFBND ARRAY
       DO I=1,NROW
