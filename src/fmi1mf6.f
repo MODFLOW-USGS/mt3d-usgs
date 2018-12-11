@@ -1,5 +1,5 @@
-      MODULE MF6FMI
-        USE MT3DMS_MODULE
+      MODULE FMI1MF6
+        !USE MT3DMS_MODULE
         IMPLICIT NONE
         INTEGER,      SAVE,                   POINTER :: ILIST
         INTEGER,      SAVE,                   POINTER :: FILNUM
@@ -74,7 +74,7 @@ C
           IF(ASSOCIATED(FT6TYP))      DEALLOCATE(FT6TYP)
         END SUBROUTINE MEMDEALLOCATE
 C
-        SUBROUTINE MF6FMINAM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
+        SUBROUTINE FMI1MF6NM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
           IMPLICIT     NONE
           INTEGER      IOUT,IFLEN,IU,INFT1,INFT2,INFT3
           CHARACTER*7  FILSTAT
@@ -126,11 +126,10 @@ C
           ENDIF
           FT6FILNAM(FILNUM) = FNAME(1:IFLEN)
 C
-        END SUBROUTINE MF6FMINAM
+        END SUBROUTINE FMI1MF6NM
 C
 C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
-        SUBROUTINE MF6FMIAR()
-          use MT3DMS_MODULE, only: memallocate
+        SUBROUTINE FMI1MF6AR()
           use GrbModule, only: read_grb
           use BudgetDataModule, only: budgetdata_init, nbudterms, 
      &                                budgetdata_read, budtxt
@@ -162,10 +161,7 @@ C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF T
           nlay = mshape(1)
           nrow = mshape(2)
           ncol = mshape(3)
-          !
-          ! -- for test program, need to allocate mt modules variables
-          ! todo: not needed when merged with mt3d program
-          call memallocate(nlay, nrow, ncol)
+          !todo: check for pass through cells and bomb
           !
           ! -- allocate head
           allocate(head(ncol, nrow, nlay))
@@ -194,16 +190,18 @@ C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF T
           enddo
           rewind(iubud)
           return
-        END SUBROUTINE MF6FMIAR
+        END SUBROUTINE FMI1MF6AR
 C
-        SUBROUTINE MF6FMIRP1()
+        SUBROUTINE FMI1MF6RP1A(KPER,KSTP)
           USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
           use GrbModule, only: read_hds
           use BudgetDataModule, only: nbudterms, flowja, flowdata,
      &                                budgetdata_read, budtxt
+          INTEGER :: KPER,KSTP
           integer n, i, j, k
           logical :: success
           !
+          !todo: check for successive time steps
           ! -- read head array
           call read_hds(iuhds, nlay, nrow, ncol, head)
           !
@@ -273,13 +271,20 @@ C
           ENDIF
 
           return
-        END SUBROUTINE MF6FMIRP1
+        END SUBROUTINE FMI1MF6RP1A
 C
-        SUBROUTINE MF6FMIRP2()
-          use BudgetDataModule, only: nbudterms, 
-     &                                budgetdata_read, budtxt
+        SUBROUTINE FMI1MF6RP2A(KPER,KSTP)
+          use MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
+     &                             ICTSPKG
+          use BudgetDataModule, only: nbudterms, flowdata,
+     &                                budgetdata_read, budtxt,
+     &                                kper=>kpermf6, kstp=>kstpmf6
+          INTEGER :: KPER,KSTP
+          CHARACTER(LEN=16) :: TEXT
           logical :: success
           integer :: ibud
+          integer :: iq
+          integer :: num
           ntss = nss
           ss(8, :) = 0.
           do num = 1, ntss
@@ -287,6 +292,7 @@ C
           enddo
           do ibud = 1, nbudterms - nbud
             call budgetdata_read(success)
+            !todo: make sure mf6 kper and kstp are same as mt3d kper kstp
             print*,'RP2 Processing ', budtxt
             if (.not. success) call ustop('')
             select case(trim(adjustl(budtxt)))
@@ -319,7 +325,7 @@ C
      &                    flowdata, ictspkg)
           enddo
           return
-      END SUBROUTINE MF6FMIRP2
+      END SUBROUTINE FMI1MF6RP2A
       
       subroutine flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
         integer, dimension(:), intent(in) :: ia
@@ -377,8 +383,8 @@ C
           character(len=16), intent(in) :: text
           integer, intent(in) :: iq, mxss
           integer, intent(inout) :: ntss, nss
-          integer, dimension(:, :), intent(inout) :: ss
-          integer, dimension(:, :, :), intent(inout) :: icbund
+          real, dimension(:, :), intent(inout) :: ss
+          integer, dimension(ncol, nrow, nlay), intent(inout) :: icbund
           character(len=1), intent(in) :: fprt
           double precision, dimension(:, :), intent(in) :: flowdata
           integer, intent(in) :: ictspkg
@@ -403,7 +409,7 @@ C
             ic = ij - (ir - 1) * ncol
             !
             IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &              WRITE(IOUT,50) K,I,J,QSTEMP            
+     &              WRITE(IOUT,50) il, ir, ic, QSTEMP            
             !
             ! -- if already defined as a source of user-specified concentration
             !    then store flow rate (qstemp)
@@ -432,6 +438,6 @@ C
 100         continue
           enddo
  50     FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
-        end subroutine
+        end subroutine 
         
-      END MODULE MF6FMI
+      END MODULE FMI1MF6

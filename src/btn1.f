@@ -14,6 +14,7 @@ C
      &                         INLKT,INSFT,INCTS,INTSO,
      &                         ICTSPKG,INOCROSS,ISAVUCN,
      &                         FMIFMT6
+      USE FMI1MF6, ONLY: FMI1MF6NM
 C
       USE MIN_SAT                                                  
       IMPLICIT NONE
@@ -162,7 +163,7 @@ C--READ MODFLOW6 STYLE OUTPUT FILES
         FMTARG=FORM  ! FORM is equal to 'BINARY'
         FMIFMT6=.TRUE.
 !--CHECK FOR "FT6"
-        CALL MF6FMINAM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
+        CALL FMI1MF6NM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
 C               
 C--CHECK FOR "UNFORMATTED" FILE TYPE.
       ELSEIF(LINE(ITYP1:ITYP2).EQ.'DATA(BINARY)') THEN
