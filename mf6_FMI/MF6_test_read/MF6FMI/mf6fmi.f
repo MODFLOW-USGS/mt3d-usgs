@@ -17,6 +17,8 @@
         integer :: idata_spdis
         integer :: nbud
         double precision, dimension(:, :, :), allocatable :: head
+        integer, allocatable, dimension(:) :: ia
+        integer, allocatable, dimension(:) :: ja
 C        
       CONTAINS
 C    
@@ -128,11 +130,10 @@ C
 C
 C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
         SUBROUTINE MF6FMIAR()
+          use MT3DMS_MODULE, only: memallocate
           use GrbModule, only: read_grb
           use BudgetDataModule, only: budgetdata_init, nbudterms, 
      &                                budgetdata_read, budtxt
-          integer, allocatable, dimension(:) :: ia
-          integer, allocatable, dimension(:) :: ja
           integer, allocatable, dimension(:) :: mshape
           integer :: ncrbud
           INTEGER I
@@ -161,6 +162,10 @@ C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF T
           nlay = mshape(1)
           nrow = mshape(2)
           ncol = mshape(3)
+          !
+          ! -- for test program, need to allocate mt modules variables
+          ! todo: not needed when merged with mt3d program
+          call memallocate(nlay, nrow, ncol)
           !
           ! -- allocate head
           allocate(head(ncol, nrow, nlay))
@@ -194,9 +199,9 @@ C
         SUBROUTINE MF6FMIRP1()
           USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
           use GrbModule, only: read_hds
-          use BudgetDataModule, only: nbudterms, 
+          use BudgetDataModule, only: nbudterms, flowja, flowdata,
      &                                budgetdata_read, budtxt
-          
+          integer n, i, j, k
           logical :: success
           !
           ! -- read head array
@@ -212,7 +217,7 @@ C
           print*,'RP1 Processing ', budtxt
           if (trim(adjustl(budtxt)).ne.'FLOW-JA-FACE') call ustop('')
           nbud = nbud + 1
-          !do qx, ...
+          call flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
           !
           ! -- process spdis 
           if (idata_spdis == 1) THEN
@@ -222,12 +227,32 @@ C
             nbud = nbud + 1
           ENDIF
           !
+          ! -- initialize qsto
+          if (iss_sy == 1 .or. iss_ss == 1) then
+            do k = 1, nlay
+              do i = 1, nrow
+                do j = 1, ncol
+                  qsto(j, i, k) = 0.
+                enddo
+              enddo
+            enddo
+          endif
+          !
           ! -- process qsto with specific storage
           if (iss_ss == 1) THEN
             call budgetdata_read(success)
-            print*,'RP2 Processing ', budtxt
+            print*,'RP1 Processing ', budtxt
             if (trim(adjustl(budtxt)).ne.'STO-SS') call ustop('')
             nbud = nbud + 1
+            n = 1
+            do k = 1, nlay
+              do i = 1, nrow
+                do j = 1, ncol
+                  qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
+                  n = n + 1
+                enddo
+              enddo
+            enddo            
           ENDIF
           !
           ! -- process qsto with specific yield
@@ -236,6 +261,15 @@ C
             print*,'RP1 Processing ', budtxt
             if (trim(adjustl(budtxt)).ne.'STO-SY') call ustop('')
             nbud = nbud + 1
+            n = 1
+            do k = 1, nlay
+              do i = 1, nrow
+                do j = 1, ncol
+                  qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
+                  n = n + 1
+                enddo
+              enddo
+            enddo            
           ENDIF
 
           return
@@ -253,5 +287,54 @@ C
           enddo
           return
       END SUBROUTINE MF6FMIRP2
+      
+      subroutine flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
+        integer, dimension(:), intent(in) :: ia
+        integer, dimension(:), intent(in) :: ja
+        double precision, dimension(:), intent(in) :: flowja
+        real, dimension(:, :, :), intent(inout) :: qx, qy, qz
+        integer :: nlay, nrow, ncol, nodes, nja
+        integer :: il, ir, ic, ij
+        integer :: n, ipos, m
+        !
+        ! -- initialize variables
+        ncol = size(qx, 1)
+        nrow = size(qx, 2)
+        nlay = size(qx, 3)
+        nja = size(flowja)
+        nodes = size(ia) - 1
+        do il = 1, nlay
+          do ir = 1, nrow
+            do ic = 1, ncol
+              qx(ic, ir, il) = 0.
+              qy(ic, ir, il) = 0.
+              qz(ic, ir, il) = 0.
+            enddo
+          enddo
+        enddo
+        !
+        ! -- loop through flows and put them into qx, qy, qz
+        do n = 1, nodes
+          do ipos = ia(n) + 1, ia(n + 1) - 1
+            !
+            ! -- loop through connections for cell n
+            m = ja(ipos)
+            if (m < n) cycle
+            
+            ! -- calculate layer, row, and column indices for cell n
+            il = (n - 1) / (ncol * nrow) + 1
+            ij = n - (il - 1) * ncol * nrow
+            ir = (ij - 1) / ncol + 1
+            ic = ij - (ir - 1) * ncol
+            !
+            ! -- right, front, and lower faces
+            if (m == n + 1) qx(ic, ir, il) = flowja(ipos)
+            if (m == n + ncol) qy(ic, ir, il) = flowja(ipos)
+            if (m == n * nrow * ncol) qz(ic, ir, il) = flowja(ipos)
+            !
+          enddo
+        enddo
+        end subroutine flowja2qxqyqz
+
 
       END MODULE MF6FMI
