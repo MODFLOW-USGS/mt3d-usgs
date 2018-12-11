@@ -1,0 +1,22 @@
+BEGIN options
+END options
+
+BEGIN dimensions
+  NLAY  1
+  NROW  1
+  NCOL  101
+END dimensions
+
+BEGIN griddata
+  delr
+    CONSTANT      10.00000000
+  delc
+    CONSTANT       1.00000000
+  top
+    CONSTANT       0.00000000
+  botm
+    CONSTANT      -1.00000000
+  idomain
+    CONSTANT  1
+END griddata
+
