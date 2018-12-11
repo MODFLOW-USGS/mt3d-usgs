@@ -21,3 +21,9 @@ Processing Binary Grid File
   Detected integer array IDOMAIN
   Detected integer array ICELLTYPE
 Done processing Binary Grid File
+Reading budget file to determine number of terms per time step.
+    2000.00        FLOW-JA-FACE                 
+    2000.00          DATA-SPDIS NPF             
+    2000.00                 CHD CHD-1           
+Detected 3 unique flow terms in budget file.
+ STOPPING.  HAVE TESTED READING FAKE FTL FILES.

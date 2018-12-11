@@ -12,6 +12,11 @@
         INTEGER,      SAVE,                   POINTER :: NLAY
         INTEGER,      SAVE,                   POINTER :: NROW
         INTEGER,      SAVE,                   POINTER :: NCOL
+        integer :: iss_sy
+        integer :: iss_ss
+        integer :: idata_spdis
+        integer :: nbud
+        double precision, dimension(:, :, :), allocatable :: head
 C        
       CONTAINS
 C    
@@ -123,8 +128,15 @@ C
 C
 C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
         SUBROUTINE MF6FMIAR()
+          use GrbModule, only: read_grb
+          use BudgetDataModule, only: budgetdata_init, nbudterms, 
+     &                                budgetdata_read, budtxt
+          integer, allocatable, dimension(:) :: ia
+          integer, allocatable, dimension(:) :: ja
+          integer, allocatable, dimension(:) :: mshape
+          integer :: ncrbud
           INTEGER I
-C
+          logical :: success
 C         
 C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF THE 3 MF6 FILES IS MISSING
           DO I=1,3
@@ -142,15 +154,6 @@ C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF T
               CALL USTOP(' ')
             ENDIF
           ENDDO
-        END SUBROUTINE MF6FMIAR
-C
-        SUBROUTINE MF6FMIRP1()
-          USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
-          use GrbModule, only: read_grb
-          integer, allocatable, dimension(:) :: ia
-          integer, allocatable, dimension(:) :: ja
-          integer, allocatable, dimension(:) :: mshape
-          double precision, dimension(:, :, :), allocatable head
           !
           ! -- read binary grid information and close file
           call read_grb(ilist, iugrb, ia, ja, mshape)
@@ -159,14 +162,96 @@ C
           nrow = mshape(2)
           ncol = mshape(3)
           !
-          ! -- read head array
+          ! -- allocate head
           allocate(head(ncol, nrow, nlay))
-          call read_hds(iuhds, nlay, nrow, ncol, head)
+          !
+          ! -- Initialize budget reader to determine number of entries
+          iss_sy = 0
+          iss_ss = 0
+          idata_spdis = 0
+          call budgetdata_init(iubud, ilist, ncrbud)
+          do i = 1, nbudterms
+            call budgetdata_read(success)
+            print *, 'found package of type: ', budtxt
+            select case(trim(adjustl(budtxt)))
+            case ('DATA-SPDIS')
+              idata_spdis = 1
+            case ('STO-SS')
+              iss_ss = 1
+            case ('STO-SY')
+              iss_sy = 1
+            case('WEL')
+              print *, 'well package is active'
+              ! todo: FWEL = .TRUE.
+            case('DRN')
+              print *, 'drain package is active'
+            end select
+          enddo
+          rewind(iubud)
+          return
+        END SUBROUTINE MF6FMIAR
+C
+        SUBROUTINE MF6FMIRP1()
+          USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
+          use GrbModule, only: read_hds
+          use BudgetDataModule, only: nbudterms, 
+     &                                budgetdata_read, budtxt
           
+          logical :: success
+          !
+          ! -- read head array
+          call read_hds(iuhds, nlay, nrow, ncol, head)
+          !
+          ! -- move head into dh
+          ! todo
+          !
+          ! -- Process flowja
+          nbud = 0
+          call budgetdata_read(success)
+          if (.not. success) call ustop('')
+          print*,'RP1 Processing ', budtxt
+          if (trim(adjustl(budtxt)).ne.'FLOW-JA-FACE') call ustop('')
+          nbud = nbud + 1
+          !do qx, ...
+          !
+          ! -- process spdis 
+          if (idata_spdis == 1) THEN
+            call budgetdata_read(success)
+            print*,'RP1 Processing ', budtxt
+            if (trim(adjustl(budtxt)).ne.'DATA-SPDIS') call ustop('')
+            nbud = nbud + 1
+          ENDIF
+          !
+          ! -- process qsto with specific storage
+          if (iss_ss == 1) THEN
+            call budgetdata_read(success)
+            print*,'RP2 Processing ', budtxt
+            if (trim(adjustl(budtxt)).ne.'STO-SS') call ustop('')
+            nbud = nbud + 1
+          ENDIF
+          !
+          ! -- process qsto with specific yield
+          if (iss_sy == 1) THEN
+            call budgetdata_read(success)
+            print*,'RP1 Processing ', budtxt
+            if (trim(adjustl(budtxt)).ne.'STO-SY') call ustop('')
+            nbud = nbud + 1
+          ENDIF
+
           return
         END SUBROUTINE MF6FMIRP1
 C
         SUBROUTINE MF6FMIRP2()
-        
-        END SUBROUTINE MF6FMIRP2
+          use BudgetDataModule, only: nbudterms, 
+     &                                budgetdata_read, budtxt
+          logical :: success
+          integer :: ibud
+          do ibud = 1, nbudterms - nbud
+            call budgetdata_read(success)
+            print*,'RP2 Processing ', budtxt
+            if (.not. success) call ustop('')            
+          enddo
+          return
+      END SUBROUTINE MF6FMIRP2
+
       END MODULE MF6FMI

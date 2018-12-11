@@ -163,11 +163,15 @@ module GrbModule
   end subroutine read_grb
   
   subroutine read_hds(iu, nlay, nrow, ncol, head)
-    integer :: n
-    double precision :: d
+    integer, intent(in) :: iu, nlay, nrow, ncol
+    double precision, dimension(:, :, :), intent(inout) :: head
+    integer :: n, k, kstp, kper
+    double precision :: pertim, totim
+    CHARACTER(LEN=16) TEXT
     do k = 1, nlay
-      READ(iu) n,n,d,d,TEXT,n,n,n
-      read(iu) head(k, :, :)
+      READ(iu) kstp, kper, pertim, totim,TEXT,n,n,n
+      print*, kstp, kper, pertim, totim
+      read(iu) head(:, :, k)
     enddo
   end subroutine read_hds
   
