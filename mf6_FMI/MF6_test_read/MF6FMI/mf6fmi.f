@@ -1,19 +1,5 @@
-      MODULE DUPLICATE
-        IMPLICIT NONE
-        REAL,         SAVE, DIMENSION(:,:,:), POINTER :: DH,QX,QY,
-     &                                                       QZ,QSTO
-      CONTAINS
-        SUBROUTINE MEMDEALLOCATE_DUP()
-          IF(ASSOCIATED(DH))   DEALLOCATE(DH)
-          IF(ASSOCIATED(QX))   DEALLOCATE(QX)
-          IF(ASSOCIATED(QY))   DEALLOCATE(QY)
-          IF(ASSOCIATED(QZ))   DEALLOCATE(QZ)
-          IF(ASSOCIATED(QSTO)) DEALLOCATE(QSTO)
-        END SUBROUTINE
-      END MODULE
-C
       MODULE MF6FMI
-        USE DUPLICATE
+        USE MT3DMS_MODULE
         IMPLICIT NONE
         INTEGER,      SAVE,                   POINTER :: ILIST
         INTEGER,      SAVE,                   POINTER :: FILNUM
@@ -23,6 +9,9 @@ C
         INTEGER,      SAVE, DIMENSION(:),     POINTER :: IUFT6
         CHARACTER*40, SAVE, DIMENSION(:),     POINTER :: FT6FILNAM
         CHARACTER*6,  SAVE, DIMENsION(:,:),   POINTER :: FT6TYP
+        INTEGER,      SAVE,                   POINTER :: NLAY
+        INTEGER,      SAVE,                   POINTER :: NROW
+        INTEGER,      SAVE,                   POINTER :: NCOL
 C        
       CONTAINS
 C    
@@ -109,10 +98,16 @@ C
             ALLOCATE(IUHDS)
             ALLOCATE(FILNUM)
             ALLOCATE(FT6FILNAM(3))
+            ALLOCATE(NLAY)
+            ALLOCATE(NROW)
+            ALLOCATE(NCOL)
             FILNUM=0
             IUGRB=0
             IUBUD=0
             IUHDS=0
+            NLAY=0
+            NROW=0
+            NCOL=0
           ENDIF
 C
           FILNUM = FILNUM + 1
@@ -150,110 +145,28 @@ C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF T
         END SUBROUTINE MF6FMIAR
 C
         SUBROUTINE MF6FMIRP1()
-          USE DUPLICATE
+          USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
+          use GrbModule, only: read_grb
+          integer, allocatable, dimension(:) :: ia
+          integer, allocatable, dimension(:) :: ja
+          integer, allocatable, dimension(:) :: mshape
+          double precision, dimension(:, :, :), allocatable head
+          !
+          ! -- read binary grid information and close file
+          call read_grb(ilist, iugrb, ia, ja, mshape)
+          close(iugrb)
+          nlay = mshape(1)
+          nrow = mshape(2)
+          ncol = mshape(3)
+          !
+          ! -- read head array
+          allocate(head(ncol, nrow, nlay))
+          call read_hds(iuhds, nlay, nrow, ncol, head)
           
+          return
         END SUBROUTINE MF6FMIRP1
 C
         SUBROUTINE MF6FMIRP2()
         
         END SUBROUTINE MF6FMIRP2
       END MODULE MF6FMI
-!
-!  ************************************************
-!  *                                              *
-!  *                MAIN PROGRAM                  *
-!  *                                              *
-!  ************************************************
-      USE MF6FMI
-      USE DUPLICATE
-C
-      INTEGER   INUNIT,IOUT,IU,LLOC,IFLEN,N,ISTART,ISTOP,ITYP1,ITYP2,
-     &          INAM1,INAM2
-      REAL      R
-      CHARACTER LINE*200
-      CHARACTER FNAME*40
-      CHARACTER FILSTAT*7
-      CHARACTER*20 FMTARG, ACCARG, FILACT 
-      CHARACTER FLNAME*5000
-      CHARACTER COMLIN*2000
-      LOGICAL   EXISTED
-C
-      INCLUDE 'openspec.inc'
-C
-C-----INITIALIZE (HARD-WIRE) SOME VARIABLE FOR THIS SIMPLE TEST PROBLEM
-      IOUT   = 1
-      FILSTAT = 'OLD    '
-      FMTARG  = 'FORMATTED'
-      ACCARG  = 'SEQUENTIAL'
-      FILACT  = ACTION(2)
-!
-!-----OPEN UP FAKE NAME FILE
-      CALL GETARG(1,COMLIN)
-C                                          
-      IF(COMLIN.NE.' ') FLNAME=COMLIN            
-C
-C-Open files using the Name File method as in MODFLOW-2000      
-      IFLEN=INDEX(FLNAME,' ')-1
-      INQUIRE(FILE=FLNAME(1:IFLEN),EXIST=EXISTED)
-      IF(.NOT.EXISTED) THEN
-        FLNAME=FLNAME(1:IFLEN)//'.nam'
-        INQUIRE(FILE=FLNAME(1:iflen+4),EXIST=EXISTED)
-        IF(.NOT.EXISTED) THEN
-          WRITE(*,103) FLNAME(1:IFLEN),FLNAME(1:IFLEN+4)
-          CALL USTOP(' ')
-        ENDIF
-      ENDIF
-  103 FORMAT(1x,'STOP. Specified Name file does not exist: ',
-     &        a,' or ',a)
-      WRITE(*,104) TRIM(FLNAME)
-  104 FORMAT(1x,'Using NAME File: ',a)
-      iNameFile=99
-      OPEN(iNameFile,file=flname,status='old')
-!
-      OPEN(UNIT=11, FILE='exp_listing_fl.txt', STATUS='UNKNOWN')
-!
-!-----SET AN ARBITRARY UNIT NUMBER FOR FAKE NAME FILE CONTAINING FT6 ENTRIES
-      INUNIT = 10
-!
-!-----READ A LINE; IGNORE BLANK LINES AND PRINT COMMENT LINES.
-   10 READ(iNameFile,'(A)',END=1000) LINE
-      IF(LINE.EQ.' ') GOTO 10
-      IF(LINE(1:1).EQ.'#') THEN
-        IF(IOUT.NE.0) WRITE(IOUT,'(A)') TRIM(LINE)
-        GOTO 10
-      ENDIF
-!
-!--DECODE THE FILE TYPE AND UNIT NUMBER.
-      LLOC=1
-      CALL URWORD(LINE,LLOC,ITYP1,ITYP2,1,N,R,IOUT,INUNIT)
-      CALL URWORD(LINE,LLOC,ISTART,ISTOP,2,IU,R,IOUT,INUNIT)
-!
-!--DECODE THE FILE NAME.  (This will be an ELSEIF in the main code.)
-      IF(LINE(ITYP1:ITYP2).EQ.'FT6') THEN
-        CALL URWORD(LINE,LLOC,INAM1,INAM2,0,N,R,IOUT,INUNIT)
-        IFLEN=INAM2-INAM1+1
-        FNAME=''
-        FNAME(1:IFLEN)=LINE(INAM1:INAM2)
-!
-!--SET VARIABLES FOR CALL TO MF6FMINAM(..)
-        FILACT=ACTION(1)
-        FMTARG=FORM  ! FORM is equal to 'BINARY'
-!--CHECK FOR "FT6"
-        CALL MF6FMINAM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
-      ENDIF
-      OPEN(UNIT=IU,FILE=FNAME(1:IFLEN),STATUS=FILSTAT, 
-     &         FORM=FMTARG,ACCESS=ACCARG,ACTION=FILACT)
-      GO TO 10
-      !
-!-----END OF FAKE NAME FILE.  RETURN PROVIDED THAT NEW FTL FILE
-!-----TYPE HAS BEEN OPENED.
- 1000 CALL MF6FMIAR()
-      
-      IF(IOUT.NE.0) THEN
-        WRITE(IOUT,1001)
-      ENDIF
- 1001 FORMAT(1X,'STOPPING.  HAVE TESTED READING FAKE FTL FILES.')   
-!
-      CALL MEMDEALLOCATE()
-      STOP
-      END

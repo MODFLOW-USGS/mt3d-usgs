@@ -27,7 +27,11 @@
 		<Filter Name="Header Files" Filter="fi;fd;h;inc"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
+		<File RelativePath=".\mf6bud.f90"/>
+		<File RelativePath=".\mf6fmi.f"/>
+		<File RelativePath=".\mf6grb.f90"/>
+		<File RelativePath=".\mt_module.f90"/>
 		<File RelativePath=".\openspec.inc"/>
-		<File RelativePath=".\Source1.f"/>
+		<File RelativePath=".\test.f"/>
 		<File RelativePath=".\utl1.f"/></Filter></Files>
 	<Globals/></VisualStudioProject>

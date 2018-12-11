@@ -1,0 +1,23 @@
+
+Processing Binary Grid File
+  Detected regular MODFLOW grid (DIS)
+  Detected VERSION 1
+  Detected NTXT 16
+  Detected LENTXT 100
+  Detected NCELLS = 101
+  Detected NLAY = 1
+  Detected NROW = 1
+  Detected NCOL = 101
+  Detected NJA = 301
+  Detected XORIGIN = .000000000000000
+  Detected YORIGIN = .000000000000000
+  Detected ANGROT = .000000000000000
+  Detected double array DELR
+  Detected double array DELC
+  Detected double array TOP
+  Detected double array BOTM
+  Detected integer array IA
+  Detected integer array JA
+  Detected integer array IDOMAIN
+  Detected integer array ICELLTYPE
+Done processing Binary Grid File
