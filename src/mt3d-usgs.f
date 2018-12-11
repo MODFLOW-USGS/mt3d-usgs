@@ -72,7 +72,8 @@ C
      &                         INTSO,INLKT,INSFT,
      &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
-     &                         IDRY2,FLAM1,FLAM2
+     &                         IDRY2,FLAM1,FLAM2,
+     &                         FMIFMT6
       USE DSSL
 C
       IMPLICIT  NONE
@@ -257,8 +258,21 @@ C
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD2(N)
           ENDIF
 C
-          CALL FMI1RP1(KPER,KSTP)
-          IF(iUnitTRNOP(3).GT.0) CALL FMI1RP2(KPER,KSTP)
+          IF(.NOT.FMIFMT6) THEN
+            CALL FMI1MF5RP1A(KPER,KSTP)
+          ELSEIF(FMIFMT6) THEN
+            CALL FMI1MF6RP1A(KPER,KSTP)
+          ENDIF
+          CALL FMI1RP1B(KPER,KSTP)
+          
+          IF(iUnitTRNOP(3).GT.0) THEN
+            IF(.NOT.FMIFMT6) THEN
+              CALL FMI1MF5RP2A(KPER,KSTP)
+            ELSEIF(FMIFMT6) THEN
+              CALL FMI1MF6RP2A(KPER,KSTP)
+            ENDIF
+            CALL FMI1RP2B(KPER,KSTP)
+          ENDIF
 C
           IF(DRYON) CALL ADVQC1RP(KPER,KSTP)
 C                                           

@@ -732,6 +732,7 @@ CONTAINS
         LOGICAL,          SAVE,                       POINTER :: FSFRUZF
         LOGICAL,          SAVE,                       POINTER :: FLAKUZF
         LOGICAL,          SAVE,                       POINTER :: FSNKUZF
+        LOGICAL,          SAVE,                       POINTER :: FMIFMT6
         INTEGER,          SAVE,                       POINTER :: NOCREWET
 !--SSM                    
         INTEGER,          SAVE,                       POINTER :: ISSGOUT

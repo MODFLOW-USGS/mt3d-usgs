@@ -12,7 +12,8 @@ C
      &                         IOBS,IMAS,ICBM,IFTLFMT,
      &                         INUZT,
      &                         INLKT,INSFT,INCTS,INTSO,
-     &                         ICTSPKG,INOCROSS,ISAVUCN
+     &                         ICTSPKG,INOCROSS,ISAVUCN,
+     &                         FMIFMT6
 C
       USE MIN_SAT                                                  
       IMPLICIT NONE
@@ -69,7 +70,8 @@ C--INITIALIZE.
       FPRT=' '
       ILIST=0
       IBTN=0
-      IFTL=0      
+      IFTL=0
+      FMIFMT6=.FALSE.
       DO I=1,MXTRNOP
         iUnitTRNOP(I)=0
       ENDDO
@@ -146,9 +148,21 @@ C--DECODE OPTIONAL FORMAT AND OUTPUT KEYWORDS
           ACCARG='SEQUENTIAL'
         ENDIF
         IF(LINE(ISTART:ISTOP).EQ.'PRINT'.OR.
-     &              LINE(ISTART2:ISTOP2).EQ.'PRINT') THEN
-          FPRT='Y'
-        ENDIF
+     &              LINE(ISTART2:ISTOP2).EQ.'PRINT') FPRT='Y'   
+C
+C--READ MODFLOW6 STYLE OUTPUT FILES
+      ELSEIF(LINE(ITYP1:ITYP2).EQ.'FT6') THEN
+        CALL URWORD(LINE,LLOC,INAM1,INAM2,0,N,R,IOUT,INUNIT)
+        IFLEN=INAM2-INAM1+1
+        FNAME=''
+        FNAME(1:IFLEN)=LINE(INAM1:INAM2)
+!
+!--SET VARIABLES FOR CALL TO MF6FMINAM(..)
+        FILACT=ACTION(1)
+        FMTARG=FORM  ! FORM is equal to 'BINARY'
+        FMIFMT6=.TRUE.
+!--CHECK FOR "FT6"
+        CALL MF6FMINAM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
 C               
 C--CHECK FOR "UNFORMATTED" FILE TYPE.
       ELSEIF(LINE(ITYP1:ITYP2).EQ.'DATA(BINARY)') THEN
