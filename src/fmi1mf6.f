@@ -1,5 +1,5 @@
       MODULE FMI1MF6
-        !USE MT3DMS_MODULE
+        USE MT3DMS_MODULE, ONLY : IFTL
         IMPLICIT NONE
         INTEGER,      SAVE,                   POINTER :: ILIST
         INTEGER,      SAVE,                   POINTER :: FILNUM
@@ -118,160 +118,233 @@ C
           ENDIF
 C
           FILNUM = FILNUM + 1
+C
+C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
           IF(IU.EQ.0) THEN
             IF (FILNUM.EQ.1) IU=INFT1
             IF (FILNUM.EQ.2) IU=INFT2
             IF (FILNUM.EQ.3) IU=INFT3
-            IUFT6(FILNUM) = IU
           ENDIF
+          IUFT6(FILNUM) = IU
           FT6FILNAM(FILNUM) = FNAME(1:IFLEN)
 C
-        END SUBROUTINE FMI1MF6NM
+C-------ONCE ALL THREE MF6 "LINKER" FILES HAVE BEEN READ, SET IFTL FLAG TO TRUE TO AVOID STOPPAGE
+          IF(FILNUM.EQ.3) IFTL=1
 C
-C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
-        SUBROUTINE FMI1MF6AR()
-          use GrbModule, only: read_grb
-          use BudgetDataModule, only: budgetdata_init, nbudterms, 
-     &                                budgetdata_read, budtxt
-          integer, allocatable, dimension(:) :: mshape
-          integer :: ncrbud
-          INTEGER I
-          logical :: success
+      END SUBROUTINE FMI1MF6NM
+C
+      SUBROUTINE FMI1MF6AR()
+C **********************************************************************
+C THIS SUBROUTINE CHECKS FLOW-TRANSPORT LINK FILE AND ALLOCATES SPACE
+C FOR ARRAYS THAT MAY BE NEEDED BY FLOW MODEL-INTERFACE (FMI) PACKAGE.
+C **********************************************************************
+C
+      USE MT3DMS_MODULE, ONLY: INFTL,IOUT,MXTRNOP,iUnitTRNOP,NPERFL,ISS,
+     &                         IVER,IFTLFMT,NPERFL,ISS,IVER,FWEL,FDRN,
+     &                         FRCH,FEVT,FRIV,FGHB,FSTR,FRES,FFHB,FIBS,
+     &                         FTLK,FLAK,FMNW,FDRT,FETS,FSWT,FSFR,FUZF,
+     &                         NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
+     &                         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,
+     &                         FLAKUZF,FSNKUZF,NROW,NCOL,NLAY,BUFF
+      USE GrbModule, ONLY: read_grb
+      USE BudgetDataModule, ONLY: budgetdata_init, nbudterms, 
+     &                            budgetdata_read, budtxt
+      INTEGER, ALLOCATABLE, DIMENSION(:) :: mshape
+      INTEGER :: ncrbud
+      INTEGER I
+      LOGICAL :: success
+      CHARACTER(LEN=:), ALLOCATABLE :: TRIMADJL
+C
+C--ALLOCATE
+      ALLOCATE(NPERFL,ISS,IVER,FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,
+     &         FSTR,FRES,FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,
+     &         FSWT,FSFR,FUZF,NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
+     &         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,FLAKUZF,FSNKUZF)
 C         
-C         AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF THE 3 MF6 FILES IS MISSING
-          DO I=1,3
-            IF(IS_GRB(IUFT6(I))) THEN
-              IUGRB=IUFT6(I)
-            ELSEIF(IS_BUD(IUFT6(I))) THEN
-              IUBUD=IUFT6(I)
-            ELSEIF(IS_HDS(IUFT6(I))) THEN
-              IUHDS=IUFT6(I)
-            ELSE
-              WRITE(ILIST,101)  FT6FILNAM(I), IUFT6(I)
-  101         FORMAT(/1X,'FILE: ',A40,' ON UNIT: ',I4,' NOT RECOGNIZED',
-     &               'AS ONE OF THE THREE NECESSARY FT6 FILES.',
-     &               'STOPPING.')
-              CALL USTOP(' ')
-            ENDIF
-          ENDDO
-          !
-          ! -- read binary grid information and close file
-          call read_grb(ilist, iugrb, ia, ja, mshape)
-          close(iugrb)
-          nlay = mshape(1)
-          nrow = mshape(2)
-          ncol = mshape(3)
-          !todo: check for pass through cells and bomb
-          !
-          ! -- allocate head
-          allocate(head(ncol, nrow, nlay))
-          !
-          ! -- Initialize budget reader to determine number of entries
-          iss_sy = 0
-          iss_ss = 0
-          idata_spdis = 0
-          call budgetdata_init(iubud, ilist, ncrbud)
-          do i = 1, nbudterms
-            call budgetdata_read(success)
-            print *, 'found package of type: ', budtxt
-            select case(trim(adjustl(budtxt)))
-            case ('DATA-SPDIS')
-              idata_spdis = 1
-            case ('STO-SS')
-              iss_ss = 1
-            case ('STO-SY')
-              iss_sy = 1
-            case('WEL')
-              print *, 'well package is active'
-              ! todo: FWEL = .TRUE.
-            case('DRN')
-              print *, 'drain package is active'
-            end select
-          enddo
-          rewind(iubud)
-          return
-        END SUBROUTINE FMI1MF6AR
+C-----AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF THE 3 MF6 FILES IS MISSING
+      DO I=1,3
+        IF(IS_GRB(IUFT6(I))) THEN
+          IUGRB=IUFT6(I)
+        ELSEIF(IS_BUD(IUFT6(I))) THEN
+          IUBUD=IUFT6(I)
+        ELSEIF(IS_HDS(IUFT6(I))) THEN
+          IUHDS=IUFT6(I)
+        ELSE
+          WRITE(ILIST,101)  FT6FILNAM(I), IUFT6(I)
+  101     FORMAT(/1X,'FILE: ',A40,/1X,' ON UNIT: ',I4,
+     &           ' NOT RECOGNIZED AS ONE OF THE THREE NECESSARY ',
+     &           ' FT6 FILES.STOPPING.')
+          CALL USTOP(' ')
+        ENDIF
+      ENDDO
 C
-        SUBROUTINE FMI1MF6RP1A(KPER,KSTP)
-          USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
-          use GrbModule, only: read_hds
-          use BudgetDataModule, only: nbudterms, flowja, flowdata,
-     &                                budgetdata_read, budtxt
-          INTEGER :: KPER,KSTP
-          integer n, i, j, k
-          logical :: success
-          !
-          !todo: check for successive time steps
-          ! -- read head array
-          call read_hds(iuhds, nlay, nrow, ncol, head)
-          !
-          ! -- move head into dh
-          ! todo
-          !
-          ! -- Process flowja
-          nbud = 0
+C-----READ BINARY GRID INFORMATION AND CLOSE FILE
+      CALL read_grb(ilist, iugrb, ia, ja, mshape)
+      CLOSE(iugrb)
+      NLAY = mshape(1)
+      NROW = mshape(2)
+      NCOL = mshape(3)
+      !todo: check for pass through cells and bomb
+      !
+      ! -- allocate head
+      ALLOCATE(head(ncol, nrow, nlay))
+C
+C-----INITIALIZE
+      IVER=2
+        FWEL=.FALSE.
+        FDRN=.FALSE.
+        FRCH=.FALSE.
+        FEVT=.FALSE.
+        FRIV=.FALSE.
+        FGHB=.FALSE.
+        FSTR=.FALSE.
+        FRES=.FALSE.
+        FFHB=.FALSE.
+        FIBS=.FALSE.
+        FTLK=.FALSE.
+        FLAK=.FALSE.
+        FMNW=.FALSE.
+        FDRT=.FALSE.
+        FETS=.FALSE.
+        FSWT=.FALSE.
+        FSFR=.FALSE.
+        FUZF=.FALSE.
+        FLAKFLOWS=.FALSE.
+        FMNWFLOWS=.FALSE.
+        FSFRFLOWS=.FALSE.
+        FUZFFLOWS=.FALSE.
+        FSWR=.FALSE.
+        FSWRFLOWS=.FALSE.
+        FSFRLAK=.FALSE.
+        FSFRUZF=.FALSE.
+        FLAKUZF=.FALSE.
+        FSNKUZF=.FALSE.
+C
+C-----INITIALIZE BUDGET READER TO DETERMINE NUMBER OF ENTRIES      
+      ISS_SY = 0
+      ISS_SS = 0
+      IDATA_SPDIS = 0
+      CALL budgetdata_init(iubud, ilist, ncrbud)
+      DO I = 1, nbudterms
+        CALL budgetdata_read(success)
+        TRIMADJL = TRIM(ADJUSTL(BUDTXT))
+        SELECT CASE(TRIM(ADJUSTL(TRIMADJL)))
+          CASE ('DATA-SPDIS')
+            idata_spdis = 1
+          CASE ('STO-SS')
+            ISS_SS = 1
+          CASE ('STO-SY')
+            ISS_SY = 1
+          CASE ('WEL')
+            WRITE(ILIST,110) TRIMADJL
+            FWEL = .TRUE.
+          CASE ('DRN')
+            WRITE(ILIST,110) TRIMADJL
+            FDRN = .TRUE.
+          CASE ('RIV')
+            WRITE(ILIST,110) TRIMADJL
+            FRIV = .TRUE.
+          CASE ('GHB')
+            WRITE(ILIST,110) TRIMADJL
+            FGHB = .TRUE.
+          CASE ('RCH')
+            WRITE(ILIST,110) TRIMADJL
+            FDRN = .TRUE.
+          CASE ('EVT')
+            WRITE(ILIST,110) TRIMADJL
+            FEVT = .TRUE.
+          CASE DEFAULT
+            WRITE(ILIST,111) TRIMADJL
+        END SELECT
+  110   FORMAT(/1X,A4,' package is active')
+  111   FORMAT(/1X,'Found',A16,' while looking for package flows. ',
+     &             'Skipping')
+      ENDDO
+      REWIND(IUBUD)
+      RETURN
+      END SUBROUTINE FMI1MF6AR
+C
+      SUBROUTINE FMI1MF6RP1A(KPER,KSTP)
+        USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
+        use GrbModule, only: read_hds
+        use BudgetDataModule, only: nbudterms, flowja, flowdata,
+     &                              budgetdata_read, budtxt
+        INTEGER :: KPER,KSTP
+        integer n, i, j, k
+        logical :: success
+        !
+        !todo: check for successive time steps
+        ! -- read head array
+        call read_hds(iuhds, nlay, nrow, ncol, head)
+        !
+        ! -- move head into dh
+        ! todo
+        !
+        ! -- Process flowja
+        nbud = 0
+        call budgetdata_read(success)
+        IF (.NOT. SUCCESS) CALL USTOP('')
+        WRITE(ILIST,113) BUDTXT
+  113   FORMAT(/1X,'RP1 Processing: ', A16)
+        IF(TRIM(ADJUSTL(BUDTXT)).NE.'FLOW-JA-FACE') CALL USTOP('')
+        nbud = nbud + 1
+        CALL flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
+        !
+        ! -- process spdis 
+        if (idata_spdis == 1) THEN
           call budgetdata_read(success)
-          if (.not. success) call ustop('')
           print*,'RP1 Processing ', budtxt
-          if (trim(adjustl(budtxt)).ne.'FLOW-JA-FACE') call ustop('')
+          if (trim(adjustl(budtxt)).ne.'DATA-SPDIS') call ustop('')
           nbud = nbud + 1
-          call flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
-          !
-          ! -- process spdis 
-          if (idata_spdis == 1) THEN
-            call budgetdata_read(success)
-            print*,'RP1 Processing ', budtxt
-            if (trim(adjustl(budtxt)).ne.'DATA-SPDIS') call ustop('')
-            nbud = nbud + 1
-          ENDIF
-          !
-          ! -- initialize qsto
-          if (iss_sy == 1 .or. iss_ss == 1) then
-            do k = 1, nlay
-              do i = 1, nrow
-                do j = 1, ncol
-                  qsto(j, i, k) = 0.
-                enddo
+        ENDIF
+        !
+        ! -- initialize qsto
+        IF (ISS_SY == 1 .OR. ISS_SS == 1) THEN
+          DO K = 1, NLAY
+            DO I = 1, NROW
+              DO J = 1, NCOL
+                qsto(j, i, k) = 0.
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDIF
+        !
+        ! -- process qsto with specific storage
+        IF(ISS_SS == 1) THEN
+          call budgetdata_read(success)
+          print*,'RP1 Processing ', budtxt
+          if (trim(adjustl(budtxt)).ne.'STO-SS') call ustop('')
+          nbud = nbud + 1
+          n = 1
+          DO K = 1, NLAY
+            DO I = 1, NROW
+              DO J = 1, NCOL
+                qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
+                n = n + 1
+              ENDDO
+            ENDDO
+          ENDDO            
+        ENDIF
+        !
+        ! -- process qsto with specific yield
+        if (iss_sy == 1) THEN
+          call budgetdata_read(success)
+          print*,'RP1 Processing ', budtxt
+          if (trim(adjustl(budtxt)).ne.'STO-SY') call ustop('')
+          nbud = nbud + 1
+          n = 1
+          do k = 1, nlay
+            do i = 1, nrow
+              do j = 1, ncol
+                qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
+                n = n + 1
               enddo
             enddo
-          endif
-          !
-          ! -- process qsto with specific storage
-          if (iss_ss == 1) THEN
-            call budgetdata_read(success)
-            print*,'RP1 Processing ', budtxt
-            if (trim(adjustl(budtxt)).ne.'STO-SS') call ustop('')
-            nbud = nbud + 1
-            n = 1
-            do k = 1, nlay
-              do i = 1, nrow
-                do j = 1, ncol
-                  qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
-                  n = n + 1
-                enddo
-              enddo
-            enddo            
-          ENDIF
-          !
-          ! -- process qsto with specific yield
-          if (iss_sy == 1) THEN
-            call budgetdata_read(success)
-            print*,'RP1 Processing ', budtxt
-            if (trim(adjustl(budtxt)).ne.'STO-SY') call ustop('')
-            nbud = nbud + 1
-            n = 1
-            do k = 1, nlay
-              do i = 1, nrow
-                do j = 1, ncol
-                  qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
-                  n = n + 1
-                enddo
-              enddo
-            enddo            
-          ENDIF
+          enddo            
+        ENDIF
 
-          return
-        END SUBROUTINE FMI1MF6RP1A
+      RETURN
+      END SUBROUTINE FMI1MF6RP1A
 C
         SUBROUTINE FMI1MF6RP2A(KPER,KSTP)
           use MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
@@ -287,49 +360,50 @@ C
           integer :: num
           ntss = nss
           ss(8, :) = 0.
-          do num = 1, ntss
+          DO num = 1, ntss
             ss(5, num) = 0.
-          enddo
-          do ibud = 1, nbudterms - nbud
-            call budgetdata_read(success)
+          ENDDO
+          DO ibud = 1, nbudterms - nbud
+            CALL budgetdata_read(success)
             !todo: make sure mf6 kper and kstp are same as mt3d kper kstp
-            print*,'RP2 Processing ', budtxt
-            if (.not. success) call ustop('')
-            select case(trim(adjustl(budtxt)))
-            case('CHD')
-              iq = 1
-            case('WEL')
-              iq = 2
-            case('DRN')
-              iq = 3
-            case('RIV')
-              iq = 4
-            case('GHB')
-              iq = 5
-            case('RCH')
-              iq = 7
-            case('EVT')
-              iq = 8
-            case('SFR')
-              iq = 30
-            case('LAK')
-              iq = 26
-            case('MAW')
-              iq = 27
-            case default
-              write(iout, *) 'ERROR. MF6 FLOW TYPE NOT SUPPORTED: ' //
-     &                       trim(adjustl(budtxt))  
-            end select
-            call mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
+            WRITE(ILIST, 114) budtxt
+  114       FORMAT(1/X,'RP2 Processing ',A16)
+            IF (.NOT. SUCCESS) CALL USTOP('')
+            SELECT CASE(TRIM(ADJUSTL(BUDTXT)))
+              CASE('CHD')
+                IQ = 1
+              CASE('WEL')
+                IQ = 2
+              CASE('DRN')
+                IQ = 3
+              CASE('RIV')
+                IQ = 4
+              CASE('GHB')
+                IQ = 5
+              CASE('RCH')
+                IQ = 7
+              CASE('EVT')
+                IQ = 8
+              CASE('SFR')
+                IQ = 30
+              CASE('LAK')
+                IQ = 26
+              CASE('MAW')
+                IQ = 27
+              CASE DEFAULT
+                WRITE(iout, *) 'ERROR. MF6 FLOW TYPE NOT SUPPORTED: ' //
+     &                         TRIM(ADJUSTL(BUDTXT))  
+            END SELECT
+            CALL mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
      &                    iq, mxss, ntss, nss, ss, icbund, fprt, 
      &                    flowdata, ictspkg)
           enddo
           return
       END SUBROUTINE FMI1MF6RP2A
       
-      subroutine flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
-        integer, dimension(:), intent(in) :: ia
-        integer, dimension(:), intent(in) :: ja
+      SUBROUTINE flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
+        INTEGER, DIMENSION(:), INTENT(IN) :: ia
+        INTEGER, DIMENSION(:), INTENT(IN) :: ja
         double precision, dimension(:), intent(in) :: flowja
         real, dimension(:, :, :), intent(inout) :: qx, qy, qz
         integer :: nlay, nrow, ncol, nodes, nja
@@ -337,20 +411,20 @@ C
         integer :: n, ipos, m
         !
         ! -- initialize variables
-        ncol = size(qx, 1)
-        nrow = size(qx, 2)
-        nlay = size(qx, 3)
-        nja = size(flowja)
-        nodes = size(ia) - 1
-        do il = 1, nlay
-          do ir = 1, nrow
-            do ic = 1, ncol
-              qx(ic, ir, il) = 0.
-              qy(ic, ir, il) = 0.
-              qz(ic, ir, il) = 0.
-            enddo
-          enddo
-        enddo
+        NCOL = SIZE(QX, 1)
+        NROW = SIZE(QX, 2)
+        NLAY = SIZE(QX, 3)
+        NJA = SIZE(FLOWJA)
+        NODES = SIZE(IA) - 1
+        DO IL = 1, NLAY
+          DO IR = 1, NROW
+            DO IC = 1, NCOL
+              QX(IC, IR, IL) = 0.
+              QY(IC, IR, IL) = 0.
+              QZ(IC, IR, IL) = 0.
+            ENDDO
+          ENDDO
+        ENDDO
         !
         ! -- loop through flows and put them into qx, qy, qz
         do n = 1, nodes
@@ -367,15 +441,15 @@ C
             ic = ij - (ir - 1) * ncol
             !
             ! -- right, front, and lower faces
-            if (m == n + 1) qx(ic, ir, il) = flowja(ipos)
-            if (m == n + ncol) qy(ic, ir, il) = flowja(ipos)
-            if (m == n * nrow * ncol) qz(ic, ir, il) = flowja(ipos)
+            IF (m == n + 1) qx(ic, ir, il) = flowja(ipos)
+            IF (m == n + ncol) qy(ic, ir, il) = flowja(ipos)
+            IF (m == n * nrow * ncol) qz(ic, ir, il) = flowja(ipos)
             !
-          enddo
-        enddo
-        end subroutine flowja2qxqyqz
+          ENDDO
+        ENDDO
+        END SUBROUTINE FLOWJA2QXQYQZ
 
-        subroutine mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
+        SUBROUTINE mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
      &                      iq, mxss, ntss, nss, ss, icbund, fprt, 
      &                      flowdata, ictspkg)
           ! -- arguments

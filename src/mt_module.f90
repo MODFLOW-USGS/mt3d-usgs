@@ -622,6 +622,7 @@ CONTAINS
         REAL,             SAVE,                       POINTER :: THKMIN
         REAL,             SAVE,                       POINTER :: RFMIN
         INTEGER,          SAVE,                       POINTER :: IMPSOL
+        INTEGER,          SAVE,                       POINTER :: IFTL
         REAL,             SAVE,                       POINTER :: DTRACK
         REAL,             SAVE,                       POINTER :: DTRACK2
         REAL,             SAVE,                       POINTER :: DTSSM
@@ -944,6 +945,7 @@ CONTAINS
       IF(ASSOCIATED(THKMIN))       DEALLOCATE(THKMIN)
       IF(ASSOCIATED(RFMIN))        DEALLOCATE(RFMIN)
       IF(ASSOCIATED(IMPSOL))       DEALLOCATE(IMPSOL)
+      IF(ASSOCIATED(IFTL))         DEALLOCATE(IFTL)
       IF(ASSOCIATED(DTRACK))       DEALLOCATE(DTRACK)
       IF(ASSOCIATED(DTRACK2))      DEALLOCATE(DTRACK2)
       IF(ASSOCIATED(DTSSM))        DEALLOCATE(DTSSM)

@@ -14,7 +14,7 @@ C **********************************************************************
 C
       USE FLOWFILE
       USE MT3DMS_MODULE, ONLY: INFTL,IOUT,MXTRNOP,iUnitTRNOP,NPERFL,ISS,
-     &                         IVER,IFTLFMT,NPERFL,ISS,IVER,FWEL,FDRN,
+     &                         IVER,IFTLFMT,NPERFL,ISS,FWEL,FDRN,
      &                         FRCH,FEVT,FRIV,FGHB,FSTR,FRES,FFHB,FIBS,
      &                         FTLK,FLAK,FMNW,FDRT,FETS,FSWT,FSFR,FUZF,
      &                         NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
