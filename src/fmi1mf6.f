@@ -349,7 +349,7 @@ C
         SUBROUTINE FMI1MF6RP2A(KPER,KSTP)
           use MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
      &                             ICTSPKG
-          use BudgetDataModule, only: nbudterms, flowdata,
+          use BudgetDataModule, only: nbudterms, nodesrc, flowdata,
      &                                budgetdata_read, budtxt,
      &                                kper=>kpermf6, kstp=>kstpmf6
           INTEGER :: KPER,KSTP
@@ -396,7 +396,7 @@ C
             END SELECT
             CALL mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
      &                    iq, mxss, ntss, nss, ss, icbund, fprt, 
-     &                    flowdata, ictspkg)
+     &                    nodesrc, flowdata, ictspkg)
           enddo
           return
       END SUBROUTINE FMI1MF6RP2A
@@ -451,7 +451,7 @@ C
 
         SUBROUTINE mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
      &                      iq, mxss, ntss, nss, ss, icbund, fprt, 
-     &                      flowdata, ictspkg)
+     &                      nodesrc, flowdata, ictspkg)
           ! -- arguments
           integer, intent(in) :: iout, ncol, nrow, nlay, kstp, kper
           character(len=16), intent(in) :: text
@@ -460,6 +460,7 @@ C
           real, dimension(:, :), intent(inout) :: ss
           integer, dimension(ncol, nrow, nlay), intent(inout) :: icbund
           character(len=1), intent(in) :: fprt
+          integer, dimension(:), intent(in) :: nodesrc
           double precision, dimension(:, :), intent(in) :: flowdata
           integer, intent(in) :: ictspkg
           ! -- local
@@ -473,8 +474,8 @@ C
           do l = 1, nlist
             !
             ! -- get cell number and flow
-            n = flowdata(1, l)
-            qstemp = flowdata(2, l)
+            n = nodesrc(l)
+            qstemp = flowdata(1, l)
             !
             ! -- calculate layer, row, and column indices for cell n
             il = (n - 1) / (ncol * nrow) + 1
