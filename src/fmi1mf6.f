@@ -272,22 +272,27 @@ C
       END SUBROUTINE FMI1MF6AR
 C
       SUBROUTINE FMI1MF6RP1A(KPER,KSTP)
+C **********************************************************************
+C THIS SUBROUTINE READS MF6-STYLE HEADS, CONVERTS TO DH (THKSAT),
+C READS MF6-STYLE BUDGET FILE AND FILLS QX, QY, QZ, AND USES 
+C STORAGE INFORMATION IN THE MF6-STYLE BUDGET FILE TO FILL QSTO
+C **********************************************************************
         USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO,ICBUND,HTOP,DZ
-        use GrbModule, only: read_hds
-        use BudgetDataModule, only: nbudterms, flowja, flowdata,
-     &                              budgetdata_read, budtxt
+        USE GRBMODULE, ONLY: READ_HDS
+        USE BUDGETDATAMODULE, ONLY: NBUDTERMS, FLOWJA, FLOWDATA,
+     &                              BUDGETDATA_READ, BUDTXT
         INTEGER :: KPER,KSTP
-        integer n, i, j, k
-        logical :: success
+        INTEGER N, I, J, K
+        LOGICAL :: SUCCESS
 C
 C       todo: check for successive time steps
 C       Read head array
         CALL READ_HDS(IUHDS,NLAY,NROW,NCOL,HEAD)
 C
-C-------Move head into DH
+C-------MOVE HEAD INTO DH
         CALL FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM)
 C
-C       Process flowja
+C-------PROCESS FLOWJA
         NBUD = 0
         CALL BUDGETDATA_READ(SUCCESS)
         IF (.NOT. SUCCESS) CALL USTOP('')
@@ -297,26 +302,27 @@ C       Process flowja
         NBUD = NBUD+1
         CALL FLOWJA2QXQYQZ(IA,JA,FLOWJA,QX,QY,QZ)
 C
-C       Process spdis 
-        if (IDATA_SPDIS == 1) THEN
+C-------PROCESS SPDIS 
+        IF (IDATA_SPDIS == 1) THEN
           CALL BUDGETDATA_READ(SUCCESS)
-          print*,'RP1 Processing ', budtxt
-          IF (TRIM(ADJUSTL(BUDTXT)).NE.'DATA-SPDIS') CALL USTOP('')
-          NBUD = NBUD + 1
+          WRITE(ILIST,119) BUDTXT
+  119     FORMAT(/1X,'RP1 Processing ', A16)
+          IF(TRIM(ADJUSTL(BUDTXT)).NE.'DATA-SPDIS') CALL USTOP('')
+          NBUD=NBUD+1
         ENDIF
 C
-C       Initialize qsto
+C-------INITIALIZE QSTO
         IF (ISS_SY == 1 .OR. ISS_SS == 1) THEN
-          DO K = 1, NLAY
-            DO I = 1, NROW
-              DO J = 1, NCOL
-                qsto(j, i, k) = 0.
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                QSTO(J,I,K)=0.
               ENDDO
             ENDDO
           ENDDO
         ENDIF
 C
-C       Process qsto with specific storage
+C-------PROCESS QSTO WITH SPECIFIC STORAGE
         IF(ISS_SS==1) THEN
           CALL BUDGETDATA_READ(SUCCESS)
           WRITE(ILIST,117) BUDTXT
@@ -334,7 +340,7 @@ C       Process qsto with specific storage
           ENDDO            
         ENDIF
 C
-C       Process qsto with specific yield
+C-------PROCESS QSTO WITH SPECIFIC YIELD
         IF(ISS_SY == 1) THEN
           CALL BUDGETDATA_READ(SUCCESS)
           WRITE(ILIST,118) BUDTXT
@@ -362,11 +368,11 @@ C INTERFACES, AND FLOW RATE TO OR FROM TRANSIENT STORAGE
 C FROM AN UNFORMATTED MODFLOW6-STYLE OUTPUT FILE.
 C **********************************************************************
 C
-      USE MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
+      USE MT3DMS_MODULE, ONLY: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
      &                         ICTSPKG,NCOL,NROW,NLAY
-      USE BudgetDataModule, only: nbudterms, nodesrc, flowdata,
-     &                            budgetdata_read, budtxt,
-     &                            kper=>kpermf6, kstp=>kstpmf6
+      USE BUDGETDATAMODULE, ONLY: NBUDTERMS, NODESRC, FLOWDATA,
+     &                            BUDGETDATA_READ, BUDTXT,
+     &                            KPER=>KPERMF6, KSTP=>KSTPMF6
       INTEGER :: KPER,KSTP
       CHARACTER(LEN=:), ALLOCATABLE   :: TEXT
       LOGICAL :: SUCCESS
@@ -419,15 +425,20 @@ C
       END SUBROUTINE FMI1MF6RP2A
 C      
       SUBROUTINE FLOWJA2QXQYQZ(IA,JA,FLOWJA,QX,QY,QZ)
-        INTEGER, DIMENSION(:), INTENT(IN) :: ia
-        INTEGER, DIMENSION(:), INTENT(IN) :: ja
-        DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: FLOWJA
-        REAL, DIMENSION(:, :, :), INTENT(INOUT) :: QX,QY,QZ
+C **********************************************************************
+C USES VALUES IN FLOWJA TO FILL NATIVE MT3D-USGS QX, QY, AND QZ ARRAYS
+C **********************************************************************
+C
+        INTEGER,          DIMENSION(:), INTENT(IN)    :: IA
+        INTEGER,          DIMENSION(:), INTENT(IN)    :: JA
+        DOUBLE PRECISION, DIMENSION(:), INTENT(IN)    :: FLOWJA
+        REAL,       DIMENSION(:, :, :), INTENT(INOUT) :: QX,QY,QZ
+C
         INTEGER :: NLAY,NROW,NCOL,NODES,NJA
         INTEGER :: IL,IR,IC,IJ
         INTEGER :: N,IPOS,M
 C
-C       Initialize variables
+C       INITIALIZE VARIABLES
         NCOL=SIZE(QX, 1)
         NROW=SIZE(QX, 2)
         NLAY=SIZE(QX, 3)
@@ -443,23 +454,23 @@ C       Initialize variables
           ENDDO
         ENDDO
 C
-C       Loop through flows and put them into qx, qy, qz
+C       LOOP THROUGH FLOWS AND PUT THEM INTO QX, QY, QZ
         DO N=1, NODES
-          DO IPOS=IA(N)+1,IA(N+1) - 1
+          DO IPOS=IA(N)+1, IA(N+1)-1
 C
-C           Loop through connections for cell n
+C           LOOP THROUGH CONNECTIONS FOR CELL N
             M=JA(IPOS)
             IF(M<N) CYCLE
 C            
-C           Calculate layer, row, and column indices for cell n
+C           CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
             IL=(N-1)/(NCOL*NROW)+1
             IJ=N-(IL-1)*NCOL*NROW
             IR=(IJ-1)/NCOL+1
             IC=IJ-(IR-1)*NCOL
 C
-C           Right, front, and lower faces
+C           RIGHT, FRONT, AND LOWER FACES
             IF(M==N+1) QX(IC,IR,IL)=FLOWJA(IPOS)
-            IF(M==N+NCOL) QY(IC,IR,IL) = FLOWJA(IPOS)
+            IF(M==N+NCOL) QY(IC,IR,IL)=FLOWJA(IPOS)
             IF(M==N*NROW*NCOL) QZ(IC,IR,IL)=FLOWJA(IPOS)
 C
           ENDDO
@@ -567,11 +578,11 @@ C       ARGUMENTS
         NLIST = SIZE(FLOWDATA, 2)
         DO L = 1, NLIST
 C
-C         Get cell number and flow
+C         GET CELL NUMBER AND FLOW
           N=NODESRC(L)
           QSTEMP=FLOWDATA(1,L)
 C
-C         Calculate layer, row, and column indices for cell n
+C         CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
           IL=(N-1)/(NCOL*NROW)+1
           IJ=N-(IL-1)*NCOL*NROW
           IR=(IJ-1)/NCOL+1
@@ -580,8 +591,8 @@ C         Calculate layer, row, and column indices for cell n
           IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
      &            WRITE(IOUT,50) IL, IR, IC, QSTEMP            
 C
-C         If already defined as a source of user-specified concentration
-C         Then store flow rate (qstemp)
+C         IF ALREADY DEFINED AS A SOURCE OF USER-SPECIFIED CONCENTRATION
+C         THEN STORE FLOW RATE (QSTEMP)
           DO ITEMP = 1, NSS
             KKK=SS(1,ITEMP)
             III=SS(2,ITEMP)
@@ -596,7 +607,7 @@ C         Then store flow rate (qstemp)
             IF(IQ.EQ.2.AND.ICTSPKG.EQ.1)
      &        SS(8,ITEMP) = L
 C
-C           Mark cells near the sink/source                   
+C           MARK CELLS NEAR THE SINK/SOURCE                   
             IF(QSTEMP.LT.0.AND.ICBUND(IC,IR,IL).GT.0) THEN
               ICBUND(IC,IR,IL)=1000+IQ
             ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
@@ -605,7 +616,7 @@ C           Mark cells near the sink/source
             GOTO 100
           ENDDO
 C     
-C--OTHWISE, ADD TO THE SS ARRAY
+C         OTHWISE, ADD TO THE SS ARRAY
           NTSS=NTSS+1
           IF(NTSS.GT.MXSS) CYCLE
           SS(1,NTSS)=IL
