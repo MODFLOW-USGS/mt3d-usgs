@@ -12,13 +12,13 @@
         INTEGER,      SAVE,                   POINTER :: NLAY
         INTEGER,      SAVE,                   POINTER :: NROW
         INTEGER,      SAVE,                   POINTER :: NCOL
-        integer :: iss_sy
-        integer :: iss_ss
-        integer :: idata_spdis
-        integer :: nbud
-        double precision, dimension(:, :, :), allocatable :: head
-        integer, allocatable, dimension(:) :: ia
-        integer, allocatable, dimension(:) :: ja
+        INTEGER                                       :: ISS_SY
+        INTEGER                                       :: ISS_SS
+        INTEGER                                       :: IDATA_SPDIS
+        INTEGER                                       :: NBUD
+        DOUBLE PRECISION, DIMENSION(:,:,:), ALLOCATABLE :: HEAD,BOTM
+        INTEGER,            DIMENSION(:), ALLOCATABLE :: IA
+        INTEGER,            DIMENSION(:), ALLOCATABLE :: JA
 C        
       CONTAINS
 C    
@@ -72,64 +72,65 @@ C
           IF(ASSOCIATED(IUFT6))       DEALLOCATE(IUFT6)
           IF(ASSOCIATED(FT6FILNAM))   DEALLOCATE(FT6FILNAM)
           IF(ASSOCIATED(FT6TYP))      DEALLOCATE(FT6TYP)
+          IF(ALLOCATED(BOTM))         DEALLOCATE(BOTM)
         END SUBROUTINE MEMDEALLOCATE
 C
-        SUBROUTINE FMI1MF6NM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
-          IMPLICIT     NONE
-          INTEGER      IOUT,IFLEN,IU,INFT1,INFT2,INFT3
-          CHARACTER*7  FILSTAT
-          CHARACTER*20 FMTARG, ACCARG, FILACT
-          CHARACTER*40 FNAME
+      SUBROUTINE FMI1MF6NM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
+      IMPLICIT     NONE
+      INTEGER      IOUT,IFLEN,IU,INFT1,INFT2,INFT3
+      CHARACTER*7  FILSTAT
+      CHARACTER*20 FMTARG, ACCARG, FILACT
+      CHARACTER*40 FNAME
 C
-C         SAVE ILIST
-          ALLOCATE(ILIST)
-          ILIST = IOUT
-          INFT1 = 21
-          INFT2 = 22
-          INFT3 = 23
+C     SAVE ILIST
+      ALLOCATE(ILIST)
+      ILIST = IOUT
+      INFT1 = 21
+      INFT2 = 22
+      INFT3 = 23
 C
-          IF (.NOT. ASSOCIATED(IUFT6)) ALLOCATE(IUFT6(3))
+      IF (.NOT. ASSOCIATED(IUFT6)) ALLOCATE(IUFT6(3))
 C
 C---------ALLOCATE THE FOLLOWING, THOUGHT IT WON'T BE SORTED OUT 
 C         UNTIL MF6FMIAR()
-          IF (.NOT. ASSOCIATED(FT6TYP)) THEN
-             ALLOCATE(FT6TYP(3,2))
-             FT6TYP(1,1)='FT6GRD'
-             FT6TYP(2,1)='FT6BUD'
-             FT6TYP(3,1)='FT6HDS'
-          ENDIF
+      IF (.NOT. ASSOCIATED(FT6TYP)) THEN
+        ALLOCATE(FT6TYP(3,2))
+        FT6TYP(1,1)='FT6GRD'
+        FT6TYP(2,1)='FT6BUD'
+        FT6TYP(3,1)='FT6HDS'
+      ENDIF
 C
-          IF (.NOT. ASSOCIATED(FILNUM)) THEN
-            ALLOCATE(IUGRB)
-            ALLOCATE(IUBUD)
-            ALLOCATE(IUHDS)
-            ALLOCATE(FILNUM)
-            ALLOCATE(FT6FILNAM(3))
-            ALLOCATE(NLAY)
-            ALLOCATE(NROW)
-            ALLOCATE(NCOL)
-            FILNUM=0
-            IUGRB=0
-            IUBUD=0
-            IUHDS=0
-            NLAY=0
-            NROW=0
-            NCOL=0
-          ENDIF
+      IF (.NOT. ASSOCIATED(FILNUM)) THEN
+        ALLOCATE(IUGRB)
+        ALLOCATE(IUBUD)
+        ALLOCATE(IUHDS)
+        ALLOCATE(FILNUM)
+        ALLOCATE(FT6FILNAM(3))
+        ALLOCATE(NLAY)
+        ALLOCATE(NROW)
+        ALLOCATE(NCOL)
+        FILNUM=0
+        IUGRB=0
+        IUBUD=0
+        IUHDS=0
+        NLAY=0
+        NROW=0
+        NCOL=0
+      ENDIF
 C
-          FILNUM = FILNUM + 1
+      FILNUM = FILNUM + 1
 C
 C-------SORT OUT WHICH FILE IS GRB, BUD, AND HDS (DON'T RELY ON FILE EXTENTION, SINCE THESE CAN BE ARBITRARY)
-          IF(IU.EQ.0) THEN
-            IF (FILNUM.EQ.1) IU=INFT1
-            IF (FILNUM.EQ.2) IU=INFT2
-            IF (FILNUM.EQ.3) IU=INFT3
-          ENDIF
-          IUFT6(FILNUM) = IU
-          FT6FILNAM(FILNUM) = FNAME(1:IFLEN)
+      IF(IU.EQ.0) THEN
+        IF (FILNUM.EQ.1) IU=INFT1
+        IF (FILNUM.EQ.2) IU=INFT2
+        IF (FILNUM.EQ.3) IU=INFT3
+      ENDIF
+      IUFT6(FILNUM) = IU
+      FT6FILNAM(FILNUM) = FNAME(1:IFLEN)
 C
 C-------ONCE ALL THREE MF6 "LINKER" FILES HAVE BEEN READ, SET IFTL FLAG TO TRUE TO AVOID STOPPAGE
-          IF(FILNUM.EQ.3) IFTL=1
+      IF(FILNUM.EQ.3) IFTL=1
 C
       END SUBROUTINE FMI1MF6NM
 C
@@ -145,7 +146,7 @@ C
      &                         FTLK,FLAK,FMNW,FDRT,FETS,FSWT,FSFR,FUZF,
      &                         NPCKGTXT,FLAKFLOWS,FMNWFLOWS,FSFRFLOWS,
      &                         FUZFFLOWS,FSWR,FSWRFLOWS,FSFRLAK,FSFRUZF,
-     &                         FLAKUZF,FSNKUZF,NROW,NCOL,NLAY,BUFF
+     &                         FLAKUZF,FSNKUZF,BUFF,ICBUND,HTOP,DZ
       USE GrbModule, ONLY: read_grb
       USE BudgetDataModule, ONLY: budgetdata_init, nbudterms, 
      &                            budgetdata_read, budtxt
@@ -179,54 +180,55 @@ C-----AT LEAST 1 FLAG NEEDS TO BE TRIGGERED ON EACH PASS, OTHERWISE ONE OF THE 3
       ENDDO
 C
 C-----READ BINARY GRID INFORMATION AND CLOSE FILE
-      CALL read_grb(ilist, iugrb, ia, ja, mshape)
-      CLOSE(iugrb)
+      CALL READ_GRB(ILIST, IUGRB, IA, JA, MSHAPE)
+      CLOSE(IUGRB)
       NLAY = mshape(1)
       NROW = mshape(2)
       NCOL = mshape(3)
       !todo: check for pass through cells and bomb
       !
-      ! -- allocate head
-      ALLOCATE(head(ncol, nrow, nlay))
+C     Allocate HEAD, BOTM (3D ARRAY OF CELL BOTTOM ELEVATIONS)
+      ALLOCATE(HEAD(NCOL, NROW, NLAY))
+      ALLOCATE(BOTM(NCOL, NROW, NLAY))
 C
 C-----INITIALIZE
       IVER=2
-        FWEL=.FALSE.
-        FDRN=.FALSE.
-        FRCH=.FALSE.
-        FEVT=.FALSE.
-        FRIV=.FALSE.
-        FGHB=.FALSE.
-        FSTR=.FALSE.
-        FRES=.FALSE.
-        FFHB=.FALSE.
-        FIBS=.FALSE.
-        FTLK=.FALSE.
-        FLAK=.FALSE.
-        FMNW=.FALSE.
-        FDRT=.FALSE.
-        FETS=.FALSE.
-        FSWT=.FALSE.
-        FSFR=.FALSE.
-        FUZF=.FALSE.
-        FLAKFLOWS=.FALSE.
-        FMNWFLOWS=.FALSE.
-        FSFRFLOWS=.FALSE.
-        FUZFFLOWS=.FALSE.
-        FSWR=.FALSE.
-        FSWRFLOWS=.FALSE.
-        FSFRLAK=.FALSE.
-        FSFRUZF=.FALSE.
-        FLAKUZF=.FALSE.
-        FSNKUZF=.FALSE.
+      FWEL=.FALSE.
+      FDRN=.FALSE.
+      FRCH=.FALSE.
+      FEVT=.FALSE.
+      FRIV=.FALSE.
+      FGHB=.FALSE.
+      FSTR=.FALSE.
+      FRES=.FALSE.
+      FFHB=.FALSE.
+      FIBS=.FALSE.
+      FTLK=.FALSE.
+      FLAK=.FALSE.
+      FMNW=.FALSE.
+      FDRT=.FALSE.
+      FETS=.FALSE.
+      FSWT=.FALSE.
+      FSFR=.FALSE.
+      FUZF=.FALSE.
+      FLAKFLOWS=.FALSE.
+      FMNWFLOWS=.FALSE.
+      FSFRFLOWS=.FALSE.
+      FUZFFLOWS=.FALSE.
+      FSWR=.FALSE.
+      FSWRFLOWS=.FALSE.
+      FSFRLAK=.FALSE.
+      FSFRUZF=.FALSE.
+      FLAKUZF=.FALSE.
+      FSNKUZF=.FALSE.
 C
 C-----INITIALIZE BUDGET READER TO DETERMINE NUMBER OF ENTRIES      
       ISS_SY = 0
       ISS_SS = 0
       IDATA_SPDIS = 0
-      CALL budgetdata_init(iubud, ilist, ncrbud)
-      DO I = 1, nbudterms
-        CALL budgetdata_read(success)
+      CALL BUDGETDATA_INIT(IUBUD, ILIST, NCRBUD)
+      DO I = 1, NBUDTERMS
+        CALL BUDGETDATA_READ(SUCCESS)
         TRIMADJL = TRIM(ADJUSTL(BUDTXT))
         SELECT CASE(TRIM(ADJUSTL(TRIMADJL)))
           CASE ('DATA-SPDIS')
@@ -261,44 +263,49 @@ C-----INITIALIZE BUDGET READER TO DETERMINE NUMBER OF ENTRIES
      &             'Skipping')
       ENDDO
       REWIND(IUBUD)
+C
+C-----BEFORE EXITING SUBROUTINE, CALCULATE 3D ARRAY OF BOTTOM OF CELL ELEVATIONS
+C     (MF2K5 PASSES THKSAT, MF6 PASSES HEADS WHICH NEED TO BE CONVERTED TO THKSAT)
+      CALL CALC_LAYELEVS(NLAY,NROW,NCOL,HTOP,DZ,BOTM)
+C
       RETURN
       END SUBROUTINE FMI1MF6AR
 C
       SUBROUTINE FMI1MF6RP1A(KPER,KSTP)
-        USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO
+        USE MT3DMS_MODULE, ONLY: DH,QX,QY,QZ,QSTO,ICBUND,HTOP,DZ
         use GrbModule, only: read_hds
         use BudgetDataModule, only: nbudterms, flowja, flowdata,
      &                              budgetdata_read, budtxt
         INTEGER :: KPER,KSTP
         integer n, i, j, k
         logical :: success
-        !
-        !todo: check for successive time steps
-        ! -- read head array
-        call read_hds(iuhds, nlay, nrow, ncol, head)
-        !
-        ! -- move head into dh
-        ! todo
-        !
-        ! -- Process flowja
-        nbud = 0
-        call budgetdata_read(success)
+C
+C       todo: check for successive time steps
+C       Read head array
+        CALL READ_HDS(IUHDS,NLAY,NROW,NCOL,HEAD)
+C
+C-------Move head into DH
+        CALL FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM)
+C
+C       Process flowja
+        NBUD = 0
+        CALL BUDGETDATA_READ(SUCCESS)
         IF (.NOT. SUCCESS) CALL USTOP('')
         WRITE(ILIST,113) BUDTXT
   113   FORMAT(/1X,'RP1 Processing: ', A16)
         IF(TRIM(ADJUSTL(BUDTXT)).NE.'FLOW-JA-FACE') CALL USTOP('')
-        nbud = nbud + 1
-        CALL flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
-        !
-        ! -- process spdis 
-        if (idata_spdis == 1) THEN
-          call budgetdata_read(success)
+        NBUD = NBUD+1
+        CALL FLOWJA2QXQYQZ(IA,JA,FLOWJA,QX,QY,QZ)
+C
+C       Process spdis 
+        if (IDATA_SPDIS == 1) THEN
+          CALL BUDGETDATA_READ(SUCCESS)
           print*,'RP1 Processing ', budtxt
-          if (trim(adjustl(budtxt)).ne.'DATA-SPDIS') call ustop('')
-          nbud = nbud + 1
+          IF (TRIM(ADJUSTL(BUDTXT)).NE.'DATA-SPDIS') CALL USTOP('')
+          NBUD = NBUD + 1
         ENDIF
-        !
-        ! -- initialize qsto
+C
+C       Initialize qsto
         IF (ISS_SY == 1 .OR. ISS_SS == 1) THEN
           DO K = 1, NLAY
             DO I = 1, NROW
@@ -308,211 +315,316 @@ C
             ENDDO
           ENDDO
         ENDIF
-        !
-        ! -- process qsto with specific storage
-        IF(ISS_SS == 1) THEN
-          call budgetdata_read(success)
-          print*,'RP1 Processing ', budtxt
-          if (trim(adjustl(budtxt)).ne.'STO-SS') call ustop('')
-          nbud = nbud + 1
-          n = 1
-          DO K = 1, NLAY
-            DO I = 1, NROW
-              DO J = 1, NCOL
-                qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
-                n = n + 1
+C
+C       Process qsto with specific storage
+        IF(ISS_SS==1) THEN
+          CALL BUDGETDATA_READ(SUCCESS)
+          WRITE(ILIST,117) BUDTXT
+  117     FORMAT(/1X,'RP1 Processing ', A16)
+          IF (TRIM(ADJUSTL(BUDTXT)).NE.'STO-SS') CALL USTOP('')
+          NBUD=NBUD+1
+          N=1
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                QSTO(J,I,K)=QSTO(J,I,K)+FLOWDATA(1,N)
+                N=N+1
               ENDDO
             ENDDO
           ENDDO            
         ENDIF
-        !
-        ! -- process qsto with specific yield
-        if (iss_sy == 1) THEN
-          call budgetdata_read(success)
-          print*,'RP1 Processing ', budtxt
-          if (trim(adjustl(budtxt)).ne.'STO-SY') call ustop('')
-          nbud = nbud + 1
-          n = 1
-          do k = 1, nlay
-            do i = 1, nrow
-              do j = 1, ncol
-                qsto(j, i, k) = qsto(j, i, k) + flowdata(1, n)
-                n = n + 1
-              enddo
-            enddo
-          enddo            
+C
+C       Process qsto with specific yield
+        IF(ISS_SY == 1) THEN
+          CALL BUDGETDATA_READ(SUCCESS)
+          WRITE(ILIST,118) BUDTXT
+  118     FORMAT(/1X,'RP1 Processing ', A16)
+          IF (TRIM(ADJUSTL(BUDTXT)).NE.'STO-SY') CALL USTOP('')
+          NBUD = NBUD + 1
+          N = 1
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                QSTO(J,I,K)=QSTO(J,I,K)+FLOWDATA(1,N)
+                N=N+1
+              ENDDO
+            ENDDO
+          ENDDO            
         ENDIF
-
+C
       RETURN
       END SUBROUTINE FMI1MF6RP1A
 C
-        SUBROUTINE FMI1MF6RP2A(KPER,KSTP)
-          use MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
-     &                             ICTSPKG
-          use BudgetDataModule, only: nbudterms, nodesrc, flowdata,
-     &                                budgetdata_read, budtxt,
-     &                                kper=>kpermf6, kstp=>kstpmf6
-          INTEGER :: KPER,KSTP
-          CHARACTER(LEN=16) :: TEXT
-          logical :: success
-          integer :: ibud
-          integer :: iq
-          integer :: num
-          ntss = nss
-          ss(8, :) = 0.
-          DO num = 1, ntss
-            ss(5, num) = 0.
-          ENDDO
-          DO ibud = 1, nbudterms - nbud
-            CALL budgetdata_read(success)
-            !todo: make sure mf6 kper and kstp are same as mt3d kper kstp
-            WRITE(ILIST, 114) budtxt
-  114       FORMAT(1/X,'RP2 Processing ',A16)
-            IF (.NOT. SUCCESS) CALL USTOP('')
-            SELECT CASE(TRIM(ADJUSTL(BUDTXT)))
-              CASE('CHD')
-                IQ = 1
-              CASE('WEL')
-                IQ = 2
-              CASE('DRN')
-                IQ = 3
-              CASE('RIV')
-                IQ = 4
-              CASE('GHB')
-                IQ = 5
-              CASE('RCH')
-                IQ = 7
-              CASE('EVT')
-                IQ = 8
-              CASE('SFR')
-                IQ = 30
-              CASE('LAK')
-                IQ = 26
-              CASE('MAW')
-                IQ = 27
-              CASE DEFAULT
-                WRITE(iout, *) 'ERROR. MF6 FLOW TYPE NOT SUPPORTED: ' //
-     &                         TRIM(ADJUSTL(BUDTXT))  
-            END SELECT
-            CALL mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
-     &                    iq, mxss, ntss, nss, ss, icbund, fprt, 
-     &                    nodesrc, flowdata, ictspkg)
-          enddo
-          return
+      SUBROUTINE FMI1MF6RP2A(KPER,KSTP)
+C **********************************************************************
+C THIS SUBROUTINE READS SATURATED CELL THICKNESS, FLUXES ACROSS CELL
+C INTERFACES, AND FLOW RATE TO OR FROM TRANSIENT STORAGE
+C FROM AN UNFORMATTED MODFLOW6-STYLE OUTPUT FILE.
+C **********************************************************************
+C
+      USE MT3DMS_MODULE, only: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
+     &                         ICTSPKG,NCOL,NROW,NLAY
+      USE BudgetDataModule, only: nbudterms, nodesrc, flowdata,
+     &                            budgetdata_read, budtxt,
+     &                            kper=>kpermf6, kstp=>kstpmf6
+      INTEGER :: KPER,KSTP
+      CHARACTER(LEN=:), ALLOCATABLE   :: TEXT
+      LOGICAL :: SUCCESS
+      INTEGER :: IBUD
+      INTEGER :: IQ
+      INTEGER :: NUM
+      NTSS = NSS
+      SS(8, :) = 0.
+      DO NUM = 1, NTSS
+        SS(5, NUM) = 0.
+      ENDDO
+      DO IBUD = 1, NBUDTERMS - NBUD
+        CALL BUDGETDATA_READ(SUCCESS)
+        !TODO: MAKE SURE MF6 KPER AND KSTP ARE SAME AS MT3D KPER KSTP
+        WRITE(ILIST, 114) BUDTXT
+  114   FORMAT(1/X,'RP2 Processing ',A16)
+        IF (.NOT. SUCCESS) CALL USTOP('')
+        SELECT CASE(TRIM(ADJUSTL(BUDTXT)))
+          CASE('CHD')
+            IQ = 1
+          CASE('WEL')
+            IQ = 2
+          CASE('DRN')
+            IQ = 3
+          CASE('RIV')
+            IQ = 4
+          CASE('GHB')
+            IQ = 5
+          CASE('RCH')
+            IQ = 7
+          CASE('EVT')
+            IQ = 8
+          CASE('SFR')
+            IQ = 30
+          CASE('LAK')
+            IQ = 26
+          CASE('MAW')
+            IQ = 27
+          CASE DEFAULT
+            WRITE(iout, *) 'ERROR. MF6 FLOW TYPE NOT SUPPORTED: ' //
+     &                     TRIM(ADJUSTL(BUDTXT))  
+          END SELECT
+        TEXT=TRIM(ADJUSTL(BUDTXT)) 
+        CALL MF6PUTSS(IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT, 
+     &                NODESRC,FLOWDATA,ICTSPKG)
+      ENDDO
+      RETURN
+C
       END SUBROUTINE FMI1MF6RP2A
-      
-      SUBROUTINE flowja2qxqyqz(ia, ja, flowja, qx, qy, qz)
+C      
+      SUBROUTINE FLOWJA2QXQYQZ(IA,JA,FLOWJA,QX,QY,QZ)
         INTEGER, DIMENSION(:), INTENT(IN) :: ia
         INTEGER, DIMENSION(:), INTENT(IN) :: ja
-        double precision, dimension(:), intent(in) :: flowja
-        real, dimension(:, :, :), intent(inout) :: qx, qy, qz
-        integer :: nlay, nrow, ncol, nodes, nja
-        integer :: il, ir, ic, ij
-        integer :: n, ipos, m
-        !
-        ! -- initialize variables
-        NCOL = SIZE(QX, 1)
-        NROW = SIZE(QX, 2)
-        NLAY = SIZE(QX, 3)
-        NJA = SIZE(FLOWJA)
-        NODES = SIZE(IA) - 1
-        DO IL = 1, NLAY
-          DO IR = 1, NROW
-            DO IC = 1, NCOL
-              QX(IC, IR, IL) = 0.
-              QY(IC, IR, IL) = 0.
-              QZ(IC, IR, IL) = 0.
+        DOUBLE PRECISION, DIMENSION(:), INTENT(IN) :: FLOWJA
+        REAL, DIMENSION(:, :, :), INTENT(INOUT) :: QX,QY,QZ
+        INTEGER :: NLAY,NROW,NCOL,NODES,NJA
+        INTEGER :: IL,IR,IC,IJ
+        INTEGER :: N,IPOS,M
+C
+C       Initialize variables
+        NCOL=SIZE(QX, 1)
+        NROW=SIZE(QX, 2)
+        NLAY=SIZE(QX, 3)
+        NJA=SIZE(FLOWJA)
+        NODES=SIZE(IA)-1
+        DO IL=1,NLAY
+          DO IR=1,NROW
+            DO IC=1,NCOL
+              QX(IC,IR,IL) = 0.
+              QY(IC,IR,IL) = 0.
+              QZ(IC,IR,IL) = 0.
             ENDDO
           ENDDO
         ENDDO
-        !
-        ! -- loop through flows and put them into qx, qy, qz
-        do n = 1, nodes
-          do ipos = ia(n) + 1, ia(n + 1) - 1
-            !
-            ! -- loop through connections for cell n
-            m = ja(ipos)
-            if (m < n) cycle
-            
-            ! -- calculate layer, row, and column indices for cell n
-            il = (n - 1) / (ncol * nrow) + 1
-            ij = n - (il - 1) * ncol * nrow
-            ir = (ij - 1) / ncol + 1
-            ic = ij - (ir - 1) * ncol
-            !
-            ! -- right, front, and lower faces
-            IF (m == n + 1) qx(ic, ir, il) = flowja(ipos)
-            IF (m == n + ncol) qy(ic, ir, il) = flowja(ipos)
-            IF (m == n * nrow * ncol) qz(ic, ir, il) = flowja(ipos)
-            !
+C
+C       Loop through flows and put them into qx, qy, qz
+        DO N=1, NODES
+          DO IPOS=IA(N)+1,IA(N+1) - 1
+C
+C           Loop through connections for cell n
+            M=JA(IPOS)
+            IF(M<N) CYCLE
+C            
+C           Calculate layer, row, and column indices for cell n
+            IL=(N-1)/(NCOL*NROW)+1
+            IJ=N-(IL-1)*NCOL*NROW
+            IR=(IJ-1)/NCOL+1
+            IC=IJ-(IR-1)*NCOL
+C
+C           Right, front, and lower faces
+            IF(M==N+1) QX(IC,IR,IL)=FLOWJA(IPOS)
+            IF(M==N+NCOL) QY(IC,IR,IL) = FLOWJA(IPOS)
+            IF(M==N*NROW*NCOL) QZ(IC,IR,IL)=FLOWJA(IPOS)
+C
           ENDDO
         ENDDO
+C
         END SUBROUTINE FLOWJA2QXQYQZ
-
-        SUBROUTINE mf6putss(iout, ncol, nrow, nlay, kstp, kper, text,
-     &                      iq, mxss, ntss, nss, ss, icbund, fprt, 
-     &                      nodesrc, flowdata, ictspkg)
-          ! -- arguments
-          integer, intent(in) :: iout, ncol, nrow, nlay, kstp, kper
-          character(len=16), intent(in) :: text
-          integer, intent(in) :: iq, mxss
-          integer, intent(inout) :: ntss, nss
-          real, dimension(:, :), intent(inout) :: ss
-          integer, dimension(ncol, nrow, nlay), intent(inout) :: icbund
-          character(len=1), intent(in) :: fprt
-          integer, dimension(:), intent(in) :: nodesrc
-          double precision, dimension(:, :), intent(in) :: flowdata
-          integer, intent(in) :: ictspkg
-          ! -- local
-          integer :: nlist
-          integer :: l, itemp
-          integer :: n, il, ij, ir, ic
-          integer :: kkk, iii, jjj, id
-          real :: qstemp, qss
+C
+        SUBROUTINE FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM)
+C **********************************************************************
+C THIS SUBROUTINE TAKES THE HEAD INFORMATION FROM A MODFLOW6 
+C STYLE HEADS FILE AND FILLS THE SATURATED THICKNESS ARRAY "DH"
+C **********************************************************************
+        INTEGER,                              INTENT(IN) :: NLAY,NROW,
+     &                                                      NCOL
+        INTEGER,          DIMENSION(:,:,:,:), INTENT(IN) :: ICBUND
+        REAL,             DIMENSION(:,:),     INTENT(IN) :: HTOP
+        DOUBLE PRECISION, DIMENSION(:,:,:),   INTENT(IN) :: HEAD,BOTM
+        REAL,             DIMENSION(:,:,:),   INTENT(IN) :: DZ
+        REAL,             DIMENSION(:,:,:),   INTENT(INOUT) :: DH
+C
+        INTEGER I,J,K,IDX
+        DOUBLE PRECISION TOTDZ,THKSAT
+C
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              IF(ICBUND(J,I,K,1).NE.0) THEN
+                IF(HEAD(J,I,K)-BOTM(J,I,K).LE.0.0) THEN
+                  DH(J,I,K)=0.0
+                ELSE
+                  THKSAT=HEAD(J,I,K)-BOTM(J,I,K)
+                  IF(THKSAT.GT.DZ(J,I,K)) THEN
+                    DH(J,I,K)=DZ(J,I,K)
+                  ELSE
+                    DH(J,I,K)=THKSAT
+                  ENDIF
+                ENDIF
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+C
+      END SUBROUTINE
+C
+C
+      SUBROUTINE CALC_LAYELEVS(NLAY,NROW,NCOL,HTOP,DZ,BOTM)
+C **********************************************************************
+C THIS SUBROUTINE USES HTOP (GROUND ELEVATION) AND DZ (LAYER THICKNESS)
+C TO FILL A 3D ARRAY OF BOTTOM ELEVATIONS FOR USE BY FUNCTION FILL_DH()
+C **********************************************************************
+C
+      INTEGER,                           INTENT(IN)    :: NLAY,NROW,NCOL
+      REAL,             DIMENSION(:,:),  INTENT(IN)    :: HTOP
+      REAL,             DIMENSION(:,:,:),INTENT(IN)    :: DZ
+      DOUBLE PRECISION, DIMENSION(:,:,:),INTENT(INOUT) :: BOTM
+C
+      INTEGER IDX,I,J,K
+      DOUBLE PRECISION TOTDZ
+C
+C-----LOOP THROUGH ALL CELLS AND CALCULATE BOTTOM OF CELL ELEVATION
+C     (PRESUMES STRUCTURED GRID IN MODFLOW6, STOPS BEFORE NOW IF NOT)
+      DO I=1,NROW
+        DO J=1,NCOL
+          IDX=1
+          TOTDZ=DZ(J,I,IDX)
+          BOTM(J,I,IDX)=HTOP(J,I)-TOTDZ
+          IF(K.GT.1) THEN
+            IDX=IDX+1
+            DO WHILE(IDX.LE.NLAY)
+              TOTDZ=TOTDZ+DZ(J,I,IDX)
+              BOTM(J,I,IDX)=HTOP(J,I)-TOTDZ
+              IDX=IDX+1
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDDO
+      RETURN     
+C
+      END SUBROUTINE CALC_LAYELEVS
+C
+C
+      SUBROUTINE MF6PUTSS(IOUT, NCOL, NROW, NLAY, KSTP, KPER, TEXT,
+     &                    IQ, MXSS, NTSS, NSS, SS, ICBUND, FPRT, 
+     &                    NODESRC, FLOWDATA, ICTSPKG)
+C
+C       ARGUMENTS
+        INTEGER,               INTENT(IN)    :: IOUT,NCOL,NROW,NLAY, 
+     &                                          KSTP,KPER
+        CHARACTER(LEN=*)                     :: TEXT
+        INTEGER,               INTENT(IN)    :: IQ, MXSS
+        INTEGER,               INTENT(INOUT) :: NTSS, NSS
+        REAL, DIMENSION(:, :), INTENT(INOUT) :: SS
+        CHARACTER(LEN=1),      INTENT(IN)    :: FPRT
+        INTEGER, DIMENSION(:), INTENT(IN)    :: NODESRC
+        DOUBLE PRECISION, DIMENSION(:, :), INTENT(IN) :: FLOWDATA
+        INTEGER, DIMENSION(NCOL, NROW, NLAY), INTENT(INOUT) :: ICBUND
+        INTEGER, INTENT(IN) :: ICTSPKG
+        ! -- LOCAL
+        INTEGER :: NLIST
+        INTEGER :: L, ITEMP
+        INTEGER :: N, IL, IJ, IR, IC
+        INTEGER :: KKK, III, JJJ, ID
+        REAL    :: QSTEMP, QSS
+        !
+        NLIST = SIZE(FLOWDATA, 2)
+        DO L = 1, NLIST
+C
+C         Get cell number and flow
+          N=NODESRC(L)
+          QSTEMP=FLOWDATA(1,L)
+C
+C         Calculate layer, row, and column indices for cell n
+          IL=(N-1)/(NCOL*NROW)+1
+          IJ=N-(IL-1)*NCOL*NROW
+          IR=(IJ-1)/NCOL+1
+          IC=IJ-(IR-1)*NCOL
           !
-          nlist = size(flowdata, 2)
-          do l = 1, nlist
-            !
-            ! -- get cell number and flow
-            n = nodesrc(l)
-            qstemp = flowdata(1, l)
-            !
-            ! -- calculate layer, row, and column indices for cell n
-            il = (n - 1) / (ncol * nrow) + 1
-            ij = n - (il - 1) * ncol * nrow
-            ir = (ij - 1) / ncol + 1
-            ic = ij - (ir - 1) * ncol
-            !
-            IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &              WRITE(IOUT,50) il, ir, ic, QSTEMP            
-            !
-            ! -- if already defined as a source of user-specified concentration
-            !    then store flow rate (qstemp)
-            do itemp = 1, nss
-              kkk = ss(1,itemp)
-              iii = ss(2,itemp)
-              jjj = ss(3,itemp)
-              qss = ss(5,itemp)
-              id = ss(6,itemp)       
-              if (kkk .ne. il .or. iii .ne. ir .or. jjj .ne. ic .or. 
-     &          id .ne. iq) cycle
-              if(abs(qss) .gt. 0) cycle                   
-              ss(5,itemp) = qstemp
-              ss(7,itemp) = 0
-              if(iq .eq. 2 .and. ictspkg .eq. 1)
-     &          ss(8,itemp) = l
-              !
-              !---Mark cells near the sink/source                   
-              if(qstemp .lt. 0 .and. icbund(ic, ir, il) .gt. 0) then
-                icbund(ic, ir, il)= 1000 + iq
-              elseif(icbund(ic, ir, il) .gt. 0 ) then
-                icbund(ic, ir, il) = 1020 + iq
-              endif
-              goto 100
-            enddo
-100         continue
-          enddo
- 50     FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
-        end subroutine 
-        
+          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &            WRITE(IOUT,50) IL, IR, IC, QSTEMP            
+C
+C         If already defined as a source of user-specified concentration
+C         Then store flow rate (qstemp)
+          DO ITEMP = 1, NSS
+            KKK=SS(1,ITEMP)
+            III=SS(2,ITEMP)
+            JJJ=SS(3,ITEMP)
+            QSS=SS(5,ITEMP)
+            ID=SS(6,ITEMP)       
+            IF (KKK.NE.IL.OR.III.NE.IR.OR.JJJ.NE.IC.OR. 
+     &          ID.NE.IQ) CYCLE
+            IF(ABS(QSS).GT.0) CYCLE                   
+            SS(5,ITEMP) = QSTEMP
+            SS(7,ITEMP) = 0
+            IF(IQ.EQ.2.AND.ICTSPKG.EQ.1)
+     &        SS(8,ITEMP) = L
+C
+C           Mark cells near the sink/source                   
+            IF(QSTEMP.LT.0.AND.ICBUND(IC,IR,IL).GT.0) THEN
+              ICBUND(IC,IR,IL)=1000+IQ
+            ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
+              ICBUND(IC,IR,IL)=1020+IQ
+            ENDIF
+            GOTO 100
+          ENDDO
+C     
+C--OTHWISE, ADD TO THE SS ARRAY
+          NTSS=NTSS+1
+          IF(NTSS.GT.MXSS) CYCLE
+          SS(1,NTSS)=IL
+          SS(2,NTSS)=IR
+          SS(3,NTSS)=IC
+          SS(4,NTSS)=0.
+          SS(5,NTSS)=QSTEMP
+          SS(6,NTSS)=IQ
+          SS(7,NTSS)=0.
+          IF(TEXT.EQ.'WEL'.AND.ICTSPKG.EQ.1)
+     &      SS(8,NTSS)=N
+          IF(QSTEMP.LT.0 .AND. ICBUND(IC,IR,IL).GT.0) THEN
+            ICBUND(IC,IR,IL)=1000+IQ
+          ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
+            ICBUND(IC,IR,IL)=1020+IQ
+          ENDIF
+100       CONTINUE
+        ENDDO
+ 50   FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
+      END SUBROUTINE 
+C
       END MODULE FMI1MF6
