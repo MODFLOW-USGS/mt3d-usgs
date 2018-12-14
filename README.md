@@ -29,7 +29,7 @@ Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS versi
 
 ![alt text](https://water.usgs.gov/ogw/mt3d-usgs/images/TM6-A53-cover.jpg "MT3D-USGS user guide")
 
-#### ***Software/Code citation for MT3D-USGS***
+### ***Software/Code citation for MT3D-USGS***
 
 Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS version 1.0.0: Groundwater Solute Transport Simulator for MODFLOW: U.S. Geological Survey Software Release, 30 September 2016, http://dx.doi.org/10.5066/F75T3HKD
 
