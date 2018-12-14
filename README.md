@@ -24,11 +24,15 @@ MT3D-USGS capabilities and features include:
 ## How to Cite
 
 ### ***Citation for MT3D-USGS***
-<img style="float: right" img src="https://water.usgs.gov/ogw/mt3d-usgs/images/TM6-A53-cover.jpg" alt="[Image: Cover of software documentation report. ]" width="125" height="162" title="MT3D-USGS user guide">
-[Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS version 1: A U.S. Geological Survey release of MT3DMS updated with new and expanded transport capabilities for use with MODFLOW: U.S. Geological Survey Techniques and Methods 6-A53, 69 p., http://dx.doi.org/10.3133/tm6A53](http://dx.doi.org/10.3133/tm6A53)
+
+Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS version 1: A U.S. Geological Survey release of MT3DMS updated with new and expanded transport capabilities for use with MODFLOW: U.S. Geological Survey Techniques and Methods 6-A53, 69 p., http://dx.doi.org/10.3133/tm6A53
+
+![alt text](https://water.usgs.gov/ogw/mt3d-usgs/images/TM6-A53-cover.jpg "MT3D-USGS user guide")
 
 #### ***Software/Code citation for MT3D-USGS***
-[Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS version 1.0.0: Groundwater Solute Transport Simulator for MODFLOW: U.S. Geological Survey Software Release, 30 September 2016, http://dx.doi.org/10.5066/F75T3HKD](http://dx.doi.org/10.5066/F75T3HKD)
+
+Bedekar, V., Morway, E.D., Langevin, C.D., and Tonkin, M., 2016, MT3D-USGS version 1.0.0: Groundwater Solute Transport Simulator for MODFLOW: U.S. Geological Survey Software Release, 30 September 2016, http://dx.doi.org/10.5066/F75T3HKD
 
 ## Disclaimer
+
 This software is preliminary or provisional and is subject to revision. It is being provided to meet the need for timely best science. The software has not received final approval by the U.S. Geological Survey (USGS). No warranty, expressed or implied, is made by the USGS or the U.S. Government as to the functionality of the software and related material nor shall the fact of release constitute any such warranty. The software is provided on the condition that neither the USGS nor the U.S. Government shall be held liable for any damages resulting from the authorized or unauthorized use of the software.
