@@ -170,7 +170,7 @@ module GrbModule
     CHARACTER(LEN=16) TEXT
     do k = 1, nlay
       READ(iu) kstp, kper, pertim, totim,TEXT,n,n,n
-      print*, kstp, kper, pertim, totim
+      !print*, kstp, kper, pertim, totim
       read(iu) head(:, :, k)
     enddo
   end subroutine read_hds
