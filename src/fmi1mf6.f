@@ -254,7 +254,7 @@ C-----INITIALIZE BUDGET READER TO DETERMINE NUMBER OF ENTRIES
             FGHB = .TRUE.
           CASE ('RCH')
             WRITE(ILIST,110) TRIMADJL
-            FDRN = .TRUE.
+            FRCH = .TRUE.
           CASE ('EVT')
             WRITE(ILIST,110) TRIMADJL
             FEVT = .TRUE.
