@@ -1,0 +1,144 @@
+language: c
+os: linux
+dist: trusty
+sudo: required
+compiler: gcc
+cache:
+  apt: true
+  pip: true
+  directories:
+    - $HOME/.cache/pip
+    - $HOME/.local
+      
+matrix:
+  include:
+    - env: CVER=gfortran4
+      language: c
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages: 
+            - gfortran-4.9
+            - dpkg
+            - unzip
+
+    - env: CVER=gfortran5
+      language: c
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages: 
+            - gfortran-5
+            - dpkg
+            - unzip
+
+    - env: CVER=gfortran6
+      language: c
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages: 
+            - gfortran-6
+            - dpkg
+            - unzip
+
+    - env: CVER=gfortran7
+      language: c
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages: 
+            - gfortran-7
+            - dpkg
+            - unzip
+
+    - env: CVER=gfortran8
+      language: c
+      addons:
+        apt:
+          sources: 
+            - ubuntu-toolchain-r-test
+          packages: 
+            - gfortran-8
+            - dpkg
+            - unzip
+     
+  # allowed failures - uncomment lines below to allow failure
+  #                    of specific gfortran compilers
+  #allow_failures:
+  #  - env: CVER=gfortran7
+  #  - env: CVER=gfortran8
+     
+
+
+
+install:
+    - if [[ ! -d "$HOME/.local/bin" ]]; then
+        mkdir "$HOME/.local/bin";
+      fi
+    - export PATH="$HOME/.local/bin:$PATH"
+    - if [[ $CVER == "gfortran4" ]]; then
+        ln -fs /usr/bin/gfortran-4.9 "$HOME/.local/bin/gfortran";
+        gfortran --version;
+        ls -l /usr/bin/gfortran-4.9;
+      fi
+    - if [[ $CVER == "gfortran5" ]]; then
+        ln -fs /usr/bin/gfortran-5 "$HOME/.local/bin/gfortran";
+        gfortran --version;
+        ls -l /usr/bin/gfortran-5;
+      fi
+    - if [[ $CVER == "gfortran6" ]]; then
+        ln -fs /usr/bin/gfortran-6 "$HOME/.local/bin/gfortran";
+        gfortran --version;
+        ls -l /usr/bin/gfortran-6;
+      fi
+    - if [[ $CVER == "gfortran7" ]]; then
+        ln -fs /usr/bin/gfortran-7 "$HOME/.local/bin/gfortran";
+        gfortran --version;
+        ls -l /usr/bin/gfortran-7;
+      fi
+    - if [[ $CVER == "gfortran8" ]]; then
+        ln -fs /usr/bin/gfortran-8 "$HOME/.local/bin/gfortran";
+        gfortran --version;
+        ls -l /usr/bin/gfortran-8;
+      fi
+    # install anaconda
+    - if [[ "${TRAVIS_OS_NAME}" == "linux" ]]; then
+        wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh;
+      fi
+    - bash miniconda.sh -b -p $HOME/miniconda
+    - export PATH="$HOME/miniconda/bin:$PATH"
+    - hash -r
+    - conda config --set always_yes yes --set changeps1 no
+    - conda update -q conda
+    # Useful for debugging any issues with conda
+    - conda info -a
+    - conda install nose
+    - python --version
+    - pip install numpy
+    - pip install https://github.com/modflowpy/flopy/zipball/develop
+    - pip install https://github.com/modflowpy/pymake/zipball/master
+    - pip install nose-timer
+
+
+script:
+    - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
+    - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
+    - pwd
+    #- git clone https://github.com/MODFLOW-USGS/modflow6-examples.git ../modflow6-examples
+    - ls ../
+    - which python
+    - python --version
+    - python -c "import numpy as np; print('numpy version {}'.format(np.__version__))"
+    - python -c "import flopy; flopypth = flopy.__path__[0]; print('flopy is installed in {}'.format(flopypth))"
+    - python -c "import flopy; dir(flopy.mf6)"
+    - cd ./autotest
+    - cd ..
+    - python -c "import flopy; dir(flopy.mf6)"
+    - which nosetests
+    - nosetests --version
+    - nosetests -v --with-id --with-timer -w ./autotest t000_test.py
