@@ -470,15 +470,15 @@ C           LOOP THROUGH CONNECTIONS FOR CELL N
             IF(M<N) CYCLE
 C            
 C           CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
-            IL=(N-1)/(NCOL*NROW)+1
-            IJ=N-(IL-1)*NCOL*NROW
-            IR=(IJ-1)/NCOL+1
-            IC=IJ-(IR-1)*NCOL
+            IL = (N-1) / (NCOL*NROW) + 1
+            IJ = N - (IL-1)*NCOL*NROW
+            IR = (IJ-1) / NCOL + 1
+            IC = IJ - (IR-1) * NCOL
 C
 C           RIGHT, FRONT, AND LOWER FACES
-            IF(M==N+1) QX(IC,IR,IL)=FLOWJA(IPOS) * -1
-            IF(M==N+NCOL) QY(IC,IR,IL)=FLOWJA(IPOS)
-            IF(M==N+NROW*NCOL) QZ(IC,IR,IL)=FLOWJA(IPOS) * -1
+            IF(M==N+1)         QX(IC,IR,IL) = -FLOWJA(IPOS)
+            IF(M==N+NCOL)      QY(IC,IR,IL) =  FLOWJA(IPOS)
+            IF(M==N+NROW*NCOL) QZ(IC,IR,IL) = -FLOWJA(IPOS)
 C
           ENDDO
         ENDDO
