@@ -13,8 +13,8 @@ module BudgetDataModule
   logical :: hasimeth1flowja = .false.
   integer(I4B) :: inunit
   integer(I4B) :: nbudterms = 0
-  integer(I4B) :: kstp
-  integer(I4B) :: kper
+  integer(I4B) :: kstp, kstpmf6
+  integer(I4B) :: kper, kpermf6
   character(len=16) :: budtxt
   integer(I4B) :: nval
   integer(I4B) :: idum1
