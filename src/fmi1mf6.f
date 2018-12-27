@@ -379,7 +379,7 @@ C
      &                         ICTSPKG,NCOL,NROW,NLAY
       USE BUDGETDATAMODULE, ONLY: NBUDTERMS, NODESRC, FLOWDATA,
      &                            BUDGETDATA_READ, BUDTXT,
-     &                            KPER=>KPERMF6, KSTP=>KSTPMF6
+     &                            KPERMF6=>KPER, KSTPMF6=>KSTP
       INTEGER :: KPER,KSTP
       CHARACTER(LEN=:), ALLOCATABLE   :: TEXT
       LOGICAL :: SUCCESS
