@@ -559,89 +559,89 @@ C
       END SUBROUTINE CALC_LAYELEVS
 C
 C
-      SUBROUTINE MF6PUTSS(IOUT, NCOL, NROW, NLAY, KSTP, KPER, TEXT,
-     &                    IQ, MXSS, NTSS, NSS, SS, ICBUND, FPRT, 
-     &                    NODESRC, FLOWDATA, ICTSPKG)
+      SUBROUTINE MF6PUTSS(IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
+     &                    IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT, 
+     &                    NODESRC,FLOWDATA,ICTSPKG)
 C
-C       ARGUMENTS
-        INTEGER,               INTENT(IN)    :: IOUT,NCOL,NROW,NLAY, 
-     &                                          KSTP,KPER
-        CHARACTER(LEN=*)                     :: TEXT
-        INTEGER,               INTENT(IN)    :: IQ, MXSS
-        INTEGER,               INTENT(INOUT) :: NTSS, NSS
-        REAL, DIMENSION(:, :), INTENT(INOUT) :: SS
-        CHARACTER(LEN=1),      INTENT(IN)    :: FPRT
-        INTEGER, DIMENSION(:), INTENT(IN)    :: NODESRC
-        DOUBLE PRECISION, DIMENSION(:, :), INTENT(IN) :: FLOWDATA
-        INTEGER, DIMENSION(NCOL, NROW, NLAY), INTENT(INOUT) :: ICBUND
-        INTEGER, INTENT(IN) :: ICTSPKG
-        ! -- LOCAL
-        INTEGER :: NLIST
-        INTEGER :: L, ITEMP
-        INTEGER :: N, IL, IJ, IR, IC
-        INTEGER :: KKK, III, JJJ, ID
-        REAL    :: QSTEMP, QSS
+C     ARGUMENTS
+      INTEGER,               INTENT(IN)    :: IOUT,NCOL,NROW,NLAY, 
+     &                                        KSTP,KPER
+      CHARACTER(LEN=*)                     :: TEXT
+      INTEGER,               INTENT(IN)    :: IQ, MXSS
+      INTEGER,               INTENT(INOUT) :: NTSS, NSS
+      REAL, DIMENSION(:, :), INTENT(INOUT) :: SS
+      CHARACTER(LEN=1),      INTENT(IN)    :: FPRT
+      INTEGER, DIMENSION(:), INTENT(IN)    :: NODESRC
+      DOUBLE PRECISION, DIMENSION(:, :), INTENT(IN) :: FLOWDATA
+      INTEGER, DIMENSION(NCOL, NROW, NLAY), INTENT(INOUT) :: ICBUND
+      INTEGER, INTENT(IN) :: ICTSPKG
+      ! -- LOCAL
+      INTEGER :: NLIST
+      INTEGER :: L, ITEMP
+      INTEGER :: N, IL, IJ, IR, IC
+      INTEGER :: KKK, III, JJJ, ID
+      REAL    :: QSTEMP, QSS
+      !
+      NLIST = SIZE(FLOWDATA, 2)
+      DO L = 1, NLIST
+C
+C       GET CELL NUMBER AND FLOW
+        N=NODESRC(L)
+        QSTEMP=FLOWDATA(1,L)
+C
+C       CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
+        IL=(N-1)/(NCOL*NROW)+1
+        IJ=N-(IL-1)*NCOL*NROW
+        IR=(IJ-1)/NCOL+1
+        IC=IJ-(IR-1)*NCOL
         !
-        NLIST = SIZE(FLOWDATA, 2)
-        DO L = 1, NLIST
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
+     &          WRITE(IOUT,50) IL, IR, IC, QSTEMP            
 C
-C         GET CELL NUMBER AND FLOW
-          N=NODESRC(L)
-          QSTEMP=FLOWDATA(1,L)
+C       IF ALREADY DEFINED AS A SOURCE OF USER-SPECIFIED CONCENTRATION
+C       THEN STORE FLOW RATE (QSTEMP)
+        DO ITEMP = 1, NSS
+          KKK=SS(1,ITEMP)
+          III=SS(2,ITEMP)
+          JJJ=SS(3,ITEMP)
+          QSS=SS(5,ITEMP)
+          ID=SS(6,ITEMP)       
+          IF (KKK.NE.IL.OR.III.NE.IR.OR.JJJ.NE.IC.OR. 
+     &        ID.NE.IQ) CYCLE
+          IF(ABS(QSS).GT.0) CYCLE                   
+          SS(5,ITEMP) = QSTEMP
+          SS(7,ITEMP) = 0
+          IF(IQ.EQ.2.AND.ICTSPKG.EQ.1)
+     &      SS(8,ITEMP) = L
 C
-C         CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
-          IL=(N-1)/(NCOL*NROW)+1
-          IJ=N-(IL-1)*NCOL*NROW
-          IR=(IJ-1)/NCOL+1
-          IC=IJ-(IR-1)*NCOL
-          !
-          IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') 
-     &            WRITE(IOUT,50) IL, IR, IC, QSTEMP            
-C
-C         IF ALREADY DEFINED AS A SOURCE OF USER-SPECIFIED CONCENTRATION
-C         THEN STORE FLOW RATE (QSTEMP)
-          DO ITEMP = 1, NSS
-            KKK=SS(1,ITEMP)
-            III=SS(2,ITEMP)
-            JJJ=SS(3,ITEMP)
-            QSS=SS(5,ITEMP)
-            ID=SS(6,ITEMP)       
-            IF (KKK.NE.IL.OR.III.NE.IR.OR.JJJ.NE.IC.OR. 
-     &          ID.NE.IQ) CYCLE
-            IF(ABS(QSS).GT.0) CYCLE                   
-            SS(5,ITEMP) = QSTEMP
-            SS(7,ITEMP) = 0
-            IF(IQ.EQ.2.AND.ICTSPKG.EQ.1)
-     &        SS(8,ITEMP) = L
-C
-C           MARK CELLS NEAR THE SINK/SOURCE                   
-            IF(QSTEMP.LT.0.AND.ICBUND(IC,IR,IL).GT.0) THEN
-              ICBUND(IC,IR,IL)=1000+IQ
-            ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
-              ICBUND(IC,IR,IL)=1020+IQ
-            ENDIF
-            GOTO 100
-          ENDDO
-C     
-C         OTHWISE, ADD TO THE SS ARRAY
-          NTSS=NTSS+1
-          IF(NTSS.GT.MXSS) CYCLE
-          SS(1,NTSS)=IL
-          SS(2,NTSS)=IR
-          SS(3,NTSS)=IC
-          SS(4,NTSS)=0.
-          SS(5,NTSS)=QSTEMP
-          SS(6,NTSS)=IQ
-          SS(7,NTSS)=0.
-          IF(TEXT.EQ.'WEL'.AND.ICTSPKG.EQ.1)
-     &      SS(8,NTSS)=N
-          IF(QSTEMP.LT.0 .AND. ICBUND(IC,IR,IL).GT.0) THEN
+C         MARK CELLS NEAR THE SINK/SOURCE                   
+          IF(QSTEMP.LT.0.AND.ICBUND(IC,IR,IL).GT.0) THEN
             ICBUND(IC,IR,IL)=1000+IQ
           ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
             ICBUND(IC,IR,IL)=1020+IQ
           ENDIF
-100       CONTINUE
+          GOTO 100
         ENDDO
+C     
+C       OTHWISE, ADD TO THE SS ARRAY
+        NTSS=NTSS+1
+        IF(NTSS.GT.MXSS) CYCLE
+        SS(1,NTSS)=IL
+        SS(2,NTSS)=IR
+        SS(3,NTSS)=IC
+        SS(4,NTSS)=0.
+        SS(5,NTSS)=QSTEMP
+        SS(6,NTSS)=IQ
+        SS(7,NTSS)=0.
+        IF(TEXT.EQ.'WEL'.AND.ICTSPKG.EQ.1)
+     &    SS(8,NTSS)=N
+        IF(QSTEMP.LT.0 .AND. ICBUND(IC,IR,IL).GT.0) THEN
+          ICBUND(IC,IR,IL)=1000+IQ
+        ELSEIF(ICBUND(IC,IR,IL).GT.0) THEN
+          ICBUND(IC,IR,IL)=1020+IQ
+        ENDIF
+100     CONTINUE
+      ENDDO
  50   FORMAT(1X,'LAYER',I5,5X,'ROW',I5,5X,'COLUMN',I5,5X,'RATE',G15.7)
       END SUBROUTINE 
 C
