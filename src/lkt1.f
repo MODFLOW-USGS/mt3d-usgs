@@ -809,8 +809,8 @@ C--WRITE LAKE MASS BALANCE TO OUTPUT FILE
      &       16X,'           UZF TO LAKE =',G15.7)
 35    FORMAT(16X,'        STREAM TO LAKE =',G15.7,
      &       16X,'        STREAM TO LAKE =',G15.7)
-40    FORMAT(16X,'         PRECIPIRATION =',G15.7,
-     &       16X,'         PRECIPIRATION =',G15.7)
+40    FORMAT(16X,'         PRECIPITATION =',G15.7,
+     &       16X,'         PRECIPITATION =',G15.7)
 41    FORMAT(16X,'                RUNOFF =',G15.7,
      &       16X,'                RUNOFF =',G15.7)
 43    FORMAT(41X,19('-'),36X,14('-'))
