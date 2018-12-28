@@ -309,19 +309,6 @@ C
 C--READ AND ECHO POINT SINKS/SOURCES OF SPECIFIED CONCENTRATIONS
       READ(IN,'(I10)') NTMP
 C
-C--RESET ICBUND TO ABS(ICBUND) FOR CONSTANT CONCENTRATION CELLS
-      DO INDEX=1,NCOMP
-        DO KK=1,NLAY
-          DO II=1,NROW
-            DO JJ=1,NCOL
-              IF(ICBUND(JJ,II,KK,INDEX).LT.0) THEN
-                ICBUND(JJ,II,KK,INDEX)=ABS(ICBUND(JJ,II,KK,INDEX))
-              ENDIF
-            ENDDO
-          ENDDO
-        ENDDO
-      ENDDO  
-C
 C--RESET OLD CONCENTRATIONS IF REUSE OPTION NOT IN EFFECT
       IF(KPER.GT.1.AND.NTMP.GE.0) THEN
         DO NUM=1,NSS
@@ -331,6 +318,20 @@ C--RESET OLD CONCENTRATIONS IF REUSE OPTION NOT IN EFFECT
           ENDDO
           KSSZERO=0
         ENDDO
+C
+C-------RESET ICBUND TO ABS(ICBUND) FOR CONSTANT CONCENTRATION CELLS
+        DO INDEX=1,NCOMP
+          DO KK=1,NLAY
+            DO II=1,NROW
+              DO JJ=1,NCOL
+                IF(ICBUND(JJ,II,KK,INDEX).LT.0) THEN
+                  ICBUND(JJ,II,KK,INDEX)=ABS(ICBUND(JJ,II,KK,INDEX))
+                ENDIF
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDDO  
+C
       ENDIF
 C
       IF(NTMP.GT.MXSS) THEN
@@ -606,7 +607,7 @@ C--(EVAPOTRANSPIRATION)
      &                 DH(J,I,K)
               ENDIF
             ELSE
-              IF(K.GT.0.AND. ICBUND(J,I,K,ICOMP).EQ.0) THEN
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
                 IF(DRYON) THEN
                   VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
                   IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
