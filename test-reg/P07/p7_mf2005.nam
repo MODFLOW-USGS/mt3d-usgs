@@ -4,17 +4,17 @@
 #
 # Output files
 #
-LIST         7       P7.LST
+LIST         7       p7.lst
 
 # Global input files
-DIS         10       P7.DIS
+DIS         10       p7.dis
 
 #Link-MT3DMS input file
-LMT6        66       P7.LMT
+LMT6        66       p7.lmt
 
 # Flow process input files
-BAS6         1       P7.BA6
-BCF6        11       P7.BC6
-WEL         12       P7.WEL
-SIP         19       P7.SIP
-OC          22       P7.OC
+BAS6         1       p7.ba6
+BCF6        11       p7.bc6
+WEL         12       p7.wel
+SIP         19       p7.sip
+OC          22       p7.oc
