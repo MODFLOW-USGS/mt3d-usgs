@@ -40,14 +40,14 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
     nam = os.path.basename(mfnamefile)
     exe_name = config.target_dict['mfnwt']
     success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
-                                    silent=True)
+                                    silent=False, report=True)
 
     if success:
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
         exe_name = os.path.abspath(config.target)
         success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
-                                        silent=True,
+                                        silent=False, report=True,
                                         normal_msg='program completed')
 
     success_cmp = True
@@ -61,14 +61,14 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
         exe_name = flowexe #config.target_dict['mfnwt']
         success_reg, buff = flopy.run_model(exe_name, nam,
                                             model_ws=testpth_reg,
-                                            silent=True)
+                                            silent=False, report=True)
         if success_reg:
             print('running regression mt3dms model...{}'.format(testpth_reg))
             nam = os.path.basename(mtnamefile)
             exe_name = config.target_dict['mt3dms'] # os.path.abspath(config.target_release)
             success_reg, buff = flopy.run_model(exe_name, nam,
                                                 model_ws=testpth_reg,
-                                                silent=True,
+                                                silent=False, report=True,
                                                 normal_msg='program completed')
             if success_reg:
                 nam = os.path.basename(mtnamefile)
