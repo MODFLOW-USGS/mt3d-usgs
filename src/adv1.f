@@ -170,9 +170,9 @@ C-----DRY1 AND DRY2 OPTIONS ONLY AVAILABLE WITH FINITE-DIFFERENCE OPTION (MIXELM
       IF(DOMINSAT.OR.DRYON) THEN                                   
         IF(MIXELM.GT.0) THEN                                       
           WRITE(IOUT,'(2A)')                                       
-     &    '*** DRY1 AND DRY2 OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'
+     &    '*** DRYCELL OPTION AVAILABLE ONLY WHEN (MIXELM<=0)'
           WRITE(*,'(2A)')                                          
-     &    '*** DRY1 AND DRY2 OPTIONS AVAILABLE ONLY WHEN (MIXELM<=0)'
+     &    '*** DRYCELL OPTION AVAILABLE ONLY WHEN (MIXELM<=0)'
           STOP                                                     
         ENDIF                                                      
       ENDIF                                                        
@@ -418,6 +418,11 @@ C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
               ENDDO
             ENDDO  
           ENDDO    
+C
+          IF(iUnitTRNOP(4).GT.0) THEN
+              CALL RCT1CF2(ICOMP,DTRANS)
+          ENDIF
+C
           CALL SADV1U(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),DELR,DELC,DH,
      &                PRSYTMP,CNEW(:,:,:,ICOMP),COLD(:,:,:,ICOMP),
      &                CADV(:,:,:,ICOMP),BUFF,QX,QY,QZ,RETA(:,:,:,ICOMP),
