@@ -5,7 +5,9 @@ import pymake
 from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
-test_dirs = ['P07', 'zeroth', 'hecht_1lay', 'hecht_13lay']  #'hsstest'
+
+test_dirs = ['P07', 'zeroth'] #  'hecht_1lay', 'hecht_13lay', 'hsstest']
+
 
 def run_mt3d(mfnamefile, mtnamefile, regression=True):
     """
@@ -17,14 +19,14 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
     flowexe = config.target_dict['mfnwt']
     if '_mf2k' in mfnamefile:
         crep = '_mf2k'
-        flowexe = config.target_dict['mf2k']
+        flowexe = config.target_dict['mf2000']
     elif '_mf2005' in mfnamefile:
         crep = '_mf2005'
         flowexe = config.target_dict['mf2005']
     else:
         crep = '_mf'
         flowexe = config.target_dict['mfnwt']
-    testname = pymake.get_sim_name(mfnamefile.replace(crep, ''), 
+    testname = pymake.get_sim_name(mfnamefile.replace(crep, ''),
                                    rootpth=os.path.dirname(mfnamefile))[0]
 
     # Setup modflow
@@ -34,23 +36,23 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
     pymake.setup(mtnamefile, testpth, remove_existing=False)
 
     # run test models
-    print('running modflow-nwt model...{}'.format(testname))
+    print('running modflow model...{}'.format(testname))
     nam = os.path.basename(mfnamefile)
     exe_name = config.target_dict['mfnwt']
     success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
-                                    silent=True)
+                                    silent=False, report=True)
 
     if success:
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
         exe_name = os.path.abspath(config.target)
         success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
-                                        silent=True,
+                                        silent=False, report=True,
                                         normal_msg='program completed')
 
     success_cmp = True
     if regression:
-        testname_reg = os.path.basename(config.target_release)
+        testname_reg = 'mt3dms' #os.path.basename(config.target_release)
         testpth_reg = os.path.join(testpth, testname_reg)
         pymake.setup(mfnamefile, testpth_reg)
         pymake.setup(mtnamefile, testpth_reg, remove_existing=False)
@@ -59,14 +61,14 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
         exe_name = flowexe #config.target_dict['mfnwt']
         success_reg, buff = flopy.run_model(exe_name, nam,
                                             model_ws=testpth_reg,
-                                            silent=True)
+                                            silent=False, report=True)
         if success_reg:
             print('running regression mt3dms model...{}'.format(testpth_reg))
             nam = os.path.basename(mtnamefile)
-            exe_name = os.path.abspath(config.target_release)
+            exe_name = config.target_dict['mt3dms'] # os.path.abspath(config.target_release)
             success_reg, buff = flopy.run_model(exe_name, nam,
                                                 model_ws=testpth_reg,
-                                                silent=True,
+                                                silent=False, report=True,
                                                 normal_msg='program completed')
             if success_reg:
                 nam = os.path.basename(mtnamefile)

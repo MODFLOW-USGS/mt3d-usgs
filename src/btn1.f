@@ -353,6 +353,7 @@ C--COMPONENTS
       READ(IN,'(7I10)',ERR=24,IOSTAT=IERR)
      &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP,IATS 
    24 IF(IERR.NE.0) THEN
+        BACKSPACE(IN)
         READ(IN,'(6I10)',ERR=25,IOSTAT=IERR)
      &                      NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
       ENDIF
