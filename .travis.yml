@@ -141,4 +141,4 @@ script:
     - python -c "import flopy; dir(flopy.mf6)"
     - which nosetests
     - nosetests --version
-    - nosetests -v --with-id --with-timer -w ./autotest t000_test.py
+    - nosetests -v --with-id --with-timer -w ./autotest
