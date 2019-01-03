@@ -1,9 +1,9 @@
-LIST     0      CTS0.m3d
-BTN      0      CTS0.btn
-ADV      0      CTS0.adv
-CTS      0      CTS0.cts
-DSP      0      CTS0.dsp
-SSM      0      CTS0.ssm
-GCG      0      CTS0.gcg
-FTL      0      CTS0.ftl  free print
+LIST     0      cts0.m3d
+BTN      0      cts0.btn
+ADV      0      cts0.adv
+CTS      0      cts0.cts
+DSP      0      cts0.dsp
+SSM      0      cts0.ssm
+GCG      0      cts0.gcg
+FTL      0      cts0.ftl  free print
 

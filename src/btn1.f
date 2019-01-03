@@ -368,6 +368,7 @@ C--COMPONENTS
       READ(IN,'(7I10)',ERR=24,IOSTAT=IERR)
      &                    NLAY,NROW,NCOL,NPER,NCOMP,MCOMP,IATS 
    24 IF(IERR.NE.0) THEN
+        BACKSPACE(IN)
         READ(IN,'(6I10)',ERR=25,IOSTAT=IERR)
      &                      NLAY,NROW,NCOL,NPER,NCOMP,MCOMP
       ENDIF
@@ -1200,7 +1201,11 @@ C--CALCAULTE TOTAL MASS IN AQUIFER AT THE FIRST TRANSPORT STEP
           IF(iUnitTRNOP(7).EQ.0) THEN
             IF(IALTFM.EQ.3) THEN
               CALL RCT1CF3(INDEX,DTRANS)
+            ELSE
+              CALL RCT1CF1(INDEX,DTRANS)
             ENDIF
+          ELSE
+            CALL RCT1CF2(INDEX,DTRANS)
           ENDIF
         ENDIF
       ENDDO
@@ -1454,7 +1459,7 @@ C
                   VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
                   VOL=MIN(VOL,VCELL)
                   DMSTRG=(CNEW(J,I,K,ICOMP)-COLD(J,I,K,ICOMP))
-     &                          *RETA(J,I,K,ICOMP)*PRSITYSAV(J,I,K)*VOL
+     &                          *PRSITY(J,I,K)*VOL !*RETA(J,I,K,ICOMP)
                   IF(DMSTRG.LT.0) THEN
                     RMASIO(119,1,ICOMP)=RMASIO(119,1,ICOMP)-DMSTRG
                     RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)
