@@ -13,7 +13,7 @@ test_dirs = ['Saturated_Transient_Storage',
              'SFT_CrnkNic',
              'SFT_Full_Imp',
              'UZT_Disp_Lamb01',
-             #'UZT_Disp_Lamb01_TVD',
+             'UZT_Disp_Lamb01_TVD',
              'UZT_Disp_Lamb1',
              'UZT_Disp_Lamb10',
              #'Keating',                # passes but takes a while
