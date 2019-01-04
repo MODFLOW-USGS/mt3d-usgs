@@ -4,32 +4,17 @@ import flopy
 import pymake
 from pymake.autotest import get_namefiles
 import config
+import sys
+
+print(os.getcwd())
+sys.path.insert(0, './../test-cmp/UZT_NonEq/')
+
+import insert_stopflow_period
 
 
 # tests that fail or take too long have been commented out in
 # order to get testing working on Travis
-test_dirs = ['Saturated_Transient_Storage',
-             'lkt',
-             'SFT_CrnkNic',
-             'SFT_Full_Imp',
-             'UZT_Disp_Lamb01',
-             'UZT_Disp_Lamb01_TVD',
-             'UZT_Disp_Lamb1',
-             'UZT_Disp_Lamb10',
-             #'Keating',          
-             #'Keating_UZF',
-             'UZT_NonLin',
-             #'UZT_NonEq',       # Moved to t003_test.py because of insert_stopflow_period.py customization 
-             'CTS0',
-             'CTS1',
-             'CTS2',
-             #'CTS3',
-             'CTS4',
-             'Saturated_Transient_Storage',
-             'drycell',
-             'gwt',
-             'Legacy99Storage',
-             'AltWTSorb']
+test_dirs = ['UZT_NonEq']
 
 
 def run_mt3d(spth, comparison=True):
@@ -73,6 +58,12 @@ def run_mt3d(spth, comparison=True):
                                     silent=False, report=True)
 
     if success:
+        # For this particular test, a lengthy period of "stop flow"
+        # needs to be inserted into the linker file for simulating
+        # a period of equilibration.
+        print('running insert_stopflow_period.py...{}'.format(testname))
+        insert_stopflow_period.InsStpFlw()
+        
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
         exe_name = os.path.abspath(config.target)

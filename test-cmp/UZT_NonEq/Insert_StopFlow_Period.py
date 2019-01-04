@@ -1,3 +1,4 @@
+import os
 # A script for inserting the stop flow period into the ftl file of the non-equilibrium test problem.
 # The analytical solution was published by Vanderborght et al. (2005) "A set of analytical benchmarks
 # to test numerical models of flow and transport in soils"  The numerical flow solution will still
@@ -25,77 +26,86 @@ class switch(object):
         else:
             return False
 
-# Read until the beginning of the stop flow period is found
-srch_str = '           4        '
+# Define what follows as a function so it is callable by another python script, in this case t003_test.py 
+# on the MT3D-USGS repo
+def InsStpFlw():
+    # Read until the beginning of the stop flow period is found
+    srch_str = '           4        '
 
-sr = open('NonEq.ftl','r')
-sw = open('NonEq_wStopQ.ftl','w')
-
-# Start transferring lines until the srch_str is found
-for line in sr:
-    if len(line) > 16:
-        if srch_str not in line[0:20]:
-            sw.write(line)
-        elif srch_str in line[0:20]:
-
-            # transfer the current line to the new file
-            sw.write(line)
-
-            # Peel out next line for looking up in switch
-            line1 = sr.next()
-            sw.write(line1)
-
-            # Use switch command to figure out what to do next
-            for case in switch(line1):
-                if case(" 'QXX             '\n"):
-                    for i in xrange(126):
-                        line1 = sr.next()
-                        sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
-
-                    break
-                if case(" 'QZZ             '\n"):
-                    for i in xrange(126):
-                        line1 = sr.next()
-                        sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
-
-                    break
-                if case(" 'STO             '\n"):
-                    for i in xrange(126):
-                        line1 = sr.next()
-                        sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
-
-                    break
-                if case(" 'CNH             '           5\n"):
-                    for i in xrange(5):
-                        line1 = sr.next()
-                    sw.write('         209           1           1  0.0000000E+00\n')
-                    sw.write('         209           1           3  0.0000000E+00\n')
-                    sw.write('         210           1           1  0.0000000E+00\n')
-                    sw.write('         210           1           2  0.0000000E+00\n')
-                    sw.write('         210           1           3  0.0000000E+00\n')
-
-                    break
-                if case(" 'UZ FLUX         '\n"):
-                    for i in xrange(126):
-                        line1 = sr.next()
-                        sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
-
-                    break
-                if case(" 'UZQSTO          '\n"):
-                    for i in xrange(126):
-                        line1 = sr.next()
-                        sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
-
-                    break
-                if case():  # default
-                    line1 = sr.next()
-                    sw.write(line1)
-                    break
-
-    else:
-        sw.write(line)
-        
+    sr = open('./temp/NonEq/NonEq.ftl','r')
+    sw = open('./temp/NonEq/NonEq_wStopQ.ftl','w')
     
+    # Start transferring lines until the srch_str is found
+    for line in sr:
+        if len(line) > 16:
+            if srch_str not in line[0:20]:
+                sw.write(line)
+            elif srch_str in line[0:20]:
+    
+                # transfer the current line to the new file
+                sw.write(line)
+    
+                # Peel out next line for looking up in switch
+                line1 = sr.readline()
+                sw.write(line1)
+    
+                # Use switch command to figure out what to do next
+                for case in switch(line1):
+                    if case(" 'QXX             '\n"):
+                        for i in range(126):
+                            line1 = sr.readline()
+                            sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
+    
+                        break
+                    if case(" 'QZZ             '\n"):
+                        for i in range(126):
+                            line1 = sr.readline()
+                            sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
+    
+                        break
+                    if case(" 'STO             '\n"):
+                        for i in range(126):
+                            line1 = sr.readline()
+                            sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
+    
+                        break
+                    if case(" 'CNH             '           5\n"):
+                        for i in range(5):
+                            line1 = sr.readline()
+                        sw.write('         209           1           1  0.0000000E+00\n')
+                        sw.write('         209           1           3  0.0000000E+00\n')
+                        sw.write('         210           1           1  0.0000000E+00\n')
+                        sw.write('         210           1           2  0.0000000E+00\n')
+                        sw.write('         210           1           3  0.0000000E+00\n')
+    
+                        break
+                    if case(" 'UZ FLUX         '\n"):
+                        for i in range(126):
+                            line1 = sr.readline()
+                            sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
+    
+                        break
+                    if case(" 'UZQSTO          '\n"):
+                        for i in range(126):
+                            line1 = sr.readline()
+                            sw.write('  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00  0.0000000E+00\n')
+    
+                        break
+                    if case():  # default
+                        line1 = sr.readline()
+                        sw.write(line1)
+                        break
+    
+        else:
+            sw.write(line)
 
-sr.close()
-sw.close()
+    
+    sr.close()
+    sw.close()
+
+
+if __name__ == '__main__':
+    # test1.py executed as script
+    # do something
+    InsStpFlw()
+
