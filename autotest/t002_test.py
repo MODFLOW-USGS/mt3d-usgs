@@ -35,13 +35,14 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
     # Setup mt3d
     pymake.setup(mtnamefile, testpth, remove_existing=False)
 
-    # run test models
+    # run modflow to generate flow field for mt3d-usgs
     print('running modflow model...{}'.format(testname))
     nam = os.path.basename(mfnamefile)
-    exe_name = config.target_dict['mfnwt']
+    exe_name = flowexe
     success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
                                     silent=False, report=True)
 
+    # if modflow ran successfully, then run mt3d-usgs
     if success:
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
@@ -50,18 +51,23 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
                                         silent=False, report=True,
                                         normal_msg='program completed')
 
+    # run
     success_cmp = True
     if regression:
-        testname_reg = 'mt3dms' #os.path.basename(config.target_release)
+
+        # run modflow to generate flow field for mt3dms
+        testname_reg = 'mt3dms'
         testpth_reg = os.path.join(testpth, testname_reg)
         pymake.setup(mfnamefile, testpth_reg)
         pymake.setup(mtnamefile, testpth_reg, remove_existing=False)
         print('running regression {} model...{}'.format(os.path.basename(flowexe), testpth_reg))
         nam = os.path.basename(mfnamefile)
-        exe_name = flowexe #config.target_dict['mfnwt']
+        exe_name = flowexe
         success_reg, buff = flopy.run_model(exe_name, nam,
                                             model_ws=testpth_reg,
                                             silent=False, report=True)
+
+        # if modflow ran, then run mt3dms
         if success_reg:
             print('running regression mt3dms model...{}'.format(testpth_reg))
             nam = os.path.basename(mtnamefile)
@@ -70,6 +76,8 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
                                                 model_ws=testpth_reg,
                                                 silent=False, report=True,
                                                 normal_msg='program completed')
+
+            # if mt3dms ran, then time to do a comparison
             if success_reg:
                 nam = os.path.basename(mtnamefile)
                 namefile1 = os.path.join(testpth, nam)
@@ -84,6 +92,7 @@ def run_mt3d(mfnamefile, mtnamefile, regression=True):
                     success_reg = True
                 else:
                     success_reg = False
+
     # Clean things up
     if success and success_reg and not config.retain:
         pymake.teardown(testpth)

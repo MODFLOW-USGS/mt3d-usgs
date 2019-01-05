@@ -16,10 +16,11 @@ test_dirs = ['Saturated_Transient_Storage',
              'UZT_Disp_Lamb01_TVD',
              'UZT_Disp_Lamb1',
              'UZT_Disp_Lamb10',
-             #'Keating',          
+             #'Keating',
              #'Keating_UZF',
              'UZT_NonLin',
-             #'UZT_NonEq',       # Moved to t003_test.py because of insert_stopflow_period.py customization 
+             #'UZT_NonEq',   # Moved to t003_test.py because of
+                             # insert_stopflow_period.py customization
              'CTS0',
              'CTS1',
              'CTS2',
@@ -65,13 +66,14 @@ def run_mt3d(spth, comparison=True):
     # Setup mt3d
     pymake.setup(mtnamefile, testpth, remove_existing=False)
 
-    # run test models
+    # run modflow to generate flow field for mt3d-usgs
     print('running modflow-nwt model...{}'.format(testname))
     nam = os.path.basename(mfnamefile)
     exe_name = config.target_dict['mfnwt']
     success, buff = flopy.run_model(exe_name, nam, model_ws=testpth,
                                     silent=False, report=True)
 
+    # if modflow ran successfully, then run mt3d-usgs
     if success:
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
@@ -91,6 +93,11 @@ def run_mt3d(spth, comparison=True):
             if action.lower() == '.cmp':
                 files_cmp = []
                 files = os.listdir(testpth_cmp)
+
+                # Go through all files in the .cmp folder and do a separate
+                # comparison for each one.  This will ensure that the
+                # individual ucn files for sorbed and multi-species will be
+                # compared.
                 for file in files:
                     files1 = os.path.join(testpth, file[:-4])
                     files2 = os.path.join(testpth_cmp, file)

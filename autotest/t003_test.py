@@ -82,6 +82,11 @@ def run_mt3d(spth, comparison=True):
             if action.lower() == '.cmp':
                 files_cmp = []
                 files = os.listdir(testpth_cmp)
+
+                # Go through all files in the .cmp folder and do a separate
+                # comparison for each one.  This will ensure that the
+                # individual ucn files for sorbed and multi-species will be
+                # compared.
                 for file in files:
                     files1 = os.path.join(testpth, file[:-4])
                     files2 = os.path.join(testpth_cmp, file)
