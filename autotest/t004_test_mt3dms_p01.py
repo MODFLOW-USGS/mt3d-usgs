@@ -20,8 +20,8 @@ except:
 
 import config
 
-exe_name_mf = os.path.abspath('./temp/bin/mf2005')
-exe_name_mt3dms = os.path.abspath('./temp/bin/mt3dms')
+exe_name_mf = config.target_dict['mf2005']
+exe_name_mt3dms = config.target_dict['mt3dms']
 exe_name_mt3dusgs = os.path.abspath(config.target)
 testdir = './temp'
 testgroup = 'mt3dms_p01'
