@@ -62,7 +62,7 @@ C
       USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
       USE MT3DMS_MODULE, ONLY: MXTRNOP,MXSTP,
      &                         FPRT,INBTN,ICBUND,CADV,COLD,RETA,PRSITY,
-     &                         DZ,DH,QX,QY,QZ,A,RHOB,SP1,SP2,SRCONC,
+     &                         DZ,DH,QX,QY,QZ,A,RHOB,SP1,SP2,SRCONC,RHS,
      &                         RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,IOUT,
      &                         iUnitTRNOP,IMPSOL,ISPD,MIXELM,NPER,NSTP,
      &                         TSLNGH,ISS,NPERFL,MXSTRN,NCOMP,MCOMP,
@@ -72,16 +72,17 @@ C
      &                         INTSO,INLKT,INSFT,
      &                         IWCTS,IALTFM,NOCREWET,        
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
-     &                         IDRY2
+     &                         IDRY2,FLAM1,FLAM2
       USE DSSL
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
-      INTEGER LL,I1,JJ
-      CHARACTER X1*20
-      CHARACTER FLNAME*5000
+      CHARACTER FLNAME*5000,FLNAMERHS*1000
       CHARACTER COMLIN*2000               
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
+      INTEGER LL,I1,M
+      REAL PRNTVALS(240),PRNTVALSRHS(240)
+      CHARACTER X1*20
       REAL DT00                          
       REAL START_TIME,TOTAL_TIME,
      &     END_TIME
@@ -266,7 +267,8 @@ C
 C                                           
           IF(iUnitTRNOP(19).GT.0) THEN      
             CALL FILLIASFJASF()
-            IF(KPER*KSTP.EQ.1) CALL XMD7AR()
+            !IF(KPER*KSTP.EQ.1) CALL XMD7AR()
+            CALL XMD7AR()
           ENDIF                             
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
@@ -357,25 +359,35 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(4).GT.0) 
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
-     &                  COLD,CNEW)                          
+     &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &           CALL ADVQC1FM(ICOMP)
+     &           CALL ADVQC1FM(ICOMP)                       
 C
                 DO LL=1,NLAY
                   COMLIN='(I4.4)'
                   I1=LL
                   WRITE(X1,COMLIN) I1
-                  FLNAME='D:\\EDM_LT\\Trout_Lake\\Trout_Lake_4
-     &\\UZT_Ver\\A_mat_Lay_'//TRIM(X1)//'.TXT'
+                  FLNAME='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
+     &\\A_matrix\\A_mat_Lay_'//TRIM(X1)//'.TXT'
+                  FLNAMERHS='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
+     &\\A_matrix\\RHS_mat_Lay_'//TRIM(X1)//'.TXT'
                   OPEN(271,FILE=FLNAME)
+                  OPEN(272,FILE=FLNAMERHS)
                   DO II=1,NROW
-                    WRITE(271,'(240E20.10)') (A((LL-1)*NCOL*NROW+(II-1)*
-     &                                        NCOL+JJ),JJ=1,NCOL)
+                    DO J=1,NCOL
+                      !N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+                      M=(LL-1)*(NROW*NCOL) + (II-1)*(NCOL) +(J)
+                      PRNTVALS(J)=A(M)
+                      PRNTVALSRHS(J)=RHS(M)
+                    ENDDO
+                    WRITE(271,'(240E20.10)') (PRNTVALS(I),I=1,NCOL)
+                    WRITE(272,'(240E20.10)') (PRNTVALSRHS(I),I=1,NCOL)
                   ENDDO
                   CLOSE(271)
-                ENDDO      
-C
+                  CLOSE(272)
+                ENDDO
+
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
