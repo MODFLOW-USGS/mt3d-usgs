@@ -527,7 +527,7 @@ c--calculate statistics
         GOTO 1000
       ENDIF
 C
-c--print statastics
+c--print statistics
       WRITE(inConcObs,50) nobs_active
       WRITE(inConcObs,60) AVE
       WRITE(inConcObs,62) SDEV
@@ -772,7 +772,7 @@ c
         GOTO 1000
       ENDIF
 c
-c--print statastics
+c--print statistics
 c
       WRITE(inFluxObs,50) nobs_active
       WRITE(inFluxObs,60) AVE

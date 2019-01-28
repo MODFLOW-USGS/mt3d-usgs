@@ -18,7 +18,7 @@ C
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INHSS
- 1030 FORMAT(1X,'HSS5 -- MT3DMS-HSSM INTERFACE PACAKGE,',
+ 1030 FORMAT(1X,'HSS5 -- MT3DMS-HSSM INTERFACE PACKAGE,',
      & ' VERSION 5, FEBRUARY 2010, INPUT READ FROM UNIT ',I5)
 C
 C--READ INPUT LINE AS A TEXT STRING
@@ -449,7 +449,7 @@ C
 c **********************************************************************
 c This subroutine calculates the portion of a finite-difference cell 
 C that is intersected by a polygon defined in array P of dimension 
-C [nPoint]. The finite-difference cell is discritized into a subgrid
+C [nPoint]. The finite-difference cell is discretized into a subgrid
 C of dimension [nSubgrid] x [nSubgrid].
 c **********************************************************************    
 c last modified: 01-10-2006
@@ -498,7 +498,7 @@ C .........................................................
 C This function checks whether a point P1 is inside
 C a polygon defined by a [NP] number of points P.  If yes,
 C the function returns a logical value .TRUE.  Otherwise,
-C it returns .FAUSE.
+C it returns .FALSE.
 C .........................................................
 C last modified: 01-10-2006
 C

@@ -22,7 +22,7 @@ C     DATA ACCESS/'STREAM'/
 C
 C  FORM specifier --
 C
-C    Standard Fortran, which results in vender dependent (non-portable)
+C    Standard Fortran, which results in vendor dependent (non-portable)
 C    files.  Use unless there is a reason to do otherwise.
 C      DATA FORM/'UNFORMATTED'/
 C
