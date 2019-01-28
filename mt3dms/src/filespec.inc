@@ -29,7 +29,7 @@ C     DATA ACCESS/'TRANSPARENT'/
 C
 C  FORM specifier --
 C
-C    Standard Fortran, which results in vender dependent (non-portable)
+C    Standard Fortran, which results in vendor dependent (non-portable)
 C    files.  Use unless there is a reason to do otherwise.
       DATA FORM/'UNFORMATTED'/
 C

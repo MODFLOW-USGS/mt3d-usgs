@@ -119,7 +119,7 @@ C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED
         STOP                                                    
       ENDIF                                                     
 C                                                               
-C-----NEED MULTIPLE SPECIED WITH IREACT=3                       
+C-----NEED MULTIPLE SPECIFIED WITH IREACT=3
       IF(IREACT.EQ.3.AND.NCOMP.LT.2) THEN                       
         WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'
         WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'   
@@ -643,7 +643,7 @@ C
       DOUBLE PRECISION FLIM,FLS
       PARAMETER    (TINY=1.E-30)
 C
-C--EVALUATE RETARDATION FACTOR AND SORBED CONCONCENTRATION
+C--EVALUATE RETARDATION FACTOR AND SORBED CONCENTRATION
 C--DEPENDING ON TYPES OF SORPTION SELECTED
 C
 C--1. LINEAR EQUILIBRIUM...
@@ -1980,7 +1980,7 @@ C
           ! yield from a higher ED (added by MTONKIN in V12)
           IF(m.gt.1.and.m.le.ned) THEN
             DO k=1,m-1
-              dcdtYLD(m)=dcdtYLD(m)-(yieldc(k,m))*dcdt(k) !*RCOLD(K)- COLD ALTERADY IN DCDT TERM
+              dcdtYLD(m)=dcdtYLD(m)-(yieldc(k,m))*dcdt(k) !*RCOLD(K)- COLD ALREADY IN DCDT TERM
             END DO
           END IF
         END IF

@@ -35,7 +35,7 @@ C--ALLOCATE
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INHSS
- 1030 FORMAT(/1X,'HSS1 -- MT3DMS-HSSM INTERFACE PACAKGE,',
+ 1030 FORMAT(/1X,'HSS1 -- MT3DMS-HSSM INTERFACE PACKAGE,',
      &           ' VERSION 1, MAY 2016, INPUT READ FROM UNIT ',I5)
 C
 C--READ INPUT LINE AS A TEXT STRING
@@ -156,7 +156,7 @@ C--ECHO INPUT DATA
    19     FORMAT(/1x,'HSS Source No. ',I4.4,
      &           /1x,'Source Definition File Name: ',a,
      &           /1x,'Source Definition File Read from Unit: ',i4,
-     &           /1x,'Output will be wrtten on Unit: ',i4)
+     &           /1x,'Output will be written on Unit: ',i4)
           IF(IDSSL(N).GT.0) WRITE(IOUT,21) IDSSL(N),IDSSLCOMP(N)
         ELSE
           WRITE(iout,20) n,HSSFileName(1:IFLEN),inHSSFile
@@ -652,7 +652,7 @@ C
 c **********************************************************************
 c This SUBROUTINE calculates the portion of a finite-difference cell 
 C that is intersected by a polygon defined in array P of dimension 
-C [nPoint]. The finite-difference cell is discritized into a subgrid
+C [nPoint]. The finite-difference cell is discretized into a subgrid
 C of dimension [nSubgrid] x [nSubgrid].
 c **********************************************************************    
 c
@@ -709,7 +709,7 @@ C .........................................................
 C This function checks whether a point P1 is inside
 C a polygon defined by a [NP] number of points P.  If yes,
 C the function returns a logical value .TRUE.  Otherwise,
-C it returns .FAUSE.
+C it returns .FALSE.
 C .........................................................
 C
       REAL P,P1,P2,PL1,PL2
