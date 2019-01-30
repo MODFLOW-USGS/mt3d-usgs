@@ -45,7 +45,7 @@ been increased to 18 to provide the most reliable means of storing
 saving the unique MNW identifier needed by MT3DMS.  Also, the WELL2 
 array has been declared as double precision since 4/05/2005.  This 
 change was reflected in this version of the LMT6 package (requiring 
-changes to both lmt6.f and the calling statments in lmt6.inc inserted 
+changes to both lmt6.f and the calling statements in lmt6.inc inserted
 to the mf2k main program).  In addition, LMT6.3 supports the 
 Model-Layer Variable-Direction Horizontal Anisotropy (LVDA) 
 capability of the HUF2 package. 

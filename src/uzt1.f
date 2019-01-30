@@ -151,7 +151,7 @@ C--PRINT A HEADER
       WRITE(IOUT,1)
  1    FORMAT(//1X,'UNSATURATED-ZONE INPUT PARAMETERS'/1X,23('-')/)
 C
-C--READ CONCENTATION OF INFILTRATING FLUX (CUZINF)                  
+C--READ CONCENTRATION OF INFILTRATING FLUX (CUZINF)
 C  READ FLAG INDICATING HOW TO READ APPLD AMT CONC.
       READ(INUZT,'(I10)') INCUZINF                                     
 C                                                                   
@@ -840,7 +840,7 @@ C--RETURN
 C
       SUBROUTINE UZT1AD(HT1,HT2,TIME1,TIME2)
 C ********************************************************************
-C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
+C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIME-STEP
 C ********************************************************************
 C
       USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV,SATNEW,THETAW
@@ -872,7 +872,7 @@ C--RETURN
 C
       SUBROUTINE THETA2AD(HT,TIME)
 C ********************************************************************
-C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIEM-STEP
+C THIS SUBROUTINE UPDATES WATER CONTENT AT EVERY TRANSPORT TIME-STEP
 C ********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: NLAY,NCOL,NROW,PRSITY,THETAW2,ICBUND,

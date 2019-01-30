@@ -205,7 +205,7 @@ C--FOR EACH STRESS PERIOD***********************************************
       NPS=1
       DO KPER=1,NPER
 C
-C--WRITE AN INDENTIFYING MESSAGE
+C--WRITE AN IDENTIFYING MESSAGE
         WRITE(*,50) KPER
         WRITE(IOUT,51) KPER
         WRITE(IOUT,'(1X)')
@@ -230,7 +230,7 @@ C--FOR EACH FLOW TIME STEP----------------------------------------------
           HT1=HT2
           HT2=HT2+DELT    
 C
-C--WRITE AN INDENTIFYING MESSAGE
+C--WRITE AN IDENTIFYING MESSAGE
           WRITE(*,60) KSTP,HT1,HT2
           WRITE(IOUT,61) KSTP,HT1,HT2
           WRITE(IOUT,'(1X)')
