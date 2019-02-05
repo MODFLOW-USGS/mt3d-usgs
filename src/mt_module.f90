@@ -539,7 +539,7 @@ CONTAINS
         INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=9000
         CHARACTER(LEN=4), SAVE, DIMENSION(MXTRNOP) :: NameTRNOP=        &
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
-     &    '    ', 'UZT ', '    ', '    ', '    ',                       &
+     &    '    ', 'UZT2', '    ', '    ', '    ',                       &
      &    'TOB ', '    ', 'HSS ', 'TSO ', 'RTR ',                       &
      &    '    ', '    ', 'LKT ', 'SFT ', 'CTS '/)
         INTEGER,          SAVE,                       POINTER :: NCOL      

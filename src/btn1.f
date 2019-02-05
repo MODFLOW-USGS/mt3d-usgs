@@ -181,8 +181,8 @@ C--CHECK FOR MAJOR OPTIONS.
                 IU=INCTS                        
               ELSEIF(NameTRNOP(i).EQ.'TSO') THEN
                 IU=INTSO                        
-              ELSEIF(NameTRNOP(i).EQ.'UZT') THEN
-                IU=INUZT                        
+              ELSEIF(NameTRNOP(i).EQ.'UZT2') THEN
+                IU=INUZT
               ELSEIF(NameTRNOP(i).EQ.'RCT') THEN
                 IU=INRCT
               ELSEIF(NameTRNOP(i).EQ.'GCG') THEN
@@ -199,17 +199,30 @@ C--CHECK FOR MAJOR OPTIONS.
                 WRITE(*,20) LINE(ITYP1:ITYP2)
    20           FORMAT(1X,'UNDEFINED UNIT # FOR FILE TYPE: ',A)  
                 CALL USTOP(' ')  
-              ENDIF  
+              ENDIF
             ENDIF  
             iUnitTRNOP(I)=IU
             FILSTAT='OLD    '
             FILACT=ACTION(1)
             GO TO 30
+          ELSEIF(LINE(ITYP1:ITYP2).EQ.'UZT'.AND. 
+     &           .NOT.LINE(ITYP1:ITYP2+1).EQ.'UZT2') THEN
+            WRITE(*,22) 
+            WRITE(IOUT,23)
+            CALL USTOP(' ')
           ENDIF
         ENDDO     
         WRITE(*,21) LINE(ITYP1:ITYP2)
    21   FORMAT(1X,'ILLEGAL FILE TYPE IN NAME FILE: ',A)
         CALL USTOP(' ')
+   22   FORMAT(1X/,'UZT DEPRECATED. USE UZT2. SEE LISTING FILE FOR ', 
+     &            'MORE INFORMATION.')
+   23   FORMAT(1X/,'AS OF RELEASE 1.0.1, FTYPE "UZT" IN THE MT3D-USGS ',
+     &             'NAME FILE WAS DEPRECATED AND REPLACED WITH "UZT2".',
+     &         1X/,'TO GENERATE A UZT2-COMPATIBLE INPUT FILE, SIMPLY ',
+     &             'REMOVE WC (RECORD 4) AND SDH (RECORD 5) ARRAYS ',
+     &         1X/,'FROM THE UZT INPUT FILE AND REPLACE UZT WITH UZT2 ',
+     &             'IN THE NAME FILE.')
    30   CONTINUE
       ENDIF      
 C
