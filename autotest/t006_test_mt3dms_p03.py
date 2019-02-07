@@ -149,5 +149,7 @@ def test_mt3dmsp03b():  # Tests Langmuir
 if __name__ == "__main__":
     # print message
     print('standalone run of {}'.format(os.path.basename(__file__)))
+
+    # Two-dimensional tranpsport in a diagonal flow field
     test_mt3dmsp03a()
     test_mt3dmsp03b()

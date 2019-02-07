@@ -174,6 +174,8 @@ def test_mt3dmsp04c():
 if __name__ == "__main__":
     # print message
     print('standalone run of {}'.format(os.path.basename(__file__)))
+
+    # Two-dimensional transport in a radial flow field
     test_mt3dmsp04a()
     test_mt3dmsp04b()
     test_mt3dmsp04c()

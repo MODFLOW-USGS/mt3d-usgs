@@ -185,8 +185,8 @@ def test_mt3dmsp02c():  # Tests Nonequilibrium
 if __name__ == "__main__":
     # print message
     print('standalone run of {}'.format(os.path.basename(__file__)))
+
+    # Two-dimensional transport in a uniform flow field
     test_mt3dmsp02a()
     test_mt3dmsp02b()
     test_mt3dmsp02c()
-    #test_mt3dmsp02d()
-    #test_mt3dmsp02e()
