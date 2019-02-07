@@ -12,6 +12,7 @@ except:
 
 try:
     import flopy
+    from flopy.utils.util_array import read1d
 except:
     msg = 'Error. FloPy package is not available.\n'
     msg += 'Try installing using the following command:\n'
@@ -24,70 +25,74 @@ exe_name_mf = config.target_dict['mf2005']
 exe_name_mt3dms = config.target_dict['mt3dms']
 exe_name_mt3dusgs = os.path.abspath(config.target)
 testdir = './temp'
-testgroup = 'mt3dms_p07'
+testgroup = 'mt3dms_p09'
+datadir = os.path.join('mt3dms')
 
-def p07mt3d(exe_name_mf, exe_name_mt, model_ws, mixelm):
+def p09mt3d(exe_name_mf, exe_name_mt, model_ws, mixelm, nadvfd):
             	
-    nlay = 8
-    nrow = 15
-    ncol = 21
-    delr = 10
-    delc = 10
+    nlay = 1
+    nrow = 18
+    ncol = 14
+    delr = 100
+    delc = 100
     delv = 10
-    Lx = (ncol - 1) * delr
-    v = 1. / 3.
-    prsity = 0.2
-    q = v * prsity
-    al = 10.
-    trpt = 0.3
-    trpv = 0.3
-    q0 = 0.5
-    c0 = 100.
+    prsity = 0.3
+    al = 20.
+    trpt = 0.2
 
-    perlen_mf = 100.
-    perlen_mt = 100.
-    hk = 0.5
+    perlen_mf = 1.
+    perlen_mt = [365. * 86400, 365. * 86400]
     laytyp = 0
+    k1 = 1.474e-4
+    k2 = 1.474e-7
+    hk = k1 * np.ones((nlay, nrow, ncol), dtype=np.float)
+    hk[:, 5:8, 1:8] = k2
 
-    modelname_mf = 'p07_mf'
-    mf = flopy.modflow.Modflow(modelname=modelname_mf, model_ws=model_ws, 
-                               exe_name=exe_name_mf)
+    modelname_mf = 'p09_mf'
+    mf = flopy.modflow.Modflow(modelname=modelname_mf, model_ws=model_ws, exe_name=exe_name_mf)
     dis = flopy.modflow.ModflowDis(mf, nlay=nlay, nrow=nrow, ncol=ncol,
-                                   delr=delr, delc=delc, top=0., 
-                                   botm=[-delv * k for k in range(1, nlay + 1)],
+                                   delr=delr, delc=delc, top=0., botm=[0 - delv],
                                    perlen=perlen_mf)
     ibound = np.ones((nlay, nrow, ncol), dtype=np.int)
-    ibound[:, :, 0] = -1
-    ibound[:, :, -1] = -1
+    ibound[0, 0, :] = -1
+    ibound[0, -1, :] = -1
     strt = np.zeros((nlay, nrow, ncol), dtype=np.float)
-    h1 = q * Lx
-    strt[:, :, 0] = h1
+    strt[0, 0, :] = 250.
+    xc = dis.sr.xcenter
+    for j in range(ncol):
+        strt[0, -1, j] = 20. + (xc[j] - xc[0]) * 2.5 / 100
     bas = flopy.modflow.ModflowBas(mf, ibound=ibound, strt=strt)
     lpf = flopy.modflow.ModflowLpf(mf, hk=hk, laytyp=laytyp)
-    wel = flopy.modflow.ModflowWel(mf, stress_period_data=[[6, 7, 2, q0]])
+    welspd = [[0, 3, 6, 0.001], [0, 10, 6, -0.0189]]
+    wel = flopy.modflow.ModflowWel(mf, stress_period_data=welspd)
     pcg = flopy.modflow.ModflowPcg(mf)
     lmt = flopy.modflow.ModflowLmt(mf)
     mf.write_input()
     mf.run_model(silent=True)
 
-    modelname_mt = 'p07_mt'
+    modelname_mt = 'p09_mt'
     mt = flopy.mt3d.Mt3dms(modelname=modelname_mt, model_ws=model_ws, 
                            exe_name=exe_name_mt, modflowmodel=mf)
-    btn = flopy.mt3d.Mt3dBtn(mt, icbund=1, prsity=prsity, sconc=0)
+    btn = flopy.mt3d.Mt3dBtn(mt, icbund=1, prsity=prsity, sconc=0, 
+                             nper=2, perlen=perlen_mt, obs=[[0, 10, 6]])
+    percel = 1.
+    itrack = 2
     dceps = 1.e-5
-    nplane = 1
+    nplane = 0
     npl = 0
     nph = 16
-    npmin = 2
+    npmin = 0
     npmax = 32
     dchmoc=1.e-3
     nlsink = nplane
     npsink = nph
     adv = flopy.mt3d.Mt3dAdv(mt, mixelm=mixelm, dceps=dceps, nplane=nplane, 
                              npl=npl, nph=nph, npmin=npmin, npmax=npmax,
-                             nlsink=nlsink, npsink=npsink, percel=0.5)
-    dsp = flopy.mt3d.Mt3dDsp(mt, al=al, trpt=trpt, trpv=trpv)
-    spd = {0:[6, 7, 2, c0, 2]}
+                             nlsink=nlsink, npsink=npsink, percel=percel,
+                             itrack=itrack, nadvfd=nadvfd)
+    dsp = flopy.mt3d.Mt3dDsp(mt, al=al, trpt=trpt)
+    spd = {0:[[0, 3, 6, 57.87, 2], [0, 10, 6, 0., 2]],
+           1:[[0, 3, 6, 0., 2], [0, 10, 6, 0., 2]]}
     ssm = flopy.mt3d.Mt3dSsm(mt, stress_period_data=spd)
     gcg = flopy.mt3d.Mt3dGcg(mt)
     mt.write_input()
@@ -113,20 +118,21 @@ def p07mt3d(exe_name_mf, exe_name_mt, model_ws, mixelm):
     return mf, mt, conc, cvt, mvt
 
 
-def test_mt3dmsp07a():  
+def test_mt3dmsp09a():  
     
-    mixelm  = -1
+    mixelm = 3
+    nadvfd = 1 
 
     mt3dusgs_ws = os.path.join(testdir, testgroup + 'a')
-    mf, mt, conc_mt3dusgs, cvt, mvt = p07mt3d(exe_name_mf, exe_name_mt3dusgs,
-                                              mt3dusgs_ws, mixelm)
+    mf, mt, conc_mt3dusgs, cvt, mvt = p09mt3d(exe_name_mf, exe_name_mt3dusgs,
+                                              mt3dusgs_ws, mixelm, nadvfd)
 
     mt3dms_ws = os.path.join(mt3dusgs_ws, 'mt3dms')
-    mf, mt, conc_mt3dms, cvt, mvt = p07mt3d(exe_name_mf, exe_name_mt3dms,
-                                            mt3dms_ws, mixelm)
+    mf, mt, conc_mt3dms, cvt, mvt = p09mt3d(exe_name_mf, exe_name_mt3dms,
+                                            mt3dms_ws, mixelm, nadvfd)
 
     msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.0e-4), msg
+    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.5e-3), msg
     return
 
 
@@ -134,5 +140,5 @@ if __name__ == "__main__":
     # print message
     print('standalone run of {}'.format(os.path.basename(__file__)))
     
-    # Three-dimensional transport in a uniform flow field
-    test_mt3dmsp07a()
+    # A two-dimensional application example
+    test_mt3dmsp09a()

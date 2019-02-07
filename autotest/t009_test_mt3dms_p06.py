@@ -24,7 +24,7 @@ exe_name_mf = config.target_dict['mf2005']
 exe_name_mt3dms = config.target_dict['mt3dms']
 exe_name_mt3dusgs = os.path.abspath(config.target)
 testdir = './temp'
-testgroup = 'mt3dms_p05'
+testgroup = 'mt3dms_p06'
 
 def p06mt3d(exe_name_mf, exe_name_mt, model_ws, mixelm, dt0):
             	
