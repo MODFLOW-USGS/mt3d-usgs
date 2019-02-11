@@ -9,7 +9,7 @@ ADV                 2         uzt_Lamb01.adv
 DSP                 3         uzt_Lamb01.dsp
 SSM                 4         uzt_Lamb01.ssm
 GCG                 5         uzt_Lamb01.gcg
-UZT                 7         uzt_Lamb01.uzt
+UZT2                7         uzt_Lamb01.uzt
 # Flow-Transport Link input file
 FTL                10         uzt_Lamb01.ftl 'FREE'
 # UZF File containing RCH and ET options

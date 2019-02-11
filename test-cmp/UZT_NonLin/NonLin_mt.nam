@@ -10,7 +10,7 @@ DSP                  3        NonLin.dsp
 SSM                  4        NonLin.ssm
 GCG                  5        NonLin.gcg
 RCT                  8        NonLin.rct
-UZT                  7        NonLin.uzt
+UZT2                 7        NonLin.uzt
 # Flow-Transport Link input file
 FTL                 10        NonLin.ftl 'FREE'
 # UZF File containing RCH and ET options

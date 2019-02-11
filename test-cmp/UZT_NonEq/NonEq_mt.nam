@@ -10,7 +10,7 @@ DSP                  3        NonEq.dsp
 SSM                  4        NonEq.ssm
 GCG                  5        NonEq.gcg
 RCT                  8        NonEq.rct
-UZT                  7        NonEq.uzt
+UZT2                 7        NonEq.uzt
 # Flow-Transport Link input file
 FTL                 10        NonEq_wStopQ.ftl   FREE
 # UZF File containing RCH and ET options

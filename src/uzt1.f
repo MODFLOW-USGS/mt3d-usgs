@@ -62,12 +62,12 @@ C
       ALLOCATE(WC(NCOL,NROW,NLAY))     
       ALLOCATE(THETAW(NCOL,NROW,NLAY))
       ALLOCATE(SDH(NCOL,NROW,NLAY))    
-      SATOLD=1.0
-      SATNEW=1.0
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
             THETAW(J,I,K)=PRSITYSAV(J,I,K)
+            SATOLD(J,I,K)=1.0
+            SATNEW(J,I,K)=1.0
           ENDDO
         ENDDO
       ENDDO
@@ -104,32 +104,32 @@ C--cells are effectively acting as though IUZFOPT=0
       ENDIF
 C
 C--CALL RARRAY TO READ IN STARTING WATER CONTENT (RECORD #4)
-      ANAME='           WATER CONTENT'
-      DO K=1,NLAY
-       CALL RARRAY(WC(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,INUZT,IOUT)
-      ENDDO
+C      ANAME='           WATER CONTENT'
+C      DO K=1,NLAY
+C       CALL RARRAY(WC(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,INUZT,IOUT)
+C      ENDDO
 C--CALL RARRAY TO READ IN STARTING SATURATED THICKNESS (RECORD #5)
-      ANAME='STARTING SATURATED THICKNESS'
-      DO K=1,NLAY
-       CALL RARRAY(SDH(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,INUZT,IOUT)
-      ENDDO
+C      ANAME='STARTING SATURATED THICKNESS'
+C      DO K=1,NLAY
+C       CALL RARRAY(SDH(1:NCOL,1:NROW,K),ANAME,NROW,NCOL,K,INUZT,IOUT)
+C      ENDDO
 C
 C--CALCULATE SATURATION AND STORE IN SATOLD
-      IF(iUnitTRNOP(7).GT.0) THEN
-        DO K=1,NLAY
-          DO I=1,NROW
-            DO J=1,NCOL
-              IF(ICBUND(J,I,K,1).GT.0) THEN
+C      IF(iUnitTRNOP(7).GT.0) THEN
+C        DO K=1,NLAY
+C          DO I=1,NROW
+C            DO J=1,NCOL
+C              IF(ICBUND(J,I,K,1).GT.0) THEN
 C                DH(J,I,K)=SDH(J,I,K)
 C                SATOLD(J,I,K)=((DZ(J,I,K)-DH(J,I,K))/DZ(J,I,K))*
 C     &                          WC(J,I,K)/PRSITY(J,I,K)+
 C     &                          DH(J,I,K)/DZ(J,I,K)*1
 C                THETAW(J,I,K)=SATOLD(J,I,K)*PRSITY(J,I,K)  
-              ENDIF
-            ENDDO
-          ENDDO
-        ENDDO
-      ENDIF
+C              ENDIF
+C            ENDDO
+C          ENDDO
+C        ENDDO
+C      ENDIF
 C
 C--RETURN
       RETURN
