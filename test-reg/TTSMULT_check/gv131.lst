@@ -1,34 +1,120 @@
-                                  MODFLOW-2000
+                                  MODFLOW-2005     
       U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUND-WATER FLOW MODEL
-                           VERSION 1.19.01 03/25/2010
+                            VERSION 1.12.00 2/3/2017
+
+ LIST FILE: gv131.lst
+                         UNIT    7
+
+ OPENING gv131.bas
+ FILE TYPE:BAS6   UNIT    1   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.dis
+ FILE TYPE:DIS   UNIT   29   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.lpf
+ FILE TYPE:LPF   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.zone
+ FILE TYPE:ZONE   UNIT   40   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.rch
+ FILE TYPE:RCH   UNIT   18   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.oc
+ FILE TYPE:OC   UNIT   22   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.pcg
+ FILE TYPE:PCG   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.lmt
+ FILE TYPE:LMT6   UNIT   33   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING gv131.cbb
+ FILE TYPE:DATA(BINARY)   UNIT   50   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING gv131.hds
+ FILE TYPE:DATA(BINARY)   UNIT   30   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING gv131.ddn
+ FILE TYPE:DATA(BINARY)   UNIT   31   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT    1
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   29
+ # MODFLOW2000 Discretization File
+   16 LAYERS         1 ROWS       150 COLUMNS
+    1 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0
+
+                     DELR =   10.0000    
+
+                     DELC =   1.00000    
+
+ TOP ELEVATION OF LAYER 1 =   300.000    
+
+   MODEL LAYER BOTTOM EL. =   275.000     FOR LAYER   1
+
+   MODEL LAYER BOTTOM EL. =   250.000     FOR LAYER   2
+
+   MODEL LAYER BOTTOM EL. =   225.000     FOR LAYER   3
+
+   MODEL LAYER BOTTOM EL. =   200.000     FOR LAYER   4
+
+   MODEL LAYER BOTTOM EL. =   175.000     FOR LAYER   5
+
+   MODEL LAYER BOTTOM EL. =   150.000     FOR LAYER   6
+
+   MODEL LAYER BOTTOM EL. =   125.000     FOR LAYER   7
+
+   MODEL LAYER BOTTOM EL. =   100.000     FOR LAYER   8
+
+   MODEL LAYER BOTTOM EL. =   75.0000     FOR LAYER   9
+
+   MODEL LAYER BOTTOM EL. =   50.0000     FOR LAYER  10
+
+   MODEL LAYER BOTTOM EL. =   25.0000     FOR LAYER  11
+
+   MODEL LAYER BOTTOM EL. =   0.00000     FOR LAYER  12
+
+   MODEL LAYER BOTTOM EL. =  -25.0000     FOR LAYER  13
+
+   MODEL LAYER BOTTOM EL. =  -50.0000     FOR LAYER  14
+
+   MODEL LAYER BOTTOM EL. =  -75.0000     FOR LAYER  15
+
+   MODEL LAYER BOTTOM EL. =  -100.000     FOR LAYER  16
 
 
- This model run produced both GLOBAL and LIST files.  This is the LIST file.
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         7305.000          1                    1.200         SS
+
+ STEADY-STATE SIMULATION
+
+
 
  
  # MODFLOW2000 Basic Package                                                     
  #MODFLOW Data Set Created by Groundwater Vistas                                 
  #
-   16 LAYERS         1 ROWS       150 COLUMNS
-    1 STRESS PERIOD(S) IN SIMULATION
-
- BAS6 -- BASIC PACKAGE, VERSION 6, 1/11/2000 INPUT READ FROM UNIT    1
-         80 ELEMENTS IN IR ARRAY ARE USED BY BAS
-
- RCH6 -- RECHARGE PACKAGE, VERSION 6, 1/11/2000 INPUT READ FROM UNIT   18
- # MODFLOW2000 Recharge Package
- No named parameters
- OPTION 3 -- RECHARGE TO HIGHEST ACTIVE NODE IN EACH VERTICAL COLUMN
- CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
-        150 ELEMENTS IN RX ARRAY ARE USED BY RCH
-        150 ELEMENTS IN IR ARRAY ARE USED BY RCH
-
-        150  ELEMENTS OF RX ARRAY USED OUT OF        150
-          0  ELEMENTS OF RZ ARRAY USED OUT OF          1
-        230  ELEMENTS OF IR ARRAY USED OUT OF        230
-1
- # MODFLOW2000 Basic Package                                                     
- #MODFLOW Data Set Created by Groundwater Vistas                                 
 
 
 
@@ -110,7 +196,7 @@
                      BOUNDARY ARRAY FOR LAYER  16
  READING ON UNIT    1 WITH FORMAT: (25I3)              
 
- AQUIFER HEAD WILL BE SET TO  999.00     AT ALL NO-FLOW NODES (IBOUND=0).
+ AQUIFER HEAD WILL BE SET TO   999.00     AT ALL NO-FLOW NODES (IBOUND=0).
 
 
 
@@ -195,6 +281,332 @@
  OUTPUT CONTROL IS SPECIFIED ONLY AT TIME STEPS FOR WHICH OUTPUT IS DESIRED
  HEAD PRINT FORMAT CODE IS   0    DRAWDOWN PRINT FORMAT CODE IS   0
  HEADS WILL BE SAVED ON UNIT   30    DRAWDOWNS WILL BE SAVED ON UNIT   31
+
+ ZONE OPTION, INPUT READ FROM UNIT   40
+ # MODFLOW2000 Zone File
+ # Groundwater Vistas writes all zones regardless of whether
+ # they are being used.  These zones include:
+ #     kxzone##, kzzone##, szone##, rzone, and etzone, where
+ #     ## is the layer number
+    33 ZONE ARRAYS
+
+   ZONE ARRAY: kxzone1    =              1
+
+   ZONE ARRAY: kxzone2    =              1
+
+   ZONE ARRAY: kxzone3    =              1
+
+   ZONE ARRAY: kxzone4    =              1
+
+   ZONE ARRAY: kxzone5    =              1
+
+   ZONE ARRAY: kxzone6    =              1
+
+   ZONE ARRAY: kxzone7    =              1
+
+   ZONE ARRAY: kxzone8    =              1
+
+   ZONE ARRAY: kxzone9    =              1
+
+   ZONE ARRAY: kxzone10   =              1
+
+   ZONE ARRAY: kxzone11   =              1
+
+   ZONE ARRAY: kxzone12   =              1
+
+   ZONE ARRAY: kxzone13   =              1
+
+   ZONE ARRAY: kxzone14   =              1
+
+   ZONE ARRAY: kxzone15   =              1
+
+   ZONE ARRAY: kxzone16   =              1
+
+   ZONE ARRAY: szone1     =              1
+
+   ZONE ARRAY: szone2     =              1
+
+   ZONE ARRAY: szone3     =              1
+
+   ZONE ARRAY: szone4     =              1
+
+   ZONE ARRAY: szone5     =              1
+
+   ZONE ARRAY: szone6     =              1
+
+   ZONE ARRAY: szone7     =              1
+
+   ZONE ARRAY: szone8     =              1
+
+   ZONE ARRAY: szone9     =              1
+
+   ZONE ARRAY: szone10    =              1
+
+   ZONE ARRAY: szone11    =              1
+
+   ZONE ARRAY: szone12    =              1
+
+   ZONE ARRAY: szone13    =              1
+
+   ZONE ARRAY: szone14    =              1
+
+   ZONE ARRAY: szone15    =              1
+
+   ZONE ARRAY: szone16    =              1
+
+   ZONE ARRAY: rzone1     =              1
+
+ LPF -- LAYER-PROPERTY FLOW PACKAGE, VERSION 7, 5/2/2005
+         INPUT READ FROM UNIT   11
+ # MODFLOW2000 Layer Property Flow (LPF) Package
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+ HEAD AT CELLS THAT CONVERT TO DRY= -1.00000E+30
+ No named parameters
+
+   LAYER FLAGS:
+ LAYER       LAYTYP        LAYAVG         CHANI        LAYVKA        LAYWET
+ ---------------------------------------------------------------------------
+    1             1             0     1.000E+00             0             0
+    2             3             0     1.000E+00             0             0
+    3             3             0     1.000E+00             0             0
+    4             3             0     1.000E+00             0             0
+    5             3             0     1.000E+00             0             0
+    6             3             0     1.000E+00             0             0
+    7             3             0     1.000E+00             0             0
+    8             3             0     1.000E+00             0             0
+    9             3             0     1.000E+00             0             0
+   10             3             0     1.000E+00             0             0
+   11             3             0     1.000E+00             0             0
+   12             3             0     1.000E+00             0             0
+   13             3             0     1.000E+00             0             0
+   14             3             0     1.000E+00             0             0
+   15             3             0     1.000E+00             0             0
+   16             3             0     1.000E+00             0             0
+
+   INTERPRETATION OF LAYER FLAGS:
+                        INTERBLOCK     HORIZONTAL    DATA IN
+         LAYER TYPE   TRANSMISSIVITY   ANISOTROPY   ARRAY VKA   WETTABILITY
+ LAYER      (LAYTYP)      (LAYAVG)       (CHANI)      (LAYVKA)      (LAYWET)
+ ---------------------------------------------------------------------------
+    1   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    2   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    3   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    4   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    5   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    6   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    7   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    8   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+    9   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   10   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   11   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   12   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   13   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   14   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   15   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+   16   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+
+ WETTING CAPABILITY IS NOT ACTIVE IN ANY LAYER
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   1
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   1
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   2
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   2
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   3
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   3
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   4
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   4
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   5
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   5
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   6
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   6
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   7
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   7
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   8
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   8
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   9
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   9
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  10
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  10
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  11
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  11
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  12
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  12
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  13
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  13
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  14
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  14
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  15
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  15
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER  16
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+
+
+                VERTICAL HYD. COND. FOR LAYER  16
+ READING ON UNIT   11 WITH FORMAT: (10e12.4)           
+
+ RCH -- RECHARGE PACKAGE, VERSION 7, 5/2/2005 INPUT READ FROM UNIT   18
+ # MODFLOW2000 Recharge Package
+ No named parameters
+ OPTION 3 -- RECHARGE TO HIGHEST ACTIVE NODE IN EACH VERTICAL COLUMN
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+
+
+     0 Recharge parameters
+
+ PCG -- CONJUGATE-GRADIENT SOLUTION PACKAGE, VERSION 7, 5/2/2005
+ MAXIMUM OF    100 CALLS OF SOLUTION ROUTINE
+ MAXIMUM OF     25 INTERNAL ITERATIONS PER CALL TO SOLUTION ROUTINE
+ MATRIX PRECONDITIONING TYPE :    1
+ IHCOFADD option -- When an active cell is surrounded by dry cells, convert
+ the cell to dry only if storage and head-dependent boundary flow are 0.
+
+
+
+                                    SOLUTION BY THE CONJUGATE-GRADIENT METHOD
+                                   -------------------------------------------
+                    MAXIMUM NUMBER OF CALLS TO PCG ROUTINE =      100
+                        MAXIMUM ITERATIONS PER CALL TO PCG =       25
+                               MATRIX PRECONDITIONING TYPE =        1
+        RELAXATION FACTOR (ONLY USED WITH PRECOND. TYPE 1) =    0.10000E+01
+ PARAMETER OF POLYNOMIAL PRECOND. = 2 (2) OR IS CALCULATED :        2
+                         HEAD CHANGE CRITERION FOR CLOSURE =    0.10000E-02
+                     RESIDUAL CHANGE CRITERION FOR CLOSURE =    0.10000E+01
+            PCG HEAD AND RESIDUAL CHANGE PRINTOUT INTERVAL =        5
+     PRINTING FROM SOLVER IS LIMITED(1) OR SUPPRESSED (>1) =        0
+                            STEADY-STATE DAMPING PARAMETER =    0.10000E+01
+                               TRANSIENT DAMPING PARAMETER =    0.10000E+01
+
+
+ ***Link-MT3DMS Package v7***
+ OPENING LINK-MT3DMS OUTPUT FILE: gv131.ftl                                                                                                                                                                                               
+ ON UNIT NUMBER:    13
+ FILE TYPE: UNFORMATTED
+ HEADER OPTION: EXTENDED
+ ***Link-MT3DMS Package v7***
+
 1
                             STRESS PERIOD NO.    1, LENGTH =   7305.000    
                             -----------------------------------------------
@@ -225,14 +637,14 @@
    (  7,  1,149)  ( 16,  1,105)  ( 16,  1, 75)  ( 16,  1, 52)  ( 16,  1, 38)
   0 -0.2501      0 -0.1821      0 -0.1316      0 -0.1430      0 -0.1077    
    ( 16,  1, 29)  ( 16,  1, 21)  (  1,  1,149)  (  1,  1,149)  (  1,  1,149)
-  0 -0.5324E-01  0 -0.3548E-01  0 -0.1499E-01  0 -0.1182E-01  0 -0.9720E-02
+  0 -0.5324E-01  0 -0.3548E-01  0 -0.1499E-01  0 -0.1181E-01  0 -0.9718E-02
    (  1,  1,149)  (  1,  1,149)  (  3,  1,114)  (  1,  1, 38)  ( 15,  1, 57)
-  0 -0.5310E-02  0 -0.2671E-02  0 -0.2565E-02  0  0.1259E-02  0 -0.9435E-03
-   (  2,  1, 59)  ( 14,  1, 65)  ( 11,  1, 98)  (  7,  1, 68)  (  5,  1, 52)
-  1  0.1642E-01  0  0.9317E-02  0  0.8713E-02  0  0.7728E-02  0  0.5460E-02
-   (  1,  1, 53)  (  1,  1, 89)  ( 16,  1, 71)  ( 16,  1, 56)  ( 12,  1, 82)
-  0  0.2799E-02  0  0.2223E-02  0  0.1209E-02  0  0.6605E-03  1  0.2604E-03
-   ( 16,  1, 36)  ( 16,  1, 28)  ( 16,  1, 21)  ( 16,  1, 16)  (  4,  1,101)
+  0 -0.5265E-02  0 -0.2618E-02  0 -0.1626E-02  0 -0.1678E-02  0 -0.8623E-03
+   (  2,  1, 59)  ( 14,  1, 65)  (  3,  1, 85)  ( 11,  1, 96)  (  3,  1,104)
+  1  0.1661E-01  0  0.9384E-02  0  0.8682E-02  0  0.7668E-02  0  0.5408E-02
+   (  1,  1, 54)  (  1,  1, 90)  ( 16,  1, 71)  ( 16,  1, 56)  ( 12,  1, 83)
+  0  0.2813E-02  0  0.2228E-02  0  0.1209E-02  0  0.6606E-03  1  0.2606E-03
+   ( 16,  1, 37)  ( 16,  1, 28)  ( 16,  1, 21)  ( 16,  1, 16)  (  4,  1,101)
 
  MAXIMUM RESIDUAL FOR EACH ITERATION (1 INDICATES THE FIRST INNER ITERATION):
 
@@ -245,16 +657,16 @@
    (  1,  1,149)  (  1,  1,149)  (  1,  1,149)  (  1,  1,149)  (  1,  1,149)
   0   6.213      0   3.012      0   1.772      0   1.358      0  0.9016    
    (  1,  1,149)  (  1,  1,149)  (  2,  1,148)  (  2,  1,148)  (  2,  1,148)
-  0  0.6229      0  0.4238      0  0.3009      0  0.2377      0  0.1538    
+  0  0.6229      0  0.4234      0  0.2896      0  0.2367      0  0.1535    
    (  2,  1,148)  (  2,  1,148)  (  2,  1,148)  (  2,  1,148)  (  2,  1,148)
-  1  0.8712      0  0.7062      0  0.4797      0  0.2705      0  0.1356    
+  1  0.8705      0  0.7029      0  0.4765      0  0.2689      0  0.1361    
    (  1,  1,149)  (  1,  1,149)  (  1,  1,149)  (  1,  1,149)  (  1,  1,149)
-  0  0.1013      0  0.7822E-01  0  0.5613E-01  0  0.3761E-01  1  0.3457E-01
+  0  0.1013      0  0.7822E-01  0  0.5614E-01  0  0.3762E-01  1  0.3459E-01
    (  2,  1,148)  (  2,  1,148)  (  2,  1,148)  (  2,  1,148)  (  2,  1,148)
 
 
 
- OUTPUT CONTROL FOR STRESS PERIOD    1   TIME STEP   1
+ OUTPUT CONTROL FOR STRESS PERIOD    1   TIME STEP    1
     SAVE HEAD FOR ALL LAYERS
     SAVE DRAWDOWN FOR ALL LAYERS
     SAVE BUDGET
@@ -264,24 +676,15 @@
  UBUDSV SAVING "FLOW LOWER FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
  UBUDSV SAVING "        RECHARGE" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
 
-
- ***Link-MT3DMS Package***
- OPENING LINK-MT3DMS OUTPUT FILE: gv131.ftl                                                                                                                                                                                               
- ON UNIT NUMBER:    13
- FILE TYPE: UNFORMATTED
- HEADER OPTION: EXTENDED
- ***Link-MT3DMS Package***
-
-
  SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT   13 FOR MT3DMS
- BY THE LINK-MT3DMS PACKAGE V6.3 AT TIME STEP    1, STRESS PERIOD    1
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    1
 
 
- HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP   1, STRESS PERIOD    1
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    1
 
- DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP   1, STRESS PERIOD    1
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    1
 1
-  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP  1 IN STRESS PERIOD   1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1
   ------------------------------------------------------------------------------
 
      CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
@@ -290,20 +693,20 @@
            IN:                                      IN:
            ---                                      ---
              STORAGE =           0.0000               STORAGE =           0.0000
-       CONSTANT HEAD =      551677.6875         CONSTANT HEAD =          75.5206
+       CONSTANT HEAD =      551677.8125         CONSTANT HEAD =          75.5206
             RECHARGE =       25374.3555              RECHARGE =           3.4736
 
-            TOTAL IN =      577052.0625              TOTAL IN =          78.9941
+            TOTAL IN =      577052.1875              TOTAL IN =          78.9941
 
           OUT:                                     OUT:
           ----                                     ----
              STORAGE =           0.0000               STORAGE =           0.0000
-       CONSTANT HEAD =      576989.6875         CONSTANT HEAD =          78.9856
+       CONSTANT HEAD =      576989.7500         CONSTANT HEAD =          78.9856
             RECHARGE =           0.0000              RECHARGE =           0.0000
 
-           TOTAL OUT =      576989.6875             TOTAL OUT =          78.9856
+           TOTAL OUT =      576989.7500             TOTAL OUT =          78.9856
 
-            IN - OUT =          62.3750              IN - OUT =       8.5373E-03
+            IN - OUT =          62.4375              IN - OUT =       8.5449E-03
 
  PERCENT DISCREPANCY =           0.01     PERCENT DISCREPANCY =           0.01
 
@@ -312,10 +715,14 @@
 
 
 
-          TIME SUMMARY AT END OF TIME STEP   1 IN STRESS PERIOD    1
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    1
                     SECONDS     MINUTES      HOURS       DAYS        YEARS
                     -----------------------------------------------------------
    TIME STEP LENGTH 6.31152E+08 1.05192E+07 1.75320E+05  7305.0      20.000    
  STRESS PERIOD TIME 6.31152E+08 1.05192E+07 1.75320E+05  7305.0      20.000    
          TOTAL TIME 6.31152E+08 1.05192E+07 1.75320E+05  7305.0      20.000    
 1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2019/02/11  8:16:21
+ Elapsed run time:  0.048 Seconds
+
