@@ -30,7 +30,8 @@ test_dirs = ['Saturated_Transient_Storage',
              'drycell',
              'gwt',
              'Legacy99Storage',
-             'AltWTSorb']
+             'AltWTSorb',
+             'TTSMult']
 
 
 def run_mt3d(spth, comparison=True):
