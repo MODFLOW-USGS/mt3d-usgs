@@ -6,31 +6,11 @@ from pymake.autotest import get_namefiles
 import config
 
 
-# tests that fail or take too long have been commented out in
-# order to get testing working on Travis
-test_dirs = ['Saturated_Transient_Storage',
-             'lkt',
-             'SFT_CrnkNic',
-             'SFT_Full_Imp',
-             'UZT_Disp_Lamb01',
-             'UZT_Disp_Lamb01_TVD',
-             'UZT_Disp_Lamb1',
-             'UZT_Disp_Lamb10',
-             #'Keating',
-             #'Keating_UZF',
-             'UZT_NonLin',
-             #'UZT_NonEq',   # Moved to t003_test.py because of
-                             # insert_stopflow_period.py customization
-             'CTS0',
-             'CTS1',
-             'CTS2',
-             #'CTS3',
-             'CTS4',
-             'Saturated_Transient_Storage',
-             'drycell',
-             'gwt',
-             'Legacy99Storage',
-             'AltWTSorb']
+# This tests only TTSMult. Custom manipulation of name file
+# added on lines 50-61 below for getting this particular model
+# to work with pymake/Travis and MT3D-USGS.
+
+test_dirs = ['TTSMult']
 
 
 def run_mt3d(spth, comparison=True):
@@ -65,6 +45,20 @@ def run_mt3d(spth, comparison=True):
     pymake.setup(mfnamefile, testpth)
     # Setup mt3d
     pymake.setup(mtnamefile, testpth, remove_existing=False)
+
+    # Remove HSS file reference line from MT3D-USGS name file
+    f = open(mtnamefile,'r')
+    lines = f.read()
+    f.close()
+
+    lines = lines.splitlines()
+    f = open(os.path.join(testpth, testname + '_mt.nam'), 'w')
+    for line in lines:
+        if('hss_source' in line):
+            f.write('\n')
+        else:
+            f.write(line + '\n')
+    f.close()
 
     # run modflow to generate flow field for mt3d-usgs
     print('running modflow-nwt model...{}'.format(testname))
