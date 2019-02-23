@@ -1,11 +1,12 @@
-LIST             0  gvmt131.out
-BTN              0  gvmt131.btn
-ADV              0  gvmt131.adv
-DSP              0  gvmt131.dsp
-SSM              0  gvmt131.ssm
-RCT              0  gvmt131.rct
-HSS              0  gvmt131.hss
-GCG              0  gvmt131.gcg
+LIST             0  gv131.out
+BTN              0  gv131.btn
+ADV              0  gv131.adv
+DSP              0  gv131.dsp
+SSM              0  gv131.ssm
+RCT              0  gv131.rct
+HSS              0  gv131.hss
+GCG              0  gv131.gcg
 FTL              0  gv131.ftl
 DATA(BINARY)   201  gvmt1311.ucn
 DATA           401  gvmt1311.obs
+DATA           150  hss_source.dat    # Needed for Travis auto-testing (pymake only copies files listed in the name file).  This line is scrubbed from this file before launching MT3D-USGS by custom python script.  Needed for 
