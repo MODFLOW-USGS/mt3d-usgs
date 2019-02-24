@@ -10,7 +10,7 @@ import config
 # added on lines 50-61 below for getting this particular model
 # to work with pymake/Travis and MT3D-USGS.
 
-test_dirs = ['TTSMult']
+test_dirs = ['gv131']
 
 
 def run_mt3d(spth, comparison=True):
