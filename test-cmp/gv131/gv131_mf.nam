@@ -1,0 +1,12 @@
+LIST            7     gv131.lst
+BAS6            1     gv131.bas
+DIS            29     gv131.dis
+LPF            11     gv131.lpf
+ZONE           40     gv131.zone
+RCH            18     gv131.rch
+OC             22     gv131.oc
+PCG            19     gv131.pcg
+LMT6           33     gv131.lmt
+DATA(BINARY)   50     gv131.cbb
+DATA(BINARY)   30     gv131.hds
+DATA(BINARY)   31     gv131.ddn
