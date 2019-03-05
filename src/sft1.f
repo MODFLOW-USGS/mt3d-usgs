@@ -736,7 +736,8 @@ C.......NO BOUNDARY ALLOWED ON CONST. CONC
             CYCLE
           ENDIF
 C        
-          IF(ISFBCTYP(I).EQ.3) THEN     !BCTYPSF='CNST. CONC', SKIP IF CONST. CONC
+          IF(ISFBCTYP(I).EQ.3) THEN
+            !BCTYPSF='CNST. CONC', SKIP IF CONST. CONC
             CONTINUE  
           ELSEIF(ISFBCTYP(I).EQ.0) THEN !BCTYPSF=' HEADWATER'    
             DO II=1,NSF2SF

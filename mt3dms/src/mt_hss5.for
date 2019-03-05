@@ -212,12 +212,12 @@ c distribute to multiple cells
           enddo              
 c                            
           num=0
-          area_total=0	    
+          area_total=0    
           do i=1,nrow
             do j=1,ncol
               R=sqrt((xbc(j)-xbc(jsource))**2+(ybc(i)-ybc(isource))**2)
               R=R-0.5*sqrt(delr(j)**2+delc(i)**2)
-              if(R.gt.1.5*radius_lnapl) cycle  !1.5 is a safety factor             			 
+              if(R.gt.1.5*radius_lnapl) cycle  !1.5 is a safety factor 
               call GetArea(ncol,nrow,nPoint,p,nSubGrid,delr,xbc,
      &         delc,ybc,j,i,area_cell)
 c            
@@ -324,9 +324,9 @@ C
 C
 C--LOOP over all HSS_LNAPL sources
         DO is=1,nHSSSource               
-c	  
+c  
           iHSSComp=int(HSSData(4,1,is))
-	        if(iHSSComp.ne.ICOMP) cycle            
+            if(iHSSComp.ne.ICOMP) cycle            
 c
   666     DO icell=1,MaxHSSCells                
 c  
@@ -389,7 +389,7 @@ c
 c--get interpolated conc at beginning and ending of transport step         
       cTime1=0.
       if(iTime1.lt.MaxHSSStep) then                
-	      cstart=HSSData(4+icell,iTime1,  isource)
+        cstart=HSSData(4+icell,iTime1,  isource)
         cend=  HSSData(4+icell,iTime1+1,isource)
         tstart=HSSData(1,iTime1,  isource)
         tend  =HSSData(1,iTime1+1,isource)       
@@ -400,11 +400,11 @@ c--get interpolated conc at beginning and ending of transport step
 c      
       cTime2=0.
       if(iTime2.lt.MaxHSSStep) then                     
-	      cstart=HSSData(4+icell,iTime2,  isource)
+        cstart=HSSData(4+icell,iTime2,  isource)
         cend=  HSSData(4+icell,iTime2+1,isource)
         tstart=HSSData(1,iTime2,  isource)
         tend  =HSSData(1,iTime2+1,isource)       
-  	    if(tend.ne.tstart.and.time2.ge.tstart.and.time2.le.tend) then
+        if(tend.ne.tstart.and.time2.ge.tstart.and.time2.le.tend) then
           cTime2=((cend-cstart)/(tend-tstart))*(time2-tstart)+cstart
         endif
       endif      
@@ -459,8 +459,8 @@ c
       real      delr,delc,xbc,ybc,area,pmin,pmax,p,subpoint,
      &          x0,y0,dx,dy
       logical   inside
-      dimension delr(ncol),delc(nrow),xbc(ncol),ybc(nrow),                
-     &		p(2,npoint),subpoint(2),pmin(2),pmax(2)
+      dimension delr(ncol),delc(nrow),xbc(ncol),ybc(nrow),
+     &          p(2,npoint),subpoint(2),pmin(2),pmax(2)
 c
       pmin(1)=0
       pmin(2)=0
@@ -479,7 +479,7 @@ c
           if(inside(npoint,p,subpoint,pmin) .and.
      &     inside(npoint,p,subpoint,pmax)) then
              nsub=nsub+1
-	  endif
+          endif
         enddo
       enddo
       if(nsub.gt.0) then

@@ -1158,17 +1158,17 @@ C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
 C                                                           
 C--DISSOLVED PHASE                                          
               IF(UPDLHS) THEN                               
-C	          ASSIGN CONCENTRATIONS                       
+C               ASSIGN CONCENTRATIONS                       
                 RCOLD=COLD(N,1:NCOMP)                       
                 DO MM=1,NCOMP                               
                   IF(RCOLD(MM)<0.0) RCOLD(MM)=0.0           
                 ENDDO                                       
 C                                                           
-	          IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN  
-	            MAXEC(ICOMP)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)      
-	          ENDIF                                               
+                IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN  
+                  MAXEC(ICOMP)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)      
+                ENDIF                                               
 C                                                                   
-		      CALL reaction_sub(ICOMP,1)                        
+                CALL reaction_sub(ICOMP,1)                        
 C                                                                   
                 DCDT_S(N,ICOMP)=DCDT(ICOMP)                         
                 DCDT_SYLD(N,ICOMP)=DCDTYLD(ICOMP)
@@ -1180,15 +1180,15 @@ C
      &                   *DH(N)
                 ELSE                                                
                   DO MM=1,NED                                       
-			      DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)       
-			      RHS(N)=RHS(N)-DEA_ED_DT(MM)*PRSITY(N)*DELR(J)*DELC(I)
-     &                     *DH(N)
+                    DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)       
+                    RHS(N)=RHS(N)-DEA_ED_DT(MM)*PRSITY(N)
+     &                     *DELR(J)*DELC(I)*DH(N)
                   ENDDO
                 ENDIF
               ENDIF
-     		  ENDDO
+            ENDDO
           ENDDO
-	  ENDDO
+        ENDDO
       ENDIF
 C
 C--RETURN
@@ -1928,119 +1928,132 @@ C
       END
 C
 C
-	SUBROUTINE reaction_sub(icomp, cflag)
+      SUBROUTINE reaction_sub(icomp, cflag)
 C
-	! Implements general form of Lu et al (1999) Eq. 19-24
-	USE RCTMOD
-	implicit none
-	integer     m,n,k, icomp
-	integer     cflag
+      ! Implements general form of Lu et al (1999) Eq. 19-24
+      USE RCTMOD
+      implicit none
+      integer     m,n,k, icomp
+      integer     cflag
 C
       m=icomp
       rval=0.
       IF (m.le.NED) THEN
-	    DO n=1,NEA
-		  ! first term: reaction rate times effective EA availability
-	      IF(special(n+ned).eq.'MAXEC') THEN
-              RVAL=0.
+          DO n=1,NEA
+            ! first term: reaction rate times effective EA availability
+            IF(special(n+ned).eq.'MAXEC') THEN
+               RVAL=0.
               IF(maxEC(n+ned).GE.rcold(n+ned)) THEN
-	          rval = decay(m,n)*((maxEC(n+ned)-rcold(n+ned)) /
-     &	             (switch(n) + (maxEC(n+ned)-rcold(n+ned))))
+                 rval = decay(m,n)*((maxEC(n+ned)-rcold(n+ned)) /
+     &              (switch(n) + (maxEC(n+ned)-rcold(n+ned))))
               ENDIF
-            ELSEIF(special(n+ned).eq.'SOLID') THEN             !--JZ for solid phase iron
+            ELSEIF(special(n+ned).eq.'SOLID') THEN
+              !--JZ for solid phase iron
               IF(maxEC(n+ned)<=0.) CYCLE
               rval=decay(m,n) * maxEC(n+ned) /(switch(n) + maxEC(n+ned))
             ELSEIF(special(n+ned).eq.'STORE') THEN
-              rval=decay(m,n) * (rcold(m) / (switch(n) + rcold(m)))  !For methane
+              !For methane
+              rval=decay(m,n) * (rcold(m) / (switch(n) + rcold(m)))
             ELSE
-              rval=decay(m,n)*(rcold(n+ned)/(switch(n) + rcold(n+ned)))!for other EAs
-		  END IF
-		  ! second term: inhibition by higher-sequence EAs
-	      IF(n.gt.1) THEN
-	        DO k=1,n-1
-	          IF(special(k+ned).eq.'MAXEC') THEN
-	            rval = rval * inhib(k) / (inhib(k) +
-     &                     (maxEC(k+ned)-rcold(k+ned)))
+              !for other EAs
+              rval=decay(m,n)*(rcold(n+ned)/(switch(n) + rcold(n+ned)))
+            END IF
+            ! second term: inhibition by higher-sequence EAs
+            IF(n.gt.1) THEN
+              DO k=1,n-1
+                IF(special(k+ned).eq.'MAXEC') THEN
+                  rval = rval * inhib(k) / (inhib(k) +
+     &                   (maxEC(k+ned)-rcold(k+ned)))
                 ELSEIF(special(k+ned).eq.'SOLID') THEN
-                  IF(maxEC(k+ned)<=0.) CYCLE                 !--JZ for solid phase iron
-	            rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
+                  !--JZ for solid phase iron
+                  IF(maxEC(k+ned)<=0.) CYCLE
+                  rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
                 ELSE
                   rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
                 END IF
-	        END DO
-	      END IF
-		  ! update electron donor(s)
-            IF (cflag==0) THEN
-              dcdt(m) = dcdt(m) + rval *RCOLD(m)         !Call by the standalone module 
-            ELSEIF(cflag==1) THEN
-              dcdt(m) = dcdt(m) + rval  *RCOLD(m)        !call by MT3DMS
+              END DO
             END IF
-	    END DO
+            ! update electron donor(s)
+            IF (cflag==0) THEN
+              !Call by the standalone module
+              dcdt(m) = dcdt(m) + rval *RCOLD(m)
+            ELSEIF(cflag==1) THEN
+              !call by MT3DMS
+              dcdt(m) = dcdt(m) + rval  *RCOLD(m)
+            END IF
+          END DO
 C
           ! yield from a higher ED (added by MTONKIN in V12)
           IF(m.gt.1.and.m.le.ned) THEN
             DO k=1,m-1
-              dcdtYLD(m)=dcdtYLD(m)-(yieldc(k,m))*dcdt(k) !*RCOLD(K)- COLD ALREADY IN DCDT TERM
+              !*RCOLD(K)- COLD ALREADY IN DCDT TERM
+              dcdtYLD(m)=dcdtYLD(m)-(yieldc(k,m))*dcdt(k)
             END DO
           END IF
         END IF
 C
-	  ! ** USE the average of (COLD+CNEW) to calculate consumption? **
+        ! ** USE the average of (COLD+CNEW) to calculate consumption? **
 C
-	  IF(m.gt.NED) THEN
-		DO n=1,NED
-		  ! first term: reaction rate times effect EA availability
-	      IF(special(m).eq.'MAXEC') THEN
-              RVAL=0.
-              IF(maxEC(m).GE.rcold(m)) THEN
+        IF(m.gt.NED) THEN
+          DO n=1,NED
+            ! first term: reaction rate times effect EA availability
+            IF(special(m).eq.'MAXEC') THEN
+                RVAL=0.
+              IF(maxEC(m).GE.rcold(m)) THEN !for iron
                 rval = decay(n,m-ned) * ((maxEC(m)-rcold(m)) /
-     & 	             (switch(m-ned) + (maxEC(m)-rcold(m))))          !for iron
+     &                 (switch(m-ned) + (maxEC(m)-rcold(m))))
               ENDIF
             ELSEIF(special(m).eq.'SOLID') THEN
-              IF(maxEC(m)<=0.) CYCLE
-              rval = decay(n,m-ned)*maxEC(m)/(switch(m-ned)+maxEC(m))  !for iron 
-     	      ELSEIF(special(m).eq.'STORE') THEN
-	        rval = decay(n,m-ned)*(rcold(n)/(switch(m-ned)+rcold(n))) !for methane
-            ELSEIF(RCOLD(m)>0.0) THEN
-	        rval = decay(n,m-ned)*(rcold(m)/(switch(m-ned)+rcold(m))) !for other EAs
-	      ELSE 
-	        rval=0.0    
-	      END IF
+              IF(maxEC(m)<=0.) CYCLE            !for iron
+              rval = decay(n,m-ned)*maxEC(m)/(switch(m-ned)+maxEC(m))
+            ELSEIF(special(m).eq.'STORE') THEN  !for methane
+              rval = decay(n,m-ned)*(rcold(n)/(switch(m-ned)+rcold(n)))
+            ELSEIF(RCOLD(m)>0.0) THEN           !for other EAs
+              rval = decay(n,m-ned)*(rcold(m)/(switch(m-ned)+rcold(m)))
+            ELSE 
+              rval=0.0    
+            END IF
 C
-		  ! second term: inhibition by higher-sequence EAs
-	      IF(m.gt.ned+1) THEN
-	        DO k=1,m-ned-1
-	          IF(special(k+ned).eq.'MAXEC') THEN
+            ! second term: inhibition by higher-sequence EAs
+            IF(m.gt.ned+1) THEN
+              DO k=1,m-ned-1
+                IF(special(k+ned).eq.'MAXEC') THEN
                   rval = rval * inhib(k) / (inhib(k) +
-     &	                   (maxEC(k+ned)-rcold(k+ned)))
+     &                   (maxEC(k+ned)-rcold(k+ned)))
                 ELSEIF(special(k+ned).eq.'SOLID') THEN
                   IF(maxEC(k+ned)<=0.) CYCLE
                   rval = rval * inhib(k) / (inhib(k) +maxEC(k+ned))
                 ELSE
-		        rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
+                  rval = rval * inhib(k) / (inhib(k) + rcold(k+ned))
                 END IF
-	        END DO
-	      END IF
-	      ! update electron acceptor(s)
+              END DO
+            END IF
+            ! update electron acceptor(s)
             IF(cflag==0) THEN
-              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)   !Call by the standalone module
+              !Call by the standalone module
+              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)
             ELSEIF(cflag==1) THEN
+              !Call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D
+              !AS THIS IS DONE WITHIN MT3D
               dea_Ed_DT(n)=rval*yieldc(n,m) *RCOLD(n)
-              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)   !Call by mt3dms,DONT MULTIPLY BY RCOLD WHEN CALLED BY MT3D AS THIS IS DONE WITHIN MT3D
+              dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)
             END IF  
-          END DO                                               !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m) WHEN COMPILING ALONE
-	  END IF
+          END DO
+          !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m)
+          !WHEN COMPILING ALONE
+        END IF
 C
-	!endDO ! ** This mimics the MT3D main NCOMP loop **
+        !endDO ! ** This mimics the MT3D main NCOMP loop **
 C
-	RETURN
-	END SUBROUTINE reaction_sub
+        RETURN
+      END SUBROUTINE reaction_sub
 C
 C
       SUBROUTINE Stor_Add_Methane(cMethane, ICOMP, DTRANS) 
-!this SUBROUTINE is to check the concentration of methane, IF it is over the maximum
-!EFC, THEN the additional mass of methane will be stored into a array, and the 
-!concentration of methane will be assigned to equal the maximum EFC. 
+!this SUBROUTINE is to check the concentration of methane, IF it is
+!over the maximum EFC, THEN the additional mass of methane will be
+!stored into a array, and the concentration of methane will be
+!assigned to equal the maximum EFC. 
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL
 C
@@ -2048,7 +2061,8 @@ C
       REAL    DTRANS
       INTEGER I,J,K  
 C
-      ! in addition the one in here, a time factor has to be timed in order to get the accumulated methane mass 
+      ! in addition the one in here, a time factor has to be timed in
+      ! order to get the accumulated methane mass 
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
