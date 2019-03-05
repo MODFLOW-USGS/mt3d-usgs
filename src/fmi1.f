@@ -130,6 +130,7 @@ C
               READ(INFTL,*) TEXT1
             ENDIF
 C       
+            !NSY: NOT SUPPORTED YET
             IF(TEXT1.EQ.'                 STR') FSTR=.TRUE.
             IF(TEXT1.EQ.'                 RES') FRES=.TRUE.
             IF(TEXT1.EQ.'                 FHB') FFHB=.TRUE.
@@ -140,7 +141,7 @@ C
             IF(TEXT1.EQ.'                 LAK') FLAK=.TRUE. 
             IF(TEXT1.EQ.'           LAK FLOWS') FLAKFLOWS=.TRUE.
             IF(TEXT1.EQ.'                 MNW') FMNW=.TRUE.
-            IF(TEXT1.EQ.'           MNW FLOWS') FMNWFLOWS=.TRUE. !NOT SUPPORTED YET
+            IF(TEXT1.EQ.'           MNW FLOWS') FMNWFLOWS=.TRUE. !NSY
             IF(TEXT1.EQ.'                 SWT') FSWT=.TRUE.
             IF(TEXT1.EQ.'                 SFR') FSFR=.TRUE.
             IF(TEXT1.EQ.'        SFR FLOWS SS' .OR.
@@ -152,7 +153,7 @@ C
             IF(TEXT1.EQ.'                 UZF') FUZF=.TRUE.
             IF(TEXT1.EQ.'           UZF FLOWS') FUZFFLOWS=.TRUE.
             IF(TEXT1.EQ.'                 SWR') FSWR=.TRUE.
-            IF(TEXT1.EQ.'           SWR FLOWS') FSWRFLOWS=.TRUE. !NOT SUPPORTED YET
+            IF(TEXT1.EQ.'           SWR FLOWS') FSWRFLOWS=.TRUE. !NSY
             IF(TEXT1.EQ.'     CONNECT SFR LAK') FSFRLAK=.TRUE.
             IF(TEXT1.EQ.'     CONNECT SFR UZF') FSFRUZF=.TRUE.
             IF(TEXT1.EQ.'     CONNECT LAK UZF') FLAKUZF=.TRUE.
@@ -295,7 +296,8 @@ C
               READ(INFTL,*) KKPER,KKSTP,NC,NR,NL,LABEL
             ENDIF
 C
-            ! file pointer will be on recognizable values if single precision
+            ! file pointer will be on recognizable values
+            ! if single precision
             IF (KKPER.ne.KPER .or. NC.ne.NCOL .or.
      &          NR.ne.NROW .or. NL.ne.NLAY) THEN
               WRITE(IOUT,11)
@@ -586,7 +588,8 @@ C
       ENDDO
 C
   420 IF(NLAY.LT.2) GOTO 430
-      IF(FUZFFLOWS) GOTO 430  ! THIS CALCULATION IS REPEATED IN RP2 WHEN FUZFFLOWS>0
+      IF(FUZFFLOWS) GOTO 430  ! THIS CALCULATION IS REPEATED
+                              ! IN RP2 WHEN FUZFFLOWS>0
       DO J=1,NCOL
         DO I=1,NROW
           DO K=2,NLAY

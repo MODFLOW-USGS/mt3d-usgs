@@ -218,7 +218,8 @@ c      new fill-in caused by red node elimination -> level = 1
 
         first = jafwk(itemp+1)
         do ii = itemp+1, iend-1
-          list(jafwk(ii)) = jafwk(ii+1)   ! link list containing next column number
+          ! link list containing next column number
+          list(jafwk(ii)) = jafwk(ii+1)
         enddo
         list(jafwk(iend)) = n+1         ! end marker
 
@@ -461,7 +462,8 @@ c      new fill-in caused by red node elimination -> level = 1
 
         first = jafwk(itemp+1)
         do ii = itemp+1, iend-1
-          list(jafwk(ii)) = jafwk(ii+1)   ! link list containing next column number
+          ! link list containing next column number
+          list(jafwk(ii)) = jafwk(ii+1)
         enddo
         list(jafwk(iend)) = n+1         ! end marker
 
@@ -712,7 +714,8 @@ c
 c  check ibf's neighbour, 
 
           do ii = ia(ibf), ia(ibf+1)-1
-            if (ilist( ja(ii) ) == 1) then ! found a red node in neighbour. ibf should be a black node
+            if (ilist( ja(ii) ) == 1) then
+              !found a red node in neighbour. ibf should be a black node
               call xmdBlackCounter(icolour, RBorder, neq, nblack, ibf)
               cycle
             endif
@@ -732,7 +735,7 @@ c    count red node
 
           nred = nred + 1
           icolour(ibf) = -nred  ! negative # for red node
-          RBorder( neq +1 -nred) = ibf  ! store red node info into RBorder
+          RBorder( neq +1 -nred) = ibf !store red node info into RBorder
 
         enddo
 
@@ -1469,7 +1472,8 @@ c              perform red nodes elimination
           do kk = ia(id)+1, ia(id+1)-1
             idk = ja(kk)
             idkk = icolour(idk)
-            row(idkk) = row(idkk) - a(ii) * a(kk) / a( ia(id) )  ! Abr Dr^{-1} Arb  in (1)
+            row(idkk) = row(idkk) - a(ii) * a(kk) / a( ia(id) )
+            ! Abr Dr^{-1} Arb  in (1)
           enddo
 
 c      modify {b}       Bb - Abr Dr^{-1} Br`    in (2)
