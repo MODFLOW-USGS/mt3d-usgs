@@ -588,7 +588,7 @@ C--(EVAPOTRANSPIRATION)
         DO J=1,NCOL
           K=IEVT(J,I)
           IF(K.GT.0) THEN 
-          	IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
               IF(EVTR(J,I).LT.0.AND.(CEVT(J,I,ICOMP).LT.0 .OR. 
      &                 CEVT(J,I,ICOMP).GE.CNEW(J,I,K,ICOMP))) THEN
