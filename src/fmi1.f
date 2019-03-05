@@ -341,7 +341,7 @@ C--ERROR READING THE FLOW-TRANSPORT LINK FILE
      &           'Possibly Caused by:',
      &       /1X,'1. Incompatible Styles of Unformatted Files ',
      &           'Used by MODFLOW and MT3D-USGS, ensure usage ',
-     &       /1X 'of FREE in MT3D-USGS name file matches LMT;',
+     &       /1X,'of FREE in MT3D-USGS name file matches LMT;',
      &       /1X,'2. Unformatted Flow-Transport Link File Saved by ',
      &           'Version 1 of LinkMT3D',
      &       /1X,'   Package Which Is No Longer Supported by ',
