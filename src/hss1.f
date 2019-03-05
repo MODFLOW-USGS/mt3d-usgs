@@ -331,7 +331,7 @@ c distribute to multiple cells
           ENDIF
 c                            
           num=0
-          area_total=0	    
+          area_total=0    
           DO i=1,nrow
             DO j=1,ncol
               IF(IHSSGEN.NE.2) THEN       
@@ -485,7 +485,7 @@ C
 C--LOOP over all HSS_LNAPL sources
         DO is=1,nHSSSource               
           IF(MAXDSSL.EQ.0) THEN
-C	  
+C  
             iHSSComp=int(HSSData(4,1,is))
             IF(iHSSComp.ne.ICOMP) CYCLE            
 c           
@@ -663,7 +663,7 @@ c
      &          x0,y0,dx,dy
       logical   inside,l1,l2  
       dimension delr(ncol),delc(nrow),xbc(ncol),ybc(nrow), 
-     &		  p(2,npoint),subpoint(2),pmin(2),pmax(2)
+     &          p(2,npoint),subpoint(2),pmin(2),pmax(2)
 c
       pmin(1)=0
       pmin(2)=0
@@ -690,7 +690,7 @@ c
           ENDIF                                                
           IF(l1.and.l2) THEN
             nsub=nsub+1
-	    ENDIF
+          ENDIF
         ENDDO
       ENDDO
       IF(nsub.gt.0) THEN
