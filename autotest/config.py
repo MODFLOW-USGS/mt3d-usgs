@@ -19,6 +19,10 @@ target_arch = 'intel64'
 if platform.system() in 'Windows':
     target_extension = '.exe'
 
+fflags = None
+if fc == 'gfortran':
+    fflags = 'Werror Wtabs Wline-truncation'
+
 # Development version information
 testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]
 srcdir = os.path.join('..', 'src')
