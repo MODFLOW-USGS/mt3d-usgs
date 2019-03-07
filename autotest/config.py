@@ -21,7 +21,7 @@ if platform.system() in 'Windows':
 
 fflags = None
 if fc == 'gfortran':
-    fflags = 'Werror Wtabs Wline-truncation'
+    fflags = 'Werror Wtabs Wline-truncation Wcharacter-truncation'
 
 # Development version information
 testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]
