@@ -3,7 +3,6 @@
 #################
 
 *.pydevproject
-*.o
 .project
 .metadata
 bin/
@@ -51,7 +50,6 @@ local.properties
 *_p.c
 *.ilk
 *.meta
-*.obj
 *.pch
 *.pdb
 *.pgc
@@ -129,6 +127,13 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
+
+#############
+## Fortran
+#############
+*.o
+*.obj
+*.mod
 
 #############
 ## Python

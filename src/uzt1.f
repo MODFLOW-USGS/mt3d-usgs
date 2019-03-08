@@ -320,7 +320,7 @@ C-----SNK
           CALL NODE2KIJ(N,NLAY,NROW,NCOL,K,I,J)
           GWQOUT=QSNK2UZF(II)
           IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
-            IF(GWQOUT.LT.0) THEN      !GWQOUT recorded as neg. val in FTL
+            IF(GWQOUT.LT.0) THEN     !GWQOUT recorded as neg. val in FTL
               IF(UPDLHS) A(N)=A(N)-ABS(GWQOUT) 
             ENDIF
           ELSEIF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
