@@ -98,7 +98,8 @@ def test_compile_dev():
     target = config.target
     pymake.main(config.srcdir, target, config.fc, 'gcc', makeclean=True,
                 expedite=False, dryrun=False, double=False, debug=False,
-                include_subdirs=False, arch=config.target_arch)
+                include_subdirs=False, arch=config.target_arch,
+                fflags=config.fflags)
 
     # Ensure target has been built
     assert os.path.isfile(target) is True, 'Target {} does not exist.'.format(target)
