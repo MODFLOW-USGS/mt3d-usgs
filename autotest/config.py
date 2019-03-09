@@ -37,6 +37,7 @@ if fc == 'gfortran':
         '-Wno-unused-label',
         '-Wno-unused-parameter',
         '-Wno-maybe-uninitialized',
+        '-Wno-do-subscript',
     ]
 elif fc == 'ifort':
     # Add warning flags, which fail Travis CI
