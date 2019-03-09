@@ -437,6 +437,9 @@ C--loop over all observation wells
           elseif(kp.lt.0) then
             layer=mLayer(ktmp,n)
             wlayer=prLayer(ktmp,n)
+          else  ! kp.eq.0
+            layer=0
+            wlayer=0.
           endif
 
           if(icbund(jp,ip,layer,iComp).eq.0) then
