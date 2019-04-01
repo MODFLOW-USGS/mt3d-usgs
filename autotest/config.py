@@ -21,7 +21,31 @@ if platform.system() in 'Windows':
 
 fflags = None
 if fc == 'gfortran':
-    fflags = 'Werror Wtabs Wline-truncation Wcharacter-truncation'
+    # Add warning flags, which fail Travis CI
+    fflags = [
+        '-Werror',
+        '-Wall',  # bundle of warnings
+        '-Wextra',  # extra bundle of warnings
+    ]
+    # But disable a few warnings
+    fflags += [
+        '-Wno-array-temporaries',
+        '-Wno-compare-reals',
+        '-Wno-conversion',
+        '-Wno-unused-dummy-argument',
+        '-Wno-unused-variable',
+        '-Wno-unused-label',
+        '-Wno-unused-parameter',
+        '-Wno-maybe-uninitialized',
+        '-Wno-do-subscript',
+    ]
+elif fc == 'ifort':
+    # Add warning flags, which fail Travis CI
+    # TODO: add other warning flags
+    fflags = [
+        '-warn truncated_source',
+    ]
+
 
 # Development version information
 testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]

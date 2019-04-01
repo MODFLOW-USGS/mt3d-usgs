@@ -369,6 +369,8 @@ C
       VOLMIN=1.0D-6
       RHSSF=0.
       AMATSF=0.
+      COEFN=0.
+      CONC=0.0D0
 C
 C.....INFLOW BOUNDARY CONDITIONS: PRECIP AND RUNOFF
       DO I=1,NSSSF
@@ -717,6 +719,8 @@ C
       CTOTOUTSF=0.
       Q1=0.
       Q2=0.
+      QX=0.
+      COEFN=0.
       DELV=0.
 C
 C--WRITE HEADER TO ICBCSF FILE
