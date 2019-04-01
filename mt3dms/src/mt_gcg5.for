@@ -229,6 +229,12 @@ C
       IPN    = IDELTA+NODES
       IAPN   = IPN   +NODES
       IWK    = IAPN  +NODES
+      IRDEL  = 0
+      IPA    = 0
+      IATPN  = 0
+      DELC   = 0.
+      RLN    = 0.
+      PNAPN  = 0.
 C
 C--THE FOLLOWING WORK SPACE ALLOCATIONS ARE NEEDED FOR
 C--NONSYMMETRIC CASES

@@ -423,6 +423,9 @@ C
           ELSEIF(kp.lt.0) THEN
             layer=mLayer(ktmp,n)
             wlayer=prLayer(ktmp,n)
+          ELSE  ! kp.eq.0
+            layer=0
+            wlayer=0.
           ENDIF
 C
           IF(icbund(jp,ip,layer,iComp).eq.0) THEN
