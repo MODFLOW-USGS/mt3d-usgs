@@ -3419,8 +3419,9 @@ c***********************************************************************
      *   mark(n),  tag, free, li,vi,lvi,evi, s,ls,es, ilp, ilpmax,
      [   k, i, n, mmax
 c
-c----initialize tag
+c----initialize
       tag = mark(ek)
+      free = 0
 c
 c----for each vertex vi in ek
       li = ek
