@@ -1480,7 +1480,9 @@ C--OTHERWISE SAVE TO UNIT DEFINED BY ISSGOUT
         iGroup=ss(7,num)
         IF(iGroup.le.0) CYCLE
         ctmp=ssg(4,iGroup)
-        iFlag=int(ssg(1,iGroup))
+        !iFlag=int(ssg(1,iGroup))
+        iFlag = 0
+        IF(ABS((-999.)-ssg(1,iGroup)) .LE. 1.0E-03) iFlag=-999
         IF(iFlag.ne.-999) THEN
           ssg(1,iGroup)=-999
           WRITE(IU,1004) kper,kstp,ntrans,time2,iGroup,k,i,j,ctmp
