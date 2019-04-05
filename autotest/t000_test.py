@@ -108,7 +108,7 @@ def test_compile_dev():
 
 
 def test_download_assets():
-    getmfexes('temp/bin', '1.0')
+    getmfexes('temp/bin', '2.0')
     return
 
 
