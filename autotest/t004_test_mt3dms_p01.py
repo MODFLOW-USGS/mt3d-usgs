@@ -143,8 +143,7 @@ def test_mt3dmsp01a():
                                             retardation, zero_order_decay,
                                             mixelm, zeta, prsity2)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
@@ -169,8 +168,7 @@ def test_mt3dmsp01b():
                                             retardation, zero_order_decay,
                                             mixelm, zeta, prsity2)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
@@ -195,8 +193,7 @@ def test_mt3dmsp01c():
                                             retardation, zero_order_decay,
                                             mixelm, zeta, prsity2)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
@@ -221,8 +218,7 @@ def test_mt3dmsp01d():
                                             retardation, zero_order_decay,
                                             mixelm, zeta, prsity2)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
@@ -247,8 +243,7 @@ def test_mt3dmsp01e():
                                             retardation, zero_order_decay,
                                             mixelm, zeta, prsity2)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
