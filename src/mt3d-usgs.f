@@ -52,6 +52,7 @@ C unauthorized use.
 C
 C=======================================================================
 C Version history: 09-30-2016 (1.00)
+C                  02-28-2019 (1.0.1)
 C
 C  =====================================================================                                        
 C
@@ -77,17 +78,21 @@ C
 C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
-      CHARACTER FLNAME*5000,FLNAMERHS*1000
+      CHARACTER FLNAME*5000
       CHARACTER COMLIN*2000               
       INTEGER II,NN,I,J,K,OperFlag,IEDEA 
-      INTEGER LL,I1,M
-      REAL PRNTVALS(240),PRNTVALSRHS(240)
-      CHARACTER X1*20
       REAL DT00                          
       REAL START_TIME,TOTAL_TIME,
      &     END_TIME
       LOGICAL existed
-      CHARACTER,PARAMETER :: VID*18='[Ver 1.00.00]'
+      CHARACTER,PARAMETER :: VID*18='[Ver 1.0.1]'
+      INTEGER iter            
+      INTEGER LL,I1,M
+      REAL PRNTVALS(240),PRNTVALSRHS(240),CONCVALS(240)
+      CHARACTER FLNAMERHS*1000,FLNAMECON*1000
+      CHARACTER X1*20, X2*20
+      iter = 1
+
 C
 C--ALLOCATE LOGICALS
       ALLOCATE(DOMINSAT,DRYON)
@@ -202,7 +207,7 @@ C--FOR EACH STRESS PERIOD***********************************************
       NPS=1
       DO KPER=1,NPER
 C
-C--WRITE AN INDENTIFYING MESSAGE
+C--WRITE AN IDENTIFYING MESSAGE
         WRITE(*,50) KPER
         WRITE(IOUT,51) KPER
         WRITE(IOUT,'(1X)')
@@ -227,7 +232,7 @@ C--FOR EACH FLOW TIME STEP----------------------------------------------
           HT1=HT2
           HT2=HT2+DELT    
 C
-C--WRITE AN INDENTIFYING MESSAGE
+C--WRITE AN IDENTIFYING MESSAGE
           WRITE(*,60) KSTP,HT1,HT2
           WRITE(IOUT,61) KSTP,HT1,HT2
           WRITE(IOUT,'(1X)')
@@ -362,32 +367,7 @@ C--FORMULATE MATRIX COEFFICIENTS
      &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
                 IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &           CALL ADVQC1FM(ICOMP)                       
-C
-                DO LL=1,NLAY
-                  COMLIN='(I4.4)'
-                  I1=LL
-                  WRITE(X1,COMLIN) I1
-                  FLNAME='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
-     &\\A_matrix\\A_mat_Lay_'//TRIM(X1)//'.TXT'
-                  FLNAMERHS='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
-     &\\A_matrix\\RHS_mat_Lay_'//TRIM(X1)//'.TXT'
-                  OPEN(271,FILE=FLNAME)
-                  OPEN(272,FILE=FLNAMERHS)
-                  DO II=1,NROW
-                    DO J=1,NCOL
-                      !N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
-                      M=(LL-1)*(NROW*NCOL) + (II-1)*(NCOL) +(J)
-                      PRNTVALS(J)=A(M)
-                      PRNTVALSRHS(J)=RHS(M)
-                    ENDDO
-                    WRITE(271,'(240E20.10)') (PRNTVALS(I),I=1,NCOL)
-                    WRITE(272,'(240E20.10)') (PRNTVALSRHS(I),I=1,NCOL)
-                  ENDDO
-                  CLOSE(271)
-                  CLOSE(272)
-                ENDDO
-
+     &           CALL ADVQC1FM(ICOMP)
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
@@ -406,6 +386,39 @@ C
 C--END OF OUTER ITERATION LOOP
               ENDDO
   110         CONTINUE
+
+                DO LL=1,NLAY
+                  COMLIN='(I4.4)'
+                  I1=LL
+                  WRITE(X1,COMLIN) I1
+                  WRITE(X2,COMLIN) iter
+                  FLNAME='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
+     &\\A_matrix\\A_mat_Lay_'//TRIM(X1)//'_iter_'//TRIM(X2)//'.TXT'
+                  FLNAMERHS='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
+     &\\A_matrix\\RHS_mat_Lay_'//TRIM(X1)//'_iter_'//TRIM(X2)//'.TXT'
+                  FLNAMECON='D:\\EDM_LT\\GitHub\\Trout_Lake.git\\8Lay_TL
+     &\\A_matrix\\CON_mat_Lay_'//TRIM(X1)//'_iter_'//TRIM(X2)//'.TXT'
+                  OPEN(271,FILE=FLNAME)
+                  OPEN(272,FILE=FLNAMERHS)
+                  OPEN(273,FILE=FLNAMECON)
+                  DO II=1,NROW
+                    DO J=1,NCOL
+                      !N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+                      M=(LL-1)*(NROW*NCOL) + (II-1)*(NCOL) +(J)
+                      PRNTVALS(J)=A(M)
+                      PRNTVALSRHS(J)=RHS(M)
+                      CONCVALS(J)=CNEW(J,II,LL,1)
+                    ENDDO
+                    WRITE(271,'(240E20.10)') (PRNTVALS(I),I=1,NCOL)
+                    WRITE(272,'(240E20.10)') (PRNTVALSRHS(I),I=1,NCOL)
+                    WRITE(273,'(240E20.10)') (CONCVALS(I),I=1,NCOL)
+                  ENDDO
+                  CLOSE(271)
+                  CLOSE(272)
+                  CLOSE(273)
+                ENDDO
+                iter = iter + 1  
+
 C
 C-------------TAKE CARE OF Fe2+                        
  1001         IF(IREACTION.EQ.2) THEN                  
