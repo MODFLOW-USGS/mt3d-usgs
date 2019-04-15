@@ -163,8 +163,8 @@ def test_mt3dmsp10a():
     mf, mt, conc_mt3dms, cvt, mvt = p10mt3d(exe_name_mf, exe_name_mt3dms,
                                             mt3dms_ws, mixelm)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.30e-2), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms,
+                               rtol=1e-5, atol=1.3e-2)
     return
 
 def test_mt3dmsp10b():  
@@ -179,8 +179,7 @@ def test_mt3dmsp10b():
     mf, mt, conc_mt3dms, cvt, mvt = p10mt3d(exe_name_mf, exe_name_mt3dms,
                                             mt3dms_ws, mixelm)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.77), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1.77)
     return
 
 def test_mt3dmsp10c():  
@@ -196,8 +195,7 @@ def test_mt3dmsp10c():
     mf, mt, conc_mt3dms, cvt, mvt = p10mt3d(exe_name_mf, exe_name_mt3dms,
                                             mt3dms_ws, mixelm, ttsmult)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.0e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1.0e-4)
     return
 
 
