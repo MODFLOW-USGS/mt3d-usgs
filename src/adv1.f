@@ -2472,12 +2472,14 @@ C SCHEME (ULTIMATE).
 C *********************************************************************
 C
       USE       MIN_SAT 
+      USE MT3DMS_MODULE, ONLY: QSTO,HT2,TIME2,IALTFM,DZ
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IX,IY,IZ,ICOMP
       INTEGER   K2,N,NRC,KNEXT
       REAL      COLD,QX,QY,QZ,DELR,DELC,DH,CNEW,PRSITY,RETA,DTRANS,
      &          CBCK,CTMP,WW,CTOP,CRGT,CTOTAL,CFACE,RMASIO
       REAL      CTOTAL2,CMAS2  
+      REAL      VOL,VCELL
       DIMENSION ICBUND(NCOL,NROW,NLAY),QX(NCOL,NROW,NLAY),
      &          QY(NCOL,NROW,NLAY),QZ(NCOL,NROW,NLAY),DELR(NCOL),
      &          DELC(NROW),DH(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
@@ -2856,29 +2858,60 @@ C
 C--TOTAL CHANGES            
   430       CTOTAL=CTOTAL*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
             CTOTAL2=CTOTAL2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+C...........TIME INTERPOLATION
+            IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+              VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &            *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+              VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+              VOL=MIN(VOL,VCELL)
+              IF(ABS(VOL).LE.1.E-8) VOL=1.E-8
+              CTOTAL=CTOTAL*DH(J,I,K)*DELR(J)*DELC(I)/VOL
+              CTOTAL2=CTOTAL2*DH(J,I,K)*DELR(J)*DELC(I)/VOL
+            ENDIF
 C
 C--UPDATE CONCENTRATION AT ACTIVE CELL AND
 C--SAVE MASS INTO OR OUT OF CONSTANT-CONCENTRATION CELL
             IF(ICBUND(J,I,K).GT.0) THEN
-              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2  
+              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2
+              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                IF(CNEW(J,I,K).LE.0.) CNEW(J,I,K)=0.
+              ENDIF
               N=(K-1)*NRC+(I-1)*NCOL+J                
               IF(DRYON) CNEW(J,I,K)=CNEW(J,I,K)+C7(N,ICOMP) 
               IF(DOMINSAT) THEN                       
+                IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &              *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  IF(VOL.LT.0.) VOL=0.
+                ELSE
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)
+                ENDIF
                 IF(CTOTAL2.LT.0) THEN                 
                   RMASIO(12,1)=RMASIO(12,1)-CTOTAL2*RETA(J,I,K)*
-     &                         DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                         VOL*PRSITY(J,I,K)
                 ELSE                                            
                   RMASIO(12,2)=RMASIO(12,2)-CTOTAL2*RETA(J,I,K)*
-     &                         DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                         VOL*PRSITY(J,I,K)
                 ENDIF                                           
               ENDIF                                             
             ELSEIF(ICBUND(J,I,K).LT.0) THEN
+              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &            *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                VOL=MIN(VOL,VCELL)
+                IF(VOL.LT.0.) VOL=0.
+              ELSE
+                VOL=DELR(J)*DELC(I)*DH(J,I,K)
+              ENDIF
               IF(CTOTAL.GT.0) THEN
                 RMASIO(6,1)=RMASIO(6,1)+CTOTAL*RETA(J,I,K)*
-     &                      DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                      VOL*PRSITY(J,I,K)
               ELSE
                 RMASIO(6,2)=RMASIO(6,2)+CTOTAL*RETA(J,I,K)*
-     &                      DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                      VOL*PRSITY(J,I,K)
               ENDIF
             ENDIF
 C
