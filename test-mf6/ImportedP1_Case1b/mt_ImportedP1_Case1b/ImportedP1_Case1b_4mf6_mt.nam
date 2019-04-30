@@ -1,0 +1,14 @@
+# Name File for MT3DMS created on 2/19/2019 by ModelMuse
+LIST            16    ImportedP1_Case1b_4mf6.mls
+FT6             21    ImportedP1_Case1b.bhd
+FT6             22    ImportedP1_Case1b.cbc
+FT6             23    ImportedP1_Case1b.dis.grb
+BTN              1    ImportedP1_Case1b.btn
+ADV              2    ImportedP1_Case1b.adv
+DSP              3    ImportedP1_Case1b.dsp
+SSM              4    ImportedP1_Case1b.ssm
+GCG              9    ImportedP1_Case1b.gcg
+DATA            17    ImportedP1_Case1b_4mf6.cnf
+DATA(BINARY)   201    ImportedP1_Case1b_Comp1_4mf6.ucn
+DATA           601    ImportedP1_Case1b_Comp1_4mf6._mas
+DATA           401    ImportedP1_Case1b_Comp1_4mf6.mto
