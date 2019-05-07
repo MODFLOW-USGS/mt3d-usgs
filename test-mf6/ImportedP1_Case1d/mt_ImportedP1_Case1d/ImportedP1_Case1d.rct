@@ -1,0 +1,6 @@
+         1         1         2         0         0 # Data Set 1: ISOTHM IREACT IRCTOP IGETSC IREACTION
+         0      0.25                            12 # Data Set 2A: RHOB Layer: 1
+         0         4                            12 # Data Set: 3: SP1: Comp1, Layer: 1
+         0         0                            12 # Data Set: 4: SP2: Comp1, Layer: 1
+         0     0.002                            12 # Data Set: 5: RC1: Comp1, Layer: 1
+         0     0.002                            12 # Data Set: 6: RC2: Comp1, Layer: 1

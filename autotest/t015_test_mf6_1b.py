@@ -6,7 +6,8 @@ from pymake.autotest import get_namefiles, compare_budget, compare_heads
 import config
 
 
-test_dirs = ['ImportedP1_Case1b'] #  List tests to carry out here.
+test_dirs = ['ImportedP1_Case1b', #  List tests to carry out here.
+             'ImportedP1_Case1d'] 
 
 
 def run_mt3d(mf5namefile, mf6namefile, mtnamefile, regression=True):
