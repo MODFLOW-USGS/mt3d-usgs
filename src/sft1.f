@@ -36,8 +36,9 @@ C
       WRITE(IOUT,10) NSFINIT,MXSFBC
 10    FORMAT(1X,'NUMBER OF STREAMS = ',I5,
      &      /1X,'MAXIMUM NUMBER OF STREAM BOUNDARY CONDITIONS = ',I5)
-      IF(ICBCSF.GT.0) WRITE(IOUT,12) ICBCSF
-12    FORMAT(1X,'RCH-BY-RCH INFORMATION WILL BE PRINTED ON UNIT ',I5)
+      IF(ICBCSF.GT.0) WRITE(IOUT,12)
+C12    FORMAT(1X,'RCH-BY-RCH INFORMATION WILL BE PRINTED ON UNIT ',I5)
+12    FORMAT(1X,'ICBCSF OPTION IS CURRENTLY UNAVAILABLE')
       IF(IOUTOBS.GT.0) THEN
         WRITE(IOUT,13) IOUTOBS
 13      FORMAT(1X,'STREAM-FLOW OBSERVATION OUTPUT ',
@@ -1092,48 +1093,48 @@ C--WRITE SFR MASS BALANCE TO OUTPUT FILE
 20      FORMAT(/33X,7X,1X,'CUMULATIVE MASS [M]',
      &           8X,13X,15X,' MASS FOR THIS TIME STEP [M]',
      &         /41X,19('-'),36X,14('-'))
-30      FORMAT(16X,'      STREAM DEPLETION =',G15.7,
-     &         16X,'      STREAM DEPLETION =',G15.7)
-35      FORMAT(16X,'      INFLOW TO STREAM =',G15.7,
-     &         16X,'      INFLOW TO STREAM =',G15.7)
-40      FORMAT(16X,'          GW TO STREAM =',G15.7,
-     &         16X,'          GW TO STREAM =',G15.7)
-41      FORMAT(16X,'      UZF GW DISCHARGE =',G15.7,
-     &         16X,'      UZF GW DISCHARGE =',G15.7)
-42      FORMAT(16X,' UZF REJECTED RECHARGE =',G15.7,
-     &         16X,' UZF REJECTED RECHARGE =',G15.7)
-45      FORMAT(16X,'         LAK TO STREAM =',G15.7,
-     &         16X,'         LAK TO STREAM =',G15.7)
-50      FORMAT(16X,'         PRECIPITATION =',G15.7,
-     &         16X,'         PRECIPITATION =',G15.7)
-55      FORMAT(16X,'                RUNOFF =',G15.7,
-     &         16X,'                RUNOFF =',G15.7)
-56      FORMAT(16X,'CONSTANT CONCENTRATION =',G15.7,
-     &         16X,'CONSTANT CONCENTRATION =',G15.7)
-57      FORMAT(16X,'             MASS GAIN =',G15.7,
-     &         16X,'             MASS GAIN =',G15.7)
+30      FORMAT(16X,'      STREAM DEPLETION =',G15.7E3,
+     &         16X,'      STREAM DEPLETION =',G15.7E3)
+35      FORMAT(16X,'      INFLOW TO STREAM =',G15.7E3,
+     &         16X,'      INFLOW TO STREAM =',G15.7E3)
+40      FORMAT(16X,'          GW TO STREAM =',G15.7E3,
+     &         16X,'          GW TO STREAM =',G15.7E3)
+41      FORMAT(16X,'      UZF GW DISCHARGE =',G15.7E3,
+     &         16X,'      UZF GW DISCHARGE =',G15.7E3)
+42      FORMAT(16X,' UZF REJECTED RECHARGE =',G15.7E3,
+     &         16X,' UZF REJECTED RECHARGE =',G15.7E3)
+45      FORMAT(16X,'         LAK TO STREAM =',G15.7E3,
+     &         16X,'         LAK TO STREAM =',G15.7E3)
+50      FORMAT(16X,'         PRECIPITATION =',G15.7E3,
+     &         16X,'         PRECIPITATION =',G15.7E3)
+55      FORMAT(16X,'                RUNOFF =',G15.7E3,
+     &         16X,'                RUNOFF =',G15.7E3)
+56      FORMAT(16X,'CONSTANT CONCENTRATION =',G15.7E3,
+     &         16X,'CONSTANT CONCENTRATION =',G15.7E3)
+57      FORMAT(16X,'             MASS GAIN =',G15.7E3,
+     &         16X,'             MASS GAIN =',G15.7E3)
 60      FORMAT(41X,19('-'),36X,14('-'))
-65      FORMAT(16X,'              TOTAL IN =',G15.7,
-     &         16X,'              TOTAL IN =',G15.7)
-70      FORMAT(/16X,'   STREAM ACCUMULATION =',G15.7,
-     &         16X,'   STREAM ACCUMULATION =',G15.7)
-75      FORMAT(16X,'        STREAM OUTFLOW =',G15.7,
-     &         16X,'        STREAM OUTFLOW =',G15.7)
-80      FORMAT(16X,'          STREAM TO GW =',G15.7,
-     &         16X,'          STREAM TO GW =',G15.7)
-85      FORMAT(16X,'         STREAM TO LAK =',G15.7,
-     &         16X,'         STREAM TO LAK =',G15.7)
-90      FORMAT(16X,'           EVAPORATION =',G15.7,
-     &         16X,'           EVAPORATION =',G15.7)
-87      FORMAT(16X,'             MASS LOSS =',G15.7,
-     &         16X,'             MASS LOSS =',G15.7)
-95      FORMAT(16X,'             TOTAL OUT =',G15.7,
-     &         16X,'             TOTAL OUT =',G15.7)
-97      FORMAT(/16X,'        NET (IN - OUT) =',G15.7,
-     &          16X,'        NET (IN - OUT) =',G15.7)
-98      FORMAT(16X,' DISCREPANCY (PERCENT) =',G15.7,
-     &         16X,' DISCREPANCY (PERCENT) =',G15.7)
-99      FORMAT(46X,'FLOW ERR (QIN-QOUT-DV) =',G15.7,' [L3/T]',/)
+65      FORMAT(16X,'              TOTAL IN =',G15.7E3,
+     &         16X,'              TOTAL IN =',G15.7E3)
+70      FORMAT(/16X,'   STREAM ACCUMULATION =',G15.7E3,
+     &         16X,'   STREAM ACCUMULATION =',G15.7E3)
+75      FORMAT(16X,'        STREAM OUTFLOW =',G15.7E3,
+     &         16X,'        STREAM OUTFLOW =',G15.7E3)
+80      FORMAT(16X,'          STREAM TO GW =',G15.7E3,
+     &         16X,'          STREAM TO GW =',G15.7E3)
+85      FORMAT(16X,'         STREAM TO LAK =',G15.7E3,
+     &         16X,'         STREAM TO LAK =',G15.7E3)
+90      FORMAT(16X,'           EVAPORATION =',G15.7E3,
+     &         16X,'           EVAPORATION =',G15.7E3)
+87      FORMAT(16X,'             MASS LOSS =',G15.7E3,
+     &         16X,'             MASS LOSS =',G15.7E3)
+95      FORMAT(16X,'             TOTAL OUT =',G15.7E3,
+     &         16X,'             TOTAL OUT =',G15.7E3)
+97      FORMAT(/16X,'        NET (IN - OUT) =',G15.7E3,
+     &          16X,'        NET (IN - OUT) =',G15.7E3)
+98      FORMAT(16X,' DISCREPANCY (PERCENT) =',G15.7E3,
+     &         16X,' DISCREPANCY (PERCENT) =',G15.7E3)
+99      FORMAT(46X,'FLOW ERR (QIN-QOUT-DV) =',G15.7E3,' [L3/T]',/)
 C       
       ENDIF !ISFRBC
 C
@@ -1149,7 +1150,7 @@ C
 C
         WRITE(IOUTOBS,220) TIME2,N,CONC,Q,CNEW(J,I,K,ICOMP)
       ENDDO
-220   FORMAT(1X,G15.7,2X,I5,100(5X,G15.7))
+220   FORMAT(1X,G15.7E3,2X,I5,100(5X,G15.7E3))
 C
       RETURN
       END

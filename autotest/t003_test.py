@@ -62,8 +62,8 @@ def run_mt3d(spth, comparison=True):
         # needs to be inserted into the linker file for simulating
         # a period of equilibration.
         print('running insert_stopflow_period.py...{}'.format(testname))
-        insert_stopflow_period.InsStpFlw()
-        
+        insert_stopflow_period.InsStpFlw(testpth)
+
         print('running mt3d-usgs model...{}'.format(testname))
         nam = os.path.basename(mtnamefile)
         exe_name = os.path.abspath(config.target)
