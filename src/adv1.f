@@ -2874,9 +2874,10 @@ C--UPDATE CONCENTRATION AT ACTIVE CELL AND
 C--SAVE MASS INTO OR OUT OF CONSTANT-CONCENTRATION CELL
             IF(ICBUND(J,I,K).GT.0) THEN
               CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2
-              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
-                IF(CNEW(J,I,K).LE.0.) CNEW(J,I,K)=0.
-              ENDIF
+C.............ZERO OUT NEGATIVE CONCENTRATIONS - COMMENTED OUT FOR NOW
+C              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+C                IF(CNEW(J,I,K).LE.0.) CNEW(J,I,K)=0.
+C              ENDIF
               N=(K-1)*NRC+(I-1)*NCOL+J                
               IF(DRYON) CNEW(J,I,K)=CNEW(J,I,K)+C7(N,ICOMP) 
               IF(DOMINSAT) THEN                       
