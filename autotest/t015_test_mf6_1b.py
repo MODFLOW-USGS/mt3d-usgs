@@ -8,7 +8,8 @@ import config
 
 test_dirs = ['ImportedP1_Case1b', #  List tests to carry out here.
              'ImportedP1_Case1d',
-             'ImportedP2_nonequilibrium']
+             'ImportedP2_nonequilibrium',
+             'ImportedP2_nonlinear']
 
 
 def run_mt3d(mf5namefile, mf6namefile, mtnamefile, regression=True):
