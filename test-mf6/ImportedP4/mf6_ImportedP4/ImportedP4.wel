@@ -1,0 +1,17 @@
+# WEL: Well package file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+BEGIN OPTIONS
+    AUXILIARY IFACE
+    BOUNDNAMES
+    PRINT_INPUT
+    SAVE_FLOWS
+    AUTO_FLOW_REDUCE  1.000000000000E-006 
+END OPTIONS
+
+BEGIN DIMENSIONS
+  MAXBOUND     1
+END DIMENSIONS
+
+BEGIN PERIOD      1
+     1    80    21  9.999999800000E-003      0 'Imported_Wel_StressPeriod1_Layer1_1'  # Data Set 6: Layer Row Column Q IFACE boundname Intersected by Imported_Wel_StressPeriod1_Layer1_1 with formula: ObjectImportedValuesR("WelPump1")
+END PERIOD 
+
