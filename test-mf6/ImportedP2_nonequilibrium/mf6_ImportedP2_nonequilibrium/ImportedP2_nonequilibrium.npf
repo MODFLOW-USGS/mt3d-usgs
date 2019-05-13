@@ -8,13 +8,13 @@ BEGIN GRIDDATA
   ICELLTYPE LAYERED IPRN     5
     CONSTANT      0                 # ICELLTYPE 1
   K LAYERED IPRN    12
-    CONSTANT   10.000               # K 1
+    CONSTANT    1.000               # K 1
 
   K33 LAYERED IPRN    12
-    CONSTANT   10.000               # K33 1
+    CONSTANT    1.000               # K33 1
 
   K22 LAYERED IPRN    12
-    CONSTANT   10.000               # K22 1
+    CONSTANT    1.000               # K22 1
 
 END GRIDDATA
 
