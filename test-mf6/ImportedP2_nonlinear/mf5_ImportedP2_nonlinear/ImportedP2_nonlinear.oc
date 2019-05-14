@@ -1,4 +1,4 @@
-# Output Control file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+# Output Control file created on 5/14/2019 by ModelMuse version 3.10.0.56.
 HEAD SAVE FORMAT (10(1X1PE13.5)) LABEL
 HEAD SAVE UNIT     37
 DRAWDOWN SAVE FORMAT (10(1X1PE13.5)) LABEL
@@ -10,11 +10,6 @@ PERIOD     1 STEP     1 DDREFERENCE
      SAVE BUDGET
      PRINT BUDGET
 PERIOD     2 STEP     1
-     SAVE HEAD
-     SAVE DRAWDOWN
-     SAVE BUDGET
-     PRINT BUDGET
-PERIOD     3 STEP     1
      SAVE HEAD
      SAVE DRAWDOWN
      SAVE BUDGET

@@ -8,7 +8,7 @@ SSM               4    ImportedP2_nonlinear.ssm
 RCT               8    ImportedP2_nonlinear.rct
 GCG               9    ImportedP2_nonlinear.gcg
 DATA             17    ImportedP2_nonlinear.cnf
-DATA(BINARY)    201    ImportedP2_nonlinear_Comp1.ucn
-DATA(BINARY)    301    ImportedP2_nonlinear_Comp1_S.ucn
-DATA            601    ImportedP2_nonlinear_Comp1._mas
-DATA            401    ImportedP2_nonlinear_Comp1.mto
+DATA(BINARY)    201    ImportedP2_nonlinear_Comp1_4mf5.ucn
+DATA(BINARY)    301    ImportedP2_nonlinear_Comp1_S_4mf5.ucn
+DATA            601    ImportedP2_nonlinear_Comp1_4mf5._mas
+DATA            401    ImportedP2_nonlinear_Comp1_4mf5.mto
