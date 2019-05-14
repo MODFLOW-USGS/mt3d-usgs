@@ -13,8 +13,5 @@ BEGIN GRIDDATA
   K33 LAYERED IPRN    12
     CONSTANT   0.005                # K33 1
 
-  K22 LAYERED IPRN    12
-    CONSTANT   0.005                # K22 1
-
 END GRIDDATA
 
