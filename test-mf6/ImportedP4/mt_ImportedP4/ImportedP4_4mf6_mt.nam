@@ -9,6 +9,6 @@ DSP               3   ImportedP4.dsp
 SSM               4   ImportedP4.ssm
 GCG               9   ImportedP4.gcg
 DATA             17   ImportedP4.cnf
-DATA(BINARY)    201   ImportedP4_Comp1.ucn
-DATA            401   ImportedP4_Comp1.mto
-DATA            601   ImportedP4_Comp1._mas
+DATA(BINARY)    201   ImportedP4_Comp1_4mf6.ucn
+DATA            401   ImportedP4_Comp1_4mf6.mto
+DATA            601   ImportedP4_Comp1_4mf6._mas
