@@ -463,8 +463,8 @@ C       INITIALIZE VARIABLES
 C
 C       LOOP THROUGH FLOWS AND PUT THEM INTO QX, QY, QZ
         DO N=1, NODES
-          DO IPOS=IA(N)+1, IA(N+1)-1
-C
+          DO IPOS=IA(N)+1, IA(N+1)-1  ! This DO LOOP for all 6 connections for cell N
+C                                     ! (presupposes a structured grid, unstructured not supported) 
 C           LOOP THROUGH CONNECTIONS FOR CELL N
             M=JA(IPOS)
             IF(M<N) CYCLE
@@ -477,7 +477,7 @@ C           CALCULATE LAYER, ROW, AND COLUMN INDICES FOR CELL N
 C
 C           RIGHT, FRONT, AND LOWER FACES
             IF(M==N+1)         QX(IC,IR,IL) = -FLOWJA(IPOS)
-            IF(M==N+NCOL)      QY(IC,IR,IL) =  FLOWJA(IPOS)
+            IF(M==N+NCOL)      QY(IC,IR,IL) = -FLOWJA(IPOS)
             IF(M==N+NROW*NCOL) QZ(IC,IR,IL) = -FLOWJA(IPOS)
 C
           ENDDO
