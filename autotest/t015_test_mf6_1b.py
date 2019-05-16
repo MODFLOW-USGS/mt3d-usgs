@@ -14,7 +14,8 @@ test_dirs = ['ImportedP1_Case1b', #  List tests to carry out here.
              'ImportedP4',
              'ImportedP5',
              'ImportedP6',
-             'ImportedP9']
+             'ImportedP9',
+             'ImportMt3dP07']
 
 def run_mt3d(mf5namefile, mf6namefile, mtnamefile, regression=True):
     """
