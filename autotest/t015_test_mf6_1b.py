@@ -15,7 +15,8 @@ test_dirs = ['ImportedP1_Case1b', #  List tests to carry out here.
              'ImportedP5',
              'ImportedP6',
              'ImportedP9',
-             'ImportMt3dP07']
+             'ImportMt3dP07',
+             'ImportMt3dmsReinject']
 
 def run_mt3d(mf5namefile, mf6namefile, mtnamefile, regression=True):
     """

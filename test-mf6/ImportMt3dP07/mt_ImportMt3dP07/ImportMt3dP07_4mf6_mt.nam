@@ -1,6 +1,8 @@
 # Name File for MT3DMS created on 2/19/2019 by ModelMuse
 LIST              16      ImportMt3dP07.mls
-FTL               10      ImportMt3dP07.ftl
+FT6               10      ImportMt3dP07.bhd
+FT6               20      ImportMt3dP07.cbc
+FT6               21      ImportMt3dP07.dis.grb
 BTN                1      ImportMt3dP07.btn
 ADV                2      ImportMt3dP07.adv
 DSP                3      ImportMt3dP07.dsp
