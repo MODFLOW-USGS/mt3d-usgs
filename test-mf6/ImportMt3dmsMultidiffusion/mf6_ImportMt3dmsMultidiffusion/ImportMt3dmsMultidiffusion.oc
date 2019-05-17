@@ -1,0 +1,12 @@
+# Output Control file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+BEGIN OPTIONS
+  BUDGET FILEOUT ImportMt3dmsMultidiffusion.cbc
+  HEAD FILEOUT   ImportMt3dmsMultidiffusion.bhd
+END OPTIONS
+
+BEGIN PERIOD     1
+  SAVE HEAD      ALL
+  PRINT BUDGET   ALL
+  SAVE BUDGET    ALL
+END PERIOD 
+
