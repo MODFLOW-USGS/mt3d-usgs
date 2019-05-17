@@ -1,0 +1,13 @@
+# Name File for MT3DMS created on 2/19/2019 by ModelMuse
+LIST              16       ImportMt3dmsZeroth.mls
+FTL               10       ImportMt3dmsZeroth.ftl
+ADV                2       ImportMt3dmsZeroth.adv
+BTN                1       ImportMt3dmsZeroth.btn
+DSP                3       ImportMt3dmsZeroth.dsp
+SSM                4       ImportMt3dmsZeroth.ssm
+RCT                8       ImportMt3dmsZeroth.rct
+GCG                9       ImportMt3dmsZeroth.gcg
+DATA              17       ImportMt3dmsZeroth.cnf
+DATA(BINARY)     201       ImportMt3dmsZeroth_Chem1_4mf5.ucn
+DATA             401       ImportMt3dmsZeroth_Chem1_4mf5.mto
+DATA             601       ImportMt3dmsZeroth_Chem1_4mf5._mas
