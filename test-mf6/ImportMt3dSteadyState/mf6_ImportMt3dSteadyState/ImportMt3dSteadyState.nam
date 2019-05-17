@@ -1,0 +1,15 @@
+# Name File for MODFLOW created on 2/19/2019 by ModelMuse Version 3.10.0.42
+BEGIN OPTIONS
+  LIST         ImportMt3dSteadyState.lst
+  PRINT_INPUT
+  SAVE_FLOWS
+END OPTIONS
+
+BEGIN PACKAGES
+  DIS6         ImportMt3dSteadyState.dis
+  IC6          ImportMt3dSteadyState.ic
+  NPF6         ImportMt3dSteadyState.npf
+  OC6          ImportMt3dSteadyState.oc
+  CHD6         ImportMt3dSteadyState.chd
+  WEL6         ImportMt3dSteadyState.wel
+END PACKAGES

@@ -1,0 +1,52 @@
+
+
+         8        15        21         1         1         1         0 # Data Set 3: NLAY NROW NCOL NPER NCOMP MCOMP, IATS
+ day  ft   g # Data Set 4: TUNIT LUNIT MUNIT
+
+ 0 0 0 0 0 0 0 0 # Data Set 6: LAYCON
+         0        10                            12 # DELR
+         0        10                            12 # DELC
+         0        80                            12 # TOP
+         0        10                            12 # Data Set 10: DZ Layer: 1
+         0        10                            12 # Data Set 10: DZ Layer: 2
+         0        10                            12 # Data Set 10: DZ Layer: 3
+         0        10                            12 # Data Set 10: DZ Layer: 4
+         0        10                            12 # Data Set 10: DZ Layer: 5
+         0        10                            12 # Data Set 10: DZ Layer: 6
+         0        10                            12 # Data Set 10: DZ Layer: 7
+         0        10                            12 # Data Set 10: DZ Layer: 8
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 1
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 2
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 3
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 4
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 5
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 6
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 7
+         0       0.2                            12 # Data Set 11: PRSITY, Layer: 8
+         0         1                             5 # Data Set 12: ICBUND, Layer: 1
+         0         1                             5 # Data Set 12: ICBUND, Layer: 2
+         0         1                             5 # Data Set 12: ICBUND, Layer: 3
+         0         1                             5 # Data Set 12: ICBUND, Layer: 4
+         0         1                             5 # Data Set 12: ICBUND, Layer: 5
+         0         1                             5 # Data Set 12: ICBUND, Layer: 6
+         0         1                             5 # Data Set 12: ICBUND, Layer: 7
+         0         1                             5 # Data Set 12: ICBUND, Layer: 8
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 1
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 2
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 3
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 4
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 5
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 6
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 7
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 8
+    999.99         0 # Data Set 14: CINACT, THKMIN
+        12         5        12        12         T # Data set 15: IFMTCN IFMTNP IFMTRF IFMTDP SAVUCN
+         0 # Data Set 16, NPRS
+         4         1 # Data set 18, NOBS NPROBS
+         5         8         5
+         5         9         5
+         5        10         5
+         7         8         3
+         T         1 # Data Set 20: CHKMAS NPRMAS
+         1         1         1 SSTATE # Data Set 21: PERLEN NSTP TSMULT SSflag (Stress period 1)
+         0     10000         1       3.5 # Data Set 23: DT0, MXSTRN, TTSMULT, TTSMAX
