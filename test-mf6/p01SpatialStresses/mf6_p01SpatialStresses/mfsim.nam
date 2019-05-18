@@ -1,0 +1,18 @@
+BEGIN options
+END options
+
+BEGIN timing
+  TDIS6  p01SpatialStresses.tdis
+END timing
+
+BEGIN models
+  gwf6  p01SpatialStresses.nam  gwf_p01
+END models
+
+BEGIN exchanges
+END exchanges
+
+BEGIN solutiongroup  1
+  ims6  p01SpatialStresses.ims  gwf_p01
+END solutiongroup  1
+

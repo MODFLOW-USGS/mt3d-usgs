@@ -1,0 +1,19 @@
+ T F T T F F F F F F F F F F F F
+       214                                         # mxss,[issgout]          
+         1                                         # incrch - stress period 1
+         0      1.50                               # crch
+         1                                         # incevt
+         0      0.00                               # cevt
+         1         0                               # nss
+         5         1        50         0         2 # kss,iss,jss,css,itype
+         1                                         # incrch - stress period 2
+         0      2.50                               # crch
+         1                                         # incevt
+         0     -2.50                               # cevt         
+         1         0                               # nss
+         5         1        50         0         2 # kss,iss,jss,css,itype
+         1                                         # incrch - stress period 3
+         0      0.00                               # crch
+         1                                         # incevt
+         0     -1.00                               # cevt
+        -1         0                               # nss (repeat)

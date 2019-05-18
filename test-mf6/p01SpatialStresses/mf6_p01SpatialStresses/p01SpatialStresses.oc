@@ -1,0 +1,13 @@
+BEGIN options
+  BUDGET  FILEOUT       p01SpatialStresses.bud
+  HEAD    FILEOUT       p01SpatialStresses.hds
+  HEAD    PRINT_FORMAT  COLUMNS  10  WIDTH  15  DIGITS  6  GENERAL
+END options
+
+BEGIN period  1
+  SAVE   HEAD    ALL
+  SAVE   BUDGET  ALL
+  PRINT  HEAD    LAST
+  PRINT  BUDGET  LAST
+END period  1
+

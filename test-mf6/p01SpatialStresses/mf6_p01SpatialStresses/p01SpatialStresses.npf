@@ -1,0 +1,13 @@
+BEGIN options
+  SAVE_SPECIFIC_DISCHARGE
+END options
+
+BEGIN griddata
+  icelltype
+    CONSTANT  1
+  k
+    CONSTANT      10.00000000
+  k33
+    CONSTANT      10.00000000
+END griddata
+
