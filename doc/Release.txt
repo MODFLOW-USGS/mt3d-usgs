@@ -5,21 +5,181 @@ release.txt
 
 
 This file describes changes introduced into MT3D-USGS with each official
-release; these changes may substantially affect users. Executable files for 
+release; these changes may substantially affect users. Executable files for
 personal computers are provided as well as the source code at the DOI:
 
 http://dx.doi.org/10.3133/tm6A53
 
-MT3D-USGS Files: Up-to-date descriptions of the input requirements for all 
-MT3D-USGS Packages and Processes are provided in input_instructions.pdf 
+MT3D-USGS Files: Up-to-date descriptions of the input requirements for all
+MT3D-USGS Packages and Processes are provided in input_instructions.pdf
 distributed with MT3D-USGS, available in the doc directory.
 
 
-NOTE: Any use of trade, product or firm names is for descriptive purposes
-only and does not imply endorsement by the U.S. Government.
+NOTE: This software has been approved for release by the U.S. Geological 
+Survey (USGS). Although the software has been subjected to rigorous review, 
+the USGS reserves the right to update the software as needed pursuant to 
+further analysis and review. No warranty, expressed or implied, is made by 
+the USGS or the U.S. Government as to the functionality of the software and 
+related material nor shall the fact of release constitute any such warranty. 
+Furthermore, the software is released on condition that neither the USGS 
+nor the U.S. Government shall be held liable for any damages resulting from 
+its authorized or unauthorized use.
+
+
+o Version 1.1.0 06/28/2019:
+  -------------------------
+
+  New functionality available with 1.1.0 includes support for simulating
+  transport with MODFLOW 6-generated flow-transport link files.  The new
+  functionality works with native MODFLOW 6 output and does not require a 
+  dedicated package (i.e., "LMT") to create an MT3D-USGS ready flow-transport
+  link file.  New source code files required for compiling MT3D-USGS ver 1.1.0
+  include: 
+  
+    - fmi1mf6.f
+    - mf6bud.f90
+    - mf6grb.f90
+  
+  Functionality included in mf6bud.f90 and mf6grb.f90 comes directly from
+  MODFLOW 6 source files with some minor modification. Please refer to the 
+  section titled "Notes on FT6 Option Starting with Version 1.1.0" in the 
+  input instructions document contained with the 'doc' folder of the 
+  distribution files for further instruction regarding the model input 
+  changes required to take advantage of this functionality.
+  
+
+  Bug Fixes:
+  
+    - Fixed floating-invalid error in SSM1OT (ssm1.f)
+
+  Other:
+    
+    - Added a comment to reflect that the ICBCSF flag is currently inactive
+      in sft1.f 
+    - Time interpolation added for TVD in adv1.f
+    - Changes to the github auto-testing framework suggested by Mike Toews
+      were adopted.
+  
+  Documentation:
+  
+    - Added new section to the input instructions describing how to invoke
+      reading of MODFLOW 6-generated link files for simulating transport 
+      with a structed MODFLOW 6 grid.
+    - Minor clean-up of LKT input instructions
+    - Corrected mis-statement in LMT8.pdf regarding how the LMT package
+      should be activated in the MODLFOW name file
+
+o Version 1.0.1 02/28/2019:
+  -------------------------
+  
+  No new functionality added in 1.0.1.  Code changes primarily reflect bug
+  fixes found by users and by the developers.  The most significant change
+  users will notice is that the keyword "UZT" is no longer supported in the
+  MT3D-USGS name file.  Instead, users are now required to use "UZT2" in 
+  place of "UZT".  The removal of two 3D arrays from the UZT input file, 
+  starting water content and starting saturated thickness, have resulted in
+  this change.  These two quantities are now back-calculated based on values 
+  passed via the linker file, alleviating the need to calculate them prior 
+  to running MT3D-USGS.  Because this change does not facilitate backward 
+  compatibility, the "UZT2" requirement ensures that the user is made aware 
+  of this change so that appropriate adjustments are made to the UZT input 
+  (i.e., the starting water content and starting saturated thickness are 
+  removed from the UZT input file).
+  
+
+  Bug Fixes:
+  
+    - Removed IATS variable from list of variables at the beginning of BTN
+      input file
+    - Increased the fix-format write of HSS from I4 to I6 in HSS package
+    - Cycle in UZT routine when IUZFBND = 0 (inactive)
+    - Fixed format statement when reading SFT terms from linker file
+    - Added the steady-state flag variable (iSSTrans) to dual domain problems
+    - Cleaned-up various typos written to output files
+    - Cleaned-up various typos contained within source code comments
+    - Added check for negative cell thicknesses in BTN
+    - Code added to ADV for handling the condition when solute from dry cell
+      enters a constant concentration boundary. This fix also requiured
+      appropriate terms be added to the budget summary
+    - Variable THETAW was not primed with appropriate values in RCT
+      when ISOTHM=1
+    - Fixed bug related to the refilling of IA/JA arrays for SFT calculation
+      for each flow step
+    - Fixed bug that didn't properly account for mass leaving the groundwater
+      system as discharge to land surface
+    - Fixed bug that mishandled the case when using UZT as a boundary
+      condition to the groundwater system (i.e., no routing of solute
+      through the unsaturated zone)
+    - Tidied up variable declarations in ADV for streamlined calls to CFACE
+      and SADV1U
+    - Reversed the order of some DO loops in GCG to work with Fortran's
+      row-major array ordering
+    - Fixed 2 instances of where DELR(I) shoudl be DELR(J) in adv
+      pertaining to the CMAS2 calculation
+    - Fixed bug related to specified mass-loading sources for when the
+      saturated thickness gets small and results in really large QSS terms
+      owing to QSS = 1/VOLAQU
+    - Fixed bug that misread IREACTION variable in RCT and lead to the
+      miscalculation of retardation when using a linear isotherm
+    - Added the ability to handle multi-species in SFT.  Added species
+      (ICOMP) index to CNEWSF variable
+    - Fixed bug that was using the wrong reader in UZT1AR(), switched out
+      U2DINT with IARRAY reader
+    - Fixed bug in zeroth-order decay calculations leading to negative
+      concentrations
+    - Fixed bug in UZT that was using the wrong porosity value when TVD
+      active, added some associated checks to code
+    - Fixed bug in FMI and SSM related to proper initialization of UZT-
+      related terms
+    - Fixed bug that failed to enforce the activation of SSM if only using
+      SFT, LKT, and/or UZT.  Code exits with appropriate error message if
+      SSM isn't turned on and 1 or more these package are all that is active
+    - Fixed a bug related to compound "if" statements in SSM.  Broke
+      compound if statement in to 2, or nested, if statements.
+    - Fixed a bug that improperly reset constant concentration boundary
+      condition in SSM
+    - Fixed a bug that resulted in the mis-calculation of the mass balance
+      when TVD and adsorption were both being used
+    - Initialize velocity component array
+    - Fix format label mismatches in adv1.f and ssm1.f
+  
+  Other:     
+  
+    - Altered default threshold for checking if a cell is dry in CTS
+      package.  Threshold changed from 1e-5 to 1e-8
+    - Added "implicit none" to GCG function
+    - Split UZT to SFT stream budget terms in standard output file. This
+      transfer of mass between packages now differentiates "GW Discharge"
+      from "Rejected Recharge"
+    - In ADV, changed 2 common block variables related to MOC option to
+      module calls
+    - Removed IREACT=90, 91 from RCT; these were part of legacy code needed
+      for first version of MT3D-USGS - no longer needed
+    - Switched from implicit to explicit variable assignment of water content
+      in UZT
+    - Added auto-detection of single vs double precision in FMI that does
+      not require the use of external library dependencies.  Previous
+      commits attempted to use IFLPORT library that crashed gfortran
+      compilers
+    - Removed specification of starting water content and saturated thickness
+      arrays from the UZT input file.  It is possilbe to back calculate these
+      values from the change in storage and thicksat arrays passed in the
+      linker file.  Code now requires use of UZT2 in name file to prevent
+      users from mistakenly proceeding with these arrays present
+    - Ensure fixed-width source is <= 72 chars
+  
+  Documentation:
+  
+    - Documention of IUZFBND more clearly states what's expected
+    - Various typos
+    - When IUZFBND < 0, UZF terms are handled by SSM as a boundary condition
+      Made an entry in SSM for this condition
+    - Cleaned up input instructions for LKT
+
 
 o Version 1.0.0 09/30/2016:
+  ------------------------
 
-MT3D-USGS version 1.0.0 is built upon MT3DMS version 5.3 and includes 
+MT3D-USGS version 1.0.0 is built upon MT3DMS version 5.3 and includes
 many new capabilities described in the manual available found in the doc
 directory.
