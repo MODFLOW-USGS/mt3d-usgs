@@ -8,9 +8,9 @@ C
       USE MT3DMS_MODULE, ONLY: INSSM,IOUT,NCOL,NROW,NLAY,NCOMP,
      &                         FWEL,FDRN,FRCH,FEVT,FRIV,FGHB,FSTR,FRES,
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
-     &                         FSFR,FUZF,IVER,iUnitTRNOP,
-     &                         ISSGOUT,MXSS,NSS,NTSS,RECH,IRCH,CRCH,
-     &                         EVTR,IEVT,CEVT,SS,SSMC,SSG,KSSZERO  
+     &                         FSFR,FUZF,IVER,iUnitTRNOP,ISSGOUT,
+     &                         MXSS,NSS,NTSS,RECH,IRCH,CRCH,EVTR,
+     &                         IEVT,CEVT,SS,SSMC,SSG,KSSZERO,FMIFMT6
       USE SFRVARS,       ONLY: NSTRM,MXSGMT,MXRCH,NSFINIT,  
      &                         ISFSOLV,WIMP,WUPS,CCLOSESF,MXITERSF,
      &                         CRNTSF,NOBSSF,NJASF
@@ -102,7 +102,7 @@ C--POINT SINKS/SOURCES PRESENT IN THE FLOW MODEL
       ENDIF
 C
 C--ALLOCATE SPACE FOR ARRAYS
-      IF(FRCH) THEN
+      IF(FRCH .AND. .NOT.FMIFMT6) THEN
         ALLOCATE(RECH(NCOL,NROW))
         ALLOCATE(IRCH(NCOL,NROW))
         ALLOCATE(CRCH(NCOL,NROW,NCOMP))
@@ -111,7 +111,7 @@ C--ALLOCATE SPACE FOR ARRAYS
         ALLOCATE(IRCH(1,1))
         ALLOCATE(CRCH(1,1,1))
       ENDIF
-      IF(FEVT.OR.FETS) THEN
+      IF(FEVT.OR.FETS .AND. .NOT.FMIFMT6) THEN
         ALLOCATE(EVTR(NCOL,NROW))
         ALLOCATE(IEVT(NCOL,NROW))
         ALLOCATE(CEVT(NCOL,NROW,NCOMP))
@@ -160,7 +160,7 @@ C
      &                         FFHB,FIBS,FTLK,FLAK,FMNW,FDRT,FETS,FSWT,
      &                         FSFR,FUZF,
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
-     &                         KSSZERO
+     &                         KSSZERO,FMIFMT6
       USE UZTVARS,       ONLY: CUZRCH,CGWET
 C
       IMPLICIT  NONE
@@ -197,6 +197,10 @@ C--READ CONCENTRATION OF DIFFUSIVE SOURCES/SINKS (RECHARGE/E.T.)
 C--FOR CURRENT STRESS PERIOD IF THEY ARE SIMULATED IN FLOW MODEL
       IF(.NOT.FRCH) GOTO 11
 C
+C--IF MF6-STYLE LINKER FILES BEING USED, RCH ENTERED AS LIST IN SS 
+C--(NOT ENTERED AS AN ARRAY)
+      IF(FRCH.AND.FMIFMT6) GOTO 11
+C
 C--READ FLAG INCRCH INDICATING HOW TO READ RECHARGE CONCENTRATION
       READ(IN,'(I10)') INCRCH
 C
@@ -221,6 +225,10 @@ C--CONTAINING CONCENTRATION OF RECHARGE FLUX [CRCH]
 C
 C--READ CONCENTRATION OF EVAPOTRANSPIRATION FLUX
    11 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 20
+C
+C--IF MF6-STYLE LINKER FILES BEING USED, EVT ENTERED AS LIST IN SS 
+C--(NOT ENTERED AS AN ARRAY)
+      IF((FEVT.OR.FETS).AND.FMIFMT6) GOTO 20
 C
       IF(KPER.EQ.1) THEN            
         DO INDEX=1,NCOMP
@@ -442,7 +450,7 @@ C
      &                         FSWT,FSFR,FUZF,FSNKUZF,
      &                         RETA,COLD,IALTFM,INCTS,MXWEL,IWCTS,
      &                         CINACT,DELT,DTRANS,iUnitTRNOP,COLDFLW,
-     &                         IDRY2,PRSITY,DZ,SORBMASS
+     &                         IDRY2,PRSITY,DZ,SORBMASS,FMIFMT6
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,N,IGROUP,
@@ -551,6 +559,11 @@ C
 C--AREAL SINK/SOURCE TERMS 
 C--(RECHARGE)
       IF(.NOT.FRCH) GOTO 12
+C
+C--IF MF6-STYLE LINKER FILES BEING USED, RCH ENTERED AS LIST IN SS 
+C--(NOT ENTERED AS AN ARRAY)
+      IF(FRCH.AND.FMIFMT6) GOTO 12
+C
       DO I=1,NROW
         DO J=1,NCOL
           K=IRCH(J,I)
@@ -584,6 +597,11 @@ C--(RECHARGE)
 C
 C--(EVAPOTRANSPIRATION)
    12 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 30
+C
+C--IF MF6-STYLE LINKER FILES BEING USED, EVT ENTERED AS LIST IN SS
+C--(NOT ENTERED AS AN ARRAY)
+      IF((FEVT.OR.FETS).AND.FMIFMT6) GOTO 30
+C
       DO I=1,NROW
         DO J=1,NCOL
           K=IEVT(J,I)
@@ -759,6 +777,21 @@ C
                 QC7(J,I,K,7)=QC7(J,I,K,7)-QSS*ABS(VOLAQU)*CTMP
                 QC7(J,I,K,8)=QC7(J,I,K,8)-QSS*ABS(VOLAQU)       
               ENDIF        
+            ENDIF
+          ENDIF
+        ELSEIF(IQ.EQ.8) THEN
+C
+C-- SUPPORT FOR MF6-STYLE LINKER FILE REQUIRES SPECIAL HANDLING
+C   BECAUSE ALL BOUNDARY CONCENTRATIONS REQUIRE USE OF THE SS
+C   LIST OBJECT 
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+            IF(QSS.LT.0.AND.(CTMP.LT.0 .OR. 
+     &         CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+              IF(UPDLHS) A(N)=A(N)+QSS*DELR(J)*DELC(I)*DH(J,I,K)
+            ELSEIF(CTMP.GT.0) THEN
+              RHS(N)=RHS(N)-QSS*CTMP*DELR(J)*DELC(I)*
+     &               DH(J,I,K)
             ENDIF
           ENDIF
         ELSE
@@ -1019,7 +1052,7 @@ C
      &                        FSFR,FUZF,FSNKUZF,
      &                        INCTS,MXWEL,IWCTS,COLD,IALTFM,CINACT,
      &                        iUnitTRNOP,DELT,COLDFLW,IDRY2,SORBMASS,
-     &                        PRSITY,DZ
+     &                        PRSITY,DZ,FMIFMT6
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,NUM,IQ,K,I,J,IGROUP,MHOST,KHOST,IHOST,JHOST,II,N,
@@ -1164,6 +1197,10 @@ C--AREAL SINK/SOURCE TERMS
 C--(RECHARGE)
    50 IF(.NOT.FRCH) GOTO 100
 C
+C--IF MF6-STYLE LINKER FILES BEING USED, RCH ENTERED AS LIST IN SS 
+C--(NOT ENTERED AS AN ARRAY)
+      IF(FRCH.AND.FMIFMT6) GOTO 100
+C
       DO I=1,NROW
         DO J=1,NCOL
           K=IRCH(J,I)
@@ -1202,6 +1239,10 @@ C
 C
 C--(EVAPOTRANSPIRATION)
   100 IF(.NOT.FEVT .AND. .NOT.FETS) GOTO 200
+C
+C--IF MF6-STYLE LINKER FILES BEING USED, EVT ENTERED AS LIST IN SS 
+C--(NOT ENTERED AS AN ARRAY)
+      IF((FEVT.OR.FETS).AND.FMIFMT6) GOTO 200
 C
       DO I=1,NROW
         DO J=1,NCOL
@@ -1413,13 +1454,52 @@ C
           IF(ABS(CTMP-CINACT).LT.1.E-3) CTMP=0.
         ENDIF
 C
-        IF(ICBUND(J,I,K,ICOMP).GT.0.AND.IQ.GT.0) THEN
+        IF(ICBUND(J,I,K,ICOMP).GT.0.AND.(IQ.GT.0.AND.IQ.NE.8)) THEN
           IF(QSS.GT.0) THEN
             RMASIO(IQ,1,ICOMP)=RMASIO(IQ,1,ICOMP)+QSS*CTMP*DTRANS*
      &                         DELR(J)*DELC(I)*DH(J,I,K)
           ELSE
             RMASIO(IQ,2,ICOMP)=RMASIO(IQ,2,ICOMP)+QSS*CTMP*DTRANS*
      &                         DELR(J)*DELC(I)*DH(J,I,K)
+          ENDIF
+        ELSEIF(ICBUND(J,I,K,ICOMP).GT.0 .AND. IQ.EQ.8) THEN
+          CTMP=SS(4,NUM)
+          IF(ICBUND(J,I,K,ICOMP).GT.0) THEN
+            IF(QSS.LT.0.AND.(CTMP.LT.0 .or.
+     &                             CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+              CTMP=CNEW(J,I,K,ICOMP)
+            ELSEIF(CTMP.LT.0) THEN        
+              CTMP=0.
+            ENDIF
+            IF(QSS.GT.0) THEN
+              RMASIO(8,1,ICOMP)=RMASIO(8,1,ICOMP)+QSS*CTMP*DTRANS*
+     &                          DELR(J)*DELC(I)*DH(J,I,K)
+            ELSE
+              RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+QSS*CTMP*DTRANS*
+     &                          DELR(J)*DELC(I)*DH(J,I,K)
+            ENDIF
+C
+          ELSEIF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
+            IF(DRYON) THEN
+              IF(QSS.LT.0.AND.(CTMP.LT.0 .or.
+     &                         CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
+                CTMP=CNEW(J,I,K,ICOMP)
+              ELSEIF(CTMP.LT.0) THEN        
+                CTMP=0.
+              ENDIF
+              VOLAQU=DELR(J)*DELC(I)*DH(J,I,K)
+              IF(ABS(VOLAQU).LE.1.E-8) VOLAQU=1.E-8
+              IF(QSS.LT.0) THEN
+                RMASIO(8,2,ICOMP)=RMASIO(8,2,ICOMP)+QSS*CTMP*
+     &                            DTRANS*ABS(VOLAQU)
+                QC7(J,I,K,9)=QC7(J,I,K,9)-QSS*ABS(VOLAQU)
+              ELSE
+                RMASIO(8,1,ICOMP)=RMASIO(8,1,ICOMP)+QSS*CTMP*
+     &                            DTRANS*ABS(VOLAQU)
+                QC7(J,I,K,7)=QC7(J,I,K,7)-QSS*ABS(VOLAQU)*CTMP
+                QC7(J,I,K,8)=QC7(J,I,K,8)-QSS*ABS(VOLAQU)
+              ENDIF
+            ENDIF
           ENDIF
         ELSE
           IF(ICBUND(J,I,K,ICOMP).EQ.0.AND.IQ.GT.0) THEN

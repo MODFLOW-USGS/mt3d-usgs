@@ -1,0 +1,12 @@
+TDIS file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+BEGIN OPTIONS
+  TIME_UNITS days
+END OPTIONS
+
+BEGIN DIMENSIONS
+  NPER     1
+END DIMENSIONS
+
+BEGIN PERIODDATA
+    1.000000000000E+002      1  1.000000000000E+000  # perlen nstp tsmult, Stress period      1
+END PERIODDATA

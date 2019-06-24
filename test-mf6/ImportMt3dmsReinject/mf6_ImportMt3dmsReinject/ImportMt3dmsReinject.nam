@@ -1,0 +1,15 @@
+# Name File for MODFLOW created on 2/19/2019 by ModelMuse Version 3.10.0.42
+BEGIN OPTIONS
+  LIST         ImportMt3dmsReinject.lst
+  PRINT_INPUT
+  SAVE_FLOWS
+END OPTIONS
+
+BEGIN PACKAGES
+  DIS6         ImportMt3dmsReinject.dis
+  IC6          ImportMt3dmsReinject.ic
+  NPF6         ImportMt3dmsReinject.npf
+  OC6          ImportMt3dmsReinject.oc
+  CHD6         ImportMt3dmsReinject.chd
+  WEL6         ImportMt3dmsReinject.wel
+END PACKAGES

@@ -1,0 +1,23 @@
+BEGIN options
+  BOUNDNAMES
+  PRINT_INPUT
+  PRINT_FLOWS
+  SAVE_FLOWS
+END options
+
+BEGIN dimensions
+  MAXBOUND  1
+END dimensions
+
+BEGIN period  1
+  5 1 50       0.00000000  'First Well'
+END period  1
+
+BEGIN period  2
+  5 1 50     -10.00000000  'First Well'
+END period  2
+
+BEGIN period  3
+  5 1 50     -10.00000000  'First Well'
+END period  3
+

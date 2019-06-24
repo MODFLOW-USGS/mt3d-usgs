@@ -9,14 +9,16 @@ C
       USE MT3DMS_MODULE, ONLY: IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,
      &                         INTOB,INHSS,INFTL,FPRT,MXTRNOP,
      &                         iUnitTRNOP,NameTRNOP,ICNF,IUCN,IUCN2,
-     &                         IOBS,IMAS,ICBM,IFTLFMT,
+     &                         IOBS,IMAS,ICBM,IFTL,IFTLFMT,
      &                         INUZT,
      &                         INLKT,INSFT,INCTS,INTSO,
-     &                         ICTSPKG,INOCROSS,ISAVUCN
+     &                         ICTSPKG,INOCROSS,ISAVUCN,
+     &                         FMIFMT6
+      USE FMI1MF6, ONLY: FMI1MF6NM
 C
       USE MIN_SAT                                                  
       IMPLICIT NONE
-      INTEGER       INUNIT,IBTN,IFTL,IFLEN,I,ILIST,LLOC,
+      INTEGER       INUNIT,IBTN,IFLEN,I,ILIST,LLOC,
      &              ITYP1,ITYP2,N,ISTART,ISTOP,IU,INAM1,INAM2,
      &              ISTART2,ISTOP2
       REAL          R
@@ -31,8 +33,9 @@ C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
      &         INFTL,ICNF,IUCN,IUCN2,IOBS,IMAS,ICBM,IFTLFMT,FPRT,
      &         iUnitTRNOP(MXTRNOP),
-     &         INUZT,INCTS,INTSO,INLKT,INSFT,INOCROSS)
+     &         INUZT,INCTS,INTSO,INLKT,INSFT,INOCROSS,IFTL)
       ALLOCATE(ISAVUCN(1000))
+      ALLOCATE(FMIFMT6)
       ISAVUCN=1
       INOCROSS=0
 C--ALLOCATE SCALAR VARIABLES
@@ -69,7 +72,8 @@ C--INITIALIZE.
       FPRT=' '
       ILIST=0
       IBTN=0
-      IFTL=0      
+      IFTL=0
+      FMIFMT6=.FALSE.
       DO I=1,MXTRNOP
         iUnitTRNOP(I)=0
       ENDDO
@@ -146,9 +150,21 @@ C--DECODE OPTIONAL FORMAT AND OUTPUT KEYWORDS
           ACCARG='SEQUENTIAL'
         ENDIF
         IF(LINE(ISTART:ISTOP).EQ.'PRINT'.OR.
-     &              LINE(ISTART2:ISTOP2).EQ.'PRINT') THEN
-          FPRT='Y'
-        ENDIF
+     &              LINE(ISTART2:ISTOP2).EQ.'PRINT') FPRT='Y'   
+C
+C--READ MODFLOW6 STYLE OUTPUT FILES
+      ELSEIF(LINE(ITYP1:ITYP2).EQ.'FT6') THEN
+        IFLEN=INAM2-INAM1+1
+        FNAME=''
+        FNAME(1:IFLEN)=LINE(INAM1:INAM2)
+!
+!--SET VARIABLES FOR CALL TO MF6FMINAM(..)
+        FILACT=ACTION(1)
+        FMTARG=FORM  ! FORM is equal to 'BINARY'
+        FMIFMT6=.TRUE.
+        ACCARG=ACCESS
+!--CHECK FOR "FT6"
+        CALL FMI1MF6NM(FNAME,IU,IOUT,FILSTAT,FILACT,FMTARG,IFLEN)
 C               
 C--CHECK FOR "UNFORMATTED" FILE TYPE.
       ELSEIF(LINE(ITYP1:ITYP2).EQ.'DATA(BINARY)') THEN

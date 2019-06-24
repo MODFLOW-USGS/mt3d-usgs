@@ -1,0 +1,23 @@
+MT3DMS BENCHMARK TEST PROBLEM #4
+2D TRANSPORT IN A DIAGONAL FLOW FIELD
+         1       100       100         1         1         1         0 # Data Set 3: NLAY NROW NCOL NPER NCOMP MCOMP, IATS
+ day   ?   ? # Data Set 4: TUNIT LUNIT MUNIT
+
+ 0 # Data Set 6: LAYCON
+         0        10                            12 # DELR
+         0        10                            12 # DELC
+         0         1                            12 # TOP
+         0         1                            12 # Data Set 10: DZ Layer: 1
+         0    0.1414                            12 # Data Set 11: PRSITY, Layer: 1
+         0         1                             5 # Data Set 12: ICBUND, Layer: 1
+         0         0                            12 # Data Set 13: SCONC: Comp1, Layer: 1
+      -999         0 # Data Set 14: CINACT, THKMIN
+        12         5        12        12         T # Data set 15: IFMTCN IFMTNP IFMTRF IFMTDP SAVUCN
+        10 # Data Set 16, NPRS
+       100       200       300       400       500       600       700       800
+       900      1000
+         1         1 # Data set 18, NOBS NPROBS
+         1        50        50
+         T         0 # Data Set 20: CHKMAS NPRMAS
+      1000         1         1 # Data Set 21: PERLEN NSTP TSMULT SSflag (Stress period 1)
+         0     10000         1         0 # Data Set 23: DT0, MXSTRN, TTSMULT, TTSMAX

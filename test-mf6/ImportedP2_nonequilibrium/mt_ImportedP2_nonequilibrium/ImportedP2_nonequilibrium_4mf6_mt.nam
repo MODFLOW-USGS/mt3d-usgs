@@ -1,0 +1,17 @@
+# Name File for MT3D-USGS created on 2/19/2019 by ModelMuse
+LIST             16    ImportedP2_nonequilibrium.mls
+FT6              10    ImportedP2_nonequilibrium.cbc
+FT6              22    ImportedP2_nonequilibrium.bhd
+FT6              23    ImportedP2_nonequilibrium.dis.grb
+BTN               1    ImportedP2_nonequilibrium.btn
+ADV               2    ImportedP2_nonequilibrium.adv
+DSP               3    ImportedP2_nonequilibrium.dsp
+SSM               4    ImportedP2_nonequilibrium.ssm
+RCT               8    ImportedP2_nonequilibrium.rct
+GCG               9    ImportedP2_nonequilibrium.gcg
+DATA             17    ImportedP2_nonequilibrium.cnf
+DATA(BINARY)    201    ImportedP2_nonequilibrium_Comp1_4mf6.ucn
+DATA(BINARY)    301    ImportedP2_nonequilibrium_Comp1_S_4mf6.ucn
+DATA            601    ImportedP2_nonequilibrium_Comp1_4mf6._mas
+DATA            401    ImportedP2_nonequilibrium_Comp1_4mf6.mto
+

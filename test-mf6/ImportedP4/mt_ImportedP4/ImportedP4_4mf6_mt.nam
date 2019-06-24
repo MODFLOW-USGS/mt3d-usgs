@@ -1,0 +1,14 @@
+# Name File for MT3DMS created on 2/19/2019 by ModelMuse
+LIST             16   ImportedP4.mls
+FT6              10   ImportedP4.bhd
+FT6              20   ImportedP4.cbc
+FT6              21   ImportedP4.dis.grb
+BTN               1   ImportedP4.btn
+ADV               2   ImportedP4.adv
+DSP               3   ImportedP4.dsp
+SSM               4   ImportedP4.ssm
+GCG               9   ImportedP4.gcg
+DATA             17   ImportedP4.cnf
+DATA(BINARY)    201   ImportedP4_Comp1_4mf6.ucn
+DATA            401   ImportedP4_Comp1_4mf6.mto
+DATA            601   ImportedP4_Comp1_4mf6._mas

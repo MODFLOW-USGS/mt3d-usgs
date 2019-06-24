@@ -1,0 +1,17 @@
+# Discretization File created on 2/19/2019 by ModelMuse version 3.10.0.42.
+# MT3DMS Benchmark Test Problem No. 9
+# TRANSPORT IN 2-D FLOW FIELD WITH A LOW-K ZONE
+# Upper left corner: (0, 0)
+# Lower left corner: (0, -1800)
+# Upper right corner: (1400, 0)
+# Lower right corner: (1400, -1800)
+# Grid angle (in degrees counterclockwise): 0
+# NLAY  NROW  NCOL  NPER  ITMUNI  LENUNI
+     1    18    14     2       1       2 
+     0                                                # LAYCB
+CONSTANT     1.000000000000E+002                      # DELR
+CONSTANT     1.000000000000E+002                      # DELC
+CONSTANT     1.000000000000E+001                      # TOP
+CONSTANT     0.000000000000E+000                      # BOTM, Layer 1
+  3.153600500000E+007      1  1.000000000000E+000  SS # PERLEN NSTP TSMULT Ss/tr (Stress period 1)
+  3.153600500000E+007      1  1.000000000000E+000  SS # PERLEN NSTP TSMULT Ss/tr (Stress period 2)

@@ -1,0 +1,16 @@
+BEGIN options
+  SAVE_FLOWS
+END options
+
+BEGIN packages
+  DIS6  p01SpatialStresses.dis  dis
+  STO6  p01SpatialStresses.sto  sto
+  IC6   p01SpatialStresses.ic   ic
+  NPF6  p01SpatialStresses.npf  npf
+  CHD6  p01SpatialStresses.chd  chd-1
+  OC6   p01SpatialStresses.oc   oc
+  WEL6  p01SpatialStresses.wel  wel
+  RCH6  p01SpatialStresses.rch  rch
+  EVT6  p01SpatialStresses.evt  evt
+END packages
+

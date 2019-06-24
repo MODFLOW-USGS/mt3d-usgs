@@ -1,0 +1,17 @@
+# CHD: Time-Variant Specified-Head package file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+BEGIN OPTIONS
+    AUXILIARY IFACE
+    BOUNDNAMES
+    PRINT_INPUT
+    SAVE_FLOWS
+END OPTIONS
+
+BEGIN DIMENSIONS
+  MAXBOUND     2
+END DIMENSIONS
+
+BEGIN PERIOD      1
+     1     1     1  5.920000000000E-001      0 'Imported_Specified_Head__Layer1_1'  # Data Set 6: Layer Row Column Shead IFACE boundname
+     1     1   101  5.920000000000E-001      0 'Object3'  # Data Set 6: Layer Row Column Shead IFACE boundname
+END PERIOD 
+

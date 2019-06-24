@@ -1,0 +1,60 @@
+# Discretization File created on 2/19/2019 by ModelMuse version 3.10.0.42.
+# 3D TEST PROBLEM
+# UNIFORM FLOW FIELD
+# Upper left corner: (0, 0)
+# Lower left corner: (0, -150)
+# Upper right corner: (210, 0)
+# Lower right corner: (210, -150)
+# Grid angle (in degrees counterclockwise): 0
+BEGIN OPTIONS
+  LENGTH_UNITS FEET
+  XORIGIN    0.000000000000E+000 
+  YORIGIN   -1.500000000000E+002 
+  ANGROT     0.000000000000E+000 
+END OPTIONS
+
+BEGIN DIMENSIONS
+  NLAY      8
+  NROW     15
+  NCOL     21
+END DIMENSIONS
+
+
+BEGIN GRIDDATA
+  DELR IPRN    12
+    CONSTANT   1.000E+001           # DELR
+
+  DELC IPRN    12
+    CONSTANT   1.000E+001           # DELC
+
+  TOP LAYERED IPRN    12
+    CONSTANT   8.000E+001           # TOP
+
+  BOTM LAYERED IPRN    12
+    CONSTANT   7.000E+001           # BOTM, Layer 1
+                                    
+    CONSTANT   6.000E+001           # BOTM, Layer 2
+                                    
+    CONSTANT   5.000E+001           # BOTM, Layer 3
+                                    
+    CONSTANT   4.000E+001           # BOTM, Layer 4
+                                    
+    CONSTANT   3.000E+001           # BOTM, Layer 5
+                                    
+    CONSTANT   2.000E+001           # BOTM, Layer 6
+                                    
+    CONSTANT   1.000E+001           # BOTM, Layer 7
+                                    
+    CONSTANT   0.000E+000           # BOTM, Layer 8
+
+  IDOMAIN LAYERED IPRN     5
+    CONSTANT      1                 # IDOMAIN 1
+    CONSTANT      1                 # IDOMAIN 2
+    CONSTANT      1                 # IDOMAIN 3
+    CONSTANT      1                 # IDOMAIN 4
+    CONSTANT      1                 # IDOMAIN 5
+    CONSTANT      1                 # IDOMAIN 6
+    CONSTANT      1                 # IDOMAIN 7
+    CONSTANT      1                 # IDOMAIN 8
+END GRIDDATA
+

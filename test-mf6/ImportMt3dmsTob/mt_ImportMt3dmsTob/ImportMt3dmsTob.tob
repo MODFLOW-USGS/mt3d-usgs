@@ -1,0 +1,142 @@
+# TOB: Transport Observation package file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+     5     7   121 # Data Set 1: MaxConcObs, MaxFluxObs, MaxFluxCells
+ImportMt3dmsTob    21    22    23 # Data Set 2: OUTNAM, inConcObs, inFluxObs, inSaveObs
+     5  1.000000000000E+000      1     0     1 # Data Set 3: nConcObs, CScale, iOutCobs, iConcLOG, iConcINTP
+ow1    -3     8     3     1  1.050000000000E+001   2.500000000000E-001   2.500000000000E-001   1.000000000000E+000   5.000000000000E-001  # Data Set 4: COBSNAM, Layer, Row, Column, iComp, TimeObs, Roff, Coff, weight, COBS
+     5  3.000000000000E-001      6  3.000000000000E-001      7  4.000000000000E-001  # Data Set 5: mLayer(1), prLayer(1), mLayer(2), prLayer(2), ..., mLayer(|Layer|), prLayer(|Layer|)
+ow2a     5     8     5     1  1.050000000000E+001   0.000000000000E+000   0.000000000000E+000   1.000000000000E+000   1.000000000000E-003  # Data Set 4: COBSNAM, Layer, Row, Column, iComp, TimeObs, Roff, Coff, weight, COBS
+ow2b     4     8     5     1  1.050000000000E+001   0.000000000000E+000   0.000000000000E+000   5.000000000000E-001   1.000000000000E-005  # Data Set 4: COBSNAM, Layer, Row, Column, iComp, TimeObs, Roff, Coff, weight, COBS
+ow3     5     9     5     1    -2  0.000000000000E+000   0.000000000000E+000  -1.000000000000E+000   0.000000000000E+000  # Data Set 4: COBSNAM, Layer, Row, Column, iComp, TimeObs, Roff, Coff, weight, COBS
+ow4     5    10     5     1  1.050000000000E+001   0.000000000000E+000   0.000000000000E+000   1.000000000000E+000   1.000000000000E-005  # Data Set 4: COBSNAM, Layer, Row, Column, iComp, TimeObs, Roff, Coff, weight, COBS
+     3  1.000000000000E+000      1 # Data Set 6: nFluxGroup, FScale, iOutFlux
+     3    60     1 # Data Set 7: nFluxTimeObs, ncells, iSSType
+CHDFLUX1_1     1  0.000000000000E+000  -1.000000000000E+000   0.000000000000E+000  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+CHDFLUX1_2     1  2.500000000000E+001  -1.000000000000E+000   0.000000000000E+000  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+CHDFLUX1_3     1  5.000000000000E+001  -1.000000000000E+000   0.000000000000E+000  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+     1     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     1    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     3    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     4    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2    60     1 # Data Set 7: nFluxTimeObs, ncells, iSSType
+CHFLUX2_1     1  1.050000000000E+001  -1.000000000000E+000   0.000000000000E+000  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+CHFLUX2_2     1  5.000000000000E+001  -1.000000000000E+000   0.000000000000E+000  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+     5     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     5    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     6    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     7    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     1    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     2    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     3    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     4    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     5    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     6    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     7    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     8    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8     9    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    10    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    11    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    12    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    13    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    14    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     8    15    21  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor
+     2     1     2 # Data Set 7: nFluxTimeObs, ncells, iSSType
+WELLFLUX_1     1  1.050000000000E+001   1.000000000000E+000   5.000000000000E+001  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+WELLFLUX_2     1  5.000000000000E+001   1.000000000000E+000   5.000000000000E+001  # Data set 8: FOBSNAM, iComp, FluxTimeObs, weight_fobs, FluxObs
+     7     8     3  1.000000000000E+000  # Data set 9: kcell, icell, jcell, factor

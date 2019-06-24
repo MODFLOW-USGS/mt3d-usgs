@@ -1,0 +1,14 @@
+# Name File for MODFLOW created on 2/19/2019 by ModelMuse Version 3.10.0.42
+BEGIN OPTIONS
+  LIST ImportedP1_Case1d.lst
+  PRINT_INPUT
+  SAVE_FLOWS
+END OPTIONS
+
+BEGIN PACKAGES
+  DIS6         ImportedP1_Case1d.dis
+  IC6          ImportedP1_Case1d.ic
+  NPF6         ImportedP1_Case1d.npf
+  OC6          ImportedP1_Case1d.oc
+  CHD6         ImportedP1_Case1d.chd
+END PACKAGES

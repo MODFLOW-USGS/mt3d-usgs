@@ -1,0 +1,16 @@
+BEGIN options
+  SAVE_FLOWS
+END options
+
+BEGIN packages
+  DIS6  gwt_p01.dis  dis
+  IC6  gwt_p01.ic  ic
+  ADV6  gwt_p01.adv  adv
+  DSP6  gwt_p01.dsp  dsp
+  STO6  gwt_p01.sto  sto
+  CNC6  gwt_p01.cnc  cnc-1
+  SSM6  gwt_p01.ssm  ssm
+  SRB6  gwt_p01.srb  srb
+  OC6  gwt_p01.oc  oc
+END packages
+
