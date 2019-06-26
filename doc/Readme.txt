@@ -65,7 +65,7 @@ distribution file contains the following directory structure.
 
 
    |
-   |--MT3D-USGS_1.0.0
+   |--MT3D-USGS_1.1.0
    |    |--bin            ; Compiled MT3D-USGS executables for personal 
    |    |                       computers
    |    |--data           ; Sample problems
@@ -158,7 +158,11 @@ is documented in Keating and Zyvoloski (2009). Other test problems were added
 to provide examples of the new input options. These test problems can be run 
 using either the 32-bit or 64-bit version of the MT3D-USGS executable. Saved 
 results for these simulations are included in the output_test_64 directory for 
-comparison.
+comparison. It is left up to the user to copy the appropriate versions of 
+MODFLOW-NWT and MODFLOW 6 to their local bin directory before attempting to run 
+the simulations (FTL files must be generated). In the case of MODFLOW-NWT, 
+the user must also rename the executable to match the name used in the batch 
+files.
 
 E. COMPILING
 

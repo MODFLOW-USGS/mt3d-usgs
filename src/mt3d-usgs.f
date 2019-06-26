@@ -51,8 +51,9 @@ C held liable for any damages resulting from its authorized or
 C unauthorized use.
 C
 C=======================================================================
-C Version history: 09-30-2016 (1.00)
+C Version history: 09-30-2016 (1.0.0)
 C                  02-28-2019 (1.0.1)
+C                  06-28-2019 (1.1.0)
 C
 C  =====================================================================                                        
 C
