@@ -1266,6 +1266,7 @@ C
 C
           ELSEIF(ICBUND(J,I,K,ICOMP).EQ.0) THEN
             IF(DRYON) THEN
+              IF(CEVT(J,I,ICOMP)==0.) CYCLE
               CTMP=CEVT(J,I,ICOMP)
               IF(EVTR(J,I).LT.0.AND.(CTMP.LT.0 .or.
      &                         CTMP.GE.CNEW(J,I,K,ICOMP))) THEN
