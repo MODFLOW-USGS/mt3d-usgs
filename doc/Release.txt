@@ -51,6 +51,8 @@ o Version 1.1.0 06/28/2019:
   Bug Fixes:
   
     - Fixed floating-invalid error in SSM1OT (ssm1.f)
+    - Fixed wrongful reporting of mass lost to ET when the DRYCELL keyword
+      is used in BTN.  Occured when user specified non-zero value of CINACT
 
   Other:
     
