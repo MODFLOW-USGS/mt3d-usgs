@@ -1,0 +1,12 @@
+# Name File for MT3DMS created on 2/19/2019 by ModelMuse
+LIST              16       ImportMt3dSteadyState.mls
+FTL               10       ImportMt3dSteadyState.ftl
+ADV                2       ImportMt3dSteadyState.adv
+BTN                1       ImportMt3dSteadyState.btn
+DSP                3       ImportMt3dSteadyState.dsp
+SSM                4       ImportMt3dSteadyState.ssm
+GCG                9       ImportMt3dSteadyState.gcg
+DATA              17       ImportMt3dSteadyState.cnf
+DATA(BINARY)     201       ImportMt3dSteadyState_Comp1_4mf5.ucn
+DATA             401       ImportMt3dSteadyState_Comp1_4mf5.mto
+DATA             601       ImportMt3dSteadyState_Comp1_4mf5._mas

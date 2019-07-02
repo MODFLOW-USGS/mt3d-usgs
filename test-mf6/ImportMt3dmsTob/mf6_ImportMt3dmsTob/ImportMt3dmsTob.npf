@@ -1,0 +1,52 @@
+# NPF: Node Property Flow package file created on 2/19/2019 by ModelMuse version 3.10.0.42.
+BEGIN OPTIONS
+    SAVE_FLOWS
+END OPTIONS
+
+
+BEGIN GRIDDATA
+  ICELLTYPE LAYERED IPRN     5
+    CONSTANT      0                 # ICELLTYPE 1
+    CONSTANT      0                 # ICELLTYPE 2
+    CONSTANT      0                 # ICELLTYPE 3
+    CONSTANT      0                 # ICELLTYPE 4
+    CONSTANT      0                 # ICELLTYPE 5
+    CONSTANT      0                 # ICELLTYPE 6
+    CONSTANT      0                 # ICELLTYPE 7
+    CONSTANT      0                 # ICELLTYPE 8
+  K LAYERED IPRN    12
+    CONSTANT   1.00                 # K 1
+                                  
+    CONSTANT   1.00                 # K 2
+                                  
+    CONSTANT   1.00                 # K 3
+                                  
+    CONSTANT   1.00                 # K 4
+                                  
+    CONSTANT   1.00                 # K 5
+                                  
+    CONSTANT   1.00                 # K 6
+                                  
+    CONSTANT   1.00                 # K 7
+                                  
+    CONSTANT   1.00                 # K 8
+
+  K33 LAYERED IPRN    12
+    CONSTANT   1.00                 # K33 1
+                                  
+    CONSTANT   1.00                 # K33 2
+                                  
+    CONSTANT   1.00                 # K33 3
+                                  
+    CONSTANT   1.00                 # K33 4
+                                  
+    CONSTANT   1.00                 # K33 5
+                                  
+    CONSTANT   1.00                 # K33 6
+                                  
+    CONSTANT   1.00                 # K33 7
+                                  
+    CONSTANT   1.00                 # K33 8
+
+END GRIDDATA
+

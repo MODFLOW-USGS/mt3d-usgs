@@ -131,8 +131,7 @@ def test_mt3dmsp09a():
     mf, mt, conc_mt3dms, cvt, mvt = p09mt3d(exe_name_mf, exe_name_mt3dms,
                                             mt3dms_ws, mixelm, nadvfd)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1.5e-3), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1.5e-3)
     return
 
 

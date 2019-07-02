@@ -1,0 +1,284 @@
+                                   MODFLOW 6
+                U.S. GEOLOGICAL SURVEY MODULAR HYDROLOGIC MODEL
+                       GROUNDWATER TRANSPORT MODEL (GWT)
+                          VERSION 6.0.3.106 10/01/2018
+
+  MODFLOW 6 compiled Dec  6 2018 17:38:11 with GFORTRAN compiler (ver. 8.2.0)
+
+This software is preliminary or provisional and is subject to 
+revision. It is being provided to meet the need for timely best 
+science. The software has not received final approval by the U.S. 
+Geological Survey (USGS). No warranty, expressed or implied, is made 
+by the USGS or the U.S. Government as to the functionality of the 
+software and related material nor shall the fact of release 
+constitute any such warranty. The software is provided on the 
+condition that neither the USGS nor the U.S. Government shall be held 
+liable for any damages resulting from the authorized or unauthorized 
+use of the software.
+
+
+MODFLOW was compiled using uniform precision.
+Precision of REAL variables: 15
+
+
+ OPENED gwt_p01.dis
+ FILE TYPE:DIS6                   UNIT 1012   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.ic
+ FILE TYPE:IC6                    UNIT 1013   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.adv
+ FILE TYPE:ADV6                   UNIT 1014   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.dsp
+ FILE TYPE:DSP6                   UNIT 1015   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.sto
+ FILE TYPE:STO6                   UNIT 1016   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.cnc
+ FILE TYPE:CNC6                   UNIT 1017   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.ssm
+ FILE TYPE:SSM6                   UNIT 1018   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.srb
+ FILE TYPE:SRB6                   UNIT 1019   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+
+ OPENED gwt_p01.oc
+ FILE TYPE:OC6                    UNIT 1020   STATUS:OLD                 
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+ ACTION:READ                
+
+ NAMEFILE OPTIONS:
+    FLOWS WILL BE SAVED TO BUDGET FILE SPECIFIED IN OUTPUT CONTROL
+
+ DIS -- STRUCTURED GRID DISCRETIZATION PACKAGE, VERSION 2 : 3/27/2014 - INPUT READ FROM UNIT 1012
+
+
+ PROCESSING DISCRETIZATION OPTIONS
+ END OF DISCRETIZATION OPTIONS
+ MODEL LENGTH UNIT IS UNDEFINED
+ PROCESSING DISCRETIZATION DIMENSIONS
+    NLAY =       1
+    NROW =       1
+    NCOL =     101
+ END OF DISCRETIZATION DIMENSIONS
+ PROCESSING GRIDDATA
+
+                     DELR =   10.00000    
+
+                     DELC =   1.000000    
+
+ TOP ELEVATION OF LAYER 1 =   0.000000    
+
+   MODEL LAYER BOTTOM EL. =  -1.000000    
+
+                  IDOMAIN = 1
+ END PROCESSING GRIDDATA
+ PROCESSING DISPERSION OPTIONS
+ END OF DISPERSION OPTIONS
+
+ CNC   -- CONSTANT CONC PACKAGE, VERSION 8, 2/22/2014 INPUT READ FROM UNIT 1017
+
+ PROCESSING CONSTANT CONC OPTIONS
+ END OF CONSTANT CONC OPTIONS
+
+ PROCESSING CONSTANT CONC DIMENSIONS
+    MAXBOUND =       1
+ END OF CONSTANT CONC DIMENSIONS
+
+ IC -- INITIAL CONDITIONS PACKAGE, VERSION 8, 3/28/2015 INPUT READ FROM UNIT 1013
+ PROCESSING GRIDDATA
+
+ INITIAL CONCENTRATION =   0.000000    
+ END PROCESSING GRIDDATA
+
+ FMI -- FLOW MODEL INTERFACE, VERSION 1, 8/29/2017 INPUT READ FROM UNIT 1
+
+
+
+ STO -- STORAGE PACKAGE, VERSION 1, 8/24/2017 INPUT READ FROM UNIT 1016
+
+
+ PROCESSING STORAGE OPTIONS
+ END OF STORAGE OPTIONS
+ PROCESSING GRIDDATA
+
+                 POROSITY =  0.2500000    
+ END PROCESSING GRIDDATA
+
+ SRB -- SORPTION PACKAGE, VERSION 1, 10/01/2018 INPUT READ FROM UNIT 1019
+
+
+ PROCESSING SORPTION OPTIONS
+    LINEAR SORBTION IS SELECTED. 
+    FIRST ORDER REACTION IS ACTIVE. 
+ END OF SORPTION OPTIONS
+ PROCESSING GRIDDATA
+
+             BULK DENSITY =  0.2500000    
+
+ DISTRIBUTION COEFFICIENT =   0.000000    
+
+   FIRST RATE COEFFICIENT =  0.2000000E-02
+
+  SECOND RATE COEFFICIENT =  0.2000000E-02
+ END PROCESSING GRIDDATA
+
+ ADV-- ADVECTION PACKAGE, VERSION 1, 8/25/2017 INPUT READ FROM UNIT 1014
+
+
+ PROCESSING ADVECTION OPTIONS
+    ADVECTION WEIGHTING SCHEME HAS BEEN SET TO: UPSTREAM
+ SELECTED ADVECTION SCHEME RESULTS IN AN ASYMMETRIC MATRIX.
+ END OF ADVECTION OPTIONS
+
+ DSP-- DISPERSION PACKAGE, VERSION 1, 1/24/2018 INPUT READ FROM UNIT 1015
+
+
+ PROCESSING GRIDDATA
+
+                      ALH =   10.00000    
+
+                     ATH1 =  0.1000000    
+ END PROCESSING GRIDDATA
+
+ SSM -- SOURCE-SINK MIXING PACKAGE, VERSION 1, 8/25/2017 INPUT READ FROM UNIT 1018
+
+
+ PROCESSING SSM OPTIONS
+ END OF SSM OPTIONS
+ PROCESSING SOURCES
+ END PROCESSING SOURCES
+      THE LAST TIME STEP WILL BE PRINTED
+      THE LAST TIME STEP WILL BE PRINTED
+ PROCESSING OC OPTIONS
+    BUDGET INFORMATION WILL BE WRITTEN TO:
+      UNIT NUMBER: 1026
+      FILE NAME: gwt_p01.cbc
+
+ OPENED gwt_p01.cbc
+ FILE TYPE:DATA(BINARY)   UNIT 1026   STATUS:REPLACE             
+ FORMAT:UNFORMATTED            ACCESS:STREAM              
+ ACTION:READWRITE           
+
+    CONCENTRATION INFORMATION WILL BE WRITTEN TO:
+      UNIT NUMBER: 1027
+      FILE NAME: gwt_p01.ucn
+
+ OPENED gwt_p01.ucn
+ FILE TYPE:DATA(BINARY)   UNIT 1027   STATUS:REPLACE             
+ FORMAT:UNFORMATTED            ACCESS:STREAM              
+ ACTION:READWRITE           
+
+ END OF OC OPTIONS
+
+ BEGIN READING OUTPUT CONTROL FOR STRESS PERIOD 1
+      THE LAST TIME STEP WILL BE SAVED
+      THE LAST TIME STEP WILL BE SAVED
+      THE LAST TIME STEP WILL BE PRINTED
+      THE LAST TIME STEP WILL BE PRINTED
+
+ END READING OUTPUT CONTROL FOR STRESS PERIOD 1
+ UBDSV1 SAVING          STORAGE ON UNIT   1026 AT TIME STEP     10, STRESS PERIOD      1
+ UBDSV1 SAVING         SORPTION ON UNIT   1026 AT TIME STEP     10, STRESS PERIOD      1
+ UBDSV1 SAVING     FLOW-JA-FACE ON UNIT   1026 AT TIME STEP     10, STRESS PERIOD      1
+ UBDSV06 SAVING SSM              IN MODEL GWT_P01          PACKAGE GWT_P01         CONNECTED TO MODEL GWT_P01          PACKAGE SSM              ON UNIT   1026 AT TIME STEP     10, STRESS PERIOD      1
+ UBDSV06 SAVING    CONSTANT CONC IN MODEL GWT_P01          PACKAGE GWT_P01         CONNECTED TO MODEL GWT_P01          PACKAGE CNC-1            ON UNIT   1026 AT TIME STEP     10, STRESS PERIOD      1
+1
+  CONCENTRATION IN LAYER   1 AT END OF TIME STEP  10 IN STRESS PERIOD    1
+  ---------------------------------------------------------------------------
+
+                1               2               3               4               5               6               7               8               9              10
+               11              12              13              14              15              16              17              18              19              20
+               21              22              23              24              25              26              27              28              29              30
+               31              32              33              34              35              36              37              38              39              40
+               41              42              43              44              45              46              47              48              49              50
+               51              52              53              54              55              56              57              58              59              60
+               61              62              63              64              65              66              67              68              69              70
+               71              72              73              74              75              76              77              78              79              80
+               81              82              83              84              85              86              87              88              89              90
+               91              92              93              94              95              96              97              98              99             100
+              101
+ ................................................................................................................................................................
+   1      1.00000        0.927874        0.860947        0.798841        0.741208        0.687722        0.638081        0.592006        0.549234        0.509525    
+         0.472654        0.438411        0.406605        0.377055        0.349596        0.324075        0.300349        0.278288        0.257770        0.238685    
+         0.220931        0.204411        0.189040        0.174737        0.161428        0.149046        0.137527        0.126814        0.116853        0.107595    
+         9.899277E-02    9.100490E-02    8.359123E-02    7.671475E-02    7.034084E-02    6.443714E-02    5.897328E-02    5.392077E-02    4.925281E-02    4.494415E-02
+         4.097103E-02    3.731103E-02    3.394298E-02    3.084692E-02    2.800401E-02    2.539647E-02    2.300752E-02    2.082138E-02    1.882313E-02    1.699878E-02
+         1.533516E-02    1.381989E-02    1.244139E-02    1.118880E-02    1.005196E-02    9.021394E-03    8.088268E-03    7.244357E-03    6.482018E-03    5.794161E-03
+         5.174220E-03    4.616124E-03    4.114269E-03    3.663488E-03    3.259032E-03    2.896534E-03    2.571991E-03    2.281739E-03    2.022428E-03    1.790999E-03
+         1.584665E-03    1.400892E-03    1.237376E-03    1.092027E-03    9.629518E-04    8.484374E-04    7.469373E-04    6.570557E-04    5.775355E-04    5.072456E-04
+         4.451698E-04    3.903961E-04    3.421071E-04    2.995712E-04    2.621343E-04    2.292122E-04    2.002840E-04    1.748854E-04    1.526033E-04    1.330705E-04
+         1.159609E-04    1.009856E-04    8.788884E-05    7.644505E-05    6.645706E-05    5.775563E-05    5.020296E-05    4.370426E-05    3.823764E-05    3.392574E-05
+         3.120311E-05
+
+ CONCENTRATION WILL BE SAVED ON UNIT 1027 AT END OF TIME STEP   10, STRESS PERIOD    1
+
+
+  MASS BUDGET FOR ENTIRE MODEL AT END OF TIME STEP   10, STRESS PERIOD   1
+  ---------------------------------------------------------------------------------------------------
+
+     CUMULATIVE MASS      M       RATES FOR THIS TIME STEP      M/T          PACKAGE NAME    
+     ------------------                 ------------------------                     ----------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE =           0.0000               STORAGE =           0.0000                     
+            SORBTION =           0.0000              SORBTION =           0.0000                     
+           REACTIONS =           0.0000             REACTIONS =           0.0000                     
+     SOURCE-SINK MIX =           0.0000       SOURCE-SINK MIX =           0.0000                     
+          FLOW-ERROR =       5.0139E-12            FLOW-ERROR =       3.1423E-15                     
+       CONSTANT CONC =         130.5442         CONSTANT CONC =       6.4328E-02     CNC-1           
+
+            TOTAL IN =         130.5442              TOTAL IN =       6.4328E-02
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE =          31.1260               STORAGE =       2.0736E-03                     
+            SORBTION =           0.0000              SORBTION =           0.0000                     
+           REACTIONS =          99.4174             REACTIONS =       6.2252E-02                     
+     SOURCE-SINK MIX =       7.7131E-04       SOURCE-SINK MIX =       1.8722E-06                     
+          FLOW-ERROR =       9.4346E-12            FLOW-ERROR =       5.3405E-15                     
+       CONSTANT CONC =           0.0000         CONSTANT CONC =           0.0000     CNC-1           
+
+           TOTAL OUT =         130.5442             TOTAL OUT =       6.4328E-02
+
+            IN - OUT =      -8.8960E-12              IN - OUT =      -4.4270E-15
+
+ PERCENT DISCREPANCY =          -0.00     PERCENT DISCREPANCY =          -0.00
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP   10 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 1.72800E+07 2.88000E+05  4800.0      200.00     0.54757    
+ STRESS PERIOD TIME 1.72800E+08 2.88000E+06  48000.      2000.0      5.4757    
+         TOTAL TIME 1.72800E+08 2.88000E+06  48000.      2000.0      5.4757    

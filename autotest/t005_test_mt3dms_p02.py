@@ -130,8 +130,7 @@ def test_mt3dmsp02a():  # Tests Freudlich
                                             mt3dms_ws, isothm,
                                             sp1, sp2, mixelm, zeta)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert  np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 
@@ -153,8 +152,7 @@ def test_mt3dmsp02b():  # Tests Langmuir
                                             mt3dms_ws, isothm,
                                             sp1, sp2, mixelm, zeta)
 
-    msg = 'concentrations not equal {} {}'.format(conc_mt3dusgs, conc_mt3dms)
-    assert np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+    np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4)
     return
 
 def test_mt3dmsp02c():  # Tests Nonequilibrium
@@ -176,8 +174,9 @@ def test_mt3dmsp02c():  # Tests Nonequilibrium
                                                 mt3dms_ws, isothm,
                                                 sp1, beta, mixelm, zeta)
 
-        msg = 'concentrations not equal {} {} for beta {}'.format(conc_mt3dusgs, conc_mt3dms, str(beta))
-        assert np.allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4), msg
+        msg = 'concentrations not equal for beta {}'.format(beta)
+        np.testing.assert_allclose(conc_mt3dusgs, conc_mt3dms, atol=1e-4,
+                                   err_msg=msg)
 
     return
 

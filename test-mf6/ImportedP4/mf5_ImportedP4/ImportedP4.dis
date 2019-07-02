@@ -1,0 +1,16 @@
+# Discretization File created on 2/19/2019 by ModelMuse version 3.10.0.42.
+# MT3DMS benchmark test problem #4
+# 2D transport in a diagonal uniform flow field
+# Upper left corner: (0, 0)
+# Lower left corner: (0, -1000)
+# Upper right corner: (1000, 0)
+# Lower right corner: (1000, -1000)
+# Grid angle (in degrees counterclockwise): 0
+# NLAY  NROW  NCOL  NPER  ITMUNI  LENUNI
+     1   100   100     1       4       0 
+     0 # LAYCB
+CONSTANT     1.000000000000E+001     # DELR
+CONSTANT     1.000000000000E+001     # DELC
+CONSTANT     1.000000000000E+000     # TOP
+CONSTANT     0.000000000000E+000     # BOTM, Layer 1
+  1.00000000E+003      1  1.0  SS    # PERLEN NSTP TSMULT Ss/tr (Stress period 1)

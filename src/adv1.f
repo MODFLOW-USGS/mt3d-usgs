@@ -393,8 +393,11 @@ C
       INTEGER   ICOMP,J,I,K,ierr
       REAL      SADV1Q,QCTMP,DTRANS
       REAL, ALLOCATABLE, DIMENSION(:,:,:) :: PRSYTMP         
-      IF(.NOT.ALLOCATED(PRSYTMP))
-     &      ALLOCATE(PRSYTMP(NCOL,NROW,NLAY),stat=ierr)
+      IF(.NOT.ALLOCATED(PRSYTMP)) THEN
+        ALLOCATE(PRSYTMP(NCOL,NROW,NLAY),stat=ierr)
+        IF (ierr /= 0) STOP "allocate error"
+        PRSYTMP=0.
+      ENDIF
 C
 C--IF FINITE DIFFERENCE OR ULTIMATE OPTION IS USED
       IF(MIXELM.EQ.0) THEN
@@ -849,6 +852,7 @@ C
 C
 C--INITIALIZE
       V(:)=0.
+      D2=0.
 C
 C--SET DT TO NEGATIVE FOR BACKWARD TRACKING
       DT=-DTRANS
@@ -2468,12 +2472,14 @@ C SCHEME (ULTIMATE).
 C *********************************************************************
 C
       USE       MIN_SAT 
+      USE MT3DMS_MODULE, ONLY: QSTO,HT2,TIME2,IALTFM,DZ
       IMPLICIT  NONE
       INTEGER   ICBUND,NCOL,NROW,NLAY,J,I,K,IX,IY,IZ,ICOMP
       INTEGER   K2,N,NRC,KNEXT
       REAL      COLD,QX,QY,QZ,DELR,DELC,DH,CNEW,PRSITY,RETA,DTRANS,
      &          CBCK,CTMP,WW,CTOP,CRGT,CTOTAL,CFACE,RMASIO
       REAL      CTOTAL2,CMAS2  
+      REAL      VOL,VCELL,EPS
       DIMENSION ICBUND(NCOL,NROW,NLAY),QX(NCOL,NROW,NLAY),
      &          QY(NCOL,NROW,NLAY),QZ(NCOL,NROW,NLAY),DELR(NCOL),
      &          DELC(NROW),DH(NCOL,NROW,NLAY),COLD(NCOL,NROW,NLAY),
@@ -2481,6 +2487,9 @@ C
      &          CTOP(NCOL,NROW,NLAY),PRSITY(NCOL,NROW,NLAY),
      &          CBCK(NCOL,NROW,NLAY),RMASIO(122,2)
       PARAMETER (IX=1,IY=2,IZ=3)
+C
+C--INITIALIZE
+      CRGT=0.
 C
 C--CLEAR TEMPORARY ARRAYS
       DO K=1,NLAY
@@ -2849,29 +2858,62 @@ C
 C--TOTAL CHANGES            
   430       CTOTAL=CTOTAL*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
             CTOTAL2=CTOTAL2*DTRANS/(RETA(J,I,K)*PRSITY(J,I,K))
+C...........TIME INTERPOLATION
+            IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+              VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &            *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+              VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+              VOL=MIN(VOL,VCELL)
+              EPS=EPSILON(VOL)
+              IF(ABS(VOL).LE.EPS) VOL=EPS
+              CTOTAL=CTOTAL*DH(J,I,K)*DELR(J)*DELC(I)/VOL
+              CTOTAL2=CTOTAL2*DH(J,I,K)*DELR(J)*DELC(I)/VOL
+            ENDIF
 C
 C--UPDATE CONCENTRATION AT ACTIVE CELL AND
 C--SAVE MASS INTO OR OUT OF CONSTANT-CONCENTRATION CELL
             IF(ICBUND(J,I,K).GT.0) THEN
-              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2  
+              CNEW(J,I,K)=COLD(J,I,K)-CTOTAL-CTOTAL2
+C.............ZERO OUT NEGATIVE CONCENTRATIONS - COMMENTED OUT FOR NOW
+C              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+C                IF(CNEW(J,I,K).LE.0.) CNEW(J,I,K)=0.
+C              ENDIF
               N=(K-1)*NRC+(I-1)*NCOL+J                
               IF(DRYON) CNEW(J,I,K)=CNEW(J,I,K)+C7(N,ICOMP) 
               IF(DOMINSAT) THEN                       
+                IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &              *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                  VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                  VOL=MIN(VOL,VCELL)
+                  IF(VOL.LT.0.) VOL=0.
+                ELSE
+                  VOL=DELR(J)*DELC(I)*DH(J,I,K)
+                ENDIF
                 IF(CTOTAL2.LT.0) THEN                 
                   RMASIO(12,1)=RMASIO(12,1)-CTOTAL2*RETA(J,I,K)*
-     &                         DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                         VOL*PRSITY(J,I,K)
                 ELSE                                            
                   RMASIO(12,2)=RMASIO(12,2)-CTOTAL2*RETA(J,I,K)*
-     &                         DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                         VOL*PRSITY(J,I,K)
                 ENDIF                                           
               ENDIF                                             
             ELSEIF(ICBUND(J,I,K).LT.0) THEN
+              IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
+                VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
+     &            *DH(J,I,K)*QSTO(J,I,K)/PRSITY(J,I,K)*(HT2-TIME2)
+                VCELL=DELR(J)*DELC(I)*DZ(J,I,K)
+                VOL=MIN(VOL,VCELL)
+                IF(VOL.LT.0.) VOL=0.
+              ELSE
+                VOL=DELR(J)*DELC(I)*DH(J,I,K)
+              ENDIF
               IF(CTOTAL.GT.0) THEN
                 RMASIO(6,1)=RMASIO(6,1)+CTOTAL*RETA(J,I,K)*
-     &                      DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                      VOL*PRSITY(J,I,K)
               ELSE
                 RMASIO(6,2)=RMASIO(6,2)+CTOTAL*RETA(J,I,K)*
-     &                      DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
+     &                      VOL*PRSITY(J,I,K)
               ENDIF
             ENDIF
 C
@@ -3788,6 +3830,8 @@ C
       REAL      RC1TMP,RC2TMP,TERM1,DCRCT,VOLUME,CIML,CIMS
       PARAMETER (IUPS=1,ICTRL=2)
 C
+C--INITIALIZE
+      SCTEMP=0.
 C--RETURN IF COEFF MATRICES ARE NOT TO BE UPDATED
 CCC      IF(.NOT.UPDLHS) GOTO 999
 C

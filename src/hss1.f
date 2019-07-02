@@ -117,8 +117,8 @@ C
         CALL ustop ('[MaxHSSSource] exceeded!')
       ENDIF   
 C   
+      YMAX=0.
       IF(IHSSGEN.EQ.2) THEN 
-        YMAX=0.             
         DO I=1,NROW         
           YMAX=YMAX+DELC(I) 
         ENDDO               
@@ -1086,6 +1086,8 @@ C***********************************************************************
         CTOT=COLD(J,I,K,ICOMP)/CONVMOL(N)
       ELSEIF(IDSSLDOM(N).EQ.2) THEN
         CTOT=CSOLOLD(IC,N)/CONVMOL(N)
+      ELSE
+        CTOT=0.
       ENDIF
       DC=0.
       DO IPHS=1,NSLDPHS(N)
@@ -1156,6 +1158,8 @@ C
         CTOT=COLD(J,I,K,ICOMP)/CONVMOL(N)
       ELSEIF(IDSSLDOM(N).EQ.2) THEN
         CTOT=CSOLOLD(IC,N)/CONVMOL(N)
+      ELSE
+        CTOT=0.
       ENDIF
       DC=0.
       DO IPHS=1,NSLDPHS(N)

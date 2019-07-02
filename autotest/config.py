@@ -21,13 +21,38 @@ if platform.system() in 'Windows':
 
 fflags = None
 if fc == 'gfortran':
-    fflags = 'Werror Wtabs Wline-truncation Wcharacter-truncation'
+    # Add warning flags, which fail Travis CI
+    fflags = [
+        '-Werror',
+        '-Wall',  # bundle of warnings
+        '-Wextra',  # extra bundle of warnings
+    ]
+    # But disable a few warnings
+    fflags += [
+        '-Wno-array-temporaries',
+        '-Wno-compare-reals',
+        '-Wno-conversion',
+        '-Wno-unused-dummy-argument',
+        '-Wno-unused-variable',
+        '-Wno-unused-label',
+        '-Wno-unused-parameter',
+        '-Wno-maybe-uninitialized',
+        '-Wno-do-subscript',
+    ]
+elif fc == 'ifort':
+    # Add warning flags, which fail Travis CI
+    # TODO: add other warning flags
+    fflags = [
+        '-warn truncated_source',
+    ]
+
 
 # Development version information
-testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg')]
+testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg'),
+             os.path.join('..', 'test-mf6')]
 srcdir = os.path.join('..', 'src')
 program = 'mt3d-usgs'
-version = '1.0.00'
+version = '1.0.1'
 target = os.path.join('temp', program + '_' + version + target_extension)
 target_dict[os.path.basename(target)] = target
 
@@ -35,7 +60,7 @@ target_dict[os.path.basename(target)] = target
 # already in the path, and if so, then use what's in the path.  If they
 # are not in the path, then use the versions downloaded from github.
 bindir = os.path.join('temp', 'bin')
-for p in ['mt3dms', 'mfnwt', 'mf2005', 'mf2000']:
+for p in ['mt3dms', 'mfnwt', 'mf2005', 'mf2000', 'mf6']:
     exe_exists = flopy.which(p)
     if exe_exists is None:
         pwpath = 'temp/bin/{}'.format(p) + target_extension

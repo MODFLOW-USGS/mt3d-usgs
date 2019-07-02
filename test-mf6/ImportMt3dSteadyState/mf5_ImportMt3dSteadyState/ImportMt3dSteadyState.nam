@@ -1,0 +1,14 @@
+# Name File for MODFLOW created on 2/19/2019 by ModelMuse Version 3.10.0.42
+LIST             11 ImportMt3dSteadyState.lst REPLACE
+DATA(BINARY)      9 ImportMt3dSteadyState.cbc REPLACE
+DIS              12 ImportMt3dSteadyState.dis OLD
+BAS6             13 ImportMt3dSteadyState.bas OLD
+OC               39 ImportMt3dSteadyState.oc OLD
+DATA             37 ImportMt3dSteadyState.fhd REPLACE
+DATA             38 ImportMt3dSteadyState.fdn REPLACE
+SIP              35 ImportMt3dSteadyState.sip OLD
+BCF6             64 ImportMt3dSteadyState.bcf OLD
+LMT6            135 ImportMt3dSteadyState.lmt OLD
+DATA(BINARY)    136 ImportMt3dSteadyState.ftl REPLACE
+CHD              17 ImportMt3dSteadyState.chd OLD
+WEL              20 ImportMt3dSteadyState.wel OLD

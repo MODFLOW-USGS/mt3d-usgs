@@ -47,6 +47,10 @@ code development and expansion.
 
 HISTORY
 
+      MT3D-USGS Version 1.1.0 06/28/2019 - Support for structured MODFLOW 6-
+                                           generated flow fields and minor bug
+                                           fixes. 
+      MT3D-USGS Version 1.0.1 02/28/2019 - Release with numerous bug fixes. 
       MT3D-USGS Version 1.0.0 09/30/2016 - Initial release. 
 
         
@@ -80,6 +84,8 @@ FUNTIONALITY
          LKT -- Lake Transport Package        
          SFT -- Streamflow Transport Package
          UZT –- Unsaturated-Zone Transport Package
+         FT6 -- Read MODFLOW 6 binary output files, including grid, head, and
+                cell-by-cell flow file
      
 
 DOCUMENTATION

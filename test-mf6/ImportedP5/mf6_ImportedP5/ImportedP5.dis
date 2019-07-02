@@ -1,0 +1,39 @@
+# Discretization File created on 2/19/2019 by ModelMuse version 3.10.0.42.
+# MT3DMS Benchmark Test Problem #5
+# 2D TRANSPORT IN A RADIAL FLOW FIELD
+# Upper left corner: (0, 0)
+# Lower left corner: (0, -310)
+# Upper right corner: (310, 0)
+# Lower right corner: (310, -310)
+# Grid angle (in degrees counterclockwise): 0
+BEGIN OPTIONS
+  LENGTH_UNITS METERS
+  XORIGIN  0.000000000000E+000 
+  YORIGIN -3.100000000000E+002 
+  ANGROT  0.000000000000E+000 
+END OPTIONS
+
+BEGIN DIMENSIONS
+  NLAY      1
+  NROW     31
+  NCOL     31
+END DIMENSIONS
+
+
+BEGIN GRIDDATA
+  DELR IPRN    12
+    CONSTANT   1.000000000000E+001  # DELR
+
+  DELC IPRN    12
+    CONSTANT   1.000000000000E+001  # DELC
+
+  TOP LAYERED IPRN    12
+    CONSTANT   1.000000000000E+000  # TOP
+
+  BOTM LAYERED IPRN    12
+    CONSTANT   0.000000000000E+000  # BOTM, Layer 1
+
+  IDOMAIN LAYERED IPRN     5
+    CONSTANT      1 # IDOMAIN 1
+END GRIDDATA
+

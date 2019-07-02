@@ -1,0 +1,12 @@
+BEGIN options
+  SAVE_FLOWS
+END options
+
+BEGIN packages
+  DIS6  gwf_p01.dis  dis
+  IC6  gwf_p01.ic  ic
+  NPF6  gwf_p01.npf  npf
+  CHD6  gwf_p01.chd  chd-1
+  OC6  gwf_p01.oc  oc
+END packages
+

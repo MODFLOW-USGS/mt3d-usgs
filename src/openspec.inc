@@ -13,25 +13,25 @@ C
 C  ACCESS specifier --
 C
 C    Standard Fortran -- Use unless there is a reason to do otherwise.
-      DATA ACCESS/'SEQUENTIAL'/
+C      DATA ACCESS/'SEQUENTIAL'/
 C
 C    Use the following in combination with 'UNFORMATTED' below to
 C    create portable binary files.  This combination seems to work
 C    well when using gfortran.
-C     DATA ACCESS/'STREAM'/
+      DATA ACCESS/'STREAM'/
 C
 C  FORM specifier --
 C
 C    Standard Fortran, which results in vendor dependent (non-portable)
 C    files.  Use unless there is a reason to do otherwise.
-C      DATA FORM/'UNFORMATTED'/
+      DATA FORM/'UNFORMATTED'/
 C
 C    Non-standard Fortran that causes code compiled by Compaq (Digital)
 C    Fortran on personal computers to use unstructured non-formatted
 C    files.  This may make it possible for the non-formatted files used
 C    by MODFLOW to be used with programs that are compiled by other
 C    compilers.
-      DATA FORM/'BINARY'/
+C      DATA FORM/'BINARY'/
 C
 C
 C  OPEN-statement specifiers related to file-sharing.

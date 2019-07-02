@@ -1,0 +1,14 @@
+# Name File for MODFLOW created on 2/19/2019 by ModelMuse Version 3.10.0.42
+BEGIN OPTIONS
+  LIST         ImportMt3dmsZeroth.lst
+  PRINT_INPUT
+  SAVE_FLOWS
+END OPTIONS
+
+BEGIN PACKAGES
+  DIS6         ImportMt3dmsZeroth.dis
+  IC6          ImportMt3dmsZeroth.ic
+  NPF6         ImportMt3dmsZeroth.npf
+  OC6          ImportMt3dmsZeroth.oc
+  CHD6         ImportMt3dmsZeroth.chd
+END PACKAGES

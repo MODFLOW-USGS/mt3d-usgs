@@ -637,6 +637,10 @@ C
      &          CNEW(NODES,MCOMP),A(NODES,*),
      &          TEMP1(7),TEMP2(19)
 C
+C--INITIALIZE
+      WZP=0.
+      WZM=0.
+C
 C--LOOP THROUGH EVERY FINITE DIFFERENCE CELL
       DO K=1,NLAY
         KP1=MIN(K+1,NLAY)

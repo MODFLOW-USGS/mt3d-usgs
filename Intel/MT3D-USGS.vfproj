@@ -53,10 +53,13 @@
 		<File RelativePath="..\src\cts1.f"/>
 		<File RelativePath="..\src\dsp1.f"/>
 		<File RelativePath="..\src\fmi1.f"/>
+		<File RelativePath="..\src\fmi1mf6.f"/>
 		<File RelativePath="..\src\gcg1.f"/>
 		<File RelativePath="..\src\gnt1.f"/>
 		<File RelativePath="..\src\hss1.f"/>
 		<File RelativePath="..\src\lkt1.f"/>
+		<File RelativePath="..\src\mf6bud.f90"/>
+		<File RelativePath="..\src\mf6grb.f90"/>
 		<File RelativePath="..\src\mt3d-usgs.f"/>
 		<File RelativePath="..\src\mt_module.f90"/>
 		<File RelativePath="..\src\openspec.inc"/>
