@@ -113,11 +113,15 @@ C***********************************************************************
 C     THIS SUBROUTINE READS UZT VARIABLES - INITIAL CONCS
 C***********************************************************************
       USE UZTVARS
-      USE MT3DMS_MODULE, ONLY: INUZT,IOUT,NCOMP,NLAY,NROW,NCOL
+      USE MT3DMS_MODULE, ONLY: INUZT,IOUT,NCOMP,NLAY,NROW,NCOL,
+     &                         iUnitTRNOP
 C
       IMPLICIT NONE
       CHARACTER ANAME*24
       INTEGER   KPER,INDEX,KK,II,JJ,INCUZINF,INCUZET,INCGWET
+C
+C--SET THE UNIT NUMBER INCASE THE USER OVERRIDED THE DEFAULT IN THE NAME FILE
+      INUZT=iUnitTRNOP(7)
 C
 C--PRINT A HEADER
       WRITE(IOUT,1)
