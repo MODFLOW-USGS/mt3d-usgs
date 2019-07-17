@@ -1,16 +1,18 @@
 C
-      SUBROUTINE UZT1AR(INUZT)
+      SUBROUTINE UZT1AR(IN)
 C***********************************************************************
 C     THIS SUBROUTINE ALLOCATES SPACE FOR UZT VARIABLES
 C***********************************************************************
       USE UZTVARS
-      USE MT3DMS_MODULE, ONLY: IOUT,NCOMP,NCOL,NROW,DZ,DH,ICBUND,PRSITY,
-     &                         NLAY,NCOL,NROW,iUnitTRNOP
+      USE MT3DMS_MODULE, ONLY: INUZT,IOUT,NCOMP,NCOL,NROW,DZ,DH,ICBUND,
+     &                         PRSITY,NLAY,NCOL,NROW,iUnitTRNOP
 C
       IMPLICIT NONE
-      INTEGER         INUZT,IET,I,J,K,IERR
+      INTEGER         IN,IET,I,J,K,IERR
       CHARACTER       LINE*180,ANAME*24,BNAME*24
       LOGICAL         IUZFBND_CHK
+C
+      INUZT=IN
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1030) INUZT
@@ -113,15 +115,11 @@ C***********************************************************************
 C     THIS SUBROUTINE READS UZT VARIABLES - INITIAL CONCS
 C***********************************************************************
       USE UZTVARS
-      USE MT3DMS_MODULE, ONLY: INUZT,IOUT,NCOMP,NLAY,NROW,NCOL,
-     &                         iUnitTRNOP
+      USE MT3DMS_MODULE, ONLY: INUZT,IOUT,NCOMP,NLAY,NROW,NCOL
 C
       IMPLICIT NONE
       CHARACTER ANAME*24
       INTEGER   KPER,INDEX,KK,II,JJ,INCUZINF,INCUZET,INCGWET
-C
-C--SET THE UNIT NUMBER INCASE THE USER OVERRIDED THE DEFAULT IN THE NAME FILE
-      INUZT=iUnitTRNOP(7)
 C
 C--PRINT A HEADER
       WRITE(IOUT,1)
