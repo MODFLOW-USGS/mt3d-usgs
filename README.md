@@ -8,6 +8,7 @@ MT3D-USGS is an update of MT3DMS and is maintained by Vivek Bedekar (SSPA), Eric
 
 MT3D-USGS capabilities and features include:
 
+* supports simulation of transport using MODFLOW 6 flow solution (structured grids only)
 * unsaturated-zone transport;
 * transport within streams and lakes, including solute exchange with connected groundwater;
 * capability to route solute through dry cells that may occur in the Newton-Raphson formulation of MODFLOW (that is, MODFLOW-NWT);
