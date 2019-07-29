@@ -52,7 +52,7 @@ testpaths = [os.path.join('..', 'test-cmp'), os.path.join('..', 'test-reg'),
              os.path.join('..', 'test-mf6')]
 srcdir = os.path.join('..', 'src')
 program = 'mt3d-usgs'
-version = '1.0.1'
+version = '1.1.0'
 target = os.path.join('temp', program + '_' + version + target_extension)
 target_dict[os.path.basename(target)] = target
 
