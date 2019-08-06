@@ -842,9 +842,18 @@ C
       SUBROUTINE LKT1AD(N)
 C***********************************************************************
 C     RESET LAKE CONCENTRATIONS AND VOLUMES
+C     RESET NUMBER OF LAKE NODES WHEN USING MF6 Q FIELD
 C***********************************************************************
+      USE MT3DMS_MODULE,    ONLY: FMIFMT6
       USE LAKVARS
+      USE BudgetDataModule, ONLY: nodesrc
+C
       INTEGER N
+C
+C--USE THE DIMENSION OF nodesrc TO SET SIZE OF LKNODE
+      IF(FMIFMT6) THEN
+        LKNODE=SIZE(nodesrc)
+      ENDIF
 C
 C--RESET LAKE CONCENTRATION
       COLDLAK=CNEWLAK
