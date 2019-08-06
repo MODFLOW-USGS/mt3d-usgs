@@ -62,6 +62,7 @@ C
       USE SFRVARS
       USE LAKVARS
       USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
+      USE PKG2PKG
       USE MT3DMS_MODULE, ONLY: MXTRNOP,MXSTP,
      &                         FPRT,INBTN,ICBUND,CADV,COLD,RETA,PRSITY,
      &                         DZ,DH,QX,QY,QZ,A,RHOB,SP1,SP2,SRCONC,
@@ -511,6 +512,7 @@ C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE4()
       CALL MEMDEALLOCATE5()
       CALL MEMDEALLOCATE_DSSL()
+      CALL MEMDEALLOCATE_PKG2PKG()
 C
 C--Get CPU time at the end of simulation
 C--and print out total elapsed time in seconds
