@@ -154,6 +154,7 @@ C-Open files using the Name File method as in MODFLOW-2000
       iNameFile=99
       OPEN(iNameFile,file=flname,status='old')
       CALL BTN1OPEN(iNameFile)
+      CALL BTNPKGCHK()
       CLOSE (iNameFile)
 C
 C--WRITE PROGRAM TITLE TO OUTPUT FILE

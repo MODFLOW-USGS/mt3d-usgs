@@ -280,6 +280,41 @@ c
       END
 C
 C
+      SUBROUTINE BTNPKGCHK()
+C *******************************************************************
+C A GENERIC FUNCTION TO CHECK FOR PACKAGE CONFLICTS.  FOR EXAMPLE
+c WHEN USING THE FILE TYPE 'FT6' (MODFLOW 6-GENERATED FLOW FIELDS)
+C LKT, SFT, AND UZT ARE NOT SUPPORTED. INSTEAD USERS CAN ONLY EXPECT
+c TO USE THESE FLOW PACKAGES AS PURE BOUNDARY CONDITIONS INSIDE SSM
+C *******************************************************************
+C
+      USE MT3DMS_MODULE, ONLY: iUnitTRNOP, FMIFMT6, IOUT
+C
+      CHARACTER*5  PKGNM
+C
+      IF(FMIFMT6) THEN
+          IF(iUnitTRNOP(7).GT.0) THEN
+              PKGNM=' UZT '
+              WRITE(IOUT,80) PKGNM,PKGNM
+              CALL USTOP(' ')
+          ELSEIF(iUnitTRNOP(18).GT.0) THEN
+              PKGNM=' LKT '
+              WRITE(IOUT,80) PKGNM,PKGNM
+              CALL USTOP(' ')
+          ELSEIF(iUnitTRNOP(19).GT.0) THEN
+              PKGNM=' SFT '
+              WRITE(IOUT,80) PKGNM,PKGNM
+              CALL USTOP(' ')
+          ENDIF
+      ENDIF
+80    FORMAT(/1X, 'USE OF',A5,'PACKAGE WITH FT6-STYLE LINKER INPUT NOT',
+     &       /1X, 'YET SUPPORTED. CONSIDER ADDING',A5,'INFORMATION TO ',
+     &       /1X, 'SSM PACKAGE FOR USE AS A BOUNDARY CONDITION.',
+     &       2/1X,'STOPPING MODEL.')
+C
+      END SUBROUTINE
+C
+C
       SUBROUTINE BTN1AR(IN)
 C **********************************************************************
 C THIS SUBROUTINE READS AND PREPARES INPUT DATA RELEVANT TO THE ENTIRE
