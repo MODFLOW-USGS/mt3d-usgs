@@ -96,7 +96,7 @@ module BudgetDataModule
     logical, intent(out) :: success
     integer(I4B), intent(in), optional :: iout_opt
     ! -- local
-    integer(I4B) :: i, n, iostat, iout
+    integer(I4B) :: i, n, iostat, iout, idat
 ! ------------------------------------------------------------------------------
     !
     if (present(iout_opt)) then
@@ -149,7 +149,7 @@ module BudgetDataModule
       read(inunit) ndat
       if(allocated(auxtxt)) deallocate(auxtxt)
       allocate(auxtxt(ndat-1))
-      read(inunit) auxtxt
+      read(inunit) (auxtxt(idat),idat=1,ndat-1)
       read(inunit) nlist
       if(allocated(nodesrc)) deallocate(nodesrc)
       allocate(nodesrc(nlist))

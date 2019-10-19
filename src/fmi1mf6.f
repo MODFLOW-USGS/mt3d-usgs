@@ -258,6 +258,15 @@ C-----INITIALIZE BUDGET READER TO DETERMINE NUMBER OF ENTRIES
           CASE ('EVT')
             WRITE(ILIST,110) TRIMADJL
             FEVT = .TRUE.
+          CASE ('SFR')
+            WRITE(ILIST,110) TRIMADJL
+            FSFR = .TRUE.
+          CASE ('LAK')
+            WRITE(ILIST,110) TRIMADJL
+            FLAK = .TRUE.
+          CASE ('MAW')
+            WRITE(ILIST,110) TRIMADJL
+            FMNW = .TRUE.
           CASE DEFAULT
             WRITE(ILIST,111) TRIMADJL
         END SELECT
@@ -377,13 +386,14 @@ C **********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: IOUT,NTSS,NSS,SS,MXSS,ICBUND,FPRT,
      &                         ICTSPKG,NCOL,NROW,NLAY
-      USE BUDGETDATAMODULE, ONLY: NBUDTERMS, NODESRC, FLOWDATA,
+      USE BUDGETDATAMODULE, ONLY: NBUDTERMS, NODESRC, nodedst, FLOWDATA,
      &                            BUDGETDATA_READ, BUDTXT,
      &                            KPERMF6=>KPER, KSTPMF6=>KSTP
       USE PKG2PKG
 C
       INTEGER :: KPER,KSTP
-      CHARACTER(LEN=:), ALLOCATABLE   :: TEXT
+C      CHARACTER(LEN=:), ALLOCATABLE   :: TEXT
+      CHARACTER*16                     :: TEXT
       LOGICAL :: SUCCESS
       INTEGER :: IBUD
       INTEGER :: IQ
@@ -435,7 +445,7 @@ C
         TEXT=TRIM(ADJUSTL(BUDTXT)) 
         CALL MF6PUTSS(IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &                IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT, 
-     &                NODESRC,FLOWDATA,ICTSPKG)
+     &                NODESRC,FLOWDATA,ICTSPKG,nodedst)
       ENDDO
       RETURN
 C
@@ -554,7 +564,7 @@ C     (PRESUMES STRUCTURED GRID IN MODFLOW6, STOPS BEFORE NOW IF NOT)
           IDX=1
           TOTDZ=DZ(J,I,IDX)
           BOTM(J,I,IDX)=HTOP(J,I)-TOTDZ
-          IF(K.GT.1) THEN
+          IF(IDX.GT.1) THEN
             IDX=IDX+1
             DO WHILE(IDX.LE.NLAY)
               TOTDZ=TOTDZ+DZ(J,I,IDX)
@@ -571,7 +581,7 @@ C
 C
       SUBROUTINE MF6PUTSS(IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
      &                    IQ,MXSS,NTSS,NSS,SS,ICBUND,FPRT, 
-     &                    NODESRC,FLOWDATA,ICTSPKG)
+     &                    NODESRC,FLOWDATA,ICTSPKG,nodedst)
 C
 C     ARGUMENTS
       INTEGER,               INTENT(IN)    :: IOUT,NCOL,NROW,NLAY, 
@@ -582,6 +592,7 @@ C     ARGUMENTS
       REAL, DIMENSION(:, :), INTENT(INOUT) :: SS
       CHARACTER(LEN=1),      INTENT(IN)    :: FPRT
       INTEGER, DIMENSION(:), INTENT(IN)    :: NODESRC
+      INTEGER, DIMENSION(:), INTENT(IN)    :: nodedst
       DOUBLE PRECISION, DIMENSION(:, :), INTENT(IN) :: FLOWDATA
       INTEGER, DIMENSION(NCOL, NROW, NLAY), INTENT(INOUT) :: ICBUND
       INTEGER, INTENT(IN) :: ICTSPKG
@@ -643,6 +654,7 @@ C       OTHWISE, ADD TO THE SS ARRAY
         SS(5,NTSS)=QSTEMP
         SS(6,NTSS)=IQ
         SS(7,NTSS)=0.
+        IF(IQ.EQ.27) SS(7,NTSS) = nodedst(L)
         IF(TEXT.EQ.'WEL'.AND.ICTSPKG.EQ.1)
      &    SS(8,NTSS)=N
         IF(QSTEMP.LT.0 .AND. ICBUND(IC,IR,IL).GT.0) THEN
