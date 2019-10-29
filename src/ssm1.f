@@ -172,6 +172,7 @@ C
       IN=INSSM
 C
 C--INITIALIZE.
+      TYPESS=''
       TYPESS(-1)='CONSTANT CONC. '
       TYPESS(1) ='CONSTANT HEAD  '
       TYPESS(2) ='WELL           '

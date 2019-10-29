@@ -581,9 +581,13 @@ C
       IF(NCOL.LT.2) GOTO 410
       DO K=1,NLAY
         DO I=1,NROW
-          DO J=2,NCOL
+          DO J=1,NCOL
             IF(ICBUND(J,I,K,1).NE.0) THEN
-              TK=0.5*(QX(J-1,I,K)+QX(J,I,K))
+              IF(J.EQ.1) THEN
+                TK=QX(J,I,K)
+              ELSE
+                TK=0.5*(QX(J-1,I,K)+QX(J,I,K))
+              ENDIF
               IF(TK.EQ.0) CYCLE
               TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
               IF(ABS(TK).LT.DTRACK) THEN
@@ -600,9 +604,13 @@ C
   410 IF(NROW.LT.2) GOTO 420
       DO K=1,NLAY
         DO J=1,NCOL
-          DO I=2,NROW
+          DO I=1,NROW
             IF(ICBUND(J,I,K,1).NE.0) THEN
-              TK=0.5*(QY(J,I-1,K)+QY(J,I,K))
+              IF(I.EQ.1) THEN
+                TK=QY(J,I,K)
+              ELSE
+                TK=0.5*(QY(J,I-1,K)+QY(J,I,K))
+              ENDIF
               IF(TK.EQ.0) CYCLE
               TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
               IF(ABS(TK).LT.DTRACK) THEN
@@ -621,9 +629,13 @@ C
                               ! IN RP2 WHEN FUZFFLOWS>0
       DO J=1,NCOL
         DO I=1,NROW
-          DO K=2,NLAY
+          DO K=1,NLAY
             IF(ICBUND(J,I,K,1).NE.0) THEN
-              TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
+              IF(K.EQ.1) THEN
+                TK=QZ(J,I,K)
+              ELSE
+                TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
+              ENDIF
               IF(TK.EQ.0) CYCLE
               TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
               IF(ABS(TK).LT.DTRACK) THEN
@@ -655,9 +667,21 @@ C
           DO J=1,NCOL
             IF(ICBUND(J,I,K,1).EQ.0) CYCLE
             TK=0.
-            IF(J.GT.1) TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
-            IF(I.GT.1) TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
-            IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            IF(J.GT.1) THEN
+              TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
+            ELSE
+              TK=TK+ABS(QX(J,I,K))
+            ENDIF
+            IF(I.GT.1) THEN
+              TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
+            ELSE
+              TK=TK+ABS(QY(J,I,K))
+            ENDIF
+            IF(K.GT.1) THEN
+              TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            ELSE
+              TK=TK+ABS(QZ(J,I,K))
+            ENDIF
             IF(TK.EQ.0.) CYCLE
             TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
             IF(TK.LE.0.) CYCLE
@@ -1198,9 +1222,13 @@ C--CANNOT MOVE MORE THAN ONE CELL IN THE Z-DIRECTION.
         IF(NLAY.LT.2) GOTO 501
         DO J=1,NCOL
           DO I=1,NROW
-            DO K=2,NLAY
+            DO K=1,NLAY
               IF(ICBUND(J,I,K,1).NE.0) THEN
-                TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
+                IF(K.EQ.1) THEN
+                  TK=QZ(J,I,K)
+                ELSE
+                  TK=0.5*(QZ(J,I,K-1)+QZ(J,I,K))
+                ENDIF
                 IF(TK.EQ.0) CYCLE
                 TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
                 IF(ABS(TK).LT.DTTEMP) THEN
@@ -1235,9 +1263,21 @@ C
           DO J=1,NCOL
             IF(ICBUND(J,I,K,1).EQ.0) CYCLE
             TK=0.
-            IF(J.GT.1) TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
-            IF(I.GT.1) TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
-            IF(K.GT.1) TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            IF(J.GT.1) THEN
+              TK=TK+MAX(ABS(QX(J-1,I,K)),ABS(QX(J,I,K)))
+            ELSE
+              TK=TK+ABS(QX(J,I,K))
+            ENDIF
+            IF(I.GT.1) THEN
+              TK=TK+MAX(ABS(QY(J,I-1,K)),ABS(QY(J,I,K)))
+            ELSE
+              TK=TK+ABS(QY(J,I,K))
+            ENDIF
+            IF(K.GT.1) THEN
+              TK=TK+MAX(ABS(QZ(J,I,K-1)),ABS(QZ(J,I,K)))
+            ELSE
+              TK=TK+ABS(QZ(J,I,K))
+            ENDIF
             IF(TK.EQ.0.) CYCLE
             TK=DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)/TK
             IF(TK.LE.0.) CYCLE
