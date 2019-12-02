@@ -15,8 +15,8 @@ INTERNAL      1.00    (10e12.4)                    1                            
         31                                                                      # ISOBS,IROBS (iseg, ireach)
         38                                                                      # ISOBS,IROBS (iseg, ireach)
          2                                                                      # NTMP (# of STREAM BOUNDARY CONDITIONS)
-         1         0 1.000e-05                                                  # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
-        19         0 1.000e-05                                                  # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         1         1         0 1.000e-05                                        # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
+         3         1         0 1.000e-05                                        # ISEGBC(NTMP),IRCHBC(NTMP),ISFBCTYP(NTMP),(CBCSF(NTMP,INDEX),INDEX=1,NCOMP)
          0                                                                      # Repeat NTMP for the next stress period (This model is only one stress period)
          0                                                                      # 
 
