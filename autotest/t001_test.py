@@ -8,29 +8,29 @@ import config
 
 # tests that fail or take too long have been commented out in
 # order to get testing working on Travis
-test_dirs = ['Saturated_Transient_Storage',
-             'lkt',
-             'SFT_CrnkNic',
-             'SFT_Full_Imp',
-             'UZT_Disp_Lamb01',
-             'UZT_Disp_Lamb01_TVD',
-             'UZT_Disp_Lamb1',
-             'UZT_Disp_Lamb10',
-             #'Keating',
-             #'Keating_UZF',
-             'UZT_NonLin',
-             #'UZT_NonEq',   # Moved to t003_test.py because of
-                             # insert_stopflow_period.py customization
-             'CTS0',
-             'CTS1',
-             'CTS2',
-             #'CTS3',
-             'CTS4',
-             'Saturated_Transient_Storage',
-             'drycell',
-             'gwt',
-             'Legacy99Storage',
-             'AltWTSorb']
+test_dirs = [#'Saturated_Transient_Storage',
+         #    'lkt',
+         #    'SFT_CrnkNic',
+         #    'SFT_Full_Imp',
+         #    'UZT_Disp_Lamb01',
+         #    'UZT_Disp_Lamb01_TVD',
+         #    'UZT_Disp_Lamb1',
+         #    'UZT_Disp_Lamb10',
+         #    #'Keating',
+         #    #'Keating_UZF',
+         #    'UZT_NonLin',
+         #    #'UZT_NonEq',   # Moved to t003_test.py because of
+         #                    # insert_stopflow_period.py customization
+         #    'CTS0',
+         #    'CTS1',
+         #    'CTS2',
+         #    #'CTS3',
+         #    'CTS4',
+         #    'Saturated_Transient_Storage',
+         #    'drycell',
+             'gwt',]
+         #    'Legacy99Storage',
+         #    'AltWTSorb']
 
 
 def run_mt3d(spth, comparison=True):
