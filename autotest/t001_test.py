@@ -139,7 +139,7 @@ def run_mt3d(spth, comparison=True):
                     success_ucn = pymake.compare_concs(namefile1, namefile2,
                                                        ctol=0.002,
                                                        outfile=outfileucn,
-                                                       files2=files_cmp)
+                                                       files2=files_cmp, verbose=True)
 
                 if success_cmp and success_ucn:
                     success_cmp = True
