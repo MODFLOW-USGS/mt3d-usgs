@@ -111,7 +111,7 @@ C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED
         STOP                                                    
       ENDIF                                                     
 C                                                               
-C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED      
+C-----DUAL-DOMAIN NOT ALLOWED WITH CHAIN DECAY OPTION 
       IF(IREACT.EQ.3.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN     
         WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'   
         WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'      
