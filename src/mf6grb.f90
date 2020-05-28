@@ -162,17 +162,40 @@ module GrbModule
     return
   end subroutine read_grb
   
-  subroutine read_hds(iu, nlay, nrow, ncol, head)
-    integer, intent(in) :: iu, nlay, nrow, ncol
+  subroutine read_hds(iu, nlay, nrow, ncol, head,FPRT,IOUT)
+    integer, intent(in) :: iu, nlay, nrow, ncol,IOUT
     double precision, dimension(:, :, :), intent(inout) :: head
-    integer :: n, k, kstp, kper
+    REAL, ALLOCATABLE :: BUFF(:,:)
+    integer :: n, k, kstp, kper,IPRTFM
     double precision :: pertim, totim
     CHARACTER(LEN=16) TEXT
+    character*1 FPRT
     do k = 1, nlay
       READ(iu) kstp, kper, pertim, totim,TEXT,n,n,n
       !print*, kstp, kper, pertim, totim
       read(iu) head(:, :, k)
     enddo
+!
+!--WRITE IDENTIFYING INFORMATION
+      WRITE(IOUT,1) TEXT,KSTP,KPER,iu
+!
+!
+!--PRINT OUT INPUT FOR CHECKING IF REQUESTED
+      IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
+      IPRTFM=1
+      ALLOCATE(BUFF(NCOL,NROW))
+      DO K=1,NLAY
+        WRITE(IOUT,50) K
+        BUFF(:,:)=REAL(HEAD(:,:,K))
+        CALL RPRINT(BUFF,TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,IOUT)
+      ENDDO
+      DEALLOCATE(BUFF)
+      ENDIF
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,   &
+                 ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3   &
+            /20X,92('-'))
+   50 FORMAT(/61X,'LAYER ',I3)
+!
   end subroutine read_hds
   
 end module GrbModule

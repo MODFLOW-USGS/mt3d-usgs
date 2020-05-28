@@ -292,7 +292,8 @@ C THIS SUBROUTINE READS MF6-STYLE HEADS, CONVERTS TO DH (THKSAT),
 C READS MF6-STYLE BUDGET FILE AND FILLS QX, QY, QZ, AND USES 
 C STORAGE INFORMATION IN THE MF6-STYLE BUDGET FILE TO FILL QSTO
 C **********************************************************************
-      USE MT3DMS_MODULE,    ONLY: DH,QX,QY,QZ,QSTO,ICBUND,HTOP,DZ
+      USE MT3DMS_MODULE,    ONLY: DH,QX,QY,QZ,QSTO,ICBUND,HTOP,DZ,FPRT,
+     1  IOUT
       USE GRBMODULE,        ONLY: READ_HDS
       USE BUDGETDATAMODULE, ONLY: NBUDTERMS, FLOWJA, FLOWDATA,
      &                            BUDGETDATA_READ, BUDTXT
@@ -302,10 +303,10 @@ C **********************************************************************
 C
 C     todo: check for successive time steps
 C     Read head array
-      CALL READ_HDS(IUHDS,NLAY,NROW,NCOL,HEAD)
+      CALL READ_HDS(IUHDS,NLAY,NROW,NCOL,HEAD,FPRT,IOUT)
 C
 C-----MOVE HEAD INTO DH
-      CALL FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM)
+      CALL FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM,KPER,KSTP)
 C
 C-----PROCESS FLOWJA
 C     IF PRESENT, START WITH STORAGE - INITIALIZE QSTO
@@ -505,11 +506,13 @@ C
 C
         END SUBROUTINE FLOWJA2QXQYQZ
 C
-        SUBROUTINE FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM)
+        SUBROUTINE FILL_DH(DH,ICBUND,NLAY,NROW,NCOL,HEAD,HTOP,DZ,BOTM,
+     1    KPER,KSTP)
 C **********************************************************************
 C THIS SUBROUTINE TAKES THE HEAD INFORMATION FROM A MODFLOW6 
 C STYLE HEADS FILE AND FILLS THE SATURATED THICKNESS ARRAY "DH"
 C **********************************************************************
+        USE MT3DMS_MODULE,    ONLY: FPRT,IOUT
         INTEGER,                              INTENT(IN) :: NLAY,NROW,
      &                                                      NCOL
         INTEGER,          DIMENSION(:,:,:,:), INTENT(IN) :: ICBUND
@@ -517,6 +520,8 @@ C **********************************************************************
         DOUBLE PRECISION, DIMENSION(:,:,:),   INTENT(IN) :: HEAD,BOTM
         REAL,             DIMENSION(:,:,:),   INTENT(IN) :: DZ
         REAL,             DIMENSION(:,:,:),   INTENT(INOUT) :: DH
+        CHARACTER*16 TEXT
+        INTEGER IPRTFM,KPER,KSTP
 C
         INTEGER I,J,K,IDX
         DOUBLE PRECISION TOTDZ,THKSAT
@@ -524,7 +529,7 @@ C
         DO K=1,NLAY
           DO I=1,NROW
             DO J=1,NCOL
-              IF(ICBUND(J,I,K,1).NE.0) THEN
+!              IF(ICBUND(J,I,K,1).NE.0) THEN
                 IF(HEAD(J,I,K)-BOTM(J,I,K).LE.0.0) THEN
                   DH(J,I,K)=0.0
                 ELSE
@@ -535,11 +540,30 @@ C
                     DH(J,I,K)=THKSAT
                   ENDIF
                 ENDIF
-              ENDIF
+!              ENDIF
             ENDDO
           ENDDO
         ENDDO
 C
+C--WRITE IDENTIFYING INFORMATION
+      TEXT='          DH'
+      WRITE(IOUT,1) TEXT,KSTP,KPER,0
+C
+!
+!--PRINT OUT INPUT FOR CHECKING IF REQUESTED
+      IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
+      IPRTFM=1
+      DO K=1,NLAY
+        WRITE(IOUT,50) K
+        CALL RPRINT(DH(:,:,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
+      ENDDO
+      ENDIF
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
+   50 FORMAT(/61X,'LAYER ',I3)
+!
       END SUBROUTINE
 C
 C
@@ -564,7 +588,7 @@ C     (PRESUMES STRUCTURED GRID IN MODFLOW6, STOPS BEFORE NOW IF NOT)
           IDX=1
           TOTDZ=DZ(J,I,IDX)
           BOTM(J,I,IDX)=HTOP(J,I)-TOTDZ
-          IF(IDX.GT.1) THEN
+          IF(IDX.EQ.1) THEN
             IDX=IDX+1
             DO WHILE(IDX.LE.NLAY)
               TOTDZ=TOTDZ+DZ(J,I,IDX)
