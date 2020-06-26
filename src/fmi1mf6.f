@@ -298,7 +298,8 @@ C **********************************************************************
       USE BUDGETDATAMODULE, ONLY: NBUDTERMS, FLOWJA, FLOWDATA,
      &                            BUDGETDATA_READ, BUDTXT
       INTEGER :: KPER,KSTP
-      INTEGER N, I, J, K
+      INTEGER N, I, J, K,IPRTFM
+      CHARACTER*16 TEXT
       LOGICAL :: SUCCESS
 C
 C     todo: check for successive time steps
@@ -355,6 +356,21 @@ C-----PROCESS QSTO WITH SPECIFIC YIELD
             ENDDO
           ENDDO            
         ENDIF   
+C
+C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
+C
+C--WRITE IDENTIFYING INFORMATION
+          TEXT='         STORAGE'
+          WRITE(IOUT,1) TEXT,KSTP,KPER,0
+          IPRTFM=1
+            DO K=1,NLAY
+            WRITE(IOUT,50) K
+            CALL RPRINT(QSTO(:,:,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
+            ENDDO
+        ENDIF
+C
       ENDIF
 C
 C-----PROCESS CELL-BY-CELL FLOW
@@ -366,6 +382,41 @@ C-----PROCESS CELL-BY-CELL FLOW
       NBUD = NBUD+1
       CALL FLOWJA2QXQYQZ(IA,JA,FLOWJA,QX,QY,QZ)
 C
+C--PRINT OUT INPUT FOR CHECKING IF REQUESTED
+        IF(FPRT.EQ.'Y'.OR.FPRT.EQ.'y') THEN
+C
+C--WRITE IDENTIFYING INFORMATION
+          TEXT='             QXX'
+          WRITE(IOUT,1) TEXT,KSTP,KPER,0
+          IPRTFM=1
+            DO K=1,NLAY
+            WRITE(IOUT,50) K
+            CALL RPRINT(QX(:,:,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
+            ENDDO
+C
+C--WRITE IDENTIFYING INFORMATION
+          TEXT='             QYY'
+          WRITE(IOUT,1) TEXT,KSTP,KPER,0
+          IPRTFM=1
+            DO K=1,NLAY
+            WRITE(IOUT,50) K
+            CALL RPRINT(QY(:,:,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
+            ENDDO
+C
+C--WRITE IDENTIFYING INFORMATION
+          TEXT='             QZZ'
+          WRITE(IOUT,1) TEXT,KSTP,KPER,0
+          IPRTFM=1
+            DO K=1,NLAY
+            WRITE(IOUT,50) K
+            CALL RPRINT(QZ(:,:,K),TEXT,0,KSTP,KPER,NCOL,NROW,0,IPRTFM,
+     &              IOUT)
+            ENDDO
+        ENDIF
+C
+C
 C-----PROCESS SPDIS 
       IF (IDATA_SPDIS == 1) THEN
         CALL BUDGETDATA_READ(SUCCESS)
@@ -374,6 +425,11 @@ C-----PROCESS SPDIS
         IF(TRIM(ADJUSTL(BUDTXT)).NE.'DATA-SPDIS') CALL USTOP('')
         NBUD=NBUD+1
       ENDIF
+C
+    1 FORMAT(/20X,'"',A16,'" FLOW TERMS FOR TIME STEP',I3,
+     &            ', STRESS PERIOD',I3,' READ UNFORMATTED ON UNIT',I3
+     &       /20X,92('-'))
+   50 FORMAT(/61X,'LAYER ',I3)
 C
       RETURN
       END SUBROUTINE FMI1MF6RP1A
