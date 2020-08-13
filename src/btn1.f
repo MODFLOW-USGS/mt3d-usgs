@@ -12,7 +12,7 @@ C
      &                         IOBS,IMAS,ICBM,IFTL,IFTLFMT,
      &                         INUZT,
      &                         INLKT,INSFT,INCTS,INTSO,
-     &                         ICTSPKG,INOCROSS,ISAVUCN,
+     &                         ICTSPKG,INOCROSS,ISAVUCN,UNSATHEAT,
      &                         FMIFMT6
       USE FMI1MF6, ONLY: FMI1MF6NM
 C
@@ -33,7 +33,7 @@ C--ALLOCATE
       ALLOCATE(IOUT,INBTN,INADV,INDSP,INSSM,INRCT,INGCG,INTOB,INHSS,
      &         INFTL,ICNF,IUCN,IUCN2,IOBS,IMAS,ICBM,IFTLFMT,FPRT,
      &         iUnitTRNOP(MXTRNOP),
-     &         INUZT,INCTS,INTSO,INLKT,INSFT,INOCROSS,IFTL)
+     &         INUZT,INCTS,INTSO,INLKT,INSFT,INOCROSS,IFTL,UNSATHEAT)
       ALLOCATE(ISAVUCN(1000))
       ALLOCATE(FMIFMT6)
       ISAVUCN=1

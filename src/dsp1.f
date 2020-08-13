@@ -7,7 +7,9 @@ C **********************************************************************
 C
       USE MT3DMS_MODULE, ONLY: INDSP,IOUT,NCOL,NROW,NLAY,MCOMP,BUFF,
      &                         ALPHAL,DMCOEF,TRPT,TRPV,DXX,DYY,
-     &                         DZZ,DXY,DXZ,DYX,DYZ,DZX,DZY,INOCROSS
+     &                         DZZ,DXY,DXZ,DYX,DYZ,DZX,DZY,INOCROSS,
+     &                         UNSATHEAT,K_T_FLUID,K_T_SOLID,
+     &                         RHO_FLUID,C_P_FLUID,THETA_R
 C
       IMPLICIT  NONE
       INTEGER   IN,ICOMP,IMSD,J,I,K,
@@ -33,6 +35,7 @@ C--ALLOCATE DSP ARRAYS AND INITIALIZE TO ZERO
       ALLOCATE(DZY(NCOL,NROW,NLAY))
       ALLOCATE(DZZ(NCOL,NROW,NLAY,MCOMP))
       ALLOCATE(BUFF2(NLAY))
+      ALLOCATE(K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,THETA_R)
       ALPHAL=0.
       TRPT=0.
       TRPV=0.
@@ -65,6 +68,7 @@ C--READ INPUT KEYWORDS AS A TEXT STRING
         GOTO 10
       ELSEIF(LINE(1:1).EQ.'$') THEN
         IMSD=0
+        UNSATHEAT=0
         GOTO 30
       ENDIF
 C
@@ -81,6 +85,22 @@ C
 C--WRITE STATUS OF NOCROSS FLAG
       IF(INOCROSS.EQ.1) WRITE(IOUT,1010)
  1010 FORMAT(1X,'CROSS DISPERSION DEACTIVATED (NOCROSS)')
+C
+C--WRITE STATUS OF UNSATHEAT FLAG
+      IF(UNSATHEAT.EQ.1) THEN
+        ALLOCATE(K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID)
+        WRITE(IOUT,1012)
+ 1012   FORMAT(1X,'SIMULATION OF UNSATURATED HEAT FLOW ACTIVE'
+     &          /,'READING HEAT-RELATED TERMS')
+      ENDIF
+      READ(IN,'(4F10.2,F10.3)') K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,
+     &                          THETA_R
+      WRITE(IOUT,1014) K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,THETA_R
+ 1014 FORMAT(1X,'K_T_FLUID = ',F10.4,
+     &       1/,'K_T_SOLID = ',F10.4,
+     &       1/,'RHO_FLUID = ',F10.4,
+     &       1/,'C_P_FLUID = ',F10.4,
+     &       1/,'THETA_R   = ',F10.4)
 C
 C--CALL RARRAY TO READ LONGITUDINAL DISPERSIVITY ONE LAYER A TIME
    50 DO K=1,NLAY
@@ -143,19 +163,42 @@ C
      &                         NPERFL,
      &                         ALPHAL,TRPT,TRPV,DMCOEF,DXX,DXY,DXZ,DYX,
      &                         DYY,DYZ,DZX,DZY,DZZ,
-     &                         INOCROSS 
+     &                         INOCROSS,UNSATHEAT,K_T_FLUID,K_T_SOLID,
+     &                         RHO_FLUID,C_P_FLUID,THETA_R
+      USE UZTVARS,       ONLY: PRSITYSAV
 C
       IMPLICIT  NONE
       INTEGER   KSTP,KPER,K,I,J,KM1,IM1,JM1,
      &          KP1,IP1,JP1,JD,ID,KD,ICOMP
-      REAL      V,WW,PF,AL,AT,AV,DM,VX,VY,VZ,TD,AREA
+      REAL      V,WW,PF,AL,AT,AV,DM,VX,VY,VZ,TD,AREA,THETA,THETA_S,W1,W2
       CHARACTER TEXT*16
 C
 C--INITIALIZE
       DTDISP=1.E30
       KD=0
       ID=0
-      JD=0      
+      JD=0
+C
+C--IF SIMULATING UNSATURATED ZONE HEAT, UPDATE DMCOEF AS THIS IS A
+C  SURROGATE FOR HEAT CONDUCTION AND IS DEPENDENT UPON MOISTURE CONTENT
+      IF(UNSATHEAT) THEN
+        DO ICOMP=1, MCOMP
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                IF(ICBUND(J,I,K,1).NE.0) THEN
+                  THETA=PRSITY(J,I,K)
+                  THETA_S=PRSITYSAV(J,I,K)
+                  W1=((THETA-THETA_R)/(THETA_S-THETA_R))
+                  W2=1-W1
+                  DMCOEF(J,I,K,ICOMP)=(W1*K_T_SOLID + W2*K_T_FLUID)/
+     &                                 (THETA*RHO_FLUID*C_P_FLUID)
+                ENDIF
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
 C
 C--FOR EACH CHEMICAL COMPONENT WITH A DIFFERENT DIFFUSION COEFFICIENT     
       DO ICOMP=1,MCOMP           
@@ -1024,7 +1067,7 @@ C
 C ********************************************************
 C THIS SUBROUTINE READS BTN FILE AND IDENTIFIES KEYWORDS
 C ********************************************************
-      USE MT3DMS_MODULE, ONLY: IOUT,INOCROSS
+      USE MT3DMS_MODULE, ONLY: IOUT,INOCROSS,UNSATHEAT
       USE MT3DUTIL
 C
       IMPLICIT       NONE
@@ -1035,12 +1078,13 @@ C
       REAL           R
 C
 C SET NUMBER OF KEYWORDS AND KEYWORDS
-      NKEYWORDS=2
+      NKEYWORDS=3
       KEYFOUND=.FALSE.
       ALLOCATE(KEYWORDS(NKEYWORDS))
       KEYWORDS=''
       KEYWORDS(1)='MULTIDIFFUSION                '
       KEYWORDS(2)='NOCROSS                       '
+      KEYWORDS(3)='UNSATHEAT                     '
 C
 C READ LINE WITH KEYWORDS
       LINE=''
@@ -1077,6 +1121,8 @@ C
             IMSD=1
           CASE(2) !'NOCROSS'
             INOCROSS=1
+          CASE(3) !'UNSATHEAT'
+            UNSATHEAT=1
         END SELECT
       ENDDO
 C
