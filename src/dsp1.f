@@ -8,7 +8,7 @@ C
       USE MT3DMS_MODULE, ONLY: INDSP,IOUT,NCOL,NROW,NLAY,MCOMP,BUFF,
      &                         ALPHAL,DMCOEF,TRPT,TRPV,DXX,DYY,
      &                         DZZ,DXY,DXZ,DYX,DYZ,DZX,DZY,INOCROSS,
-     &                         UNSATHEAT,K_T_FLUID,K_T_SOLID,
+     &                         UNSATHEAT,K_T_SAT,K_T_RESID,
      &                         RHO_FLUID,C_P_FLUID,THETA_R
 C
       IMPLICIT  NONE
@@ -35,7 +35,7 @@ C--ALLOCATE DSP ARRAYS AND INITIALIZE TO ZERO
       ALLOCATE(DZY(NCOL,NROW,NLAY))
       ALLOCATE(DZZ(NCOL,NROW,NLAY,MCOMP))
       ALLOCATE(BUFF2(NLAY))
-      ALLOCATE(K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,THETA_R)
+      ALLOCATE(K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,THETA_R)
       ALPHAL=0.
       TRPT=0.
       TRPV=0.
@@ -88,16 +88,16 @@ C--WRITE STATUS OF NOCROSS FLAG
 C
 C--WRITE STATUS OF UNSATHEAT FLAG
       IF(UNSATHEAT.EQ.1) THEN
-        ALLOCATE(K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID)
+        ALLOCATE(K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID)
         WRITE(IOUT,1012)
  1012   FORMAT(1X,'SIMULATION OF UNSATURATED HEAT FLOW ACTIVE'
      &          /,'READING HEAT-RELATED TERMS')
       ENDIF
-      READ(IN,'(4F10.2,F10.3)') K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,
+      READ(IN,'(4F10.2,F10.3)') K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,
      &                          THETA_R
-      WRITE(IOUT,1014) K_T_FLUID,K_T_SOLID,RHO_FLUID,C_P_FLUID,THETA_R
- 1014 FORMAT(1X,'K_T_FLUID = ',F10.4,
-     &       1/,'K_T_SOLID = ',F10.4,
+      WRITE(IOUT,1014) K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,THETA_R
+ 1014 FORMAT(1X,'K_T_SAT = ',F10.4,
+     &       1/,'K_T_RESID = ',F10.4,
      &       1/,'RHO_FLUID = ',F10.4,
      &       1/,'C_P_FLUID = ',F10.4,
      &       1/,'THETA_R   = ',F10.4)
@@ -163,7 +163,7 @@ C
      &                         NPERFL,
      &                         ALPHAL,TRPT,TRPV,DMCOEF,DXX,DXY,DXZ,DYX,
      &                         DYY,DYZ,DZX,DZY,DZZ,
-     &                         INOCROSS,UNSATHEAT,K_T_FLUID,K_T_SOLID,
+     &                         INOCROSS,UNSATHEAT,K_T_SAT,K_T_RESID,
      &                         RHO_FLUID,C_P_FLUID,THETA_R
       USE UZTVARS,       ONLY: PRSITYSAV
 C
@@ -191,7 +191,7 @@ C  SURROGATE FOR HEAT CONDUCTION AND IS DEPENDENT UPON MOISTURE CONTENT
                   THETA_S=PRSITYSAV(J,I,K)
                   W1=((THETA-THETA_R)/(THETA_S-THETA_R))
                   W2=1-W1
-                  DMCOEF(J,I,K,ICOMP)=(W1*K_T_SOLID + W2*K_T_FLUID)/
+                  DMCOEF(J,I,K,ICOMP)=(W1*K_T_SAT + W2*K_T_RESID)/
      &                                 (THETA*RHO_FLUID*C_P_FLUID)
                 ENDIF
               ENDDO

@@ -706,8 +706,8 @@ CONTAINS
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: DZX
         REAL,             SAVE, DIMENSION(:,:,:),     POINTER :: DZY
         INTEGER,          SAVE,                       POINTER :: UNSATHEAT
-        REAL,             SAVE,                       POINTER :: K_T_FLUID
-        REAL,             SAVE,                       POINTER :: K_T_SOLID
+        REAL,             SAVE,                       POINTER :: K_T_SAT
+        REAL,             SAVE,                       POINTER :: K_T_RESID
         REAL,             SAVE,                       POINTER :: RHO_FLUID
         REAL,             SAVE,                       POINTER :: C_P_FLUID
         REAL,             SAVE,                       POINTER :: THETA_R
@@ -1035,8 +1035,8 @@ CONTAINS
       IF(ASSOCIATED(DZX))          DEALLOCATE(DZX)
       IF(ASSOCIATED(DZY))          DEALLOCATE(DZY)
       IF(ASSOCIATED(UNSATHEAT))    DEALLOCATE(UNSATHEAT)
-      IF(ASSOCIATED(K_T_FLUID))    DEALLOCATE(K_T_FLUID)
-      IF(ASSOCIATED(K_T_SOLID))    DEALLOCATE(K_T_SOLID)
+      IF(ASSOCIATED(K_T_SAT))    DEALLOCATE(K_T_SAT)
+      IF(ASSOCIATED(K_T_RESID))    DEALLOCATE(K_T_RESID)
       IF(ASSOCIATED(RHO_FLUID))    DEALLOCATE(RHO_FLUID)
       IF(ASSOCIATED(C_P_FLUID))    DEALLOCATE(C_P_FLUID)
       IF(ASSOCIATED(THETA_R))      DEALLOCATE(THETA_R)
