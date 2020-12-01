@@ -1,7 +1,7 @@
 C
       SUBROUTINE RCT1AR(IN)
 C **********************************************************************
-C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE CHEMICAL 
+C THIS SUBROUTINE ALLOCATES SPACE FOR ARRAYS NEEDED BY THE CHEMICAL
 C REACTION (RCT) PACKAGE.
 C **********************************************************************
 C
@@ -13,22 +13,25 @@ C
      &                         SAVUCN,IUCN2
       USE MIN_SAT, ONLY: ICIMDRY
 C
-      USE RCTMOD                         
+      USE RCTMOD
 C
       IMPLICIT  NONE
       INTEGER   IN,J,I,K,JR,IR,KR,INDEX,IERR
-      INTEGER   NODES         
+      INTEGER   NODES
       REAL      TR,TINY,EPSILON,TOTPOR
       CHARACTER ANAME*24,FLNAME*50,FINDEX*30
       PARAMETER (TINY=1.E-30,EPSILON=0.5E-6)
-      LOGICAL   EXISTED      
+      LOGICAL   EXISTED
 C
       INRCT=IN
 C
 C--ALLOCATE AND INITIALIZE
       ALLOCATE(IREACT,IRCTOP,IGETSC,IFESLD,ISORBIMONLY,ISP1IM,
      &         rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,
-     &         IUMETH,RVAL,NSOLID)
+     &         IUMETH,RVAL)
+      ALLOCATE(NSOLID(NCOMP))
+      ALLOCATE(ISLDPH(NCOMP))
+      ALLOCATE(NCRSPIM(NCOMP))
       ALLOCATE(FRAC(NCOL,NROW,NLAY))
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
@@ -43,6 +46,9 @@ C--ALLOCATE AND INITIALIZE
       FLAM1=1.0D0
       RC2=0.
       FLAM2=1.0D0
+      NSOLID=0
+      ISLDPH=0
+      NCRSPIM=0
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INRCT
@@ -51,7 +57,7 @@ C--PRINT PACKAGE NAME AND VERSION NUMBER
 C
 C--READ AND ECHO SORPTION ISOTHERM TYPE AND FLAG IREACT
       READ(INRCT,'(6I10)',ERR=100,IOSTAT=IERR)
-     &     ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION 
+     &     ISOTHM,IREACT,IRCTOP,IGETSC,IREACTION
   100 IF(IERR.NE.0) THEN
         IREACTION=0
         IERR=0
@@ -67,14 +73,14 @@ C--READ AND ECHO SORPTION ISOTHERM TYPE AND FLAG IREACT
         READ(INRCT,'(2I10)') ISOTHM,IREACT
       ENDIF
 C
-      ISORBIMONLY=.FALSE.                    
-      ISP1IM=0                               
-      IF(ISOTHM.EQ.-6) THEN                  
-        ISORBIMONLY=.TRUE.                   
-        ISP1IM=1                             
-        ISOTHM=6                             
-      ENDIF                                  
-C                                            
+      ISORBIMONLY=.FALSE.
+      ISP1IM=0
+      IF(ISOTHM.EQ.-6) THEN
+        ISORBIMONLY=.TRUE.
+        ISP1IM=1
+        ISOTHM=6
+      ENDIF
+C
       IF(ISOTHM.EQ.1) THEN
         WRITE(IOUT,1022)
       ELSEIF(ISOTHM.EQ.2) THEN
@@ -96,48 +102,48 @@ C
       ELSEIF(ireact.eq.1) THEN
         WRITE(IOUT,1032)
       ELSEIF(ireact.eq.2) THEN
-        WRITE(IOUT,1033)      
+        WRITE(IOUT,1033)
       ELSEIF(ireact.eq.3) THEN
-        WRITE(IOUT,1035)      
+        WRITE(IOUT,1035)
       ELSEIF(ireact.eq.100) THEN
         WRITE(IOUT,1034)
       ENDIF
-C                                                               
-C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED      
-      IF(IREACT.EQ.2.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN     
-        WRITE(IOUT,*) 'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'   
-        WRITE(*,*)    'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'      
-        READ(*,*)                                               
-        STOP                                                    
-      ENDIF                                                     
-C                                                               
-C-----DUAL-DOMAIN NOT ALLOWED WITH CHAIN DECAY OPTION 
-      IF(IREACT.EQ.3.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN     
-        WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'   
-        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'      
-        READ(*,*)                                               
-        STOP                                                    
-      ENDIF                                                     
-C                                                               
+C
+C-----DUAL-DOMAIN NOT ALLOWED WITH MONOD KINETIC DISSOLVED
+      IF(IREACT.EQ.2.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN
+        WRITE(IOUT,*) 'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'
+        WRITE(*,*)    'IREACT=2 NOT ALLOWED WITH DUAL-DOMAIN'
+        READ(*,*)
+        STOP
+      ENDIF
+C
+C-----DUAL-DOMAIN NOT ALLOWED WITH CHAIN DECAY OPTION
+      IF(IREACT.EQ.3.AND.(ISOTHM.EQ.5.OR.ISOTHM.EQ.6)) THEN
+        WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'
+        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH DUAL-DOMAIN'
+        READ(*,*)
+        STOP
+      ENDIF
+C
 C-----NEED MULTIPLE SPECIFIED WITH IREACT=3
-      IF(IREACT.EQ.3.AND.NCOMP.LT.2) THEN                       
+      IF(IREACT.EQ.3.AND.NCOMP.LT.2) THEN
         WRITE(IOUT,*) 'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'
-        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'   
-        READ(*,*)                                               
-        STOP                                                    
-      ENDIF                                                     
-C                                                               
-      IF(IREACTION.EQ.1) THEN                                   
-        WRITE(IOUT,1036)                                        
-      ELSEIF(IREACTION.EQ.2) THEN                               
-        WRITE(IOUT,1038)                                        
-      ELSEIF(IREACTION.EQ.0) THEN                               
-      ELSE                                                      
-        WRITE(IOUT,*) 'IREACTION MUST BE 0, 1, OR 2'            
-        WRITE(*,*)    'IREACTION MUST BE 0, 1, OR 2'               
-        READ(*,*)                                               
-        STOP                                                    
-      ENDIF                                                     
+        WRITE(*,*)    'IREACT=3 NOT ALLOWED WITH SINGLE SPECIES'
+        READ(*,*)
+        STOP
+      ENDIF
+C
+      IF(IREACTION.EQ.1) THEN
+        WRITE(IOUT,1036)
+      ELSEIF(IREACTION.EQ.2) THEN
+        WRITE(IOUT,1038)
+      ELSEIF(IREACTION.EQ.0) THEN
+      ELSE
+        WRITE(IOUT,*) 'IREACTION MUST BE 0, 1, OR 2'
+        WRITE(*,*)    'IREACTION MUST BE 0, 1, OR 2'
+        READ(*,*)
+        STOP
+      ENDIF
 C
  1022 FORMAT(1X,'TYPE OF SORPTION SELECTED IS [LINEAR]')
  1024 FORMAT(1X,'TYPE OF SORPTION SELECTED IS [FREUNDLICH]')
@@ -183,47 +189,47 @@ C
  1062 FORMAT(1X,'INITIAL SORBED/IMMOBILE PHASE CONCENTRATION',
      &          ' READ FROM INPUT FILE')
 C
-C--ALLOCATE IF IREACTION=1                          
-      IF(IREACTION.EQ.1) THEN                       
+C--ALLOCATE IF IREACTION=1
+      IF(IREACTION.EQ.1) THEN
         ALLOCATE(IED,IEA,FEDEA)
-        ALLOCATE (CRCT(NCOL,NROW,NLAY,2),STAT=IERR) 
-        IF(IERR.NE.0) THEN                          
-          WRITE(*,106)                              
-  106     FORMAT(1X,'RCT: MEMORY ALLOCATION ERROR') 
-          CALL USTOP(' ')                           
-        ENDIF                                       
-      ENDIF                                         
-C                                                   
-C--ALLOCATE RC3 IS IREACT=2                         
-      IF(IREACT.EQ.2) THEN                          
+        ALLOCATE (CRCT(NCOL,NROW,NLAY,2),STAT=IERR)
+        IF(IERR.NE.0) THEN
+          WRITE(*,106)
+  106     FORMAT(1X,'RCT: MEMORY ALLOCATION ERROR')
+          CALL USTOP(' ')
+        ENDIF
+      ENDIF
+C
+C--ALLOCATE RC3 IS IREACT=2
+      IF(IREACT.EQ.2) THEN
         ALLOCATE(RC3(NCOL,NROW,NLAY,NCOMP),STAT=IERR)
-        IF(IERR.NE.0) THEN                          
-          WRITE(*,107)                              
-  107     FORMAT(1X,'RC3: MEMORY ALLOCATION ERROR') 
-          CALL USTOP(' ')                           
-        ENDIF                                       
-      ENDIF                                         
-C                                                   
-C--ALLOCATE YLD IS IREACT=3                         
-      IF(IREACT.EQ.3) THEN                          
-        ALLOCATE(YLD(NCOMP-1),STAT=IERR)            
-        IF(IERR.NE.0) THEN                          
-          WRITE(*,108)                              
-  108     FORMAT(1X,'YLD: MEMORY ALLOCATION ERROR') 
-          CALL USTOP(' ')                           
-        ENDIF                                       
-      ENDIF                                         
-C                                                   
-C--ALLOCATE SP1IM                                   
-      IF(ISP1IM.GE.1) THEN                             
+        IF(IERR.NE.0) THEN
+          WRITE(*,107)
+  107     FORMAT(1X,'RC3: MEMORY ALLOCATION ERROR')
+          CALL USTOP(' ')
+        ENDIF
+      ENDIF
+C
+C--ALLOCATE YLD IS IREACT=3
+      IF(IREACT.EQ.3) THEN
+        ALLOCATE(YLD(NCOMP-1),STAT=IERR)
+        IF(IERR.NE.0) THEN
+          WRITE(*,108)
+  108     FORMAT(1X,'YLD: MEMORY ALLOCATION ERROR')
+          CALL USTOP(' ')
+        ENDIF
+      ENDIF
+C
+C--ALLOCATE SP1IM
+      IF(ISP1IM.GE.1) THEN
         ALLOCATE(SP1IM(NCOL,NROW,NLAY,NCOMP),STAT=IERR)
-        IF(IERR.NE.0) THEN                             
-          WRITE(*,109)                                 
-  109     FORMAT(1X,'SP1IM MEMORY ALLOCATION ERROR')   
-          CALL USTOP(' ')                              
-        ENDIF                                          
-      ENDIF                                            
-C                                                      
+        IF(IERR.NE.0) THEN
+          WRITE(*,109)
+  109     FORMAT(1X,'SP1IM MEMORY ALLOCATION ERROR')
+          CALL USTOP(' ')
+        ENDIF
+      ENDIF
+C
       IF(ISOTHM.NE.5.AND.ISOTHM.NE.6) THEN
         IF(ICIMDRY.GE.2) THEN
           ICIMDRY=0
@@ -253,7 +259,7 @@ C--PRINT A HEADER
      &        /1X,46('-')/)
 C
 C--CALL RARRAY TO READ IN SORPTION PARAMETERS IF SORPTION SIMULATED
-      IF(ISOTHM.LE.0 .AND. IREACTION.NE.2) GOTO 2000 
+      IF(ISOTHM.LE.0 .AND. IREACTION.NE.2) GOTO 2000
 C
       IF(ISOTHM.EQ.5 .AND. IREACTION.NE.2) GOTO 111
       ANAME='BULK DENSITY (RHOB)    '
@@ -335,27 +341,27 @@ C
         ENDIF
       ENDDO
 C
-C-----IMMOBILE DOMAIN SORPTION COEFFICIENT                             
-      IF(ISP1IM.GE.1) THEN                                             
-        DO INDEX=1,NCOMP                                               
-          ANAME='IMM SORP. COEF. COMP. NO'                             
-          WRITE(ANAME(22:24),'(I3.2)') INDEX                           
-          IF(IRCTOP.EQ.2) THEN                                         
-            DO K=1,NLAY                                                
+C-----IMMOBILE DOMAIN SORPTION COEFFICIENT
+      IF(ISP1IM.GE.1) THEN
+        DO INDEX=1,NCOMP
+          ANAME='IMM SORP. COEF. COMP. NO'
+          WRITE(ANAME(22:24),'(I3.2)') INDEX
+          IF(IRCTOP.EQ.2) THEN
+            DO K=1,NLAY
               CALL RARRAY(SP1IM(:,:,K,INDEX),ANAME,NROW,NCOL,K,IN,IOUT)
-            ENDDO                                                      
-          ELSEIF(IRCTOP.EQ.1) THEN                                     
-            CALL RARRAY(BUFF,ANAME,1,NLAY,0,IN,IOUT)                   
-            DO K=1,NLAY                                                
-              DO I=1,NROW                                              
-                DO J=1,NCOL                                            
-                  SP1IM(J,I,K,INDEX)=BUFF(1,1,K)                       
-                ENDDO                                                  
-              ENDDO                                                    
-            ENDDO                                                      
-          ENDIF                                                        
-        ENDDO                                                          
-      ENDIF                                                            
+            ENDDO
+          ELSEIF(IRCTOP.EQ.1) THEN
+            CALL RARRAY(BUFF,ANAME,1,NLAY,0,IN,IOUT)
+            DO K=1,NLAY
+              DO I=1,NROW
+                DO J=1,NCOL
+                  SP1IM(J,I,K,INDEX)=BUFF(1,1,K)
+                ENDDO
+              ENDDO
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
 C
       DO INDEX=1,NCOMP
         ANAME='2ND SORP. COEF. COMP. NO'
@@ -411,11 +417,11 @@ C
 C--CALL RARRAY TO READ IN 1st/0th ORDER REACTION RATE CONSTANTS
 C--IF NECESSARY
       IF(IREACT.ne.1.and.IREACT.ne.100.and.IREACT.ne.2.and.
-     &   IREACT.ne.3) GOTO 3000                            
+     &   IREACT.ne.3) GOTO 3000
 C
       DO INDEX=1,NCOMP
         ANAME='SOLUTE RXN RATE: COMP NO'
-        IF(IREACT.EQ.2) ANAME='Mt * Umax      : COMP NO' 
+        IF(IREACT.EQ.2) ANAME='Mt * Umax      : COMP NO'
         WRITE(ANAME(22:24),'(I3.2)') INDEX
         IF(IRCTOP.EQ.2) THEN
           DO K=1,NLAY
@@ -454,71 +460,71 @@ C
         ENDIF
       ENDDO
 C
-      IF(IREACT.EQ.2) THEN                   
-        DO INDEX=1,NCOMP                     
-          ANAME='HALF-SAT. CONST: COMP NO'   
-          WRITE(ANAME(22:24),'(I3.2)') INDEX 
-          IF(IRCTOP.EQ.2) THEN               
-            DO K=1,NLAY                      
+      IF(IREACT.EQ.2) THEN
+        DO INDEX=1,NCOMP
+          ANAME='HALF-SAT. CONST: COMP NO'
+          WRITE(ANAME(22:24),'(I3.2)') INDEX
+          IF(IRCTOP.EQ.2) THEN
+            DO K=1,NLAY
               CALL RARRAY(RC3(:,:,K,INDEX),ANAME,NROW,NCOL,K,IN,IOUT)
-            ENDDO                                   
-          ELSEIF(IRCTOP.EQ.1) THEN                  
+            ENDDO
+          ELSEIF(IRCTOP.EQ.1) THEN
             CALL RARRAY(BUFF,ANAME,1,NLAY,0,IN,IOUT)
-            DO K=1,NLAY                             
-              DO I=1,NROW                           
-                DO J=1,NCOL                         
-                  RC3(J,I,K,INDEX)=BUFF(1,1,K)      
-                ENDDO                               
-              ENDDO                                 
-            ENDDO                                   
-          ENDIF                                     
-        ENDDO                                       
-      ENDIF                                         
-C                                                   
-      IF(IREACT.EQ.3) THEN                          
-        DO INDEX=1,NCOMP-1                          
-          READ(IN,*) YLD(INDEX)                     
-          WRITE(IOUT,'(18X,2(A,I3),A,G13.6)')       
+            DO K=1,NLAY
+              DO I=1,NROW
+                DO J=1,NCOL
+                  RC3(J,I,K,INDEX)=BUFF(1,1,K)
+                ENDDO
+              ENDDO
+            ENDDO
+          ENDIF
+        ENDDO
+      ENDIF
+C
+      IF(IREACT.EQ.3) THEN
+        DO INDEX=1,NCOMP-1
+          READ(IN,*) YLD(INDEX)
+          WRITE(IOUT,'(18X,2(A,I3),A,G13.6)')
      &               'YIELD COEFFICIENT BETWEEN SPECIES ',INDEX,
-     &               ' AND ',INDEX+1,' = ', YLD(INDEX)          
-        ENDDO                                          
-      ENDIF                                            
-C                                                      
+     &               ' AND ',INDEX+1,' = ', YLD(INDEX)
+        ENDDO
+      ENDIF
+C
  3000 CONTINUE
 C
-C-----READ REACTION RELATED DATA             
-      IF(IREACTION.EQ.1) THEN                
+C-----READ REACTION RELATED DATA
+      IF(IREACTION.EQ.1) THEN
         READ(IN,'(2I10,F10.0)') IED,IEA,FEDEA
-        WRITE(IOUT,104) IED,IEA,FEDEA        
+        WRITE(IOUT,104) IED,IEA,FEDEA
 104     FORMAT(1X,'SIMULATED REACTION: ED + FEDEA*EA --> PRODUCT'
      &        /1X,'ELECTRON DONOR COMPONENT (IED)         = ',I3
      &        /1X,'ELECTRON ACCEPTOR COMPONENT (IEA)      = ',I3
      &        /1X,'STOICHIOMETRIC RATIO (FEDEA)           = ',G12.4)
-C.......CHECK FOR POSSIBLE ERRORS                              
-        IF(IED.GT.NCOMP .OR. IEA.GT.NCOMP) THEN                
-          WRITE(*,*) 'IEA OR IED GREATER THAN NCOMP'           
-          WRITE(IOUT,*) 'IEA OR IED GREATER THAN NCOMP'        
-          CALL USTOP(' ')                                      
-        ENDIF                                                  
-        IF(IED.EQ.IEA) THEN                                    
-          WRITE(*,*) 'IEA AND IED CANNOT BE THE SAME NUMBER'   
+C.......CHECK FOR POSSIBLE ERRORS
+        IF(IED.GT.NCOMP .OR. IEA.GT.NCOMP) THEN
+          WRITE(*,*) 'IEA OR IED GREATER THAN NCOMP'
+          WRITE(IOUT,*) 'IEA OR IED GREATER THAN NCOMP'
+          CALL USTOP(' ')
+        ENDIF
+        IF(IED.EQ.IEA) THEN
+          WRITE(*,*) 'IEA AND IED CANNOT BE THE SAME NUMBER'
           WRITE(IOUT,*) 'IEA AND IED CANNOT BE THE SAME NUMBER'
-          CALL USTOP(' ')                                      
-        ENDIF                                                  
-      ELSEIF(IREACTION.EQ.2) THEN                              
-C-------READ REACTION FILE NAME                                
-        rec_FileName=''                                        
-        READ(IN,'(A1000)') rec_FileName                        
-        INQUIRE(FILE=rec_FileName,EXIST=EXISTED)               
-        IF(.NOT.EXISTED) THEN                                  
+          CALL USTOP(' ')
+        ENDIF
+      ELSEIF(IREACTION.EQ.2) THEN
+C-------READ REACTION FILE NAME
+        rec_FileName=''
+        READ(IN,'(A1000)') rec_FileName
+        INQUIRE(FILE=rec_FileName,EXIST=EXISTED)
+        IF(.NOT.EXISTED) THEN
           WRITE(*,*) 'FILE ',TRIM(rec_FileName),' DOES NOT EXIST'
-          CALL USTOP('  ')        
-        ELSE                      
-          NODES=NLAY*NROW*NCOL    
+          CALL USTOP('  ')
+        ELSE
+          NODES=NLAY*NROW*NCOL
           CALL REACTION_PRE(NODES)
-        ENDIF                     
-      ENDIF                       
-C                                 
+        ENDIF
+      ENDIF
+C
 C--DETERMINE DEFAULT CONCENTRATION FOR THE NONEQUILIBRIUM PHASE
 C--WHICH REPRESENTS SORBED PHASE IN SINGLE-DOMAIN MODEL (ISOTHM=4)
 C--OR IMMOBILE-LIQUID PHASE IN DUAL-DOMAIN MODEL (ISOTHM=5 OR 6)
@@ -577,7 +583,7 @@ C
                 IF(TR.GT.TINY) TR=1./TR
                 IF(TR.GT.TINY.AND.TR.LT.DTRCT) THEN
                   DTRCT=TR
-                  KR=K     
+                  KR=K
                   IR=I
                   JR=J
                 ENDIF
@@ -626,7 +632,7 @@ C
       USE RCTMOD
       USE UZTVARS,       ONLY: THETAW
       USE MT3DMS_MODULE, ONLY: iUnitTRNOP,IALTFM,THETAW2,iSSTrans,FLAM2
-C                     
+C
       IMPLICIT     NONE
       INTEGER      NCOL,NROW,NLAY,ICBUND,ISOTHM,IREACT,J,I,K,
      &             ICOMP
@@ -662,7 +668,7 @@ C--1. LINEAR EQUILIBRIUM...
                 RETA(J,I,K)=1.+RHOB(J,I,K)/PRSITY(J,I,K)*SP1(J,I,K)
                 IF(IALTFM.EQ.3)
      1            RETA(J,I,K)=1.+RHOB(J,I,K)/THETAW2(J,I,K)*SP1(J,I,K)
-              ENDIF            
+              ENDIF
               RFMIN=MIN(RFMIN,RETA(J,I,K))
               SRCONC(J,I,K)=SP1(J,I,K)*CNEW(J,I,K)
             ENDDO
@@ -718,17 +724,17 @@ C--4. LINEAR NON-EQUILIBRIUM...
               IF(ICBUND(J,I,K).EQ.0.OR.DTRANS.LT.TINY) CYCLE
               RC2TMP=0.
               IF(IREACT.eq.1.or.IREACT.eq.100.or.IREACT.eq.2.or.
-     1          IREACT.eq.3)                                    
-     1          RC2TMP=RC2(J,I,K)                                
-C--IF with no reaction or with first-order reaction               
+     1          IREACT.eq.3)
+     1          RC2TMP=RC2(J,I,K)
+C--IF with no reaction or with first-order reaction
               IF(ireact.eq.0.or.ireact.eq.1.or.ireact.eq.2.or.
-     1           ireact.eq.3) THEN                            
+     1           ireact.eq.3) THEN
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+RHOB(J,I,K)/
      &                        DTRANS*SRCONC(J,I,K))/(RHOB(J,I,K)/
      &                        DTRANS+SP2(J,I,K)/SP1(J,I,K)+
      &                        RC2TMP*RHOB(J,I,K))
-C--IF with zeroth-order reaction      
-              ELSEIF(ireact.eq.100) THEN 
+C--IF with zeroth-order reaction
+              ELSEIF(ireact.eq.100) THEN
                 FLS=FLAM2(J,I,K,ICOMP)
                 SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+RHOB(J,I,K)/
      &                        DTRANS*SRCONC(J,I,K)-
@@ -751,22 +757,22 @@ C--5/6. DUAL DOMAIN MASS TRANSFER WITHOUT/WITH LINEAR SORPTION
                 RFMIN=MIN(RFMIN,RETA(J,I,K))
                 RETA2(J,I,K)=1.0
               IF(PRSITY2(J,I,K).GT.TINY) THEN
-                IF(ISP1IM.EQ.0) THEN         
+                IF(ISP1IM.EQ.0) THEN
                   RETA2(J,I,K)=1.+(1.-FRAC(J,I,K))*RHOB(J,I,K)*
      &                         SP1(J,I,K)/PRSITY2(J,I,K)
-                ELSE                              
+                ELSE
                   RETA2(J,I,K)=1.+(1.-FRAC(J,I,K))*RHOB(J,I,K)*
      &                         SP1IM(J,I,K,ICOMP)/PRSITY2(J,I,K)
-                ENDIF                                             
-              ENDIF                                               
+                ENDIF
+              ENDIF
               IF(DTRANS.LT.TINY) CYCLE
               RC1TMP=0.
               RC2TMP=0.
               IF(IREACT.eq.1.or.IREACT.eq.100) THEN
                 RC1TMP=RC1(J,I,K)
                 RC2TMP=RC2(J,I,K)
-              ENDIF    
-C--IF with no reaction or with first-order reaction            
+              ENDIF
+C--IF with no reaction or with first-order reaction
               IF(ireact.eq.0.or.ireact.eq.1) THEN
                 IF(iSSTrans.EQ.1) THEN
                   TERM1=SP2(J,I,K)+
@@ -780,8 +786,8 @@ C--IF with no reaction or with first-order reaction
                   SRCONC(J,I,K)=(SP2(J,I,K)*CNEW(J,I,K)+PRSITY2(J,I,K)*
      &                RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))/TERM1
                 ENDIF
-C--IF with zeroth-order reaction     
-              ELSEIF(ireact.eq.100) THEN 
+C--IF with zeroth-order reaction
+              ELSEIF(ireact.eq.100) THEN
                 FLIM=FLAM2(J,I,K,ICOMP)
                 IF(iSSTrans.EQ.1) THEN
                   TERM1=SP2(J,I,K)
@@ -796,7 +802,7 @@ C--IF with zeroth-order reaction
      &                PRSITY2(J,I,K)*RETA2(J,I,K)/DTRANS*SRCONC(J,I,K))
      &                /TERM1
                 ENDIF
-              END IF         
+              END IF
             ENDDO
           ENDDO
         ENDDO
@@ -811,8 +817,8 @@ C
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
      &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
 C *******************************************************************
-C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX [A] AND THE 
-C RIGHT-HAND-SIDE MATRIX [RHS] FOR SORPTION AND 1ST/0TH ORDER 
+C THIS SUBROUTINE FORMULATES THE COEFFICIENT MATRIX [A] AND THE
+C RIGHT-HAND-SIDE MATRIX [RHS] FOR SORPTION AND 1ST/0TH ORDER
 C REACTION TERMS USING THE IMPLICIT FINITE-DIFFERENCE SCHEME.
 C *******************************************************************
 C
@@ -858,11 +864,11 @@ C
 C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
               RC2TMP=0.
               IF(IREACT.eq.1.or.IREACT.eq.100.or.IREACT.eq.2.or.
-     &           IREACT.eq.3)                                   
-     &           RC2TMP=RC2(N,ICOMP)                            
-C--IF with no reaction or with first-order reaction             
-              IF(IREACT.EQ.0.OR.IREACT.EQ.1.OR.IREACT.EQ.2.OR.  
-     &           IREACT.EQ.3) THEN                              
+     &           IREACT.eq.3)
+     &           RC2TMP=RC2(N,ICOMP)
+C--IF with no reaction or with first-order reaction
+              IF(IREACT.EQ.0.OR.IREACT.EQ.1.OR.IREACT.EQ.2.OR.
+     &           IREACT.EQ.3) THEN
                 IF(UPDLHS) A(N)=A(N)-SP2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
      &                          (1.-SP2(N,ICOMP)/SP1(N,ICOMP)/
      &                         (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP)
@@ -871,10 +877,10 @@ C--IF with no reaction or with first-order reaction
      &                 DH(N)*RHOB(N)*SRCONC(N,ICOMP)/DTRANS/
      &                 (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP)+
      &                 RC2TMP*RHOB(N))
-                IF(ireact.eq.3.AND.ICOMP.GT.1)           
+                IF(ireact.eq.3.AND.ICOMP.GT.1)
      &            RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)*
      &                   DELR(J)*DELC(I)*DH(N)*RHOB(N)*SRCONC(N,ICOMP-1)
-C--IF with zeroth-order reaction     
+C--IF with zeroth-order reaction
               ELSEIF(IREACT.EQ.100) THEN
 C
                 IF(RC2TMP.GT.0.) THEN
@@ -895,7 +901,7 @@ C
      &                 DELR(J)*DELC(I)*DH(N)*RHOB(N)*
      &                 (RC2TMP*FLS-SRCONC(N,ICOMP)/DTRANS))/
      &                 (RHOB(N)/DTRANS+SP2(N,ICOMP)/SP1(N,ICOMP))
-              END IF   
+              END IF
             ENDDO
           ENDDO
         ENDDO
@@ -910,9 +916,9 @@ C
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
 C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
-              IF(ICBUND(N,ICOMP).LE.0) CYCLE              
+              IF(ICBUND(N,ICOMP).LE.0) CYCLE
 C
-C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY              
+C--UPDATE COEFFICIENT MATRIX A AND RHS IF NECESSARY
               RC1TMP=0.
               RC2TMP=0.
               IF(IREACT.eq.1.or.IREACT.eq.100) THEN
@@ -937,7 +943,7 @@ C--IF with no reaction or with first-order reaction
      &                 DELR(J)*DELC(I)*DH(N)*SRCONC(N,ICOMP)/
      &                 (DTRANS*TERM1)
                 ENDIF
-C--IF with zeroth-order reaction      
+C--IF with zeroth-order reaction
               ELSEIF(ireact.eq.100) THEN
                 IF(iSSTrans.EQ.1) THEN
                   TERM1=SP2(N,ICOMP)
@@ -962,7 +968,7 @@ C
      &                 (-RC1TMP*PRSITY2(N)*FLIM-RC2TMP*(1.-FRAC(N))
      &                 *RHOB(N)*FLIM+
      &                 PRSITY2(N)*RETA2(N,ICOMP)*SRCONC(N,ICOMP)/DTRANS)
-     &                 /TERM1             
+     &                 /TERM1
                 ENDIF
               END IF
             ENDDO
@@ -993,67 +999,67 @@ C--SORBED PHASE FOR EQUILIBRIUM-CONTROLLED ISOTHERMS
                 RHS(N)=RHS(N)+RC2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
      &                 RHOB(N)*SRCONC(N,ICOMP)
               ELSEIF(ISOTHM.EQ.6) THEN
-                IF(UPDLHS) A(N)=A(N)-RC2(N,ICOMP)*FRAC(N)*     
+                IF(UPDLHS) A(N)=A(N)-RC2(N,ICOMP)*FRAC(N)*
      &                        RHOB(N)*DELR(J)*DELC(I)*DH(N)*SP1(N,ICOMP)
-              ENDIF                 
-            ENDDO                   
-          ENDDO                     
-        ENDDO                       
-      ENDIF                         
-C                                   
-C--MONOD KINETIC REACTION           
-C                                   
-      IF(IREACT.EQ.2) THEN          
-        DO K=1,NLAY                 
-          DO I=1,NROW               
-            DO J=1,NCOL             
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+C
+C--MONOD KINETIC REACTION
+C
+      IF(IREACT.EQ.2) THEN
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
-C                                           
+C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
-              IF(ICBUND(N,ICOMP).LE.0) CYCLE      
-C                                                 
-C--DISSOLVED PHASE                                
+              IF(ICBUND(N,ICOMP).LE.0) CYCLE
+C
+C--DISSOLVED PHASE
               IF(UPDLHS) A(N)=A(N)-RC1(N,ICOMP)*PRSITY(N)*
      &                        DELR(J)*DELC(I)*DH(N)/
      &                        (RC3(J,I,K,ICOMP)+COLD(N,ICOMP))
-            ENDDO                                
-          ENDDO                                  
-        ENDDO                                    
-      ENDIF                                      
-C                                                
-C--CONTRIBUTIONS TO [A] AND [RHS] FROM 1ST ORDER KINETIC REACTION 
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+C
+C--CONTRIBUTIONS TO [A] AND [RHS] FROM 1ST ORDER KINETIC REACTION
 C  WITH CHAIN DECAY
-C                                                         
-      IF(IREACT.EQ.3) THEN                                
-        DO K=1,NLAY                                       
-          DO I=1,NROW                                     
-            DO J=1,NCOL                                   
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J              
-C                                                         
-C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL        
-              IF(ICBUND(N,ICOMP).LE.0) CYCLE              
-C                                                         
-C--DISSOLVED PHASE                                        
+C
+      IF(IREACT.EQ.3) THEN
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+C
+C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
+              IF(ICBUND(N,ICOMP).LE.0) CYCLE
+C
+C--DISSOLVED PHASE
               IF(UPDLHS) A(N)=A(N)-RC1(N,ICOMP)*PRSITY(N)*
-     &                        DELR(J)*DELC(I)*DH(N)                    
+     &                        DELR(J)*DELC(I)*DH(N)
               IF(ICOMP.GT.1) RHS(N)=RHS(N)-YLD(ICOMP-1)*RC1(N,ICOMP-1)*
      &                              CNEW(N,ICOMP-1)*PRSITY(N)*
      &                              DELR(J)*DELC(I)*DH(N)
-C                                                                 
-C--SORBED PHASE FOR EQUILIBRIUM-CONTROLLED ISOTHERMS              
-              IF(ISOTHM.EQ.1) THEN                                
-                IF(UPDLHS) A(N)=A(N)-RC2(N,ICOMP)*RHOB(N)*         
+C
+C--SORBED PHASE FOR EQUILIBRIUM-CONTROLLED ISOTHERMS
+              IF(ISOTHM.EQ.1) THEN
+                IF(UPDLHS) A(N)=A(N)-RC2(N,ICOMP)*RHOB(N)*
      &                          DELR(J)*DELC(I)*DH(N)*SP1(N,ICOMP)
                 IF(ICOMP.GT.1)RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)*
      &                               RHOB(N)*CNEW(N,ICOMP-1)*DELR(J)*
      &                               DELC(I)*DH(N)*SP1(N,ICOMP-1)
-              ELSEIF(ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN           
+              ELSEIF(ISOTHM.EQ.2.OR.ISOTHM.EQ.3) THEN
                 RHS(N)=RHS(N)+RC2(N,ICOMP)*DELR(J)*DELC(I)*DH(N)*
-     &                 RHOB(N)*SRCONC(N,ICOMP)                       
+     &                 RHOB(N)*SRCONC(N,ICOMP)
                 IF(ICOMP.GT.1)RHS(N)=RHS(N)-YLD(ICOMP-1)*RC2(N,ICOMP-1)*
      &                               DELR(J)*DELC(I)*DH(N)*
      &                               RHOB(N)*SRCONC(N,ICOMP-1)
-              ELSEIF(ISOTHM.EQ.6) THEN                          
+              ELSEIF(ISOTHM.EQ.6) THEN
                 IF(UPDLHS) A(N)=A(N)-RC2(N,ICOMP)*FRAC(N)*RHOB(N)*
      &                          DELR(J)*DELC(I)*DH(N)*SP1(N,ICOMP)
               ENDIF
@@ -1097,50 +1103,50 @@ C--SORBED PHASE FOR EQUILIBRIUM-CONTROLLED ISOTHERMS
             ENDDO
           ENDDO
         ENDDO
-      ENDIF                 
+      ENDIF
 C
-C--REACTION: ED + FEAED*EA --> PRODUCT                    
-      IF(IREACTION.EQ.1) THEN                             
-      IF(ICOMP.EQ.IED.OR.ICOMP.EQ.IEA) THEN               
-        DO K=1,NLAY                                       
-          DO I=1,NROW                                     
-            DO J=1,NCOL                                   
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J              
-C                                                         
-C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL        
-              IF(ICBUND(N,ICOMP).LE.0) CYCLE              
-C                                                         
-              IF(ICOMP.EQ.IED) THEN                       
-                IF(COLD(N,IED).GE.COLD(N,IEA)/FEDEA) THEN 
-cvsb                  RHS(N)=RHS(N)+(COLD(N,IEA)/FEDEA)   
-cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)  
-                ELSE                                      
-cvsb                  RHS(N)=RHS(N)+(COLD(N,IED))         
-cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)  
-                ENDIF                                     
-              ELSE                                        
-                IF(COLD(N,IEA).GE.COLD(N,IED)*FEDEA) THEN 
-cvsb                  RHS(N)=RHS(N)+(COLD(N,IED)*FEDEA)   
-cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)  
-                ELSE                                      
-cvsb                  RHS(N)=RHS(N)+(COLD(N,IEA))         
-cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)  
-                ENDIF                                     
-              ENDIF                                       
-            ENDDO                                         
-          ENDDO                                           
-        ENDDO                                             
-      ENDIF                                               
-C                                                         
-      ELSEIF(IREACTION.EQ.2) THEN                         
-        IF(ICOMP.EQ.NCOMP.AND.IFESLD.EQ.1) RETURN         
-        DO K=1,NLAY                                       
-          DO I=1,NROW                                     
-            DO J=1,NCOL                                   
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                
-C                                                           
-              DCDT_S(N,ICOMP)=0.                            
-              DCDT_SYLD(N,ICOMP)=0.                            
+C--REACTION: ED + FEAED*EA --> PRODUCT
+      IF(IREACTION.EQ.1) THEN
+      IF(ICOMP.EQ.IED.OR.ICOMP.EQ.IEA) THEN
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+C
+C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
+              IF(ICBUND(N,ICOMP).LE.0) CYCLE
+C
+              IF(ICOMP.EQ.IED) THEN
+                IF(COLD(N,IED).GE.COLD(N,IEA)/FEDEA) THEN
+cvsb                  RHS(N)=RHS(N)+(COLD(N,IEA)/FEDEA)
+cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+                ELSE
+cvsb                  RHS(N)=RHS(N)+(COLD(N,IED))
+cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+                ENDIF
+              ELSE
+                IF(COLD(N,IEA).GE.COLD(N,IED)*FEDEA) THEN
+cvsb                  RHS(N)=RHS(N)+(COLD(N,IED)*FEDEA)
+cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+                ELSE
+cvsb                  RHS(N)=RHS(N)+(COLD(N,IEA))
+cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)
+                ENDIF
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+C
+      ELSEIF(IREACTION.EQ.2) THEN
+        IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD.EQ.1) RETURN
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+C
+              DCDT_S(N,ICOMP)=0.
+              DCDT_SYLD(N,ICOMP)=0.
               IF(ICOMP.GT.NED) DCDT_FE(N,ICOMP-NED,1:NED)=0.
               IF(ICOMP.GT.1) THEN
                 DO III=1,ICOMP-1
@@ -1148,39 +1154,39 @@ C
                   DCDTYLD(III)=DCDT_SYLD(N,III)
                 ENDDO
               ENDIF
-              DCDT(ICOMP)=0.                                
-              DCDTYLD(ICOMP)=0.                                
-              DEA_ED_DT(1:NED)=0.                           
-              RVAL=0.                                       
-C                                                           
-C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL          
-              IF(ICBUND(N,ICOMP).LE.0)  CYCLE               
-C                                                           
-C--DISSOLVED PHASE                                          
-              IF(UPDLHS) THEN                               
-C               ASSIGN CONCENTRATIONS                       
-                RCOLD=COLD(N,1:NCOMP)                       
-                DO MM=1,NCOMP                               
-                  IF(RCOLD(MM)<0.0) RCOLD(MM)=0.0           
-                ENDDO                                       
-C                                                           
-                IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN  
-                  MAXEC(ICOMP)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)      
-                ENDIF                                               
-C                                                                   
-                CALL reaction_sub(ICOMP,1)                        
-C                                                                   
-                DCDT_S(N,ICOMP)=DCDT(ICOMP)                         
+              DCDT(ICOMP)=0.
+              DCDTYLD(ICOMP)=0.
+              DEA_ED_DT(1:NED)=0.
+              RVAL=0.
+C
+C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
+              IF(ICBUND(N,ICOMP).LE.0)  CYCLE
+C
+C--DISSOLVED PHASE
+              IF(UPDLHS) THEN
+C               ASSIGN CONCENTRATIONS
+                RCOLD=COLD(N,1:NCOMP)
+                DO MM=1,NCOMP
+                  IF(RCOLD(MM)<0.0) RCOLD(MM)=0.0
+                ENDDO
+C
+                IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN
+                  MAXEC(ICOMP)=COLD(N,NCRSPIM(ICOMP))/PRSITY(N)*RHOB(N)
+                ENDIF
+C
+                CALL reaction_sub(ICOMP,1)
+C
+                DCDT_S(N,ICOMP)=DCDT(ICOMP)
                 DCDT_SYLD(N,ICOMP)=DCDTYLD(ICOMP)
-C                                                                   
-                IF(ICOMP.LE.NED) THEN                               
+C
+                IF(ICOMP.LE.NED) THEN
                   RHS(N)=RHS(N)-DCDT(ICOMP)*PRSITY(N)*
      &                   DELR(J)*DELC(I)*DH(N)
                   RHS(N)=RHS(N)-DCDTYLD(ICOMP)*PRSITY(N)*DELR(J)*DELC(I)
      &                   *DH(N)
-                ELSE                                                
-                  DO MM=1,NED                                       
-                    DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)       
+                ELSE
+                  DO MM=1,NED
+                    DCDT_FE(N,ICOMP-NED,MM)=DEA_ED_DT(MM)
                     RHS(N)=RHS(N)-DEA_ED_DT(MM)*PRSITY(N)
      &                     *DELR(J)*DELC(I)*DH(N)
                   ENDDO
@@ -1207,13 +1213,13 @@ C
      &                         SRCONC,RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,
      &                         RETA,RFMIN,RMASIO,
      &                         COLD,iSSTrans,FLAM1,FLAM2
-      USE RCTMOD                    
+      USE RCTMOD
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,K,I,J
       REAL      DTRANS,DCRCT,CMML,CMMS,CIML,CIMS,VOLUME,DCRCT2
-      REAL      CTMP,DCRCTX,DCRCTX2 
-      INTEGER   M,N                 
+      REAL      CTMP,DCRCTX,DCRCTX2
+      INTEGER   M,N
       DOUBLE PRECISION FL,FLIM
 C
 C--INITIALIZE
@@ -1225,35 +1231,35 @@ C
 C--UPDATE RETARDATION FACTOR AND SORBED/IMMOBILE-PHASE CONCENTRATION
 C
       IF(ISOTHM.GT.0) THEN
-C                                                               
-C--DETERMINE WHICH CONC TO USE IF IREACTION=1                   
-        IF(IREACTION.EQ.1) THEN                                   
-          IF(ICOMP.EQ.IED) THEN                                   
+C
+C--DETERMINE WHICH CONC TO USE IF IREACTION=1
+        IF(IREACTION.EQ.1) THEN
+          IF(ICOMP.EQ.IED) THEN
             CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
      &               CRCT(:,:,:,1),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &               SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
      &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
      &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
-          ELSEIF(ICOMP.EQ.IEA) THEN                               
+          ELSEIF(ICOMP.EQ.IEA) THEN
             CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
-     &               CRCT(:,:,:,2),RETA(:,:,:,ICOMP),RFMIN,RHOB,        
+     &               CRCT(:,:,:,2),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &               SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
-     &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,  
-     &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)    
-          ELSE                                                    
+     &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+          ELSE
             CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
-     &               CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,    
+     &               CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &               SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
-     &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,  
-     &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)    
-          ENDIF                                                   
-        ELSE                                                      
+     &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
+     &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
+          ENDIF
+        ELSE
           CALL SRCT1R(NCOL,NROW,NLAY,ICBUND(:,:,:,ICOMP),PRSITY,
      &               CNEW(:,:,:,ICOMP),RETA(:,:,:,ICOMP),RFMIN,RHOB,
      &               SP1(:,:,:,ICOMP),SP2(:,:,:,ICOMP),RC1(:,:,:,ICOMP),
      &               RC2(:,:,:,ICOMP),PRSITY2,RETA2(:,:,:,ICOMP),FRAC,
      &               SRCONC(:,:,:,ICOMP),ISOTHM,IREACT,DTRANS,ICOMP)
-        ENDIF                                                     
+        ENDIF
       ENDIF
 C
 C--CALCULATE MASS BUDGETS FOR
@@ -1267,19 +1273,19 @@ C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
               IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C
-C--DETERMINE WHICH CONC TO USE IF IREACTION=1                
-              IF(IREACTION.EQ.1) THEN                        
-                IF(ICOMP.EQ.IED) THEN                        
-                  CTMP=CRCT(J,I,K,1)                         
-                ELSEIF(ICOMP.EQ.IEA) THEN                    
-                  CTMP=CRCT(J,I,K,2)                         
-                ELSE                                         
-                  CTMP=CNEW(J,I,K,ICOMP)                     
-                ENDIF                                        
-              ELSE                                           
-                CTMP=CNEW(J,I,K,ICOMP)                       
-              ENDIF                                          
-C                                                            
+C--DETERMINE WHICH CONC TO USE IF IREACTION=1
+              IF(IREACTION.EQ.1) THEN
+                IF(ICOMP.EQ.IED) THEN
+                  CTMP=CRCT(J,I,K,1)
+                ELSEIF(ICOMP.EQ.IEA) THEN
+                  CTMP=CRCT(J,I,K,2)
+                ELSE
+                  CTMP=CNEW(J,I,K,ICOMP)
+                ENDIF
+              ELSE
+                CTMP=CNEW(J,I,K,ICOMP)
+              ENDIF
+C
 C--CALCULATE SOLUTE MASS CHANGE
               DCRCT=-SP2(J,I,K,ICOMP)*(CTMP-SRCONC(J,I,K,ICOMP)/
      &               SP1(J,I,K,ICOMP))*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
@@ -1306,19 +1312,19 @@ C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
               IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C
-C--DETERMINE WHICH CONC TO USE IF IREACTION=1               
-              IF(IREACTION.EQ.1) THEN                       
-                IF(ICOMP.EQ.IED) THEN                       
-                  CTMP=CRCT(J,I,K,1)                        
-                ELSEIF(ICOMP.EQ.IEA) THEN                   
-                  CTMP=CRCT(J,I,K,2)                        
-                ELSE                                        
-                  CTMP=CNEW(J,I,K,ICOMP)                    
-                ENDIF                                       
-              ELSE                                          
-                CTMP=CNEW(J,I,K,ICOMP)                      
-              ENDIF                                         
-C                                                           
+C--DETERMINE WHICH CONC TO USE IF IREACTION=1
+              IF(IREACTION.EQ.1) THEN
+                IF(ICOMP.EQ.IED) THEN
+                  CTMP=CRCT(J,I,K,1)
+                ELSEIF(ICOMP.EQ.IEA) THEN
+                  CTMP=CRCT(J,I,K,2)
+                ELSE
+                  CTMP=CNEW(J,I,K,ICOMP)
+                ENDIF
+              ELSE
+                CTMP=CNEW(J,I,K,ICOMP)
+              ENDIF
+C
 C--CALCULATE CHANGE IN CONCENTRATION OF MOBILE-LIQUID PHASE
               IF(iSSTrans.EQ.1) THEN
               DCRCT=0.
@@ -1353,7 +1359,7 @@ C--CALCULATE MASS BUDGETS FOR
 C--1st/0th ORDER IRREVERSIBLE REACTION
 C
       IF(IREACT.ne.1.and.IREACT.ne.100.and.IREACT.ne.2.and.IREACT.ne.3)
-     &  GOTO 9999                                                      
+     &  GOTO 9999
 C
 C--SKIP IF NOT SINGLE-DOMAIN MODEL
       IF(ISOTHM.EQ.5.OR.ISOTHM.EQ.6) GOTO 1000
@@ -1366,18 +1372,18 @@ C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C
 C--DETERMINE WHICH CONC TO USE IF IREACTION=1
-            IF(IREACTION.EQ.1) THEN          
-              IF(ICOMP.EQ.IED) THEN          
-                CTMP=CRCT(J,I,K,1)           
-              ELSEIF(ICOMP.EQ.IEA) THEN      
-                CTMP=CRCT(J,I,K,2)           
-              ELSE                           
-                CTMP=CNEW(J,I,K,ICOMP)       
-              ENDIF                          
-            ELSE                             
-              CTMP=CNEW(J,I,K,ICOMP)         
-            ENDIF                            
-C                                            
+            IF(IREACTION.EQ.1) THEN
+              IF(ICOMP.EQ.IED) THEN
+                CTMP=CRCT(J,I,K,1)
+              ELSEIF(ICOMP.EQ.IEA) THEN
+                CTMP=CRCT(J,I,K,2)
+              ELSE
+                CTMP=CNEW(J,I,K,ICOMP)
+              ENDIF
+            ELSE
+              CTMP=CNEW(J,I,K,ICOMP)
+            ENDIF
+C
 C--SKIP IF CONCENTRATION IS NOT POSITIVE
             IF(CTMP.LE.0..AND.IREACT.NE.100) CYCLE
 C
@@ -1387,17 +1393,17 @@ C--DISSOLVED PHASE
      &              *DTRANS*DELR(J)*DELC(I)*DH(J,I,K)*PRSITY(J,I,K)
             ELSEIF(ireact.eq.2) THEN
               DCRCT=-RC1(J,I,K,ICOMP)*CTMP*DTRANS*DELR(J)*DELC(I)*
-     &               DH(J,I,K)*PRSITY(J,I,K)/(RC3(J,I,K,ICOMP)+CTMP)    
-            ELSEIF(ireact.eq.3) THEN                             
+     &               DH(J,I,K)*PRSITY(J,I,K)/(RC3(J,I,K,ICOMP)+CTMP)
+            ELSEIF(ireact.eq.3) THEN
               DCRCT=-RC1(J,I,K,ICOMP)*CTMP*DTRANS*DELR(J)*DELC(I)*
      &               DH(J,I,K)*PRSITY(J,I,K)
-              IF(ICOMP.GT.1) THEN                   
+              IF(ICOMP.GT.1) THEN
                 DCRCTX=YLD(ICOMP-1)*RC1(J,I,K,ICOMP-1)*
      &                 CNEW(J,I,K,ICOMP-1)*DTRANS*DELR(J)*DELC(I)*
      &                 DH(J,I,K)*PRSITY(J,I,K)
-              ELSE                                               
-                DCRCTX=0.                                        
-              ENDIF                                              
+              ELSE
+                DCRCTX=0.
+              ENDIF
             ELSEIF(ireact.eq.100) THEN
                 FL=FLAM1(J,I,K,ICOMP)
                 DCRCT=-RC1(J,I,K,ICOMP)*DTRANS*DELR(J)*DELC(I)*
@@ -1409,22 +1415,22 @@ C--SORBED PHASE
             IF(ISOTHM.GT.0.and.ireact.eq.1) THEN
               DCRCT2=-RC2(J,I,K,ICOMP)*RHOB(J,I,K)*SRCONC(J,I,K,ICOMP)*
      &               DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
-            ELSEIF(ISOTHM.GT.0.and.ireact.eq.3) THEN         
+            ELSEIF(ISOTHM.GT.0.and.ireact.eq.3) THEN
               DCRCT2=-RC2(J,I,K,ICOMP)*RHOB(J,I,K)*
      &              SRCONC(J,I,K,ICOMP)*DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
-              IF(ICOMP.GT.1) THEN                            
+              IF(ICOMP.GT.1) THEN
                 DCRCTX2=YLD(ICOMP-1)*RC2(J,I,K,ICOMP-1)*RHOB(J,I,K)*
      &                  SRCONC(J,I,K,ICOMP-1)*DTRANS*DELR(J)*DELC(I)*
      &                  DH(J,I,K)
-              ELSE                                           
-                DCRCTX2=0.                                   
-              ENDIF                                          
+              ELSE
+                DCRCTX2=0.
+              ENDIF
             ELSEIF(ISOTHM.GT.0.and.ireact.eq.100) THEN
               FL=FLAM1(J,I,K,ICOMP)
               DCRCT2=-RC2(J,I,K,ICOMP)*RHOB(J,I,K)*
      &               DTRANS*DELR(J)*DELC(I)*DH(J,I,K)
      1               *FL
-            ENDIF            
+            ENDIF
 C
 C--CALCULATE MASS LOSS/GAIN DUE TO 1st/0th ORDER REACTION
             IF(DCRCT+DCRCT2.LT.0) THEN
@@ -1433,15 +1439,15 @@ C--CALCULATE MASS LOSS/GAIN DUE TO 1st/0th ORDER REACTION
               RMASIO(9,1,ICOMP)=RMASIO(9,1,ICOMP)+DCRCT+DCRCT2
             ENDIF
 C
-C--CALCULATE MASS LOSS/GAIN DUE TO PARENT'S DECAY                 
-            IF(ireact.eq.3.AND.ICOMP.GT.1) THEN                   
-              IF(DCRCTX+DCRCTX2.LT.0) THEN                        
+C--CALCULATE MASS LOSS/GAIN DUE TO PARENT'S DECAY
+            IF(ireact.eq.3.AND.ICOMP.GT.1) THEN
+              IF(DCRCTX+DCRCTX2.LT.0) THEN
                 RMASIO(9,2,ICOMP)=RMASIO(9,2,ICOMP)+DCRCTX+DCRCTX2
-              ELSE                                                
+              ELSE
                 RMASIO(9,1,ICOMP)=RMASIO(9,1,ICOMP)+DCRCTX+DCRCTX2
-              ENDIF                                               
-            ENDIF                                                 
-C                                                                 
+              ENDIF
+            ENDIF
+C
 C--UPDATE SORBED MASS STORAGE CHANGE FOR NONEQUILIBRIUM SORPTION
             IF(ISOTHM.EQ.4.AND.DCRCT2.GT.0) THEN
               RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)-DCRCT2
@@ -1450,13 +1456,13 @@ C--UPDATE SORBED MASS STORAGE CHANGE FOR NONEQUILIBRIUM SORPTION
             ENDIF
 C
 C--UPDATE SORBED MASS STORAGE CHANGE FOR NONEQUILIBRIUM SORPTION - PARENT'S DECAY !# LINE 1415 RCT
-            IF(IREACT.EQ.3.AND.ICOMP.GT.1) THEN                
-              IF(ISOTHM.EQ.4.AND.DCRCTX2.GT.0) THEN            
+            IF(IREACT.EQ.3.AND.ICOMP.GT.1) THEN
+              IF(ISOTHM.EQ.4.AND.DCRCTX2.GT.0) THEN
                 RMASIO(120,2,ICOMP)=RMASIO(120,2,ICOMP)-DCRCTX2
-              ELSEIF(ISOTHM.EQ.4.AND.DCRCT2.LT.0) THEN         
+              ELSEIF(ISOTHM.EQ.4.AND.DCRCT2.LT.0) THEN
                 RMASIO(120,1,ICOMP)=RMASIO(120,1,ICOMP)-DCRCTX2
-              ENDIF                                            
-            ENDIF                                              
+              ENDIF
+            ENDIF
           ENDDO
         ENDDO
       ENDDO
@@ -1472,36 +1478,36 @@ C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
             IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
 C
 C--DETERMINE WHICH CONC TO USE IF IREACTION=1
-            IF(IREACTION.EQ.1) THEN    
-              IF(ICOMP.EQ.IED) THEN    
-                CTMP=CRCT(J,I,K,1)     
+            IF(IREACTION.EQ.1) THEN
+              IF(ICOMP.EQ.IED) THEN
+                CTMP=CRCT(J,I,K,1)
               ELSEIF(ICOMP.EQ.IEA) THEN
-                CTMP=CRCT(J,I,K,2)     
-              ELSE                     
-                CTMP=CNEW(J,I,K,ICOMP) 
-              ENDIF                    
-            ELSE                       
-              CTMP=CNEW(J,I,K,ICOMP)   
-            ENDIF                      
-C                                      
+                CTMP=CRCT(J,I,K,2)
+              ELSE
+                CTMP=CNEW(J,I,K,ICOMP)
+              ENDIF
+            ELSE
+              CTMP=CNEW(J,I,K,ICOMP)
+            ENDIF
+C
 C--SKIP IF CONCENTRATION IS NOT POSITIVE
             IF(CTMP.LE.0.AND.IREACT.NE.100) CYCLE
 C
-C--compute mass loss/gain in each cell for all 4 phases: 
+C--compute mass loss/gain in each cell for all 4 phases:
 C--mobile liquid, mobile sorbed, immobile liquid, immobile sorbed
             VOLUME=DELR(J)*DELC(I)*DH(J,I,K)
-            CMML=CTMP*PRSITY(J,I,K)*VOLUME 
+            CMML=CTMP*PRSITY(J,I,K)*VOLUME
             CMMS=(RETA(J,I,K,ICOMP)-1.)*CMML
             CIML=PRSITY2(J,I,K)*SRCONC(J,I,K,ICOMP)*VOLUME
-            CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML            
-C--for 1st-order reaction            
+            CIMS=(RETA2(J,I,K,ICOMP)-1.)*CIML
+C--for 1st-order reaction
             IF(ireact.eq.1) THEN
               CMML=-RC1(J,I,K,ICOMP)*CMML*DTRANS
               CMMS=-RC2(J,I,K,ICOMP)*CMMS*DTRANS
               CIML=-RC1(J,I,K,ICOMP)*CIML*DTRANS
               CIMS=-RC2(J,I,K,ICOMP)*CIMS*DTRANS
 C--for zero-order reaction
-            ELSEIF(ireact.eq.100) THEN              
+            ELSEIF(ireact.eq.100) THEN
               FL=FLAM1(J,I,K,ICOMP)
               FLIM=FLAM2(J,I,K,ICOMP)
               CMML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY(J,I,K)*DTRANS*FL
@@ -1510,7 +1516,7 @@ C--for zero-order reaction
               CIML=-RC1(J,I,K,ICOMP)*VOLUME*PRSITY2(J,I,K)*DTRANS*FLIM
               CIMS=-RC2(J,I,K,ICOMP)*VOLUME*RHOB(J,I,K)*DTRANS
      &             *(1.-FRAC(J,I,K))*FLIM
-            END IF            
+            END IF
 C
 C--CALCULATE MASS LOSS/GAIN DUE TO REACTION IN MOBILE DOMAIN
             IF(CMML+CMMS.LT.0) THEN
@@ -1545,97 +1551,97 @@ C--RECORD MASS STORAGE CHANGE IN IMMOBILE DOMAIN
 C
  9999 CONTINUE
 C
-C--REACTION: ED + FEAED*EA --> PRODUCT      
-      IF(IREACTION.EQ.1) THEN               
-        IF(ICOMP.EQ.IED.OR.ICOMP.EQ.IEA) THEN 
-          DO K=1,NLAY                         
-            DO I=1,NROW                       
-              DO J=1,NCOL                     
+C--REACTION: ED + FEAED*EA --> PRODUCT
+      IF(IREACTION.EQ.1) THEN
+        IF(ICOMP.EQ.IED.OR.ICOMP.EQ.IEA) THEN
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
                 IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
-C       
-                IF(ICOMP.EQ.IED) THEN                         
-                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-      
-     &                (CRCT(J,I,K,1)-CNEW(J,I,K,IED))         
+C
+                IF(ICOMP.EQ.IED) THEN
+                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-
+     &                (CRCT(J,I,K,1)-CNEW(J,I,K,IED))
      &                *PRSITY(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
      &                *RETA(J,I,K,IED)
-                ELSE                                              
-                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-          
-     &                (CRCT(J,I,K,2)-CNEW(J,I,K,IEA))             
-     &                *PRSITY(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)    
+                ELSE
+                  RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)-
+     &                (CRCT(J,I,K,2)-CNEW(J,I,K,IEA))
+     &                *PRSITY(J,I,K)*DELR(J)*DELC(I)*DH(J,I,K)
      &                *RETA(J,I,K,IEA)
-                ENDIF                                               
-              ENDDO                                                 
-            ENDDO                                                   
-          ENDDO                                                     
-        ENDIF                                                       
-      ELSEIF(IREACTION.EQ.2) THEN                                 
-        DO K=1,NLAY                                                 
-          DO I=1,NROW                                               
-            DO J=1,NCOL                                             
-              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J                        
+                ENDIF
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDIF
+      ELSEIF(IREACTION.EQ.2) THEN
+        DO K=1,NLAY
+          DO I=1,NROW
+            DO J=1,NCOL
+              N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
               IF(ICBUND(J,I,K,ICOMP).LE.0.AND.COLD(J,I,K,ICOMP)<=0)CYCLE
-              IF(ICOMP<=NED) THEN                                   
-                DCRCT=0.0                                           
-                DCRCT2=0.0                                           
-                IF(COLD(J,I,K,ICOMP)>0.) THEN                       
+              IF(ICOMP<=NED) THEN
+                DCRCT=0.0
+                DCRCT2=0.0
+                IF(COLD(J,I,K,ICOMP)>0.) THEN
                   DCRCT=DCDT_S(N,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)*
-     &                  PRSITY(J,I,K)*DTRANS           
+     &                  PRSITY(J,I,K)*DTRANS
                   DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)*
-     &                   PRSITY(J,I,K)*DTRANS           
-                ELSEIF(COLD(J,I,K,ICOMP)<=0.) THEN                  
-                  DCRCT=0.0                                         
+     &                   PRSITY(J,I,K)*DTRANS
+                ELSEIF(COLD(J,I,K,ICOMP)<=0.) THEN
+                  DCRCT=0.0
                   DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)*
-     &                   PRSITY(J,I,K)*DTRANS           
-                ELSE                                                
+     &                   PRSITY(J,I,K)*DTRANS
+                ELSE
                   DCRCT=DCDT_S(N,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)*
-     &                  PRSITY(J,I,K)*DTRANS           
+     &                  PRSITY(J,I,K)*DTRANS
                   DCRCT2=DCDT_SYLD(N,ICOMP)*DELR(J)*DELC(I)*DH(J,I,K)*
-     &                   PRSITY(J,I,K)*DTRANS           
-                ENDIF                                               
-              ELSEIF(ICOMP>NED.AND.ICOMP<=NED+NEA) THEN              
-                DCRCT=0.0                                           
-                DCRCT2=0.0                                           
-                DO M=1,NED                                          
-                  IF(COLD(J,I,K,M)>0.) THEN                          
+     &                   PRSITY(J,I,K)*DTRANS
+                ENDIF
+              ELSEIF(ICOMP>NED.AND.ICOMP<=NED+NEA) THEN
+                DCRCT=0.0
+                DCRCT2=0.0
+                DO M=1,NED
+                  IF(COLD(J,I,K,M)>0.) THEN
                     DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M)*DELR(J)*DELC(I)*
      &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS
-                  ELSEIF(COLD(J,I,K,M)<=0.) THEN                     
-                    DCRCT=DCRCT+0.0                                   
-                  ELSE                                              
+                  ELSEIF(COLD(J,I,K,M)<=0.) THEN
+                    DCRCT=DCRCT+0.0
+                  ELSE
                     DCRCT=DCRCT+DCDT_FE(N,ICOMP-NED,M)*DELR(J)*DELC(I)*
-     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS       
-                  ENDIF                                             
-                ENDDO                                               
-              ELSEIF(ICOMP==NCOMP.and.IFESLD>0) THEN                 
+     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS
+                  ENDIF
+                ENDDO
+              ELSEIF(ISLDPH(ICOMP).EQ.1.and.IFESLD>0) THEN
                 DCRCT=0.0
-                DO M=1,NED                                         
-                  IF(COLD(J,I,K,M)>0) THEN                          
-                    DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*DELR(J)*DELC(I)*
-     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
-                  ELSEIF(COLD(J,I,K,M)<=0) THEN                     
-                    DCRCT=DCRCT+0.0                                  
-                  ELSE                                             
-                    DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*DELR(J)*DELC(I)*
-     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
-                  ENDIF                                            
-                ENDDO                                              
-              ENDIF                                                
-              IF(DCRCT<0.)THEN                              
+                DO M=1,NED
+                  IF(COLD(J,I,K,M)>0) THEN
+                    DCRCT=DCRCT-DCDT_FE(N,NSOLID(ICOMP)-NED,M)*DELR(J)*
+     &                    DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS
+                  ELSEIF(COLD(J,I,K,M)<=0) THEN
+                    DCRCT=DCRCT+0.0
+                  ELSE
+                    DCRCT=DCRCT-DCDT_FE(N,NSOLID(ICOMP)-NED,M)*DELR(J)*
+     &                    DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS
+                  ENDIF
+                ENDDO
+              ENDIF
+              IF(DCRCT<0.)THEN
                 RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT
-              ELSE                                         
+              ELSE
                 RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+DCRCT
-              ENDIF                                        
-              IF(DCRCT2<0.)THEN                              
+              ENDIF
+              IF(DCRCT2<0.)THEN
                 RMASIO(13,2,ICOMP)=RMASIO(13,2,ICOMP)+DCRCT2
-              ELSE                                         
+              ELSE
                 RMASIO(13,1,ICOMP)=RMASIO(13,1,ICOMP)+DCRCT2
-              ENDIF                                        
-            ENDDO                                          
-          ENDDO                                            
-        ENDDO                                              
-      ENDIF                                              
-C                                                        
+              ENDIF
+            ENDDO
+          ENDDO
+        ENDDO
+      ENDIF
+C
 C--RETURN
       RETURN
       END
@@ -1722,7 +1728,7 @@ C--RETURN
 C
       SUBROUTINE FLASHREACT(ICOMP)
 C ********************************************************************
-C THIS SUBROUTINE CALCULATES FLASH CONCENTRATIONS AFTER APPLYING 
+C THIS SUBROUTINE CALCULATES FLASH CONCENTRATIONS AFTER APPLYING
 C REACTION: ED + FEAED*EA --> PRODUCT
 C ********************************************************************
       USE MT3DMS_MODULE, ONLY: NCOMP,NLAY,NROW,NCOL,ICBUND,CNEW,RETA,
@@ -1775,7 +1781,7 @@ C ********************************************************************
       USE RCTMOD
       CHARACTER*100 LINE
       INTEGER LLOC,ITYP1,ITYP2,ISTART,ISTOP
-      INTEGER NODES
+      INTEGER NODES,NSLDPH,IANYSLD
       REAL R
       LOGICAL OPND
       CHARACTER FINDEX*30
@@ -1794,7 +1800,8 @@ C-----OPEN FILE ON AN UNUSED UNIT NUMBER
 C
       NSPECIAL=0
       NSTORE=0
-      NSOLID=0
+      NSLDPH=MCOMP
+      IANYSLD=0
 C
 C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
 10    LINE=' '
@@ -1806,6 +1813,7 @@ C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
       ENDIF
 C
       READ(LINE,*) NED,NEA,NSPECIAL,IFESLD
+      IF(IFESLD.GT.0) IFESLD=1
       WRITE(IOUT,100) NED,NEA,NSPECIAL
 100   FORMAT(/1X,'NUMBER OF ELECTRON DONORS    = ',I3,
      &       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3,
@@ -1837,10 +1845,10 @@ C
         READ(LINE,*) IDUM,SPECIAL(N),MAXEC(N)
         WRITE(IOUT,120) IDUM,SPECIAL(N),MAXEC(N)
         IF(SPECIAL(N).EQ.'STORE') NSTORE=N
-        IF(SPECIAL(N).EQ.'SOLID') NSOLID=N
 C
 C.......'SOLID' ONLY APPLICABLE FOR EAs
         IF(SPECIAL(N).EQ.'SOLID') THEN
+            IANYSLD=1
           IF(N.LE.NED) THEN
             WRITE(IOUT,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
             WRITE(IOUT,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
@@ -1849,6 +1857,16 @@ C.......'SOLID' ONLY APPLICABLE FOR EAs
             READ(*,*)
             STOP
           ENDIF
+C
+          IF(IFESLD.EQ.1) THEN
+              NSLDPH=NSLDPH+1
+              IF(NSLDPH.LE.NCOMP) THEN
+                  NSOLID(NSLDPH)=N
+                  ISLDPH(NSLDPH)=1
+                  NCRSPIM(N)=NSLDPH
+              ENDIF
+          ENDIF
+
         ENDIF
       ENDDO
 120   FORMAT(I9,9X,A,3X,1PG15.5)
@@ -1856,16 +1874,34 @@ C
       IF(IFESLD.EQ.1) THEN
         IF(NCOMP.EQ.MCOMP) THEN
           IFESLD=0
-          WRITE(IOUT,'(/,2A)') 'SET NCOMP>MCOMP TO SIMULATE IMMOBILE',
-     &                         ' SOLID-PHASE SPECIES, IFESLD RESET TO 0'
-        ELSEIF(NSOLID.EQ.0) THEN
+          WRITE(IOUT,'(/,2A)') 'SET NCOMP>MCOMP TO SIMULATE IMMOBILE ',
+     &                         'SOLID-PHASE SPECIES, IFESLD RESET TO 0'
+        ELSEIF(NSLDPH.GT.NCOMP) THEN
           IFESLD=0
-          WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
-     &                         ', IFESLD RESET TO 0'
-        ELSE
-          WRITE(IOUT,1040) NSOLID,NCOMP
+          WRITE(IOUT,1039) NCOMP-MCOMP,NSLDPH-MCOMP
         ENDIF
       ENDIF
+C
+      IF(IANYSLD.EQ.0) THEN
+       IF(IFESLD.EQ.1) THEN
+         IFESLD=0
+         WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
+     &                        ', IFESLD RESET TO 0'
+       ENDIF
+      ELSE
+        IF(IFESLD.EQ.0) THEN
+        WRITE(IOUT,'(/,2A)') '''SOLID'' SPECIES DEFINED BUT IFESLD=0, ',
+     &                       'IMMOBILE SOLID-PHASES NOT USED IN ED/EA.'
+        ENDIF
+      ENDIF
+C
+      IF(IFESLD.EQ.1) THEN
+        DO N=MCOMP+1,NSLDPH
+          WRITE(IOUT,1040) NSOLID(N),N
+        ENDDO
+      ENDIF
+1039  FORMAT(/1X,'ONLY ',I3,' IMMOBILE SPECIES DEFINED BUT ',I3,
+     &           ' ''SOLID'' SPECIES SPECIFIED. IFESLD RESET TO 0')
 1040  FORMAT(/1X,'SOLID PHASE FOR SPECIES ',I3,
      &           ' IS SIMULATED AS IMMOBILE SPECIES ',I3)
 C
@@ -2013,8 +2049,8 @@ C
               rval = decay(n,m-ned)*(rcold(n)/(switch(m-ned)+rcold(n)))
             ELSEIF(RCOLD(m)>0.0) THEN           !for other EAs
               rval = decay(n,m-ned)*(rcold(m)/(switch(m-ned)+rcold(m)))
-            ELSE 
-              rval=0.0    
+            ELSE
+              rval=0.0
             END IF
 C
             ! second term: inhibition by higher-sequence EAs
@@ -2040,7 +2076,7 @@ C
               !AS THIS IS DONE WITHIN MT3D
               dea_Ed_DT(n)=rval*yieldc(n,m) *RCOLD(n)
               dcdt(m) = dcdt(m) + rval*yieldc(n,m) *RCOLD(n)
-            END IF  
+            END IF
           END DO
           !USE yieldc(n,m-ned) WHEN COMPILING WITH MT3D, and yieldc(n,m)
           !WHEN COMPILING ALONE
@@ -2052,32 +2088,32 @@ C
       END SUBROUTINE reaction_sub
 C
 C
-      SUBROUTINE Stor_Add_Methane(cMethane, ICOMP, DTRANS) 
+      SUBROUTINE Stor_Add_Methane(cMethane, ICOMP, DTRANS)
 !this SUBROUTINE is to check the concentration of methane, IF it is
 !over the maximum EFC, THEN the additional mass of methane will be
 !stored into a array, and the concentration of methane will be
-!assigned to equal the maximum EFC. 
+!assigned to equal the maximum EFC.
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: DELR,DELC,PRSITY,DH,NROW,NLAY,NCOL
 C
       REAL    cMethane(NCOL,NROW,NLAY)
       REAL    DTRANS
-      INTEGER I,J,K  
+      INTEGER I,J,K
 C
       ! in addition the one in here, a time factor has to be timed in
-      ! order to get the accumulated methane mass 
+      ! order to get the accumulated methane mass
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
             IF((cMethane(J,I,K)-MaxEC(ICOMP))>0.) THEN
                MassStor(J,I,K)=MassStor(J,I,K)+(cMethane(J,I,K)-
-     &                         MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(J)*  
-     &                         DELC(I)*DH(J,I,K)*DTRANS*0.5*DTRANS 
+     &                         MaxEC(ICOMP))*PRSITY(J,I,K)*DELR(J)*
+     &                         DELC(I)*DH(J,I,K)*DTRANS*0.5*DTRANS
                                cMethane(J,I,K)=MaxEC(ICOMP)
-            ENDIF                                                   
-          ENDDO                                                       
+            ENDIF
+          ENDDO
         ENDDO
-      ENDDO      
+      ENDDO
 C
       END SUBROUTINE
 C
@@ -2089,25 +2125,25 @@ C
       INTEGER ICOMP
       REAL DTRANS
 C
-      DO IEDEA=1,NED+NEA                         
-        IF(SPECIAL(IEDEA)=="SOLID") THEN         
-          DO K=1,NLAY                            
-            DO I=1,NROW                          
-              DO J=1,NCOL                        
-                NN=(K-1)*NCOL*NROW+(I-1)*NCOL+J  
-                IF(ICBUND(J,I,K,1).LE.0) CYCLE   
+      DO IEDEA=1,NED+NEA
+        IF(SPECIAL(IEDEA)=="SOLID".AND.NCRSPIM(IEDEA).EQ.ICOMP) THEN
+          DO K=1,NLAY
+            DO I=1,NROW
+              DO J=1,NCOL
+                NN=(K-1)*NCOL*NROW+(I-1)*NCOL+J
+                IF(ICBUND(J,I,K,1).LE.0) CYCLE
                 MAXEC(IEDEA)=COLD(J,I,K,ICOMP)*RHOB(J,I,K)/PRSITY(J,I,K)
-                DO II=1,NED                            
+                DO II=1,NED
                   MAXEC(IEDEA)=MAXEC(IEDEA)-
      &                         DCDT_FE(NN,IEDEA-NED,II)*DTRANS
-                ENDDO                          
+                ENDDO
                 CNEW(J,I,K,ICOMP)=MAXEC(IEDEA)*
      &                            PRSITY(J,I,K)/RHOB(J,I,K)
-              ENDDO                                   
-            ENDDO                                     
-          ENDDO                                       
-        ENDIF                                         
-      ENDDO                                           
+              ENDDO
+            ENDDO
+          ENDDO
+        ENDIF
+      ENDDO
 C
       RETURN
       END
@@ -2122,15 +2158,15 @@ C
 C
 C--THIS SUBROUTINE CALCULATES A STABLE TIME-STEP SIZE
 C
-      DO K=1,NLAY    
-        DO I=1,NROW  
+      DO K=1,NLAY
+        DO I=1,NROW
           DO J=1,NCOL
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE 
-            IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN 
+            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            IF(CNEW(J,I,K,ICOMP).GT.MAXEC(ICOMP)) THEN
               CNEW=COLD
             ENDIF
           ENDDO
-        ENDDO  
+        ENDDO
       ENDDO
       RETURN
       END
@@ -2154,7 +2190,7 @@ C-----FOR ISOTHM=4, ONLY FIRST TERM IS NEEDED
 C
 C-----SET FZOD
       FZOD=1.D0
-      TERML=DBLE(RC1)*DBLE(DTRANS)/DBLE(RETA) + 
+      TERML=DBLE(RC1)*DBLE(DTRANS)/DBLE(RETA) +
      1      DBLE(RC2)*DBLE(RHOB)*DBLE(DTRANS)*DBLE(FRAC)/
      1        (DBLE(RETA)*DBLE(PRSITY))
       IF(TERML.LE.0.D0) THEN

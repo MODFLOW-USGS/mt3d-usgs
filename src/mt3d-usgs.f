@@ -1,4 +1,4 @@
-C 
+C
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C                                                                      %
 C                             MT3D-USGS                                %
@@ -26,28 +26,28 @@ C   Web site: https://www.usgs.gov/ or http://water.usgs.gov/ogw/      %
 C                                                                      %
 C%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 C
-C MT3D-USGS is based on MT3DMS v5.3 originally developed by Chunmiao 
+C MT3D-USGS is based on MT3DMS v5.3 originally developed by Chunmiao
 C Zheng at S.S. Papadopulos & Associates, Inc. and documented for
 C the United States Environmental Protection Agency.  MT3D-USGS is
-C written by authors at S.S. Papadopulos & Associates, Inc. and the 
-C U.S. Geological Survey with the iterative solver routine by Tsun-Zee 
+C written by authors at S.S. Papadopulos & Associates, Inc. and the
+C U.S. Geological Survey with the iterative solver routine by Tsun-Zee
 C Mai.  Funding for MT3D-USGS development is provided, in part, by
 C U.S. Geological Survey's Groundwater Resources Program.
 C
-C Please refer to the USGS Water Resources Software User Rights Notice 
+C Please refer to the USGS Water Resources Software User Rights Notice
 C
 C    http://water.usgs.gov/software/help/notice/
 C
-C for complete use, copyright, and distribution information. This 
-C software has been approved for release by the U.S. Geological Survey 
-C (USGS). Although the software has been subjected to rigorous review, 
-C the USGS reserves the right to update the software as needed pursuant 
-C to further analysis and review. No warranty, expressed or implied, is 
-C made by the USGS or the U.S. Government as to the functionality of 
-C the software and related material nor shall the fact of release 
-C constitute any such warranty. Furthermore, the software is released 
-C on condition that neither the USGS nor the U.S. Government shall be 
-C held liable for any damages resulting from its authorized or 
+C for complete use, copyright, and distribution information. This
+C software has been approved for release by the U.S. Geological Survey
+C (USGS). Although the software has been subjected to rigorous review,
+C the USGS reserves the right to update the software as needed pursuant
+C to further analysis and review. No warranty, expressed or implied, is
+C made by the USGS or the U.S. Government as to the functionality of
+C the software and related material nor shall the fact of release
+C constitute any such warranty. Furthermore, the software is released
+C on condition that neither the USGS nor the U.S. Government shall be
+C held liable for any damages resulting from its authorized or
 C unauthorized use.
 C
 C=======================================================================
@@ -55,10 +55,10 @@ C Version history: 09-30-2016 (1.0.0)
 C                  02-28-2019 (1.0.1)
 C                  06-28-2019 (1.1.0)
 C
-C  =====================================================================                                        
+C  =====================================================================
 C
-      USE RCTMOD                                                 
-      USE MIN_SAT                                                
+      USE RCTMOD
+      USE MIN_SAT
       USE SFRVARS
       USE LAKVARS
       USE UZTVARS,       ONLY: PRSITYSAV,SATOLD
@@ -73,7 +73,7 @@ C
      &                         DELT,TIME1,TIME2,NPS,
      &                         MEMDEALLOCATE,
      &                         INTSO,INLKT,INSFT,
-     &                         IWCTS,IALTFM,NOCREWET,        
+     &                         IWCTS,IALTFM,NOCREWET,
      &                         NODES,SAVUCN,NLAY,NROW,NCOL,COLDFLW,
      &                         IDRY2,FLAM1,FLAM2,
      &                         FMIFMT6
@@ -83,9 +83,9 @@ C
       IMPLICIT  NONE
       INTEGER iNameFile,KPER,KSTP,N,ICOMP,ICNVG,ITO,ITP,IFLEN
       CHARACTER FLNAME*5000
-      CHARACTER COMLIN*2000               
-      INTEGER II,NN,I,J,K,OperFlag,IEDEA 
-      REAL DT00                          
+      CHARACTER COMLIN*2000
+      INTEGER II,NN,I,J,K,OperFlag,IEDEA
+      REAL DT00
       REAL START_TIME,TOTAL_TIME,
      &     END_TIME
       LOGICAL existed
@@ -93,10 +93,10 @@ C
 C
 C--ALLOCATE LOGICALS
       ALLOCATE(DOMINSAT,DRYON)
-      DOMINSAT=.FALSE.        
-      DRYON=.FALSE.           
+      DOMINSAT=.FALSE.
+      DRYON=.FALSE.
 C
-C--Initialize variables 
+C--Initialize variables
       ALLOCATE(IREACTION,IALTFM,NOCREWET,ICIMDRY,IDRY2,ISFTTR)
 !      IWCTS=1
       IREACTION=0
@@ -124,10 +124,10 @@ C--GETCL to retrieve a command line argument.  The call to GETCL may
 C--be commented out for compilers that do not support it.
       !CALL GETCL(FLNAME)
       CALL GETARG(1,COMLIN)
-C                                          
-      IF(COMLIN.NE.' ') THEN               
-        flname=COMLIN                      
-      ELSE                                 
+C
+      IF(COMLIN.NE.' ') THEN
+        flname=COMLIN
+      ELSE
 C--Get Name of NAME File from Screen
         IF(FLNAME.EQ.' ') THEN
           WRITE(*,102)
@@ -136,7 +136,7 @@ C--Get Name of NAME File from Screen
         ENDIF
       ENDIF
 C
-C-Open files using the Name File method as in MODFLOW-2000      
+C-Open files using the Name File method as in MODFLOW-2000
       iflen=INDEX(flname,' ')-1
       INQUIRE(file=flname(1:iflen),exist=existed)
       IF(.not.existed) THEN
@@ -190,12 +190,12 @@ C--ALLOCATE STORAGE SPACE FOR DATA ARRAYS
       IF(iUnitTRNOP(18).GT.0) CALL LKT1AR(iUnitTRNOP(18))
       IF(iUnitTRNOP(19).GT.0) CALL SFT1AR(iUnitTRNOP(19))
 C
-C--INITIALIZE VARIABLES.      
+C--INITIALIZE VARIABLES.
       IF(iUnitTRNOP(5).EQ.0) THEN
-        WRITE(*,107) 
+        WRITE(*,107)
   107   FORMAT(1X,'STOP. GCG SOLVER PACKAGE MUST BE ACTIVATED')
         CALL USTOP(' ')
-      ENDIF      
+      ENDIF
       IMPSOL=1
       ISPD=1
       IF(MIXELM.EQ.0) ISPD=0
@@ -232,7 +232,7 @@ C--FOR EACH FLOW TIME STEP----------------------------------------------
         DO KSTP=1,NSTP
           DELT=TSLNGH(KSTP)
           HT1=HT2
-          HT2=HT2+DELT    
+          HT2=HT2+DELT
 C
 C--WRITE AN IDENTIFYING MESSAGE
           WRITE(*,60) KSTP,HT1,HT2
@@ -273,7 +273,7 @@ C
             CALL FMI1MF6RP1A(KPER,KSTP)
           ENDIF
           CALL FMI1RP1B(KPER,KSTP)
-          
+
           IF(iUnitTRNOP(3).GT.0) THEN
             IF(.NOT.FMIFMT6) THEN
               CALL FMI1MF5RP2A(KPER,KSTP)
@@ -284,12 +284,12 @@ C
           ENDIF
 C
           IF(DRYON) CALL ADVQC1RP(KPER,KSTP)
-C                                           
-          IF(iUnitTRNOP(19).GT.0) THEN      
+C
+          IF(iUnitTRNOP(19).GT.0) THEN
             CALL FILLIASFJASF()
             !IF(KPER*KSTP.EQ.1) CALL XMD7AR()
             CALL XMD7AR()
-          ENDIF                             
+          ENDIF
 C
 C--CALCULATE COEFFICIENTS THAT VARY WITH FLOW-MODEL TIME STEP
           IF(iUnitTRNOP(2).GT.0) CALL DSP1CF(KSTP,KPER)
@@ -302,8 +302,8 @@ C--FOR EACH TRANSPORT STEP..............................................
 C
 C--ADVANCE ONE TRANSPORT STEP
             CALL BTN1AD(N,TIME1,TIME2,HT2,DELT,KSTP,KPER,DTRANS,NPS,HT1)
-C--UPDATE CONCENTRATIONS OF LAKE VOLUMES                    
-            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD(N)          
+C--UPDATE CONCENTRATIONS OF LAKE VOLUMES
+            IF(iUnitTRNOP(18).GT.0) CALL LKT1AD(N)
             IF(iUnitTRNOP(19).GT.0) CALL SFT1AD(KSTP,KPER,N)
             IF(iUnitTRNOP(7).GT.0) CALL UZT1AD(HT1,HT2,TIME1,TIME2)
             IF(IALTFM.EQ.3) CALL THETA2AD(HT2,TIME2)
@@ -311,10 +311,10 @@ C
 C--FOR EACH COMPONENT......
             DO ICOMP=1,NCOMP
 C
-C--TAKE CARE OF Fe3+                                   
-              IF(IREACTION.EQ.2) THEN                  
-                IF(ICOMP==NCOMP.AND.IFESLD>0)GOTO 1001 
-              ENDIF                                    
+C--TAKE CARE OF Fe3+
+              IF(IREACTION.EQ.2) THEN
+                IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD>0)GOTO 1001
+              ENDIF
 C
 C--SOLVE TRANSPORT TERMS WITH EXPLICIT SCHEMES
               IF(MIXELM.EQ.0) GOTO 1500
@@ -323,7 +323,7 @@ C--FORMULATE AND SOLVE
               CALL BTN1SV(ICOMP)
               IF(iUnitTRNOP(1).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL ADV1SV(ICOMP,DTRANS)
-C     
+C
  1500         CONTINUE
 C
 C--SOLVE TRANSPORT TERMS WITH IMPLICIT SCHEMES
@@ -359,7 +359,7 @@ C
 C--FORMULATE MATRIX COEFFICIENTS
                 CALL BTN1FM(ICOMP,ICBUND,CADV,COLD,RETA,PRSITY,DH,
      &                      DTRANS,HT2,TIME2)
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0
      &             .AND. ICOMP.LE.MCOMP)
      &           CALL ADV1FM(ICOMP,ICBUND,DH,QX,QY,QZ,A)
                 IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
@@ -371,24 +371,24 @@ C--FORMULATE MATRIX COEFFICIENTS
                 IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
      &           CALL HSS1FM(ICOMP,ICBUND,time1,time2,DTRANS)
                 IF(iUnitTRNOP(20).GT.0 .AND. ICOMP.LE.MCOMP)
-     &           CALL CTS1FM(ICOMP)                        
-                IF(iUnitTRNOP(18).GT.0)                    
-     &           CALL LKT1FM(ICOMP)                        
+     &           CALL CTS1FM(ICOMP)
+                IF(iUnitTRNOP(18).GT.0)
+     &           CALL LKT1FM(ICOMP)
                 IF(iUnitTRNOP(19).GT.0) !OR SWR OR MNW2 ETC
-     &           CALL GNT1FM(ICOMP)                        
-                IF(iUnitTRNOP(4).GT.0) 
+     &           CALL GNT1FM(ICOMP)
+                IF(iUnitTRNOP(4).GT.0)
      &           CALL RCT1FM(ICOMP,ICBUND,PRSITY,DH,RHOB,SP1,SP2,SRCONC,
      &                  RC1,RC2,PRSITY2,RETA2,FRAC,DTRANS,
      &                  COLD,CNEW,ITO,FLAM1,FLAM2,RETA)
-                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0       
+                IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &           CALL ADVQC1FM(ICOMP)                       
+     &           CALL ADVQC1FM(ICOMP)
                 IF(iUnitTRNOP(5).GT.0)
      &            CALL GCG1AP(IOUT,ITO,ITP,ICNVG,N,KSTP,KPER,TIME2,
      &                        HT2,ICBUND(:,:,:,ICOMP),CNEW(:,:,:,ICOMP))
 C
                 IF(IREACTION.EQ.2) THEN
-                  IF(ICOMP.LE.NED+NEA) THEN 
+                  IF(ICOMP.LE.NED+NEA) THEN
                     IF(SPECIAL(ICOMP)=="MAXEC") THEN
                       !CALL DTS(ICOMP)
                     ENDIF
@@ -402,27 +402,27 @@ C--END OF OUTER ITERATION LOOP
               ENDDO
   110         CONTINUE
 C
-C-------------TAKE CARE OF Fe2+                        
- 1001         IF(IREACTION.EQ.2) THEN                  
-                IF(ICOMP.EQ.NCOMP.AND.IFESLD.GT.0) THEN
+C-------------TAKE CARE OF Fe2+
+ 1001         IF(IREACTION.EQ.2) THEN
+                IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD.GT.0) THEN
                   CALL KINETIC_SOLID(ICOMP,DTRANS)
-                ENDIF                                  
-              ENDIF                                    
-C                                                      
+                ENDIF
+              ENDIF
+C
 C--END OF COMPONENT LOOP
             ENDDO
 C
-C--APPLY ED/EA REACTION AS A FLASH CALCULATION 
-            IF(IREACTION.EQ.1) THEN            
-              CALL FLASHREACT(ICOMP)           
-            ENDIF                              
-C                                              
+C--APPLY ED/EA REACTION AS A FLASH CALCULATION
+            IF(IREACTION.EQ.1) THEN
+              CALL FLASHREACT(ICOMP)
+            ENDIF
+C
 C--CALCULATE MASS BUDGETS AND SAVE RESULTS FOR ALL COMPONENTS
             DO ICOMP=1,NCOMP
 C
 C--CALCULATE MASS BUDGETS FOR IMPLICIT SCHEMES
 C
-              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0 
+              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.EQ.0
      &           .AND. ICOMP.LE.MCOMP)
      &         CALL ADV1BD(ICOMP,DTRANS,N,KPER,KSTP)
               IF(iUnitTRNOP(2).GT.0 .AND. ICOMP.LE.MCOMP)
@@ -431,44 +431,44 @@ C
      &         CALL SSM1BD(ICOMP,DTRANS,HT2,TIME1,TIME2)
               IF(iUnitTRNOP(7).GT.0 .AND. ICOMP.LE.MCOMP)
      &         CALL UZT1BD(ICOMP,DTRANS)
-              IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP) 
-     &         CALL HSS1BD(ICOMP,ICBUND,50,time1,time2,DTRANS)     
+              IF(iUnitTRNOP(13).GT.0 .AND. ICOMP.LE.MCOMP)
+     &         CALL HSS1BD(ICOMP,ICBUND,50,time1,time2,DTRANS)
               IF(iUnitTRNOP(20).GT.0 .AND. ICOMP.LE.MCOMP)
-     &         CALL CTS1BD(KSTP,KPER,ICOMP,DTRANS,N)     
-              IF(iUnitTRNOP(18).GT.0)                    
-     1         CALL LKT1BD(ICOMP,KPER,KSTP,DTRANS,N)    
-              IF(iUnitTRNOP(19).GT.0)                    
-     1         CALL SFT1BD(ICOMP,KPER,KSTP,DTRANS,N)    
-              IF(iUnitTRNOP(4).GT.0) 
+     &         CALL CTS1BD(KSTP,KPER,ICOMP,DTRANS,N)
+              IF(iUnitTRNOP(18).GT.0)
+     1         CALL LKT1BD(ICOMP,KPER,KSTP,DTRANS,N)
+              IF(iUnitTRNOP(19).GT.0)
+     1         CALL SFT1BD(ICOMP,KPER,KSTP,DTRANS,N)
+              IF(iUnitTRNOP(4).GT.0)
      &         CALL RCT1BD(ICOMP,DTRANS)
-              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0         
+              IF(iUnitTRNOP(1).GT.0.AND.MIXELM.LE.0
      &           .AND. ICOMP.LE.MCOMP .AND. DRYON)
-     &         CALL ADVQC1BD(ICOMP)      
+     &         CALL ADVQC1BD(ICOMP)
 C
 C--CALCULATE GLOBAL MASS BUDGETS AND CHECK MASS BALANCE
               CALL BTN1BD(ICOMP,DTRANS,TIME2,HT2)
 C
 C--STORE ADDITIONAL MASS AND RESET CONC TO MAX EXPRESSED FIELD CAPACITY
-              IF(IREACTION.EQ.2) THEN                       
-                IF(ICOMP<=NED+NEA)THEN                      
-                  IF(SPECIAL(ICOMP)=="STORE")THEN           
+              IF(IREACTION.EQ.2) THEN
+                IF(ICOMP<=NED+NEA)THEN
+                  IF(SPECIAL(ICOMP)=="STORE")THEN
                     CALL Stor_Add_Methane(CNEW(:,:,:,ICOMP),
-     &                                    ICOMP,DTRANS)     
-                  ENDIF                                     
-                ENDIF                                       
-              ENDIF                                         
+     &                                    ICOMP,DTRANS)
+                  ENDIF
+                ENDIF
+              ENDIF
 C
 C--SAVE OUTPUTS
-              CALL BTN1OT(KPER,KSTP,N,ICOMP,TIME2)   
+              CALL BTN1OT(KPER,KSTP,N,ICOMP,TIME2)
               IF(FMNW) CALL SSM1OT(KPER,KSTP,N,TIME2)
               IF(iUnitTRNOP(11).GT.0) CALL TOB1OT(KPER,KSTP,N,
      &                                            TIME1,TIME2)
-C              
+C
             ENDDO !done with budget and output
 C
             IF(TIME2.GE.HT2) GOTO 900
             IF(ICNVG.EQ.0) THEN
-              WRITE(*,808) 
+              WRITE(*,808)
   808         FORMAT(1X,'STOP. GCG SOLVER FAILED TO CONVERGE.')
               CALL USTOP(' ')
             ENDIF
@@ -476,7 +476,7 @@ C
 C--END OF TRANSPORT STEP LOOP
           ENDDO
 C
-          IF(TIME2.LT.HT2) THEN 
+          IF(TIME2.LT.HT2) THEN
             WRITE(IOUT,810) MXSTRN
   810       FORMAT(/1X,'NUMBER OF TRANSPORT STEPS EXCEEDS',
      &                 ' SPECIFIED MAXIMUM (MXSTRN) =',I10)
@@ -501,12 +501,12 @@ C--PROGRAM COMPLETED
  1225 FORMAT(1X,'| M T |'
      &      /1X,'| 3 D | END OF MODEL OUTPUT')
 C
-C--CLOSE FILES                          
-      IF(IREACTION.EQ.2) THEN           
+C--CLOSE FILES
+      IF(IREACTION.EQ.2) THEN
         IF(NSTORE.NE.0 .and. SAVUCN)THEN
-          CLOSE(IUMETH)                 
-        ENDIF                           
-      ENDIF                             
+          CLOSE(IUMETH)
+        ENDIF
+      ENDIF
 C--DEALLOCATE MEMORY
       CALL MEMDEALLOCATE()
       CALL MEMDEALLOCATE2()
