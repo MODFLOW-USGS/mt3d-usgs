@@ -92,15 +92,15 @@ C--WRITE STATUS OF UNSATHEAT FLAG
         WRITE(IOUT,1012)
  1012   FORMAT(1X,'SIMULATION OF UNSATURATED HEAT FLOW ACTIVE'
      &          /,'READING HEAT-RELATED TERMS')
+        READ(IN,'(4F10.2,F10.3)') K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,
+     &                            THETA_R
+        WRITE(IOUT,1014) K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,THETA_R
+ 1014   FORMAT(1X,'K_T_SAT = ',F10.4,
+     &         1/,'K_T_RESID = ',F10.4,
+     &         1/,'RHO_FLUID = ',F10.4,
+     &         1/,'C_P_FLUID = ',F10.4,
+     &         1/,'THETA_R   = ',F10.4)
       ENDIF
-      READ(IN,'(4F10.2,F10.3)') K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,
-     &                          THETA_R
-      WRITE(IOUT,1014) K_T_SAT,K_T_RESID,RHO_FLUID,C_P_FLUID,THETA_R
- 1014 FORMAT(1X,'K_T_SAT = ',F10.4,
-     &       1/,'K_T_RESID = ',F10.4,
-     &       1/,'RHO_FLUID = ',F10.4,
-     &       1/,'C_P_FLUID = ',F10.4,
-     &       1/,'THETA_R   = ',F10.4)
 C
 C--CALL RARRAY TO READ LONGITUDINAL DISPERSIVITY ONE LAYER A TIME
    50 DO K=1,NLAY
