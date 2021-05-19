@@ -28,7 +28,10 @@ C
 C--ALLOCATE AND INITIALIZE
       ALLOCATE(IREACT,IRCTOP,IGETSC,IFESLD,ISORBIMONLY,ISP1IM,
      &         rec_FileName,NSPECIAL,NEA,NED,NSTORE,Ad_methane_name,
-     &         IUMETH,RVAL,NSOLID)
+     &         IUMETH,RVAL)
+      ALLOCATE(NSOLID(NCOMP))
+      ALLOCATE(ISLDPH(NCOMP))
+      ALLOCATE(NCRSPIM(NCOMP))
       ALLOCATE(FRAC(NCOL,NROW,NLAY))
       ALLOCATE(SP1(NCOL,NROW,NLAY,NCOMP))
       ALLOCATE(SP2(NCOL,NROW,NLAY,NCOMP))
@@ -43,6 +46,9 @@ C--ALLOCATE AND INITIALIZE
       FLAM1=1.0D0
       RC2=0.
       FLAM2=1.0D0
+      NSOLID=0
+      ISLDPH=0
+      NCRSPIM=0
 C
 C--PRINT PACKAGE NAME AND VERSION NUMBER
       WRITE(IOUT,1000) INRCT
@@ -1133,7 +1139,7 @@ cvsb     &              *PRSITY(N)*DELR(J)*DELC(I)*DH(N)
       ENDIF                                               
 C                                                         
       ELSEIF(IREACTION.EQ.2) THEN                         
-        IF(ICOMP.EQ.NCOMP.AND.IFESLD.EQ.1) RETURN         
+        IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD.EQ.1) RETURN         
         DO K=1,NLAY                                       
           DO I=1,NROW                                     
             DO J=1,NCOL                                   
@@ -1165,7 +1171,7 @@ C               ASSIGN CONCENTRATIONS
                 ENDDO                                       
 C                                                           
                 IF(SPECIAL(ICOMP).EQ."SOLID".AND.IFESLD.GT.0) THEN  
-                  MAXEC(ICOMP)=COLD(N,NCOMP)/PRSITY(N)*RHOB(N)      
+                  MAXEC(ICOMP)=COLD(N,NCRSPIM(ICOMP))/PRSITY(N)*RHOB(N)      
                 ENDIF                                               
 C                                                                   
                 CALL reaction_sub(ICOMP,1)                        
@@ -1607,17 +1613,17 @@ C
      &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS       
                   ENDIF                                             
                 ENDDO                                               
-              ELSEIF(ICOMP==NCOMP.and.IFESLD>0) THEN                 
+              ELSEIF(ISLDPH(ICOMP).EQ.1.and.IFESLD>0) THEN                 
                 DCRCT=0.0
                 DO M=1,NED                                         
                   IF(COLD(J,I,K,M)>0) THEN                          
-                    DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*DELR(J)*DELC(I)*
-     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
+                    DCRCT=DCRCT-DCDT_FE(N,NSOLID(ICOMP)-NED,M)*DELR(J)*
+     &                    DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
                   ELSEIF(COLD(J,I,K,M)<=0) THEN                     
                     DCRCT=DCRCT+0.0                                  
                   ELSE                                             
-                    DCRCT=DCRCT-DCDT_FE(N,NSOLID-NED,M)*DELR(J)*DELC(I)*
-     &                    PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
+                    DCRCT=DCRCT-DCDT_FE(N,NSOLID(ICOMP)-NED,M)*DELR(J)*
+     &                    DELC(I)*PRSITY(J,I,K)*DH(J,I,K)*DTRANS 
                   ENDIF                                            
                 ENDDO                                              
               ENDIF                                                
@@ -1775,7 +1781,7 @@ C ********************************************************************
       USE RCTMOD
       CHARACTER*100 LINE
       INTEGER LLOC,ITYP1,ITYP2,ISTART,ISTOP
-      INTEGER NODES
+      INTEGER NODES,NSLDPH,IANYSLD
       REAL R
       LOGICAL OPND
       CHARACTER FINDEX*30
@@ -1794,7 +1800,8 @@ C-----OPEN FILE ON AN UNUSED UNIT NUMBER
 C
       NSPECIAL=0
       NSTORE=0
-      NSOLID=0
+      NSLDPH=MCOMP
+      IANYSLD=0
 C
 C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
 10    LINE=' '
@@ -1806,6 +1813,7 @@ C-----READ INPUT FILE rec_FileName - IGNORE BLANK LINES AND PRINT COMMENT LINES
       ENDIF
 C
       READ(LINE,*) NED,NEA,NSPECIAL,IFESLD
+      IF(IFESLD.GT.0) IFESLD=1
       WRITE(IOUT,100) NED,NEA,NSPECIAL
 100   FORMAT(/1X,'NUMBER OF ELECTRON DONORS    = ',I3,
      &       /1X,'NUMBER OF ELECTRON ACCEPTERS = ',I3,
@@ -1837,10 +1845,10 @@ C
         READ(LINE,*) IDUM,SPECIAL(N),MAXEC(N)
         WRITE(IOUT,120) IDUM,SPECIAL(N),MAXEC(N)
         IF(SPECIAL(N).EQ.'STORE') NSTORE=N
-        IF(SPECIAL(N).EQ.'SOLID') NSOLID=N
 C
 C.......'SOLID' ONLY APPLICABLE FOR EAs
         IF(SPECIAL(N).EQ.'SOLID') THEN
+            IANYSLD=1                    
           IF(N.LE.NED) THEN
             WRITE(IOUT,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
             WRITE(IOUT,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
@@ -1848,6 +1856,15 @@ C.......'SOLID' ONLY APPLICABLE FOR EAs
             WRITE(*,*)    'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
             READ(*,*)
             STOP
+          ENDIF
+C
+          IF(IFESLD.EQ.1) THEN
+              NSLDPH=NSLDPH+1
+              IF(NSLDPH.LE.NCOMP) THEN
+                  NSOLID(NSLDPH)=N
+                  ISLDPH(NSLDPH)=1
+                  NCRSPIM(N)=NSLDPH
+              ENDIF
           ENDIF
         ENDIF
       ENDDO
@@ -1858,14 +1875,32 @@ C
           IFESLD=0
           WRITE(IOUT,'(/,2A)') 'SET NCOMP>MCOMP TO SIMULATE IMMOBILE',
      &                         ' SOLID-PHASE SPECIES, IFESLD RESET TO 0'
-        ELSEIF(NSOLID.EQ.0) THEN
+        ELSEIF(NSLDPH.GT.NCOMP) THEN
           IFESLD=0
-          WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
-     &                         ', IFESLD RESET TO 0'
-        ELSE
-          WRITE(IOUT,1040) NSOLID,NCOMP
+          WRITE(IOUT,1039) NCOMP-MCOMP,NSLDPH-MCOMP
         ENDIF
       ENDIF
+C
+      IF(IANYSLD.EQ.0) THEN
+       IF(IFESLD.EQ.1) THEN
+         IFESLD=0
+         WRITE(IOUT,'(/,2A)') 'NO SPECIES SET TO ''SOLID''',
+     &                        ', IFESLD RESET TO 0'
+       ENDIF
+      ELSE
+        IF(IFESLD.EQ.0) THEN
+        WRITE(IOUT,'(/,2A)') '''SOLID'' SPECIES DEFINED BUT IFESLD=0, ',
+     &                       'IMMOBILE SOLID-PHASES NOT USED IN ED/EA.'
+        ENDIF
+      ENDIF
+C
+      IF(IFESLD.EQ.1) THEN
+        DO N=MCOMP+1,NSLDPH
+          WRITE(IOUT,1040) NSOLID(N),N
+        ENDDO
+      ENDIF
+1039  FORMAT(/1X,'ONLY ',I3,' IMMOBILE SPECIES DEFINED BUT ',I3,
+     &           ' ''SOLID'' SPECIES SPECIFIED. IFESLD RESET TO 0')
 1040  FORMAT(/1X,'SOLID PHASE FOR SPECIES ',I3,
      &           ' IS SIMULATED AS IMMOBILE SPECIES ',I3)
 C
@@ -2090,7 +2125,7 @@ C
       REAL DTRANS
 C
       DO IEDEA=1,NED+NEA                         
-        IF(SPECIAL(IEDEA)=="SOLID") THEN         
+        IF(SPECIAL(IEDEA)=="SOLID".AND.NCRSPIM(IEDEA).EQ.ICOMP) THEN         
           DO K=1,NLAY                            
             DO I=1,NROW                          
               DO J=1,NCOL                        

@@ -437,10 +437,12 @@
         INTEGER,            SAVE,                      POINTER :: NEA
         INTEGER,            SAVE,                      POINTER :: NSPECIAL
         INTEGER,            SAVE,                      POINTER :: NSTORE
-        INTEGER,            SAVE,                      POINTER :: NSOLID
         INTEGER,            SAVE,                      POINTER :: IUMETH
         CHARACTER(LEN=1000),SAVE,                      POINTER :: rec_FileName
         CHARACTER(LEN=50),  SAVE,                      POINTER :: Ad_methane_name
+        INTEGER,            SAVE, DIMENSION(:),        POINTER :: NSOLID
+        INTEGER,            SAVE, DIMENSION(:),        POINTER :: ISLDPH
+        INTEGER,            SAVE, DIMENSION(:),        POINTER :: NCRSPIM
         REAL,               SAVE, DIMENSION(:,:,:),    POINTER :: MASSSTOR
         REAL*8,             SAVE, DIMENSION(:),        POINTER :: RCNEW 
         REAL*8,             SAVE, DIMENSION(:),        POINTER :: RCOLD
@@ -464,6 +466,9 @@
 CONTAINS
       SUBROUTINE MEMDEALLOCATE2()
 !
+      IF(ASSOCIATED(NSOLID))      DEALLOCATE(NSOLID)
+      IF(ASSOCIATED(ISLDPH))      DEALLOCATE(ISLDPH)
+      IF(ASSOCIATED(NCRSPIM))     DEALLOCATE(NCRSPIM)
       IF(ASSOCIATED(CRCT))        DEALLOCATE(CRCT)      
       IF(ASSOCIATED(MASSSTOR))    DEALLOCATE(MASSSTOR)  
       IF(ASSOCIATED(RCNEW))       DEALLOCATE(RCNEW)        

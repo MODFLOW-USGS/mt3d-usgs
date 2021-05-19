@@ -313,7 +313,7 @@ C--FOR EACH COMPONENT......
 C
 C--TAKE CARE OF Fe3+                                   
               IF(IREACTION.EQ.2) THEN                  
-                IF(ICOMP==NCOMP.AND.IFESLD>0)GOTO 1001 
+                IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD>0)GOTO 1001 
               ENDIF                                    
 C
 C--SOLVE TRANSPORT TERMS WITH EXPLICIT SCHEMES
@@ -404,7 +404,7 @@ C--END OF OUTER ITERATION LOOP
 C
 C-------------TAKE CARE OF Fe2+                        
  1001         IF(IREACTION.EQ.2) THEN                  
-                IF(ICOMP.EQ.NCOMP.AND.IFESLD.GT.0) THEN
+                IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD.GT.0) THEN
                   CALL KINETIC_SOLID(ICOMP,DTRANS)
                 ENDIF                                  
               ENDIF                                    
