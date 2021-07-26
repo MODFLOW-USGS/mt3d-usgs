@@ -185,7 +185,7 @@ C
 C--CHECK FOR MAJOR OPTIONS.
       ELSE                       
         DO I=1,MXTRNOP
-          IF(LINE(ITYP1:ITYP2).EQ.NameTRNOP(I)) THEN
+          IF(LINE(ITYP1:ITYP2).EQ.TRIM(NameTRNOP(I))) THEN
             IF(IU.EQ.0) THEN          
               IF(NameTRNOP(i).EQ.'ADV') THEN
                 IU=INADV

@@ -25,6 +25,15 @@ Furthermore, the software is released on condition that neither the USGS
 nor the U.S. Government shall be held liable for any damages resulting from 
 its authorized or unauthorized use.
 
+o Version 1.2.0 xx/xx/2021:
+  -------------------------
+  
+  Bug Fixes:
+  
+    - Added a call to TRIM() when comparing package names read from name file
+      to package acronyms stored in iUnitTRNOP.  Package names with only three 
+      letters in their name have a blank at the end which was interfering with
+      the comparison.  
 
 o Version 1.1.0 06/28/2019:
   -------------------------
