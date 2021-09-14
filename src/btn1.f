@@ -1446,7 +1446,7 @@ C
      &                         IDRY2,DZ,THETAW2,SORBMASS
       USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7,
      1                   VAQSAT,ICIMDRY    
-      USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG 
+      USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG,ISLDPH  
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,K,I,J,IQ,INDX,N
@@ -1482,7 +1482,7 @@ C
                 IF(IREACTION.EQ.2) THEN
                   !TAKE CARE OF THIS HERE TO ACCOUNT FOR OVERSHOOT
                   IF(CNEW(J,I,K,ICOMP).LT.0.) CNEW(J,I,K,ICOMP)=0.0 
-                  IF(ICOMP==NCOMP.AND.IFESLD>0)THEN                 
+                  IF(ISLDPH(ICOMP).EQ.1.AND.IFESLD>0)THEN                 
                     DMSTRG=DMSTRG/PRSITY(J,I,K)*RHOB(J,I,K)         
                   ENDIF                                             
                 ENDIF                                               
