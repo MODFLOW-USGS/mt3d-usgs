@@ -1,0 +1,10 @@
+# MODFLOW-NWT Zone File
+# Groundwater Vistas writes all zones regardless of whether
+# they are being used.  These zones include:
+#     kxzone##, kzzone##, szone##, rzone, and etzone, where
+#     ## is the layer number
+  2
+kxzone1
+         0         1(50I3)                      -1     K Zones for Layer 1
+szone1
+         0         1(50I3)                      -1     S Zones for Layer 1

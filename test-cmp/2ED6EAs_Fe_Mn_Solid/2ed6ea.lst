@@ -1,0 +1,260 @@
+                                  MODFLOW-NWT-SWR1 
+      U.S. GEOLOGICAL SURVEY MODULAR FINITE-DIFFERENCE GROUNDWATER-FLOW MODEL
+                            VERSION 1.2.0 03/01/2020
+                    BASED ON MODFLOW-2005 VERSION 1.12.00 02/03/2017
+
+ LIST FILE: 2ed6ea.lst
+                         UNIT    7
+
+ OPENING 2ed6ea.bas
+ FILE TYPE:BAS6   UNIT    1   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.dis
+ FILE TYPE:DIS   UNIT   29   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.upw
+ FILE TYPE:UPW   UNIT   11   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.zone
+ FILE TYPE:ZONE   UNIT   40   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.nwt
+ FILE TYPE:NWT   UNIT   19   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.oc
+ FILE TYPE:OC   UNIT   22   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.lmt
+ FILE TYPE:LMT6   UNIT   33   STATUS:OLD    
+ FORMAT:FORMATTED              ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.cbb
+ FILE TYPE:DATA(BINARY)   UNIT   50   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.hds
+ FILE TYPE:DATA(BINARY)   UNIT   30   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ OPENING 2ed6ea.ddn
+ FILE TYPE:DATA(BINARY)   UNIT   31   STATUS:UNKNOWN
+ FORMAT:BINARY                 ACCESS:SEQUENTIAL          
+
+ BAS -- BASIC PACKAGE, VERSION 1.2.0, 3/01/2020 INPUT READ FROM UNIT    1
+ 
+ MODFLOW was compiled using mixed precision
+ Precision of REAL variables:           6
+ Precision of DOUBLE PRECISION variables:          15
+
+ DISCRETIZATION INPUT DATA READ FROM UNIT   29
+ # MODFLOW-NWT Discretization File
+    1 LAYERS         1 ROWS         2 COLUMNS
+    1 STRESS PERIOD(S) IN SIMULATION
+ MODEL TIME UNIT IS DAYS
+ MODEL LENGTH UNIT IS UNDEFINED
+  Confining bed flag for each layer:
+   0
+
+                     DELR =   50.0000    
+
+                     DELC =   50.0000    
+
+ TOP ELEVATION OF LAYER 1 =   100.000    
+
+   MODEL LAYER BOTTOM EL. =   0.00000     FOR LAYER   1
+
+
+ STRESS PERIOD     LENGTH       TIME STEPS     MULTIPLIER FOR DELT    SS FLAG
+ ----------------------------------------------------------------------------
+        1         10.00000          1                    1.200         SS
+
+ STEADY-STATE SIMULATION
+
+
+
+ 
+ # MODFLOW-NWT Basic Package                                                     
+ # MODFLOW Data Set                                                              
+ #
+
+           BOUNDARY ARRAY =             -1 FOR LAYER   1
+
+ AQUIFER HEAD WILL BE SET TO   999.00     AT ALL NO-FLOW NODES (IBOUND=0).
+
+             INITIAL HEAD =   100.000     FOR LAYER   1
+
+ OUTPUT CONTROL IS SPECIFIED EVERY TIME STEP
+ HEAD PRINT FORMAT CODE IS   0    DRAWDOWN PRINT FORMAT CODE IS   0
+ HEADS WILL BE SAVED ON UNIT   30    DRAWDOWNS WILL BE SAVED ON UNIT   31
+
+ ZONE OPTION, INPUT READ FROM UNIT   40
+ # MODFLOW-NWT Zone File
+ # Groundwater Vistas writes all zones regardless of whether
+ # they are being used.  These zones include:
+ #     kxzone##, kzzone##, szone##, rzone, and etzone, where
+ #     ## is the layer number
+     2 ZONE ARRAYS
+
+   ZONE ARRAY: kxzone1    =              1
+
+   ZONE ARRAY: szone1     =              1
+ # MODFLOW-NWT Input File
+ # Test Problem 4 MT3D/UZF taken from UZF doc
+ #HEADTOL  FLUXTOL MAXITEROUT THICKFACT   LINMETH    IPRNWT     IBOTAV OPTIONS            [DBDTHETA]  [DBDKAPPA] [DBDGAMMA] [MOMFACT] [BACKFLAG] [MAXBACKITER] [BACKTOL] [BACKREDUCE]
+ # [IACL] [NORDER]    [LEVEL]   [NORTH] [IREDSYS] [RRCTOLS] [IDROPTOL] [EPSRN]  [HCLOSEXMD] [MXITERXMD]
+
+ NWT1 -- Newton Solver, VERSION 1.2.0, 3/01/2020
+         INPUT READ FROM UNIT 19
+
+ SPECIFIED OPTION:
+ SOLVER INPUT VALUES ARE SPECIFIED BY USER
+ ***XMD linear solver will be used***
+ 
+   CONVERGENCE CRITERION OF   0.500000E-08 FOR HEAD SOLUTION
+   AND A TOLERANCE OF   0.100000E+01 FOR FLOW SOLUTION AND 
+   A MAXIMUM OF  2500 OUTER ITERATIONS. 
+
+
+   D-B-D REDUCTION FACTOR OF    0.800000E+00 AND 
+   A D-B-D INCREASE FACTOR OF    0.100000E-04 AND 
+   A D-B-D RELAXATION OF    0.000000E+00 AND 
+   A MOMENTUM FACTOR OF    0.100000E+00 .
+
+
+ ***BACKTRACKING IS INACTIVE***
+ XMD -- LINEAR SOLUTION BY XMD PACKAGE VERSION 1.30
+     BY MOTOMU IBARAKI, OHIO STATE UNIVERSITY, COLOMBUS, OH
+                 INPUT READ FROM UNIT 19
+ ACCELERATION METHOD                    (IACL) =         2
+ NODE ORDERING FLAG                   (NORDER) =         1
+ LEVEL OF FILL                         (LEVEL) =         3
+ MAXIMUM NUMBER OF ORTHOGONALIZATIONS  (NORTH) =         5
+ INDEX FOR USING REDUCED SYSTEM      (IREDSYS) =         1
+ RESID. REDUCTION CONVERGE CRITERION  (RRCTOL) =  0.000000E+00
+ INDEX FOR USING DROP TOLERANCE     (IDROPTOL) =         1
+ DROP TOLERANCE VALUE                  (EPSRN) =  0.100000E-03
+ CONVERGENCE CRITERIA OF           (HCLOSEXMD) =  0.100000E-03
+ MAX. NUMBER OF LINEAR ITERATIONS  (MXITERXMD) =       200
+
+
+ UPW1 -- UPSTREAM WEIGHTING FLOW PACKAGE, VERSION 1.2.0, 3/01/2020
+         INPUT READ FROM UNIT 11
+
+ # MODFLOW-NWT Upstream Weighting (UPW) Package
+ #IUPWCB       HDRY     NPUPW  IPHDRY
+ CELL-BY-CELL FLOWS WILL BE SAVED ON UNIT   50
+ No named parameters
+
+   LAYER FLAGS:
+ LAYER       LAYTYP          LAYAVG    CHANI           LAYVKA           LAYWET
+ ---------------------------------------------------------------------------
+    1             1             0     1.000E+00             0             0
+
+   INTERPRETATION OF LAYER FLAGS:
+                        INTERBLOCK     HORIZONTAL    DATA IN
+         LAYER TYPE   TRANSMISSIVITY   ANISOTROPY   ARRAY VKA   WETTABILITY
+ LAYER   (LAYTYP)        (LAYAVG)      (CHANI)     (LAYVKA)       (LAYWET)
+ ---------------------------------------------------------------------------
+    1   CONVERTIBLE      HARMONIC     1.000E+00    VERTICAL K  NON-WETTABLE
+
+
+
+              HYD. COND. ALONG ROWS FOR LAYER   1
+ READING ON UNIT   11 WITH FORMAT: (FREE)              
+
+
+
+                VERTICAL HYD. COND. FOR LAYER   1
+ READING ON UNIT   11 WITH FORMAT: (FREE)              
+
+
+ ***Link-MT3DMS Package v7***
+ OPENING LINK-MT3DMS OUTPUT FILE: 2ed6ea.ftl                                                                                                                                                                                              
+ ON UNIT NUMBER:    12
+ FILE TYPE: UNFORMATTED
+ HEADER OPTION: EXTENDED
+ ***Link-MT3DMS Package v7***
+
+1
+                            STRESS PERIOD NO.    1, LENGTH =   10.00000    
+                            -----------------------------------------------
+
+                              NUMBER OF TIME STEPS =     1
+
+                               MULTIPLIER FOR DELT =     1.200
+
+                            INITIAL TIME STEP SIZE =   10.00000    
+ 
+ SOLVING FOR HEAD 
+          0                 1           1             1    1     1       0.0000000000E+00       1    1    1         0.0000000000E+00      0.0000000000E+00
+
+    ------------------------------------------------
+       NWT REQUIRED            1 OUTER ITERATIONS 
+       AND A TOTAL OF          1 INNER ITERATIONS.
+    ------------------------------------------------
+
+ HEAD/DRAWDOWN PRINTOUT FLAG = 1     TOTAL BUDGET PRINTOUT FLAG = 1
+ CELL-BY-CELL FLOW TERM FLAG = 1
+
+ OUTPUT FLAGS FOR ALL LAYERS ARE THE SAME:
+   HEAD    DRAWDOWN  HEAD  DRAWDOWN
+ PRINTOUT  PRINTOUT  SAVE    SAVE
+ ----------------------------------
+     0         0       1       1
+ UBUDSV SAVING "   CONSTANT HEAD" ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+ UBUDSV SAVING "FLOW RIGHT FACE " ON UNIT 50 AT TIME STEP  1, STRESS PERIOD    1
+
+ SAVING SATURATED THICKNESS AND FLOW TERMS ON UNIT   12 FOR MT3DMS
+ BY THE LINK-MT3DMS PACKAGE V7 AT TIME STEP    1, STRESS PERIOD    1
+
+
+ HEAD WILL BE SAVED ON UNIT   30 AT END OF TIME STEP    1, STRESS PERIOD    1
+
+ DRAWDOWN WILL BE SAVED ON UNIT   31 AT END OF TIME STEP    1, STRESS PERIOD    1
+1
+  VOLUMETRIC BUDGET FOR ENTIRE MODEL AT END OF TIME STEP    1, STRESS PERIOD   1
+  ------------------------------------------------------------------------------
+
+     CUMULATIVE VOLUMES      L**3       RATES FOR THIS TIME STEP      L**3/T
+     ------------------                 ------------------------
+
+           IN:                                      IN:
+           ---                                      ---
+             STORAGE     =           0.0000               STORAGE     =           0.0000
+       CONSTANT HEAD     =           0.0000         CONSTANT HEAD     =           0.0000
+
+                TOTAL IN =           0.0000                  TOTAL IN =           0.0000
+
+          OUT:                                     OUT:
+          ----                                     ----
+             STORAGE     =           0.0000               STORAGE     =           0.0000
+       CONSTANT HEAD     =           0.0000         CONSTANT HEAD     =           0.0000
+
+               TOTAL OUT =           0.0000                 TOTAL OUT =           0.0000
+
+                IN - OUT =           0.0000                  IN - OUT =           0.0000
+
+     PERCENT DISCREPANCY =           0.00         PERCENT DISCREPANCY =           0.00
+
+
+
+
+
+
+         TIME SUMMARY AT END OF TIME STEP    1 IN STRESS PERIOD    1
+                    SECONDS     MINUTES      HOURS       DAYS        YEARS
+                    -----------------------------------------------------------
+   TIME STEP LENGTH 8.64000E+05  14400.      240.00      10.000     2.73785E-02
+ STRESS PERIOD TIME 8.64000E+05  14400.      240.00      10.000     2.73785E-02
+         TOTAL TIME 8.64000E+05  14400.      240.00      10.000     2.73785E-02
+1
+
+ Run end date and time (yyyy/mm/dd hh:mm:ss): 2021/09/15 15:37:42
+ Elapsed run time:  0.008 Seconds
+
