@@ -172,6 +172,7 @@
         INTEGER,          SAVE,                      POINTER :: NCNTDRY
         INTEGER,          SAVE,                      POINTER :: NICBND2
         INTEGER,          SAVE,                      POINTER :: MUTDRY
+        INTEGER,          SAVE,                      POINTER :: MUTSSM
         INTEGER,          SAVE,                      POINTER :: IC2DRY
         INTEGER,          SAVE,                      POINTER :: IABSMIN
         INTEGER,          SAVE,                      POINTER :: IDRYBUD

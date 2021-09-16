@@ -162,6 +162,7 @@ C
      &                         CRCH,CEVT,MXSS,NSS,SS,SSMC,
      &                         KSSZERO,FMIFMT6
       USE UZTVARS,       ONLY: CUZRCH,CGWET
+      USE MIN_SAT,       ONLY: MUTSSM
 C
       IMPLICIT  NONE
       INTEGER   IN,KPER,JJ,II,KK,NUM,IQ,INCRCH,INCEVT,NTMP,INDEX,
@@ -398,6 +399,7 @@ C
         SS(4,NUM)=CSS
         SS(6,NUM)=IQ
 C
+        IF(MUTSSM.EQ.0) THEN
         DO INDEX=1,NCOMP
           CSS=SSMC(INDEX,NUM)
           IF(IQ.EQ.-1.AND.KK.EQ.0) THEN                     
@@ -410,6 +412,7 @@ C
           ENDIF
           IF(CSS.LT.0 .AND. IQ.EQ.2) WRITE(IOUT,71) -INT(CSS)  
         ENDDO
+        ENDIF
       ENDDO
    30 FORMAT(/1X,'ERROR: MAXIMUM NUMBER OF POINT SINKS/SOURCES',
      &           ' EXCEEDED'/1X,'INCREASE [MXSS] IN SSM INPUT FILE')
