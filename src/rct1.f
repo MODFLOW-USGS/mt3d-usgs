@@ -1848,7 +1848,7 @@ C
 C
 C.......'SOLID' ONLY APPLICABLE FOR EAs
         IF(SPECIAL(N).EQ.'SOLID') THEN
-            IANYSLD=1                    
+          IANYSLD=1                    
           IF(N.LE.NED) THEN
             WRITE(IOUT,*) 'INVALID SPECIES NO./KEYWORD (SOLID)'
             WRITE(IOUT,*) 'KEYWORD SOLID ONLY APPLICABLE WITH EAs'
@@ -1862,6 +1862,16 @@ C
               NSLDPH=NSLDPH+1
               IF(NSLDPH.LE.NCOMP) THEN
                   NSOLID(NSLDPH)=N
+                  DO II=1,NSLDPH-1
+                    IF(NSOLID(II).EQ.N) THEN
+                      WRITE(IOUT,*) 
+     1               'INVALID TO ASSOCIATE TWO SOLID SPECIES TO SAME EA'
+                      WRITE(*,*) 
+     1               'INVALID TO ASSOCIATE TWO SOLID SPECIES TO SAME EA'
+                      READ(*,*)
+                      STOP
+                    ENDIF
+                  ENDDO
                   ISLDPH(NSLDPH)=1
                   NCRSPIM(N)=NSLDPH
               ENDIF
