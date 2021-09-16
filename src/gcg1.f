@@ -559,6 +559,7 @@ C
       REAL, INTENT(IN),  DIMENSION(N)  :: SY
       REAL, INTENT(OUT), DIMENSION(N)  :: Y
       INTEGER :: IDIAG=3,I,J,K,II,JCOL
+      REAL,    PARAMETER                :: EPSILON=0.5E-6,TINY=1.E-30
 C
       DO II = 1,N
         Y(II) = SY(II)
@@ -571,7 +572,11 @@ C ... NOTE: THE FIRST ELEMENT IN EACH ROW OF THE MATRIX A IS THE
 C ....      DIAGONAL ELEMENT OF THE ROW.
 C
       DO I=1,N
-        Y(I)=Y(I)/A(I,1)
+        IF(ABS(Y(I)-0.0).LT.TINY) THEN
+          Y(I)=0.0
+        ELSE
+          Y(I)=Y(I)/A(I,1)
+        ENDIF
       ENDDO
       RETURN
 C
