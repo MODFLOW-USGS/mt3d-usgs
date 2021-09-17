@@ -34,6 +34,19 @@ o Version 1.2.0 xx/xx/2021:
       to package acronyms stored in iUnitTRNOP.  Package names with only three 
       letters in their name have a blank at the end which was interfering with
       the comparison.  
+    - Added a check in GCG code to avoid zero divided by zero
+    - Changed format of integer output for SFT from I5 to I0 
+
+  Other:
+    
+    - For kinetic reactions, code added to allow multiple 'SOLID' immobile 
+      solutes
+    - New keyword 'NOSSMPRINT' added to disable the printing of SSM input 
+      to the standard output file
+  
+  Documentation:
+    - 
+  
 
 o Version 1.1.0 06/28/2019:
   -------------------------
