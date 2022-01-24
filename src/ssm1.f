@@ -180,6 +180,8 @@ C--INITIALIZE.
       TYPESS(3) ='DRAIN          '
       TYPESS(4) ='RIVER          '
       TYPESS(5) ='HEAD DEP BOUND '
+      TYPESS(7) ='Recharge (MF6) '
+      TYPESS(8) ='EVT (MF6)      '
       TYPESS(15)='MASS LOADING   '
       TYPESS(21)='STREAM         '
       TYPESS(22)='RESERVOIR      '
