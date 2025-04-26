@@ -282,6 +282,7 @@ C--(based on area weighting)
      &        /1x,'   Time        Layer  Row  Col',
      &            '   Redistributed Rate')
 c
+        IF(IHSSGEN.NE.2) THEN       
         DO iStep=1,NStep
 c          
 c compute source area
@@ -367,6 +368,61 @@ c
           ENDDO
 c
         ENDDO
+        !
+        !PULLING THIS OUT OF NStep LOOP
+        ELSEIF(IHSSGEN.EQ.2) THEN       
+c
+c compute source area
+              area_source=0.                               
+              DO nr=1,nPoint                               
+                IF(nr.EQ.nPoint) THEN                      
+                  area_source=area_source+                 
+     &            p(1,nr)*p(2,1)-p(2,nr)*p(1,1)            
+                ELSE                                       
+                  area_source=area_source+                 
+     &            p(1,nr)*p(2,nr+1)-p(2,nr)*p(1,nr+1)      
+                ENDIF                                      
+              ENDDO                                        
+              area_source=ABS(area_source/2.0)             
+c                            
+          num=0
+          area_total=0    
+          DO i=1,nrow
+            DO j=1,ncol
+              CALL GetArea(ncol,nrow,nPoint,p,nSubGrid,delr,xbc,
+     &                     delc,ybc,j,i,area_cell,IPNTPOLY)    
+c            
+              IF(area_cell.le.0) CYCLE
+              num=num+1              
+              IF(num.gt.MaxHSSCells) THEN
+                CALL ustop('[MaxHSSCells] exceeded!')                 
+              ENDIF              
+              iHSSLOC(num,1:NStep,n)=(ksource-1)*ncol*nrow+(i-1)*ncol+j
+              HSSData(4+num,1:NStep,n)=area_cell  
+              area_total=area_total+area_cell
+            ENDDO
+          ENDDO
+c
+          DO itmp=1,num
+            inode=iHSSLoc(itmp,1,n)
+            IF(inode.le.0) CYCLE
+            i = mod((inode-1),ncol*nrow)/ncol + 1
+            j = mod((inode-1),ncol) + 1
+            area_cell=HSSData(4+itmp,1,n)
+            R=area_cell/area_total
+            DO iStep=1,NStep
+              HSSData(4+itmp,iStep,n)=R*HSSData(3,iStep,n)
+            ENDDO
+            WRITE(iout,120) HSSData(1,1,n),ksource,i,j,
+     &                      HSSData(4+itmp,1,n)
+          ENDDO
+c
+        ELSE
+          WRITE(*,*) "INVALID IHSSGEN OPTION"
+          READ(*,*)
+          STOP
+        ENDIF
+
   120   FORMAT(1x,g12.4,3i6,4x,g15.7)
         DEALLOCATE (p) 
 C        
