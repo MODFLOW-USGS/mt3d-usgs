@@ -13,7 +13,7 @@ C
      &                         INUZT,
      &                         INLKT,INSFT,INCTS,INTSO,
      &                         ICTSPKG,INOCROSS,ISAVUCN,
-     &                         FMIFMT6,IDECAYCONSTCONC
+     &                         FMIFMT6,IDECAYCONSTCONC,iRunHSSM
       USE FMI1MF6, ONLY: FMI1MF6NM
 C
       USE MIN_SAT                                                  
@@ -40,12 +40,14 @@ C--ALLOCATE
       INOCROSS=0
 C--ALLOCATE SCALAR VARIABLES
       ALLOCATE(IATS)     
-      ALLOCATE(MUTDRY,IC2DRY,IDRYBUD,ICTSPKG,MUTSSM,IDECAYCONSTCONC)
+      ALLOCATE(MUTDRY,IC2DRY,IDRYBUD,ICTSPKG,MUTSSM,IDECAYCONSTCONC,
+     1  iRunHSSM)
       MUTDRY=0 
       IC2DRY=0 
       IDRYBUD=1
       MUTSSM=0
       IDECAYCONSTCONC=0
+      iRunHSSM=0
 C
 C--SET DEFAULT UNIT NUMBERS
       INBTN=1
@@ -2268,7 +2270,7 @@ C
 C ********************************************************
 C THIS SUBROUTINE READS BTN FILE AND IDENTIFIES KEYWORDS
 C ********************************************************
-      USE MT3DMS_MODULE, ONLY: IOUT,IALTFM,FPRT,IDECAYCONSTCONC
+      USE MT3DMS_MODULE, ONLY: IOUT,IALTFM,FPRT,IDECAYCONSTCONC,iRunHSSM
       USE MIN_SAT, ONLY: DOMINSAT,DRYON,MUTDRY,IDRYBUD,MUTSSM
       USE MT3DUTIL
 C
@@ -2280,7 +2282,7 @@ C
       REAL           R
 C
 C SET NUMBER OF KEYWORDS AND KEYWORDS
-      NKEYWORDS=9
+      NKEYWORDS=10
       KEYFOUND=.FALSE.
       ALLOCATE(KEYWORDS(NKEYWORDS))
       KEYWORDS=''
@@ -2293,6 +2295,7 @@ C SET NUMBER OF KEYWORDS AND KEYWORDS
       KEYWORDS(7)='ALTWTSORB                     '
       KEYWORDS(8)='NOSSMPRINT                    '
       KEYWORDS(9)='DECAY_ON_CONC_BNDY            '
+      KEYWORDS(10)='RUNHSSM_DLL                   '
 C
 C READ LINE WITH KEYWORDS
       LINE=''
@@ -2356,6 +2359,8 @@ C
             MUTSSM=1
           CASE(9) !'DECAY_ON_CONC_BNDY'
             IDECAYCONSTCONC=1
+          CASE(10) !'RUNHSSM_DLL'
+            iRunHSSM=1
         END SELECT
       ENDDO
 C

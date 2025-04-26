@@ -514,6 +514,15 @@ C.......CHECK FOR POSSIBLE ERRORS
       ELSEIF(IREACTION.EQ.2) THEN                              
 C-------READ REACTION FILE NAME                                
         rec_FileName=''                                        
+C
+C--Run external HSSMKO DLL if necessary (uncomment to activate)
+!dll        IF(iRunHSSM.eq.1) THEN     
+!dll      WRITE(*,33) HSSFileName(1:IFLEN)  !HSSFileName is c*200
+!dll      CALL HSSM(1,0,HSSFileName(1:IFLEN-4))  
+!dll        ENDIF         
+!dll   33   FORMAT(/'***Running HSSMKO ',
+!dll     &          'to generate source definition file: ',a/)
+        
         READ(IN,'(A1000)') rec_FileName                        
         INQUIRE(FILE=rec_FileName,EXIST=EXISTED)               
         IF(.NOT.EXISTED) THEN                                  

@@ -244,14 +244,6 @@ C
             WRITE(iout,*) p(1,nr),p(2,nr)
           ENDDO                          
         ENDIF                            
-C
-C--Run external HSSMKO DLL if necessary (uncomment to activate)
-        IF(iRunHSSM.eq.1) THEN     
-!hss      WRITE(*,33) HSSFileName(1:IFLEN)  !HSSFileName is c*200
-!hss      CALL HSSM(1,0,HSSFileName(1:IFLEN-4))  
-        ENDIF         
-   33   FORMAT(/'***Running HSSMKO ',
-     &          'to generate source definition file: ',a/)
 C                                                                             
 C--READ HSSM INPUT FILE
         OPEN(inHSSFile,file=HSSFileName(1:IFLEN),STATUS='OLD')
