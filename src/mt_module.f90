@@ -546,7 +546,7 @@ CONTAINS
     END MODULE UZTVARS
 !
     MODULE MT3DMS_MODULE
-        INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=9000
+        INTEGER,PARAMETER :: MXTRNOP=20,MXSTP=90000
         CHARACTER(LEN=4), SAVE, DIMENSION(MXTRNOP) :: NameTRNOP=        &
      &  (/'ADV ', 'DSP ', 'SSM ', 'RCT ', 'GCG ',                       &
      &    '    ', 'UZT2', '    ', '    ', '    ',                       &
