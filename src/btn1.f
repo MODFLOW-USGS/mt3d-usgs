@@ -13,7 +13,7 @@ C
      &                         INUZT,
      &                         INLKT,INSFT,INCTS,INTSO,
      &                         ICTSPKG,INOCROSS,ISAVUCN,
-     &                         FMIFMT6
+     &                         FMIFMT6,IDECAYCONSTCONC
       USE FMI1MF6, ONLY: FMI1MF6NM
 C
       USE MIN_SAT                                                  
@@ -40,11 +40,12 @@ C--ALLOCATE
       INOCROSS=0
 C--ALLOCATE SCALAR VARIABLES
       ALLOCATE(IATS)     
-      ALLOCATE(MUTDRY,IC2DRY,IDRYBUD,ICTSPKG,MUTSSM)
+      ALLOCATE(MUTDRY,IC2DRY,IDRYBUD,ICTSPKG,MUTSSM,IDECAYCONSTCONC)
       MUTDRY=0 
       IC2DRY=0 
       IDRYBUD=1
       MUTSSM=0
+      IDECAYCONSTCONC=0
 C
 C--SET DEFAULT UNIT NUMBERS
       INBTN=1
@@ -595,6 +596,12 @@ C--NOSSMPRINT
       IF(MUTSSM.EQ.1) THEN
         WRITE(IOUT,'(A)') 
      1 '  SSM INPUT WILL NOT BE ECHOED TO THE OUTPUT FILE'
+      ENDIF
+C--DECAY_ON_CONC_BNDY
+      IF(IDECAYCONSTCONC.EQ.1) THEN
+        WRITE(IOUT,'(A)') 
+     1 '  FIRST-ORDER IRREVERSIBLE REACTION APPLIED TO PRESCRIBED
+     1 CONCENTRATION BOUNDARY'
       ENDIF
 C
 C--READ AND ECHO LAYER TYPE CODES
@@ -1449,7 +1456,7 @@ C
      &                         TMASOT,ERROR,ERROR2,TMASIO,RMASIO,TMASS,
      &                         ISS,iUnitTRNOP,
      &                         IALTFM,QSTO,ISOTHM,SP1,COLDFLW,
-     &                         IDRY2,DZ,THETAW2,SORBMASS
+     &                         IDRY2,DZ,THETAW2,SORBMASS,IDECAYCONSTCONC
       USE MIN_SAT, ONLY: IDRYBUD,DRYON,NICBND2,ID2D,TMASS2,QC7,COLD7,
      1                   VAQSAT,ICIMDRY    
       USE RCTMOD, ONLY: IREACTION,IFESLD,MASS_NEG,ISLDPH  
@@ -1459,6 +1466,7 @@ C
       REAL      DMSTRG,SOURCE,SINK,TM1,TM2,DTRANS,
      &          CMML,CMMS,CIML,CIMS,VOLUME,STRMAS,CLOSEZERO
       REAL TIME2,HT2,VOL,VCELL
+      LOGICAL CALCSTOR
 C
 C--INITIALIZE
       CLOSEZERO=1E-06
@@ -1470,7 +1478,15 @@ C--FOR THE CURRENT TRANSPORT STEP
       DO K=1,NLAY
         DO I=1,NROW
           DO J=1,NCOL
-            IF(ICBUND(J,I,K,ICOMP).GT.0.AND.DTRANS.GT.0) THEN
+            CALCSTOR=.FALSE.
+            IF(DTRANS.GT.0) THEN
+              IF(IDECAYCONSTCONC.EQ.0) THEN
+                IF(ICBUND(J,I,K,ICOMP).GT.0) CALCSTOR=.TRUE.
+              ELSEIF(IDECAYCONSTCONC.EQ.1) THEN
+                IF(ICBUND(J,I,K,ICOMP).NE.0) CALCSTOR=.TRUE.
+              ENDIF
+            ENDIF
+            IF(CALCSTOR) THEN
               IF(.NOT.(iUnitTRNOP(7).GT.0)) THEN
                 IF(IALTFM.GE.2.AND.IALTFM.LE.5) THEN
                   VOL=DELR(J)*DELC(I)*DH(J,I,K)+DELR(J)*DELC(I)
@@ -2029,7 +2045,8 @@ C
       USE UZTVARS,       ONLY: IUZFBND,SATOLD,PRSITYSAV,THETAW
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,L,A,RHS,
      &                         NODES,UPDLHS,NCRS,MIXELM,iSSTrans,
-     &                         IALTFM,QSTO,iUnitTRNOP,RHOB,SP1,ISOTHM,DZ
+     &                         IALTFM,QSTO,iUnitTRNOP,RHOB,SP1,ISOTHM,
+     &                         DZ,IDECAYCONSTCONC
       USE MIN_SAT, ONLY: COLD7,DRYON
 C
       IMPLICIT  NONE
@@ -2050,7 +2067,9 @@ C--GET RIGHT-HAND-SIDE ARRAY [RHS]
             ELSE
               TEMP=CADV(N,ICOMP)
             ENDIF
-            IF(ICBUND(N,ICOMP).LE.0) THEN
+            IF(IDECAYCONSTCONC.EQ.0.AND.ICBUND(N,ICOMP).LE.0) THEN
+              RHS(N)=-TEMP
+            ELSEIF(IDECAYCONSTCONC.EQ.1.AND.ICBUND(N,ICOMP).EQ.0) THEN
               RHS(N)=-TEMP
 C              
             ELSEIF(iSSTrans.eq.1) then  
@@ -2115,7 +2134,9 @@ C--LOOP THROUGH ALL CELLS AND RESET A
             N=N+1
 C
 C--IF INACTIVE OR CONSTANT CELL
-            IF(ICBUND(N,ICOMP).LE.0) THEN
+            IF(IDECAYCONSTCONC.EQ.0.AND.ICBUND(N,ICOMP).LE.0) THEN
+               A(N)=-1.
+            ELSEIF(IDECAYCONSTCONC.EQ.1.AND.ICBUND(N,ICOMP).EQ.0) THEN
                A(N)=-1.
             ELSE if(iSSTrans.eq.0)  then
               IF(iUnitTRNOP(7).GT.0) THEN
@@ -2244,7 +2265,7 @@ C
 C ********************************************************
 C THIS SUBROUTINE READS BTN FILE AND IDENTIFIES KEYWORDS
 C ********************************************************
-      USE MT3DMS_MODULE, ONLY: IOUT,IALTFM,FPRT
+      USE MT3DMS_MODULE, ONLY: IOUT,IALTFM,FPRT,IDECAYCONSTCONC
       USE MIN_SAT, ONLY: DOMINSAT,DRYON,MUTDRY,IDRYBUD,MUTSSM
       USE MT3DUTIL
 C
@@ -2256,7 +2277,7 @@ C
       REAL           R
 C
 C SET NUMBER OF KEYWORDS AND KEYWORDS
-      NKEYWORDS=8
+      NKEYWORDS=9
       KEYFOUND=.FALSE.
       ALLOCATE(KEYWORDS(NKEYWORDS))
       KEYWORDS=''
@@ -2268,6 +2289,7 @@ C SET NUMBER OF KEYWORDS AND KEYWORDS
       KEYWORDS(6)='OMITDRYCELLBUDGET             '
       KEYWORDS(7)='ALTWTSORB                     '
       KEYWORDS(8)='NOSSMPRINT                    '
+      KEYWORDS(9)='DECAY_ON_CONC_BNDY            '
 C
 C READ LINE WITH KEYWORDS
       LINE=''
@@ -2329,6 +2351,8 @@ C
             IALTFM=2
           CASE(8) !'NOSSMPRINT'
             MUTSSM=1
+          CASE(9) !'DECAY_ON_CONC_BNDY'
+            IDECAYCONSTCONC=1
         END SELECT
       ENDDO
 C

@@ -824,7 +824,8 @@ C *******************************************************************
 C
       USE RCTMOD
       USE MT3DMS_MODULE, ONLY: NCOL,NROW,NLAY,NCOMP,DELR,DELC,NODES,
-     &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP,iSSTrans
+     &                         UPDLHS,ISOTHM,IREACT,A,RHS,MCOMP,
+     &                         iSSTrans,IDECAYCONSTCONC
 C
       IMPLICIT  NONE
       INTEGER   ICOMP,ICBUND,K,I,J,N,III,ITO
@@ -985,7 +986,16 @@ C
               N=(K-1)*NCOL*NROW+(I-1)*NCOL+J
 C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
-              IF(ICBUND(N,ICOMP).LE.0) CYCLE
+              IF(IDECAYCONSTCONC.EQ.0) THEN
+                IF(ICBUND(N,ICOMP).LE.0) CYCLE
+              ELSEIF(IDECAYCONSTCONC.EQ.1) THEN
+                IF(ICBUND(N,ICOMP).EQ.0) CYCLE
+              ELSE
+                WRITE(*,*) 'ERROR'
+                WRITE(*,*) 'IDECAYCONSTCONC NEEDS TO BE EITHER 0 OR 1'
+                READ(*,*)
+                STOP
+              ENDIF
 C
 C--DISSOLVED PHASE
               IF(UPDLHS) A(N)=A(N)-RC1(N,ICOMP)*PRSITY(N)*
@@ -1212,7 +1222,7 @@ C
      &                         DELR,DELC,DH,ISOTHM,IREACT,RHOB,SP1,SP2,
      &                         SRCONC,RC1,RC2,PRSITY2,RETA2,FRAC,CNEW,
      &                         RETA,RFMIN,RMASIO,
-     &                         COLD,iSSTrans,FLAM1,FLAM2
+     &                         COLD,iSSTrans,FLAM1,FLAM2,IDECAYCONSTCONC
       USE RCTMOD                    
 C
       IMPLICIT  NONE
@@ -1369,7 +1379,16 @@ C
           DO J=1,NCOL
 C
 C--SKIP IF INACTIVE OR CONSTANT CONCENTRATION CELL
-            IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            IF(IDECAYCONSTCONC.EQ.0) THEN
+              IF(ICBUND(J,I,K,ICOMP).LE.0) CYCLE
+            ELSEIF(IDECAYCONSTCONC.EQ.1) THEN
+              IF(ICBUND(J,I,K,ICOMP).EQ.0) CYCLE
+            ELSE
+              WRITE(*,*) 'ERROR'
+              WRITE(*,*) 'IDECAYCONSTCONC NEEDS TO BE EITHER 0 OR 1'
+              READ(*,*)
+              STOP
+            ENDIF
 C
 C--DETERMINE WHICH CONC TO USE IF IREACTION=1
             IF(IREACTION.EQ.1) THEN          

@@ -765,6 +765,7 @@ CONTAINS
         INTEGER,          SAVE, DIMENSION(:),         POINTER :: KSSZERO
         REAL,             SAVE, DIMENSION(:,:,:,:),   POINTER :: COLDFLW
         INTEGER,          SAVE,                       POINTER :: IDRY2
+        INTEGER,          SAVE,                       POINTER :: IDECAYCONSTCONC
 !--RCT
         INTEGER,          SAVE,                       POINTER :: IREACT
         INTEGER,          SAVE,                       POINTER :: IRCTOP
