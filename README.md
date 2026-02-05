@@ -1,5 +1,5 @@
 # MT3D-USGS
-[![Build Status](https://travis-ci.org/MODFLOW-USGS/mt3d-usgs.svg?branch=develop)](https://travis-ci.org/MODFLOW-USGS/mt3d-usgs)
+[![mt3d-usgs checks](https://github.com/MODFLOW-USGS/mt3d-usgs/actions/workflows/ci.yml/badge.svg)](https://github.com/MODFLOW-USGS/mt3d-usgs/actions/workflows/ci.yml)
 
 [USGS Release Page](https://water.usgs.gov/ogw/mt3d-usgs/)
 
