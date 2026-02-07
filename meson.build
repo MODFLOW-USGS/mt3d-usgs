@@ -18,11 +18,6 @@ extra_deps = []
 
 if fc_id == 'gcc'
   compile_args += ['-fall-intrinsics', '-fbacktrace', '-ffpe-summary=overflow']
-  # Link quadmath library on macOS (required for gfortran runtime)
-  if host_machine.system() == 'darwin'
-    quadmath_dep = fc.find_library('quadmath', required: true, static: true)
-    extra_deps += [quadmath_dep]
-  endif
 endif
 
 if fc_id == 'intel' or fc_id == 'intel-cl'
