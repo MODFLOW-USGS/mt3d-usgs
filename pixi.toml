@@ -4,7 +4,7 @@ channels = ["conda-forge"]
 platforms = ["linux-64", "osx-64", "osx-arm64", "win-64"]
 
 [tasks]
-get-ostag = "python -c 'from platform import system; from sys import exit; plat = system(); exit(f\"linux\" if plat == \"Linux\" else f\"mac\" if plat == \"Darwin\" else f\"win64\" if plat == \"Windows\" else \"\")'"
+get-ostag = "python -c 'from modflow_devtools.ostags import get_ostag; print(get_ostag())'"
 setup = "meson setup builddir --prefix=$(pwd) --libdir=bin"
 build = "meson install -C builddir"
 test = "meson test --verbose --no-rebuild -C builddir"
@@ -13,3 +13,4 @@ test = "meson test --verbose --no-rebuild -C builddir"
 meson = ">=1.3.1"
 ninja = "*"
 python = ">=3.9"
+modflow-devtools = "*"
