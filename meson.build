@@ -1,7 +1,7 @@
 project(
   'mt3d-usgs',
   'fortran',
-  version: '1.0.0',
+  version: '1.1.1',
   meson_version: '>= 1.3.1',
   default_options : [
     'b_vscrt=static_from_buildtype',
