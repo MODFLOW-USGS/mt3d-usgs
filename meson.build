@@ -1,5 +1,5 @@
 project(
-  'mt3d-usgs',
+  'mt3dusgs',
   'fortran',
   version: '1.1.1',
   license: 'CC0-1.0',
@@ -134,7 +134,7 @@ add_project_link_arguments(fc.get_supported_arguments(link_args), language: 'for
 
 # build 
 if is_double
-  buildname = 'mt3dusgstdbl'
+  buildname = 'mt3dusgsdbl'
 else
   buildname = 'mt3dusgs'
 endif

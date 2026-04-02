@@ -135,6 +135,15 @@ jobs:
           pixi run test builddir
           pixi run test builddir-dble
 
+      - name: Check architecture (macOS)
+        working-directory: ${{ env.PROGRAM_NAME }}/bin
+        if: runner.os == 'macOS'
+        run: |
+          otool -L mt3dusgs
+          otool -L mt3dusgsdbl
+          lipo -info mt3dusgs
+          lipo -info mt3dusgsdbl          
+
       - name: Create source zip file on Linux
         if: ${{ matrix.release == 'yes' && runner.os == 'Linux' }}
         working-directory: ${{ env.PROGRAM_NAME }}

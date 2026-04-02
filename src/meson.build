@@ -24,7 +24,7 @@ sources = files(
 )
 
 exe = executable(
-  'mt3dusg',
+  buildname,
   sources,
   dependencies: extra_deps,
   install: true
