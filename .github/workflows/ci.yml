@@ -15,7 +15,7 @@ concurrency:
 env:
   PIXI_BETA_WARNING_OFF: true
   DIST: dist-path
-  PROGRAM_NAME: mt3d-usgs
+  PROGRAM_NAME: mt3dusgs
 jobs:
   build:
     name: Build and Test on ${{ matrix.os }} with ${{ matrix.compiler }} ${{ matrix.version }}
@@ -92,11 +92,11 @@ jobs:
           ldflags="$LDFLAGS -static-libgcc"
           echo "LDFLAGS=$ldflags" >> $GITHUB_ENV
 
-      - name: Build ${{ env.PROGRAM_NAME }}
+      - name: Build single precision version of ${{ env.PROGRAM_NAME }}
         working-directory: ${{ env.PROGRAM_NAME }}
         run: |
-          pixi run setup
-          pixi run build
+          pixi run setup builddir
+          pixi run build builddir
 
       - name: Show build log
         if: failure()
@@ -110,11 +110,46 @@ jobs:
           name: ${{ matrix.os }}-${{ matrix.compiler}}-${{ matrix.version }}-meson-log.txt
           path: ${{ env.PROGRAM_NAME }}/builddir/meson-logs/meson-log.txt
 
+      - name: Build double precision version of ${{ env.PROGRAM_NAME }}
+        working-directory: ${{ env.PROGRAM_NAME }}
+        run: |
+          pixi run setup builddir-dble -Ddouble=true
+          pixi run build builddir-dble
+
+      - name: Show build log
+        if: failure()
+        working-directory: ${{ env.PROGRAM_NAME }}
+        run: cat builddir-dble/meson-logs/meson-log.txt
+
+      - name: Upload build log
+        if: failure()
+        uses: actions/upload-artifact@v6
+        with:
+          name: ${{ matrix.os }}-${{ matrix.compiler}}-${{ matrix.version }}-meson-log.txt
+          path: ${{ env.PROGRAM_NAME }}/builddir-dble/meson-logs/meson-log.txt
+
       - name: Unit test ${{ env.PROGRAM_NAME }}
         if: success()
         working-directory: ${{ env.PROGRAM_NAME }}
         run: |
-          pixi run test
+          pixi run test builddir
+          pixi run test builddir-dble
+
+      - name: Check architecture (macOS)
+        working-directory: ${{ env.PROGRAM_NAME }}/bin
+        if: runner.os == 'macOS'
+        run: |
+          otool -L mt3dusgs
+          otool -L mt3dusgsdbl
+          lipo -info mt3dusgs
+          lipo -info mt3dusgsdbl          
+
+      - name: Create source zip file on Linux
+        if: ${{ matrix.release == 'yes' && runner.os == 'Linux' }}
+        working-directory: ${{ env.PROGRAM_NAME }}
+        run: |
+          zip -r ${{ env.PROGRAM_NAME }}_source.zip meson.build src/
+          ls -lha *.zip
 
       - name: Create zip file on MacOS and Linux
         if: ${{ matrix.release == 'yes' && runner.os != 'Windows' }}

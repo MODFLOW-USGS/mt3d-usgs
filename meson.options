@@ -1,0 +1,1 @@
+option('double', type : 'boolean', value : false, description : 'Build double precision version of code')
