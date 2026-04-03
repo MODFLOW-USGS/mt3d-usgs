@@ -105,7 +105,7 @@ jobs:
 
       - name: Upload build log
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.os }}-${{ matrix.compiler}}-${{ matrix.version }}-meson-log.txt
           path: ${{ env.PROGRAM_NAME }}/builddir/meson-logs/meson-log.txt
@@ -123,7 +123,7 @@ jobs:
 
       - name: Upload build log
         if: failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.os }}-${{ matrix.compiler}}-${{ matrix.version }}-meson-log.txt
           path: ${{ env.PROGRAM_NAME }}/builddir-dble/meson-logs/meson-log.txt
@@ -168,7 +168,7 @@ jobs:
 
       - name: Upload distribution archive
         if: matrix.release == 'yes'
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ env.DIST }}-${{ matrix.os }}
           path: ${{ env.PROGRAM_NAME }}/*.zip
