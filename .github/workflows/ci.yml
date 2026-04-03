@@ -193,7 +193,7 @@ jobs:
           echo "PROGRAM_VERSION=$(grep -oE "([0-9]{1,}\.)+[0-9]{1,}" meson.build | head -n 1)" >> $GITHUB_ENV
 
       - name: Download distribution
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ env.DIST }}*
           merge-multiple: true
