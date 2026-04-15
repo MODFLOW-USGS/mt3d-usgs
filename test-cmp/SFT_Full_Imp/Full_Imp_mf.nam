@@ -1,4 +1,4 @@
-#Model mimicing 1D OTIS Application 1 (See OTIS manual)
+#Model mimicking 1D OTIS Application 1 (See OTIS manual)
 LIST          21     Full_Imp.out
 BAS6          22     Full_Imp.ba6
 DIS           23     Full_Imp.dis

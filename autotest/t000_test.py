@@ -23,7 +23,7 @@ def getmfexes(pth='.', version='', platform=None):
     platform : str
         Platform that will run the executables.  Valid values include mac,
         linux, win32 and win64.  If platform is None, then routine will
-        download the latest asset from the github reposity.
+        download the latest asset from the github repository.
 
     """
 

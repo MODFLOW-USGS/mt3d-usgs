@@ -74,7 +74,7 @@ o Version 1.1.0 06/28/2019:
   
     - Fixed floating-invalid error in SSM1OT (ssm1.f)
     - Fixed wrongful reporting of mass lost to ET when the DRYCELL keyword
-      is used in BTN.  Occured when user specified non-zero value of CINACT
+      is used in BTN.  Occurred when user specified non-zero value of CINACT
 
   Other:
     
@@ -88,7 +88,7 @@ o Version 1.1.0 06/28/2019:
   
     - Added new section to the input instructions describing how to invoke
       reading of MODFLOW 6-generated link files for simulating transport 
-      with a structed MODFLOW 6 grid.
+      with a structured MODFLOW 6 grid.
     - Minor clean-up of LKT input instructions
     - Corrected mis-statement in LMT8.pdf regarding how the LMT package
       should be activated in the MODLFOW name file
@@ -138,7 +138,7 @@ o Version 1.0.1 02/28/2019:
       and SADV1U
     - Reversed the order of some DO loops in GCG to work with Fortran's
       row-major array ordering
-    - Fixed 2 instances of where DELR(I) shoudl be DELR(J) in adv
+    - Fixed 2 instances of where DELR(I) should be DELR(J) in adv
       pertaining to the CMAS2 calculation
     - Fixed bug related to specified mass-loading sources for when the
       saturated thickness gets small and results in really large QSS terms
@@ -186,7 +186,7 @@ o Version 1.0.1 02/28/2019:
       commits attempted to use IFLPORT library that crashed gfortran
       compilers
     - Removed specification of starting water content and saturated thickness
-      arrays from the UZT input file.  It is possilbe to back calculate these
+      arrays from the UZT input file.  It is possible to back calculate these
       values from the change in storage and thicksat arrays passed in the
       linker file.  Code now requires use of UZT2 in name file to prevent
       users from mistakenly proceeding with these arrays present
@@ -194,7 +194,7 @@ o Version 1.0.1 02/28/2019:
   
   Documentation:
   
-    - Documention of IUZFBND more clearly states what's expected
+    - Documentation of IUZFBND more clearly states what's expected
     - Various typos
     - When IUZFBND < 0, UZF terms are handled by SSM as a boundary condition
       Made an entry in SSM for this condition

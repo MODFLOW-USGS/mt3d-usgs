@@ -435,9 +435,9 @@ INTERNAL  1  (FREE)  -1
 -00.90  -00.90  -00.90  #Bot  Elev  Lay  209
 INTERNAL  1  (FREE)  -1      
 -01.00  -01.00  -01.00  #Bot  Elev  Lay  210
-0.01         1   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for when the solute is introduced
-0.10        10   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for checking mass balance in MT3D
-199.89    2000   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 1
-480        480   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is stop-flow period
-10          20   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 3
-240         12   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stess period is for transporting the solute 4
+0.01         1   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is for when the solute is introduced
+0.10        10   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is for checking mass balance in MT3D
+199.89    2000   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is for transporting the solute 1
+480        480   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is stop-flow period
+10          20   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is for transporting the solute 3
+240         12   1.0 tr  #PERLEN, NSTP, TSMULT, SS/tr - This stress period is for transporting the solute 4

@@ -61,7 +61,7 @@ SYSTEM REQUIREMENTS
      Windows operating system.
 
 
-FUNTIONALITY
+FUNCTIONALITY
 
      MT3D-USGS can be run from the command line by first typing the name of 
      the executive file followed by the MT3D-USGS simulation's name file (e.g.,

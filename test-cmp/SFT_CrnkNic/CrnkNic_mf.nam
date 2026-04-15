@@ -1,4 +1,4 @@
-#Model mimicing 1D OTIS Application 1 (See OTIS manual)
+#Model mimicking 1D OTIS Application 1 (See OTIS manual)
 LIST          21     CrnkNic.lst
 BAS6          22     CrnkNic.ba6
 DIS           23     CrnkNic.dis
