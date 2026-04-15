@@ -1,6 +1,6 @@
 # Discretization File created on 2/19/2019 by ModelMuse version 3.10.0.42.
 # MT3DMS benchmark test problem #6
-# transport in 2-D radial flow field during an injection/withdrawl cycle
+# transport in 2-D radial flow field during an injection/withdrawal cycle
 # Upper left corner: (0, 0)
 # Lower left corner: (0, -27900)
 # Upper right corner: (27900, 0)

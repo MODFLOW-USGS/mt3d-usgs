@@ -139,7 +139,7 @@ Some of the files written by MT3D-USGS are unformatted files. The structure
 of these files depends on the compiler and options in the Fortran write
 statement.  MT3D-USGS is compiled with the unformatted file type specified
 as "BINARY". "BINARY" is a non-standard Fortran form option that can be
-used with the Intel Fortan compiler.  Any program that reads the unformatted 
+used with the Intel Fortran compiler.  Any program that reads the unformatted
 files produced by MT3D-USGS must be compiled with a compiler that produces 
 programs that use the same structure for unformatted files.  
 

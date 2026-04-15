@@ -2952,7 +2952,7 @@ c    gaussian elimination is (usually) significantly less.
 c
 c    note.. odrv and its subordinate routines have been modified to
 c    compute orderings for general matrices, not necessarily having any
-c    symmetry.  the miminum degree ordering is computed for the
+c    symmetry.  the minimum degree ordering is computed for the
 c    structure of the symmetric matrix  m + m-transpose.
 c    modifications to the original odrv module have been made in
 c    the coding in subroutine mdi, and in the initial comments in

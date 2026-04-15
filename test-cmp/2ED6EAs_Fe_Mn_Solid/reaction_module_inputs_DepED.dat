@@ -2,7 +2,7 @@
     2    6    3    1
 5 SOLID     50.5     !First solid phase
 6 SOLID     50.5     !Second solid phase
-8 MAXEC     2.05       !Methane cant be measured in the field
+8 MAXEC     2.05       !Methane can't be measured in the field
      0.5     0.01     Oxygen      Half Saturation Constants (switching factors), Inhibition_Constants
      0.5     0.01     Nitrate 
      0.5     0.01     Mn2 

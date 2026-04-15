@@ -1,4 +1,4 @@
-MT3DMS Benchmark Test Porblem #2
+MT3DMS Benchmark Test Problem #2
 1D advection-dispersion with nonequilibrium sorption
          1         1       101         3         1         1         0 # Data Set 3: NLAY NROW NCOL NPER NCOMP MCOMP, IATS
  sec  cm   g # Data Set 4: TUNIT LUNIT MUNIT

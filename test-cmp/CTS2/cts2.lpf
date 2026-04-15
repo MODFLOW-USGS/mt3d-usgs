@@ -1,4 +1,4 @@
-#LPF - Layer-Property Flow Package Convertion of MF96 to MF2K5
+#LPF - Layer-Property Flow Package Conversion of MF96 to MF2K5
 #ILPFCB HDRY NPLPF  (ILPFCB—is a flag and a unit number; NPLPF—is the number of LPF parameters)
       0 -999     0
   0                                     #LAYTYP(NLAY) (LAYTYP=1: convertible)

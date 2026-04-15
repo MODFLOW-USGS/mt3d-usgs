@@ -1,5 +1,5 @@
 # MT3DMS benchmark test problem #6
-# transport in 2-D radial flow field during an injection/withdrawl cycle
+# transport in 2-D radial flow field during an injection/withdrawal cycle
 # Basic Package file created on 2/19/2019 by ModelMuse version 3.10.0.42.
 FREE  # OPTIONS
 CONSTANT        1 # IBOUND Layer 1

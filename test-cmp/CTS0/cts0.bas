@@ -1,5 +1,5 @@
 #MT3DMS benchmark test problem #6
-#transport in 2-D radial flow field during an injection/withdrawl cycle
+#transport in 2-D radial flow field during an injection/withdrawal cycle
 #         1        31        31         2         4
 
          1         0(31I2)                      -3    IBOUND-1

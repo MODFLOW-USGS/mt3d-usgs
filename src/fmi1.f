@@ -1078,7 +1078,7 @@ C
      &                UZET,FPRT)
         ENDIF                   
 C                             
-C-------Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF packge 
+C-------Read 'GW-ET' flow term (L**3/T) if IETFLG>0 in UZF package
         IF(IETFLG) THEN
           TEXT='GW-ET'
           CALL READDS(INUF,IOUT,NCOL,NROW,NLAY,KSTP,KPER,TEXT,
