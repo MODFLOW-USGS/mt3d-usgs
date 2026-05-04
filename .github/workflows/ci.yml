@@ -25,15 +25,15 @@ jobs:
       matrix:
         include:
           # test latest gcc
-          - {os: ubuntu-latest, compiler: gcc, version: 13, shell: bash, release: no}
-          - {os: macos-14, compiler: gcc, version: 13, shell: bash, release: yes}
-          - {os: macos-15-intel, compiler: gcc, version: 13, shell: bash, release: yes}
-          - {os: windows-latest, compiler: gcc, version: 13, shell: pwsh, release: no}
+          - {os: ubuntu-latest, compiler: gcc, version: 15, shell: bash, release: no}
+          - {os: macos-14, compiler: gcc, version: 15, shell: bash, release: yes}
+          - {os: macos-15-intel, compiler: gcc, version: 15, shell: bash, release: yes}
+          - {os: windows-latest, compiler: gcc, version: 15, shell: pwsh, release: no}
           # test intel-classic
           - {os: ubuntu-22.04, compiler: intel-classic, version: 2021.7, shell: bash, release: no}
           # test previous gcc
-          - {os: ubuntu-latest, compiler: gcc, version: 12, shell: bash, release: no}
-          - {os: ubuntu-latest, compiler: gcc, version: 11, shell: bash, release: no}
+          - {os: ubuntu-latest, compiler: gcc, version: 14, shell: bash, release: no}
+          - {os: ubuntu-latest, compiler: gcc, version: 13, shell: bash, release: no}
           # test ifx
           - {os: ubuntu-22.04, compiler: intel, version: "2025.0", shell: bash, release: yes}
           - {os: windows-2022, compiler: intel, version: "2025.0", shell: pwsh, release: yes}
