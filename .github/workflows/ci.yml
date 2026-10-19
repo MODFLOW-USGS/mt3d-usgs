@@ -42,7 +42,7 @@ jobs:
         shell: ${{ matrix.shell }}
     steps:
       - name: Checkout ${{ env.PROGRAM_NAME }}
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ${{ env.PROGRAM_NAME }}
 
@@ -183,7 +183,7 @@ jobs:
 
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           path: ${{ env.PROGRAM_NAME }}
 
